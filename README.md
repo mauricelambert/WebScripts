@@ -12,6 +12,7 @@ Optional on Windows:
  - pywin32 (to centralize logs in Event Viewer)
 
 ## Installation
+
 ```bash
 pip install WebScripts
 ```
@@ -57,7 +58,7 @@ config = Configuration()
 config.add_conf(
     interface="", 
     port=8000, 
-    scripts_path = [
+        scripts_path = [
         "./scripts/account",
         "./scripts/passwords"
     ],
@@ -126,7 +127,6 @@ httpd.serve_forever()
 ## Links
  - [Pypi](https://pypi.org/project/WebScripts)
  - [Github](https://github.com/mauricelambert/WebScripts)
- - [Python executable](https://mauricelambert.github.io/python/code/WebScripts.pyz)
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

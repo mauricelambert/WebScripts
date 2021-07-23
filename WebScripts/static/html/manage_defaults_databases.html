@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module manage_defaults_databases</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>manage_defaults_databases</strong></big></big> (version 0.0.1)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="manage_defaults_databases.py">manage_defaults_databases.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
+executables&nbsp;from&nbsp;the&nbsp;command&nbsp;line&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;<br>
+in&nbsp;a&nbsp;web&nbsp;interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;some&nbsp;functions&nbsp;to&nbsp;manage&nbsp;WebScript&nbsp;default&nbsp;databases.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#4A948C">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#4A948C"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
+</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#Exception">builtins.Exception</a>(<a href="builtins.html#BaseException">builtins.BaseException</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="manage_defaults_databases.html#GroupError">GroupError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="manage_defaults_databases.html#UserError">UserError</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#tuple">builtins.tuple</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="manage_defaults_databases.html#Group">Group</a>
+</font></dt><dt><font face="helvetica, arial"><a href="manage_defaults_databases.html#User">User</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Group">class <strong>Group</strong></a>(<a href="builtins.html#tuple">builtins.tuple</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Group">Group</a>(ID,&nbsp;name)<br>
+&nbsp;<br>
+<a href="#Group">Group</a>(ID,&nbsp;name)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="manage_defaults_databases.html#Group">Group</a></dd>
+<dd><a href="builtins.html#tuple">builtins.tuple</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Group-__getnewargs__"><strong>__getnewargs__</strong></a>(self)</dt><dd><tt>Return&nbsp;self&nbsp;as&nbsp;a&nbsp;plain&nbsp;<a href="builtins.html#tuple">tuple</a>.&nbsp;&nbsp;Used&nbsp;by&nbsp;copy&nbsp;and&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="Group-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;nicely&nbsp;formatted&nbsp;representation&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="Group-_asdict"><strong>_asdict</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;dict&nbsp;which&nbsp;maps&nbsp;field&nbsp;names&nbsp;to&nbsp;their&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="Group-_replace"><strong>_replace</strong></a>(self, /, **kwds)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;<a href="#Group">Group</a>&nbsp;object&nbsp;replacing&nbsp;specified&nbsp;fields&nbsp;with&nbsp;new&nbsp;values</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="Group-_make"><strong>_make</strong></a>(iterable)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Make&nbsp;a&nbsp;new&nbsp;<a href="#Group">Group</a>&nbsp;object&nbsp;from&nbsp;a&nbsp;sequence&nbsp;or&nbsp;iterable</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Group-__new__"><strong>__new__</strong></a>(_cls, ID, name)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#Group">Group</a>(ID,&nbsp;name)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>ID</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;0</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;1</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>_field_defaults</strong> = {}</dl>
+
+<dl><dt><strong>_fields</strong> = ('ID', 'name')</dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="Group-__add__"><strong>__add__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self+value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__contains__"><strong>__contains__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;key&nbsp;in&nbsp;self.</tt></dd></dl>
+
+<dl><dt><a name="Group-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Group-__getitem__"><strong>__getitem__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;self[key].</tt></dd></dl>
+
+<dl><dt><a name="Group-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__hash__"><strong>__hash__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;hash(self).</tt></dd></dl>
+
+<dl><dt><a name="Group-__iter__"><strong>__iter__</strong></a>(self, /)</dt><dd><tt>Implement&nbsp;iter(self).</tt></dd></dl>
+
+<dl><dt><a name="Group-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__len__"><strong>__len__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;len(self).</tt></dd></dl>
+
+<dl><dt><a name="Group-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__mul__"><strong>__mul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self*value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="Group-__rmul__"><strong>__rmul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;value*self.</tt></dd></dl>
+
+<dl><dt><a name="Group-count"><strong>count</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;number&nbsp;of&nbsp;occurrences&nbsp;of&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="Group-index"><strong>index</strong></a>(self, value, start=0, stop=9223372036854775807, /)</dt><dd><tt>Return&nbsp;first&nbsp;index&nbsp;of&nbsp;value.<br>
+&nbsp;<br>
+Raises&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;value&nbsp;is&nbsp;not&nbsp;present.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="Group-__class_getitem__"><strong>__class_getitem__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>See&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a></tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GroupError">class <strong>GroupError</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;can&nbsp;raise&nbsp;a&nbsp;<a href="#GroupError">GroupError</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="manage_defaults_databases.html#GroupError">GroupError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="GroupError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="GroupError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="GroupError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="GroupError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="GroupError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="GroupError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="GroupError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="GroupError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="GroupError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="GroupError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#GroupError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="User">class <strong>User</strong></a>(<a href="builtins.html#tuple">builtins.tuple</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)<br>
+&nbsp;<br>
+<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="manage_defaults_databases.html#User">User</a></dd>
+<dd><a href="builtins.html#tuple">builtins.tuple</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="User-__getnewargs__"><strong>__getnewargs__</strong></a>(self)</dt><dd><tt>Return&nbsp;self&nbsp;as&nbsp;a&nbsp;plain&nbsp;<a href="builtins.html#tuple">tuple</a>.&nbsp;&nbsp;Used&nbsp;by&nbsp;copy&nbsp;and&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="User-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;nicely&nbsp;formatted&nbsp;representation&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="User-_asdict"><strong>_asdict</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;dict&nbsp;which&nbsp;maps&nbsp;field&nbsp;names&nbsp;to&nbsp;their&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="User-_replace"><strong>_replace</strong></a>(self, /, **kwds)</dt><dd><tt>Return&nbsp;a&nbsp;new&nbsp;<a href="#User">User</a>&nbsp;object&nbsp;replacing&nbsp;specified&nbsp;fields&nbsp;with&nbsp;new&nbsp;values</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="User-_make"><strong>_make</strong></a>(iterable)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Make&nbsp;a&nbsp;new&nbsp;<a href="#User">User</a>&nbsp;object&nbsp;from&nbsp;a&nbsp;sequence&nbsp;or&nbsp;iterable</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="User-__new__"><strong>__new__</strong></a>(_cls, ID, name, password, salt, enumerations, IPs, groups, apikey)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>ID</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;0</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;1</tt></dd>
+</dl>
+<dl><dt><strong>password</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;2</tt></dd>
+</dl>
+<dl><dt><strong>salt</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;3</tt></dd>
+</dl>
+<dl><dt><strong>enumerations</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;4</tt></dd>
+</dl>
+<dl><dt><strong>IPs</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;5</tt></dd>
+</dl>
+<dl><dt><strong>groups</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;6</tt></dd>
+</dl>
+<dl><dt><strong>apikey</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;7</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>_field_defaults</strong> = {}</dl>
+
+<dl><dt><strong>_fields</strong> = ('ID', 'name', 'password', 'salt', 'enumerations', 'IPs', 'groups', 'apikey')</dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="User-__add__"><strong>__add__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self+value.</tt></dd></dl>
+
+<dl><dt><a name="User-__contains__"><strong>__contains__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;key&nbsp;in&nbsp;self.</tt></dd></dl>
+
+<dl><dt><a name="User-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="User-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="User-__getitem__"><strong>__getitem__</strong></a>(self, key, /)</dt><dd><tt>Return&nbsp;self[key].</tt></dd></dl>
+
+<dl><dt><a name="User-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="User-__hash__"><strong>__hash__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;hash(self).</tt></dd></dl>
+
+<dl><dt><a name="User-__iter__"><strong>__iter__</strong></a>(self, /)</dt><dd><tt>Implement&nbsp;iter(self).</tt></dd></dl>
+
+<dl><dt><a name="User-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__len__"><strong>__len__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;len(self).</tt></dd></dl>
+
+<dl><dt><a name="User-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="User-__mul__"><strong>__mul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self*value.</tt></dd></dl>
+
+<dl><dt><a name="User-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__rmul__"><strong>__rmul__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;value*self.</tt></dd></dl>
+
+<dl><dt><a name="User-count"><strong>count</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;number&nbsp;of&nbsp;occurrences&nbsp;of&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="User-index"><strong>index</strong></a>(self, value, start=0, stop=9223372036854775807, /)</dt><dd><tt>Return&nbsp;first&nbsp;index&nbsp;of&nbsp;value.<br>
+&nbsp;<br>
+Raises&nbsp;ValueError&nbsp;if&nbsp;the&nbsp;value&nbsp;is&nbsp;not&nbsp;present.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
+<dl><dt><a name="User-__class_getitem__"><strong>__class_getitem__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>See&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a></tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UserError">class <strong>UserError</strong></a>(<a href="builtins.html#Exception">builtins.Exception</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;can&nbsp;raise&nbsp;a&nbsp;<a href="#UserError">UserError</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="manage_defaults_databases.html#UserError">UserError</a></dd>
+<dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
+<dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="UserError-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="builtins.html#Exception">builtins.Exception</a>:<br>
+<dl><dt><a name="UserError-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><a name="UserError-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="UserError-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="UserError-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Helper&nbsp;for&nbsp;pickle.</tt></dd></dl>
+
+<dl><dt><a name="UserError-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="UserError-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="UserError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="UserError-__str__"><strong>__str__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="UserError-with_traceback"><strong>with_traceback</strong></a>(...)</dt><dd><tt><a href="builtins.html#Exception">Exception</a>.<a href="#UserError-with_traceback">with_traceback</a>(tb)&nbsp;--<br>
+set&nbsp;self.<strong>__traceback__</strong>&nbsp;to&nbsp;tb&nbsp;and&nbsp;return&nbsp;self.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#BaseException">builtins.BaseException</a>:<br>
+<dl><dt><strong>__cause__</strong></dt>
+<dd><tt>exception&nbsp;cause</tt></dd>
+</dl>
+<dl><dt><strong>__context__</strong></dt>
+<dd><tt>exception&nbsp;context</tt></dd>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__suppress_context__</strong></dt>
+</dl>
+<dl><dt><strong>__traceback__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-add_group"><strong>add_group</strong></a>(name: str, id_: int) -&gt; manage_defaults_databases.Group</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;group&nbsp;in&nbsp;database&nbsp;or&nbsp;raise&nbsp;a&nbsp;<a href="#GroupError">GroupError</a>.</tt></dd></dl>
+ <dl><dt><a name="-add_user"><strong>add_user</strong></a>(name: str, password: str, groups: List[int], ips: List[str] = ['*']) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;user&nbsp;in&nbsp;database&nbsp;or&nbsp;raise&nbsp;a&nbsp;<a href="#UserError">UserError</a>.</tt></dd></dl>
+ <dl><dt><a name="-change_user_password"><strong>change_user_password</strong></a>(id_: str, new_password: str, old_password: str = None) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;change&nbsp;a&nbsp;user&nbsp;password.</tt></dd></dl>
+ <dl><dt><a name="-create_default_databases"><strong>create_default_databases</strong></a>() -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;create&nbsp;defaults&nbsp;users&nbsp;and&nbsp;groups.</tt></dd></dl>
+ <dl><dt><a name="-delete_group"><strong>delete_group</strong></a>(id_: int) -&gt; manage_defaults_databases.Group</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;a&nbsp;group&nbsp;by&nbsp;id&nbsp;and&nbsp;return&nbsp;the&nbsp;deleted&nbsp;group.</tt></dd></dl>
+ <dl><dt><a name="-delete_user"><strong>delete_user</strong></a>(id_: int) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;a&nbsp;user&nbsp;by&nbsp;id&nbsp;and&nbsp;return&nbsp;the&nbsp;deleted&nbsp;user.</tt></dd></dl>
+ <dl><dt><a name="-get_apikey"><strong>get_apikey</strong></a>(id_: str, password: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;API&nbsp;key&nbsp;after&nbsp;verification&nbsp;of&nbsp;authentication.</tt></dd></dl>
+ <dl><dt><a name="-get_groups"><strong>get_groups</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;groups&nbsp;from&nbsp;CSV&nbsp;database.</tt></dd></dl>
+ <dl><dt><a name="-get_users"><strong>get_users</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;users&nbsp;from&nbsp;CSV&nbsp;database.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['User', 'Group', 'add_user', 'add_group', 'get_users', 'UserError', 'GroupError', 'get_groups', 'get_apikey', 'delete_user', 'delete_group', 'change_user_password', 'create_default_databases']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021  Maurice Lambert...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = 'This package implements a web server to run scri...e functions to manage WebScript default databases'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>

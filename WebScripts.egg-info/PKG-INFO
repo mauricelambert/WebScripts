@@ -1,8 +1,7 @@
 Metadata-Version: 2.1
 Name: WebScripts
 Version: 0.0.1
-Summary: This package implements a web server to run scripts or 
-executables from the command line and display the result in a web interface.
+Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
 Author-email: mauricelambert434@gmail.com
@@ -24,6 +23,7 @@ Description: # WebScripts
          - pywin32 (to centralize logs in Event Viewer)
         
         ## Installation
+        
         ```bash
         pip install WebScripts
         ```
@@ -69,7 +69,7 @@ Description: # WebScripts
         config.add_conf(
             interface="", 
             port=8000, 
-            scripts_path = [
+                scripts_path = [
                 "./scripts/account",
                 "./scripts/passwords"
             ],
@@ -138,10 +138,10 @@ Description: # WebScripts
         ## Links
          - [Pypi](https://pypi.org/project/WebScripts)
          - [Github](https://github.com/mauricelambert/WebScripts)
-         - [Python executable](https://mauricelambert.github.io/python/code/WebScripts.pyz)
         
         ## License
         Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
+        
 Keywords: Server,Web,Scripts,SOC,Administration,DevOps,WebScripts
 Platform: Windows
 Platform: Linux
