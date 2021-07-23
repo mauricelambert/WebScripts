@@ -1,0 +1,72 @@
+{
+	"scripts": {
+		"log_viewer.py": "config_log_viewer",
+		"log_analysis.py": "config_log_analysis"
+	},
+
+	"config_log_analysis": {
+		"launcher": "python",
+		"category": "Security",
+		"minimum_access": 1000,
+		"content_type": "text/html",
+		"path": "./scripts/logs/log_analysis.py",
+		"description": "This file displays an HTML table for log and activity analysis.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_log_viewer": {
+		"launcher": "python",
+		"category": "Security",
+		"minimum_access": 1000,
+		"args": "args_log_viewer",
+		"path": "./scripts/logs/log_viewer.py",
+		"description": "This file can display the latest logs.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"args_log_viewer": {
+		"length": "arg_length",
+		"all": "arg_all",
+		"INFO": "arg_INFO",
+		"DEBUG": "arg_DEBUG",
+		"ERROR": "arg_ERROR",
+		"WARNING": "arg_WARNING",
+		"CRITICAL": "arg_CRITICAL"
+	},
+
+	"arg_length": {
+		"default_value": 10,
+		"html_type": "number",
+		"description": "Number of logs to print."
+	},
+
+	"arg_all": {
+		"html_type": "checkbox",
+		"description": "View the latest logs."
+	},
+
+	"arg_DEBUG": {
+		"html_type": "checkbox",
+		"description": "View the latest DEBUG logs."
+	},
+
+	"arg_INFO": {
+		"html_type": "checkbox",
+		"description": "View the latest INFO logs."
+	},
+
+	"arg_WARNING": {
+		"html_type": "checkbox",
+		"description": "View the latest WARNING logs."
+	},
+
+	"arg_ERROR": {
+		"html_type": "checkbox",
+		"description": "View the latest ERROR logs."
+	},
+
+	"arg_CRITICAL": {
+		"html_type": "checkbox",
+		"description": "View the latest CRITICAL logs."
+	}
+}

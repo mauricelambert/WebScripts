@@ -1,0 +1,150 @@
+/*
+
+    Style for WebScript pages.
+    Copyright (C) 2021  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+/*
+	* Color : 
+		#222222 : Gris foncé;
+		#333333 : Gris clair;
+
+		#ffc26a
+		#f0a83f
+		#dd8a12 rgb(221, 138, 18) : Orange;
+		#b16b05
+		#895100 : Orange foncé;
+
+		#DDAD12 : Jaune;
+		#896900 : Jaune foncé;
+
+		#27219a : Bleu;
+		#0F0B60 : Bleu foncé;
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body, html {
+	margin: 0%;
+	padding: 0%;
+	width: 100%;
+	height: 100%;
+	/*overflow: hidden;*/
+	font-family : Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	/*overflow-y:scroll;*/
+	background-color: #222222;
+}
+
+header, footer {
+	font-style: italic;
+	padding: 2%;
+}
+
+pre {
+	tab-size: 4;
+	background-color: black;
+  color: white;
+  font-family: "Courier", "Lucida Console", "Consolas", "sans-serif";
+  font-size: 100%;
+}
+
+a {
+	color: #895100;
+}
+
+.border {
+	color: #ffc26a;
+}
+
+.description {
+	font-style: italic;
+	font-size: 80%;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.center {
+	text-align: center;
+}
+
+#webscripts_content {
+	background-color: #333333;
+	color: #dd8a12;
+	padding: 2%;
+	width: 87%;
+	display: inline-block;
+	border: 1px solid #b16b05;
+	border-radius: 10px;
+}
+
+#webscripts_title {
+	font-size: 120%;
+}
+
+#webscripts_description {
+	font-size: 80%;
+}
+
+#webscripts_footer_list {
+	font-size: 80%;
+}
+
+#webscripts_border_left {
+	display: inline-block;
+	width: 4%;
+}
+
+#webscripts_border_right {
+	display: inline-block;
+	width: 4%;
+}
+
+#webscripts_header_image {
+}
+
+#webscripts_header_image_position {
+	float: right;
+	display: inline-block;
+}
+
+#webscripts_header_text_position {
+	display: inline-block;
+	width: 20%;
+}
+
+#prevent_no_javascript {
+	background-color: red;
+	padding: 2%;
+	margin: 3%;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+::-moz-selection { /* Code for Firefox */
+  color: #333333;
+  background: #f0a83f;
+}
+
+::selection {
+  color: #333333;
+  background: #f0a83f;
+}

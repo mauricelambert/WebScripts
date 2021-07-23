@@ -1,0 +1,50 @@
+{
+	"script": {
+		"timeout": 5,
+		"args": "arguments",
+		"category": "Tests",
+		"launcher": "python",
+		"path": "./scripts/py/test_config.py",
+		"description": "This script test your arguments and script configurations."
+	},
+
+	"arguments": {
+		"test_i": "test_i",
+		"select": "select",
+		"--timeout": "timeout",
+		"password": "password",
+		"select-input": "select-input"
+	},
+
+	"timeout": {
+		"html_type": "checkbox",
+		"description": "Test the process timeout."
+	},
+
+	"select": {
+		"example": "password",
+		"html_type": "password",
+		"description": "Test password.",
+		"default_value": "select",
+		"predefined_values": ["", "test", "select", "arguments"]
+	},
+
+	"password": {
+		"list": true,
+		"example": "password",
+		"html_type": "password",
+		"description": "Test password."
+	},
+
+	"test_i": {
+		"example": "input",
+		"input": true,
+		"description": "Test input."
+	},
+
+	"select-input": {
+		"list": true,
+		"input": true,
+		"predefined_values": ["", "test", "select", "arguments"]
+	}
+}

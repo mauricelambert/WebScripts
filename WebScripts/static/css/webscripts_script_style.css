@@ -1,0 +1,91 @@
+/*
+
+    Style for script.html
+    Copyright (C) 2021  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+input, select, button {
+	padding: 1%;
+	width: 100%;
+	background-color: #222222;
+	color: #dd8a12;
+	transition: 0.5s;
+	font-size: 100%;
+	border: 2px solid #f0a83f;
+	border-radius: 10px;
+	/* float:right; */
+}
+
+button {
+	border: 1px solid #f0a83f;
+}
+
+input:hover, select:hover, button:hover {
+	background-color: #333333;
+}
+
+code, pre {
+	padding: 0.3%;
+}
+
+table, tr, td {
+	padding: 1rem;
+	margin: 1%;
+}
+
+table {
+	border-spacing: 0.2rem;
+}
+
+td {
+	border: 1px solid #dd8a12;
+}
+
+.input_wrapper {
+	width: 60%;
+	margin: 1%;
+}
+
+.submit {
+	background-color: #f0a83f;
+	color: #895100;
+	border-color: #895100;
+	width: 100%;
+	padding: 2%;
+}
+
+.submit_position {
+	margin: 0 auto;
+	width: 30%;
+}
+
+.row {
+	width:100%;
+	display:block;
+}
+
+.script_presentation {
+	width: 17%;
+}
+
+#script_presentation {
+	margin: 1%;
+}
+
+#script_outputs {
+	margin-top: 1%;
+}

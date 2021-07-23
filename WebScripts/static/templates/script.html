@@ -1,0 +1,89 @@
+<!--
+
+    HTML page to launch scripts.
+    Copyright (C) 2021  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>%(name)s of WebScripts Server</title>
+		<link rel="shortcut icon" type="image/jpg" href="/static/webscripts_icon.jpg"/>
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_style.css">
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_script_style.css">
+		<script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
+		<script type="text/javascript" src="/js/webscripts_script_js_scripts.js"></script>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s'">
+	</head>
+
+	<body>
+		<div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div>
+		<header id="webscripts_header" class="header border">
+			<div id="webscripts_header_text_position">
+				<h1 id="webscripts_title" class="title header border">WebScripts Server</h1>
+
+				<p id="webscripts_description" class="paragraph header border">This server can help administrators, SOC teams (Security Operations Center) and devops teams to deploy faster some scripts, to share some "console scripts" with people who have no particular computer knowledge and share environnements of scripts with their teams without install requirements on all computers of the team.</p>
+			</div>
+
+			<div id="webscripts_header_image_position"><img id="webscripts_header_image" src="/static/webscripts_header.jpg"></div>
+		</header>
+
+		<div id="webscripts_border_left" class="border"></div>
+
+		<div id="webscripts_content">
+			<div id="script_presentation">
+				<h1 id="script_title">Script: %(name)s</h1>
+				<p class="description" id="script_description"></p><a href="/web/doc/%(name)s">Documentation</a>
+			</div>
+
+			<p>Welcome on script "%(name)s" user "%(user)s" !</p>
+
+			<div id="script_interface">
+				<div id="submit_row" class="row">
+					<input type="hidden" name="csrf_token" id="csrf_token" value="%(csrf)s">
+					<div class="submit_position">
+						<input id="submit_button" type="submit" class="submit" value="Start script execution">
+					</div>
+				</div>
+			</div>
+
+			<div  id="script_outputs">
+				
+			</div>
+		</div>
+
+		<div id="webscripts_border_right" class="border"></div>
+
+		<footer id="webscripts_footer" class="footer border">
+			<ul id="webscripts_footer_list" class="list footer border">
+				<li id="webscripts_footer_list_source" class="bullet_point footer border">Source code and contact is <a id="webscripts_link_source" href="https://github.com/mauricelambert/WebScripts">here (on my github)</a>.</li>
+				<li id="webscripts_footer_list_documentation" class="bullet_point footer border">Documentation is <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/index.html">here (on my github)</a>.</li>
+				<li id="webscripts_footer_list_wiki" class="bullet_point footer border">Wiki is <a id="webscripts_link_wiki" href="https://github.com/mauricelambert/WebScripts/wiki">here (on my github)</a>.</li>
+				<li id="webscripts_footer_list_wiki" class="bullet_point footer border">License: <a id="webscripts_link_wiki" href="https://www.gnu.org/licenses/">GPL-3.0 License</a>.</li>
+			</ul>
+		</footer>
+
+		<script type="text/javascript" nonce="%(nonce)s">
+			document.getElementById("submit_button").onclick=start_script_execution;
+			document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";
+			script_name="%(name)s";
+			get_scripts(build_script_interface);
+			add_buttons();
+		</script>
+	</body>
+</html>

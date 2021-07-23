@@ -1,0 +1,8 @@
+include *.md
+include *.txt
+include WebScripts/*.txt
+include WebScripts/doc/empty.html
+recursive-include WebScripts/scripts *.py
+recursive-include WebScripts/config *.ini *.json
+recursive-include WebScripts/static *.css *.js *.html
+prune WebScripts/logs
