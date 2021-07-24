@@ -4,20 +4,55 @@
 
 ### Linux
 ```bash
-python3 -m pip install --upgrade venv
+sudo apt-get install python3-venv
 python3 -m venv WebScripts
 cd WebScripts
 source bin/activate
 python3 -m pip install WebScripts
+mkdir logs
 ```
 
 ### Windows
 ```bash
-python -m pip install --upgrade venv
 python -m venv WebScripts
 cd WebScripts
 Scripts\activate
 python -m pip install WebScripts 
+```
+
+## Service
+
+### Linux
+```bash
+useradd --system --no-create-home --shell /bin/false WebScripts
+nano /lib/systemd/system/WebScripts.service
+```
+
+```text
+[Unit]
+Description=The WebScripts Service (python service using HTTP protocol to run scripts from API or web interface).
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/path/to/virtualenv/bin/python3 -m WebScripts
+Restart=always
+StandardInput=tty-force
+StandardOutput=inherit
+User=WebScripts
+UMask=077
+WorkingDirectory=/path/to/virtualenv/
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+chown -R WebScripts /path/to/virtualenv/
+sudo systemctl daemon-reload
+sudo systemctl start WebScripts
+sudo systemctl status WebScripts
 ```
 
 ## NGINX

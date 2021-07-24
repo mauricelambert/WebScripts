@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 0.0.1
+Version: 0.0.2
 Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -69,7 +69,7 @@ Description: # WebScripts
         config.add_conf(
             interface="", 
             port=8000, 
-                scripts_path = [
+            scripts_path = [
                 "./scripts/account",
                 "./scripts/passwords"
             ],
@@ -133,7 +133,7 @@ Description: # WebScripts
          - [commons](https://mauricelambert.github.io/info/python/code/WebScripts/commons.html)
          - [utils](https://mauricelambert.github.io/info/python/code/WebScripts/utils.html)
          - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
-         - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.py.html)
+         - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
         
         ## Links
          - [Pypi](https://pypi.org/project/WebScripts)

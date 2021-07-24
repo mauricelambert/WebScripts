@@ -30,8 +30,8 @@ the Server class and the Configuration class)."""
 from types import SimpleNamespace, ModuleType, FunctionType
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
+from os import environ, path, _Environ, getcwd
 from typing import TypeVar, Tuple, List, Dict
-from os import path, _Environ, getcwd
 from wsgiref import simple_server
 from base64 import b64decode
 from glob import iglob
@@ -39,6 +39,7 @@ import traceback
 import logging
 import json
 import sys
+
 
 if __package__:
     from .Pages import (
@@ -51,6 +52,7 @@ if __package__:
         JsonValue,
         DefaultNamespace,
         get_ini_dict,
+        lib_directory as server_path,
         log_trace,
         get_ip,
         Logs,
@@ -70,6 +72,7 @@ else:
         JsonValue,
         DefaultNamespace,
         get_ini_dict,
+        lib_directory as server_path,
         log_trace,
         get_ip,
         Logs,
@@ -79,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -957,10 +960,22 @@ def add_configuration(
     return configuration
 
 
-@log_trace
 def main() -> None:
 
     """Main function to launch server, get configuration and logs."""
+
+    logging.config.fileConfig(
+        path.join(server_path, "config", "loggers.ini"),
+        disable_existing_loggers=False,
+    )
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
+        datefmt="%d/%m/%Y %H:%M:%S",
+        encoding="utf-8",
+        level=0,
+        filename="./logs/root.logs",
+        force=True,
+    )
 
     args = parse_args()
 
@@ -995,6 +1010,8 @@ def main() -> None:
     except KeyboardInterrupt:
         Logs.critical("Server is down.")
         httpd.server_close()
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":

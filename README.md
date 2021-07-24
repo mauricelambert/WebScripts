@@ -58,7 +58,7 @@ config = Configuration()
 config.add_conf(
     interface="", 
     port=8000, 
-        scripts_path = [
+    scripts_path = [
         "./scripts/account",
         "./scripts/passwords"
     ],
@@ -122,7 +122,7 @@ httpd.serve_forever()
  - [commons](https://mauricelambert.github.io/info/python/code/WebScripts/commons.html)
  - [utils](https://mauricelambert.github.io/info/python/code/WebScripts/utils.html)
  - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
- - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.py.html)
+ - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
 
 ## Links
  - [Pypi](https://pypi.org/project/WebScripts)

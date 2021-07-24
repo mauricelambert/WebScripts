@@ -77,7 +77,7 @@ if __package__:
     from .utils import (
         DefaultNamespace,
         get_ini_dict,
-        server_path,
+        server_path as lib_directory,
         log_trace,
         get_ip,
         Logs,
@@ -92,7 +92,7 @@ else:
     from utils import (
         DefaultNamespace,
         get_ini_dict,
-        server_path,
+        server_path as lib_directory,
         log_trace,
         get_ip,
         Logs,
@@ -253,7 +253,6 @@ class ScriptConfig(DefaultNamespace):
             server_configuration, server_configuration
         )
 
-        lib_directory = path.dirname(__file__)
         current_directory = getcwd()
 
         json_scripts_config = getattr(server_configuration, "json_scripts_config", [])
@@ -407,7 +406,6 @@ class ScriptConfig(DefaultNamespace):
 
         """This function return a script path from configuration."""
 
-        lib_directory = path.dirname(__file__)
         current_directory = getcwd()
 
         for dirname in (lib_directory, current_directory):
@@ -536,7 +534,6 @@ class ScriptConfig(DefaultNamespace):
     def get_docfile_from_configuration(
         configuration: ServerConfiguration, filename: str
     ) -> str:
-        lib_directory = path.dirname(__file__)
         current_directory = getcwd()
 
         for dirname in (lib_directory, current_directory):

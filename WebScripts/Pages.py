@@ -45,6 +45,7 @@ try:
         ServerConfiguration,
         DefaultNamespace,
         get_ini_dict,
+        lib_directory,
         log_trace,
         get_ip,
         Logs,
@@ -66,6 +67,7 @@ except ImportError:
         ServerConfiguration,
         DefaultNamespace,
         get_ini_dict,
+        lib_directory,
         log_trace,
         get_ip,
         Logs,
@@ -75,7 +77,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -138,7 +140,7 @@ def execute_scripts(
 
     try:
         stdout, stderr = process.communicate(
-            input="\n".join(inputs).encode(),
+            input="\n".join(inputs).encode("latin-1"),
             timeout=script.timeout,
         )
     except TimeoutExpired:

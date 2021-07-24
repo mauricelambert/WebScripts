@@ -4,5 +4,5 @@ include WebScripts/*.txt
 include WebScripts/doc/empty.html
 recursive-include WebScripts/scripts *.py
 recursive-include WebScripts/config *.ini *.json
-recursive-include WebScripts/static *.css *.js *.html
+recursive-include WebScripts/static *.css *.js *.html *.jpg
 prune WebScripts/logs

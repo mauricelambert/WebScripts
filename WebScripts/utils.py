@@ -30,7 +30,7 @@ and scripts (Logs, Namespace for configuration, ...)."""
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
 from configparser import ConfigParser
-from os import path, system
+from os import path, system, environ
 from functools import wraps
 from logging import Logger
 from os import _Environ
@@ -56,7 +56,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -587,14 +587,23 @@ def get_real_path(file_path: str) -> str:
     if file_path is None:
         return file_path
 
+    if platform.system() == "Windows":
+        length = 2
+        index = 1
+        character = ":"
+    else:
+        length = 1
+        index = 0
+        character = "/"
+
     file_path = path.normcase(file_path)
     server_file_path = path.join(server_path, file_path)
 
     if path.isfile(file_path):
         return file_path
     elif (
-        len(file_path) > 2
-        and not (file_path[1] == "/" or file_path[2] == ":")
+        len(file_path) > length
+        and file_path[index] != character
         and path.isfile(server_file_path)
     ):
         return server_file_path
@@ -606,16 +615,3 @@ server_path = path.dirname(__file__)
 
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
-
-logging.config.fileConfig(
-    path.join(server_path, "config", "loggers.ini"),
-    disable_existing_loggers=False,
-)
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
-    datefmt="%d/%m/%Y %H:%M:%S",
-    encoding="utf-8",
-    level=0,
-    filename="./logs/root.logs",
-    force=True,
-)
