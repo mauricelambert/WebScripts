@@ -6,6 +6,7 @@
  - `data/groups.csv`: Groups database for permissions and access
  - `data/passwords.csv`: temp passswords share
  - `data/id`: the last ID for temp passwords share
+ - `data/uploads.csv`: versions and actions of uploaded files
 
 Delimiter is `,` and quote is `"`.
 
@@ -38,6 +39,21 @@ The passwords database columns:
  6. ID: The unique ID of the password
 
 Passwords are automatically deleted when they expire.
+
+## Uploads
+
+The uploads database columns:
+ 1. ID: the action ID (an auto-incremented integer)
+ 2. name: the name of the file
+ 3. read_permission: permission required to read this file
+ 4. write_permission: permission required to write this file
+ 5. delete_permission: permission required to delete this file
+ 6. hidden: hide file (only admin can see the file), you can read, write and delete the file if you know the name
+ 7. is_deleted: status ("deleted" or "exist") (administrators can see deleted files)
+ 8. is_binary: state ("binary" or "text")
+ 9. timestamp: time of this action (a float)
+ 10. user: the "owner" of the file (the user of this action)
+ 11. version: the version of the file
 
 ## Default database
 

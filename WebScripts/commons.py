@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -509,13 +509,14 @@ class ScriptConfig(DefaultNamespace):
         json_api = self.get_dict()
 
         for key in (
-            "documentation_file",
             "command_generate_documentation",
+            "documentation_file",
             "minimum_access",
             "access_groups",
             "access_users",
             "launcher",
             "timeout",
+            "secrets",
             "dirname",
             "path",
         ):
@@ -820,7 +821,7 @@ class TokenCSRF:
                 to_delete.append(token)
 
         for key in to_delete:
-            del user.csrf[token]
+            del user.csrf[key]
 
 
 class Session:

@@ -1,0 +1,154 @@
+{
+	"scripts": {
+		"get_file.py": "config_get_file",
+		"get_files.py": "config_get_files",
+		"delete_file.py": "config_delete_file",
+		"get_history.py": "config_get_history",
+		"upload_file.py": "config_upload_file",
+		"api_get_files.py": "config_api_get_files",
+		"get_all_files.py": "config_get_all_files",
+		"api_get_history.py": "config_api_get_history",
+		"api_get_all_files.py": "config_api_get_all_files"
+	},
+
+	"config_get_file": {
+		"launcher": "python",
+		"category": "Upload",
+		"minimum_access": 50,
+		"args": "args_get_file",
+        "content_type": "text/html",
+		"description": "This script returns a download link for a file.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+	
+	"args_get_file": {
+		"filename": "arg_filename"
+	},
+
+    "config_get_files": {
+        "launcher": "python",
+        "category": "Upload",
+		"minimum_access": 50,
+        "content_type": "text/html",
+        "description": "This script returns a HTML table of uploaded files.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+    },
+
+    "arg_filename": {
+        "example": "LICENSE.txt",
+        "description": "The filename of the uploaded file."
+    },
+
+	"config_delete_file": {
+		"launcher": "python",
+        "category": "Upload",
+        "minimum_access": 50,
+		"args": "args_get_file",
+		"description": "This script delete an uploaded file.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+
+	},
+
+	"arg_read_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to read this file."
+	},
+
+	"arg_write_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to write this file."
+	},
+
+	"arg_delete_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to delete this file."
+	},
+
+	"arg_hidden": {
+		"html_type": "checkbox",
+		"description": "Hide the uploaded file (not visible in the Web Interface)."
+	},
+
+	"arg_binary": {
+		"html_type": "checkbox",
+		"description": "The uploaded file is binary file (not human readable)."
+	},
+
+	"arg_is_b64": {
+		"html_type": "checkbox",
+		"description": "Using base64 to upload the file."
+	},
+
+	"arg_content": {
+		"input": true,
+		"description": "Content of the uploaded file.",
+		"example": "Data, base64 or text of this file."
+	},
+
+	"config_get_history": {
+		"launcher": "python",
+        "category": "Upload",
+		"args": "args_get_file",
+        "access_groups": [1000],
+        "content_type": "text/html",
+		"description": "This script list all versions for an uploaded file.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_upload_file": {
+		"launcher": "python",
+        "category": "Upload",
+        "minimum_access": 50,
+		"args": "args_upload_file",
+		"description": "This script uploads a file on the WebScripts Server.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"args_upload_file": {
+		"name": "arg_filename",
+		"content": "arg_content",
+		"--read-permission": "arg_read_permission",
+		"--write-permission": "arg_write_permission",
+		"--delete-permission": "arg_delete_permission",
+		"--hidden": "arg_hidden",
+		"--binary": "arg_binary",
+		"--is-b64": "arg_is_b64"
+	},
+
+	"config_api_get_files": {
+		"launcher": "python",
+        "category": "Upload",
+        "minimum_access": 50,
+		"description": "This script returns a JSON object of uploaded files.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_get_all_files": {
+		"launcher": "python",
+        "category": "Upload",
+        "access_groups": [1000],
+        "content_type": "text/html",
+		"description": "This script returns a HTML table of all uploaded files.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_api_get_history": {
+		"launcher": "python",
+        "category": "Upload",
+        "access_groups": [1000],
+		"args": "args_get_file",
+		"description": "This script list all groups to get IDs, access level and names.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_api_get_all_files": {
+		"launcher": "python",
+        "category": "Upload",
+        "access_groups": [1000],
+		"description": "This script list all versions for an uploaded file.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	}
+}

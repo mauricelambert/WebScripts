@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints groups in a HTML table
+#    This file prints users in JSON objects
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 executables from the command line and display the result 
 in a web interface.
 
-This file prints groups in a HTML table."""
+This file prints users in JSON objects."""
 
 __version__ = "0.0.1"
 __author__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
 executables from the command line and display the result in a web interface.
 
-This file prints groups in a HTML table."""
+This file prints users in JSON objects."""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,8 +48,9 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import get_groups
+from modules.manage_defaults_databases import get_users
 from argparse import ArgumentParser, Namespace
+import json
 import sys
 
 
@@ -61,14 +62,14 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--ids",
         "-i",
-        help="List of group IDs to display them only.",
+        help="List of user IDs to display them only.",
         nargs="+",
         default=[],
     )
     parser.add_argument(
         "--names",
         "-n",
-        help="List of group names to display them only.",
+        help="List of user names to display them only.",
         nargs="+",
         default=[],
     )
@@ -77,7 +78,7 @@ def parse_args() -> Namespace:
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """Main function to print users using default manager for user database."""
 
     arguments = parse_args()
 
@@ -86,17 +87,17 @@ def main() -> None:
             print(f'ERROR: ids must be integer. "{value}" is not digits.')
             sys.exit(3)
 
-    print("<table>")
+    users = []
 
-    for group in get_groups():
+    for user in get_users():
         if (
             (len(arguments.ids) == 0 and len(arguments.names) == 0)
-            or (arguments.ids and group.ID in arguments.ids)
-            or (arguments.names and group.name in arguments.names)
+            or (arguments.ids and user.ID in arguments.ids)
+            or (arguments.names and user.name in arguments.names)
         ):
-            print(f"<tr><td>{group.ID}</td><td>{group.name}</td></tr>")
+            users.append(user._asdict())
 
-    print("</table>")
+    print(json.dumps(users, indent=4))
 
 
 if __name__ == "__main__":

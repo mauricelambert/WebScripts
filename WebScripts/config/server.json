@@ -10,7 +10,7 @@
         "active_auth": true,
         "auth_script": "auth.py",
 
-        "scripts_path": ["./scripts/account", "./scripts/passwords"],
+        "scripts_path": ["./scripts/account", "./scripts/passwords", "./scripts/uploads"],
         "json_scripts_config": ["./config/scripts/*.json"],
         "ini_scripts_config": ["./config/scripts/*.ini"],
         "documentations_path": ["./doc/*.html"],

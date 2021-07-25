@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints groups in a HTML table
+#    This file uploads a file on a WebScripts Server
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 executables from the command line and display the result 
 in a web interface.
 
-This file prints groups in a HTML table."""
+This file uploads a file on a WebScripts Server."""
 
 __version__ = "0.0.1"
 __author__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
 executables from the command line and display the result in a web interface.
 
-This file prints groups in a HTML table."""
+This file uploads a file on a WebScripts Server"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,56 +48,45 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import get_groups
+from modules.uploads_management import write_file, get_user
 from argparse import ArgumentParser, Namespace
 import sys
-
 
 def parse_args() -> Namespace:
 
     """This function parse command line arguments."""
 
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--ids",
-        "-i",
-        help="List of group IDs to display them only.",
-        nargs="+",
-        default=[],
-    )
-    parser.add_argument(
-        "--names",
-        "-n",
-        help="List of group names to display them only.",
-        nargs="+",
-        default=[],
-    )
-    return parser.parse_args()
+    owner = get_user()
+    groupID = max(owner["groups"])
 
+    parser = ArgumentParser()
+    parser.add_argument('name', help="The filename of uploaded file.")
+    parser.add_argument("--read-permission", "-r", help="Minimum Group ID to read the file", type=int, default=groupID)
+    parser.add_argument("--write-permission", "-w", help="Minimum Group ID to write the file", type=int, default=groupID)
+    parser.add_argument("--delete-permission", "-d", help="Minimum Group ID to delete the file", type=int, default=groupID)
+    parser.add_argument("--hidden", "-H", help="Hidden file (unlisted in Web Interface)", action="store_true", default=False)
+    parser.add_argument("--binary", "-b", help="Upload a binary file (ZIP, executable...)", action="store_true", default=False)
+    parser.add_argument("--is-b64", "-i", help="Using base64 to upload the file", action="store_true", default=False)
+    return parser.parse_args()
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """This function uploads a file on a WebScripts Server."""
 
     arguments = parse_args()
 
-    for i, value in enumerate(arguments.ids):
-        if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
-            sys.exit(3)
+    try:
+        upload = write_file(sys.stdin.read(), *arguments.__dict__.values())
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}")
+        sys.exit(127)
 
-    print("<table>")
-
-    for group in get_groups():
-        if (
-            (len(arguments.ids) == 0 and len(arguments.names) == 0)
-            or (arguments.ids and group.ID in arguments.ids)
-            or (arguments.names and group.name in arguments.names)
-        ):
-            print(f"<tr><td>{group.ID}</td><td>{group.name}</td></tr>")
-
-    print("</table>")
-
+    print(
+        f"UPLOADED FILE:\n\t - Name: {upload.name}"
+        f"\n\t - Permissions: r={upload.read_permission};"
+        f"w={upload.write_permission};d={upload.delete_permission};"
+        f"\n\t - {upload.hidden}"
+    )
 
 if __name__ == "__main__":
     main()

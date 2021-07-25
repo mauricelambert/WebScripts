@@ -54,8 +54,9 @@ Some files and directories must be protected by the system, to avoid **privilege
 
 Files and directories that need protection:
  - `data/`: encrypted or hashed passwords are stored here, user permissions are also set here
- - `config/`: server configurations (with security configurations), script configurations (with command to generate documentation) and loggers configurations (`logging.config.fileConfig` use `eval` function)
+ - `config/`: contains: server configurations (with security configurations), script configurations (with command to generate documentation) and loggers configurations (`logging.config.fileConfig` use `eval` function)
  - `logs/`: logs contains informations about configurations
+ - `scripts/`: contains default scripts (admin scripts), scripts are executed by *system user* (or *service user*) and with their rights.
 
 ### Delete files
 

@@ -164,6 +164,7 @@ minimum_access=1050
 
 You can add your custom configurations and get it in your script.
 Be careful with custom configurations as they are sent to the `/api/` URL.
+The `secrets` custom configuration is not sent in `/api/`.
 
 ### Example
 
@@ -178,7 +179,10 @@ The configuration:
 
 	"config_example": {
 		"description": "Python executable file for the example configuration",
-		"key": "azerty"
+		"secrets": {
+			"key": "azerty"
+		},
+		"web_interface_color": "orange"
     }
 }
 ```
@@ -190,5 +194,7 @@ The python script:
 
 from os import environ
 from json import loads
-key = loads(environ["SCRIPT_CONFIG"]).get("key")
+config = loads(environ["SCRIPT_CONFIG"])
+key = config["secrets"].get("key")
+web_interface_color = config.get("web_interface_color")
 ```

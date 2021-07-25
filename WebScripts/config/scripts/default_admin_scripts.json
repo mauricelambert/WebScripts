@@ -7,6 +7,8 @@
 		"view_groups.py": "config_view_groups",
 		"delete_user.py": "config_delete_user",
 		"delete_group.py": "config_delete_group",
+		"api_view_users.py": "config_api_view_users",
+		"api_view_groups.py": "config_api_view_groups",
         "change_user_password.py": "config_change_user_password"
 	},
 
@@ -108,6 +110,16 @@
         "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
+	"config_api_view_users": {
+		"launcher": "python",
+		"access_groups": [1000],
+		"args": "view_users_args",
+		"content_type": "text/plain",
+		"category": "Administration",
+		"description": "This script list all users to get names, IDs and groups (access level).",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
 	"view_users_args": {
 		"--ids": "arg_ids",
 		"--names": "arg_names"
@@ -177,6 +189,16 @@
 		"access_groups": [1000],
 		"args": "view_groups_args",
 		"content_type": "text/html",
+		"category": "Administration",
+		"description": "This script list all groups to get IDs, access level and names.",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_api_view_groups": {
+		"launcher": "python",
+		"access_groups": [1000],
+		"args": "view_groups_args",
+		"content_type": "text/plain",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
         "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""

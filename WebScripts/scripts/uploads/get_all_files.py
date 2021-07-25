@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints groups in a HTML table
+#    This file prints a HTML table of uploaded files
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 executables from the command line and display the result 
 in a web interface.
 
-This file prints groups in a HTML table."""
+This file prints a HTML table of uploaded files."""
 
 __version__ = "0.0.1"
 __author__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
 executables from the command line and display the result in a web interface.
 
-This file prints groups in a HTML table."""
+This file prints a HTML table of uploaded files"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,56 +48,38 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import get_groups
-from argparse import ArgumentParser, Namespace
+from modules.uploads_management import get_files
 import sys
-
-
-def parse_args() -> Namespace:
-
-    """This function parse command line arguments."""
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--ids",
-        "-i",
-        help="List of group IDs to display them only.",
-        nargs="+",
-        default=[],
-    )
-    parser.add_argument(
-        "--names",
-        "-n",
-        help="List of group names to display them only.",
-        nargs="+",
-        default=[],
-    )
-    return parser.parse_args()
-
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """Print the HTML table of uploaded files."""
 
-    arguments = parse_args()
+    fields = [
+        "name",
+        "read_permission",
+        "write_permission",
+        "delete_permission",
+        "user",
+    ]
+    print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
 
-    for i, value in enumerate(arguments.ids):
-        if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
-            sys.exit(3)
+    try:
+        files = {file.name:{field: getattr(file, field) for field in fields} for file in get_files()}
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}")
+        sys.exit(127)
 
-    print("<table>")
-
-    for group in get_groups():
-        if (
-            (len(arguments.ids) == 0 and len(arguments.names) == 0)
-            or (arguments.ids and group.ID in arguments.ids)
-            or (arguments.names and group.name in arguments.names)
-        ):
-            print(f"<tr><td>{group.ID}</td><td>{group.name}</td></tr>")
+    for file in files.values():
+        print(
+            f"<tr><td>{file['name']}</td>"
+            f"<td>{file['read_permission']}</td>"
+            f"<td>{file['write_permission']}</td>"
+            f"<td>{file['delete_permission']}</td>"
+            f"<td>{file['user']}</td></tr>"
+        )
 
     print("</table>")
-
 
 if __name__ == "__main__":
     main()

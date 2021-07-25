@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints groups in a HTML table
+#    This file deletes an uploaded file on a WebScripts Server
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 executables from the command line and display the result 
 in a web interface.
 
-This file prints groups in a HTML table."""
+This file deletes an uploaded file on a WebScripts Server."""
 
 __version__ = "0.0.1"
 __author__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
 executables from the command line and display the result in a web interface.
 
-This file prints groups in a HTML table."""
+This file deletes an uploaded file on a WebScripts Server"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,56 +48,26 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import get_groups
-from argparse import ArgumentParser, Namespace
+from modules.uploads_management import delete_file
 import sys
-
-
-def parse_args() -> Namespace:
-
-    """This function parse command line arguments."""
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--ids",
-        "-i",
-        help="List of group IDs to display them only.",
-        nargs="+",
-        default=[],
-    )
-    parser.add_argument(
-        "--names",
-        "-n",
-        help="List of group names to display them only.",
-        nargs="+",
-        default=[],
-    )
-    return parser.parse_args()
-
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """This function uploads a file on a WebScripts Server."""
 
-    arguments = parse_args()
+    if len(sys.argv) != 2:
+        print("USAGE: delete_file.py [FILENAME required string]")
+        sys.exit(1)
 
-    for i, value in enumerate(arguments.ids):
-        if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
-            sys.exit(3)
+    filename = sys.argv[1]
 
-    print("<table>")
+    try:
+        upload = delete_file(filename)
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}")
+        sys.exit(127)
 
-    for group in get_groups():
-        if (
-            (len(arguments.ids) == 0 and len(arguments.names) == 0)
-            or (arguments.ids and group.ID in arguments.ids)
-            or (arguments.names and group.name in arguments.names)
-        ):
-            print(f"<tr><td>{group.ID}</td><td>{group.name}</td></tr>")
-
-    print("</table>")
-
+    print(f"Deleted file:\n\t - Name: {upload.name}")
 
 if __name__ == "__main__":
     main()

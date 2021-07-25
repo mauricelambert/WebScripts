@@ -91,6 +91,10 @@ httpd = simple_server.make_server(server.interface, server.port, server.app)
 httpd.serve_forever()
 ```
 
+## Default Configurations
+
+On Linux the default configurations **may not work**, replace all *script launchers* with `python3` (default is `python`).
+
 ## Documentation
 
 ### Wiki
