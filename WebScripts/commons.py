@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -516,11 +516,13 @@ class ScriptConfig(DefaultNamespace):
             "access_users",
             "launcher",
             "timeout",
-            "secrets",
             "dirname",
             "path",
         ):
             del json_api[key]
+
+        if "secrets" in json_api.keys():
+            del json_api["secrets"]
 
         arguments = json_api.pop("args")
         json_api["args"] = []
