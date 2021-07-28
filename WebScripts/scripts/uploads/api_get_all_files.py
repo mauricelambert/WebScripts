@@ -52,6 +52,7 @@ from modules.uploads_management import get_files
 import json
 import sys
 
+
 def main() -> None:
 
     """Print the JSON object of uploaded files."""
@@ -65,12 +66,16 @@ def main() -> None:
     ]
 
     try:
-        files = {file.name:{field: getattr(file, field) for field in fields} for file in get_files()}
+        files = {
+            file.name: {field: getattr(file, field) for field in fields}
+            for file in get_files()
+        }
     except Exception as e:
         print(f"{e.__class__.__name__}: {e}")
         sys.exit(127)
 
     print(json.dumps(files, indent=4))
+
 
 if __name__ == "__main__":
     main()

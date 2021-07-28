@@ -49,13 +49,13 @@ function build_categories (scripts) {
 			</div>
 			`
 		} else if (script.category !== undefined && categories[script.category] !== undefined) {
-			console.log(categories[script.category]);
 			categories[script.category] = categories[script.category].replace("<!---->", script_string + "<!---->");
-			console.log(categories[script.category]);
 		}
 	}
 
 	for (let i in categories) {
 		content.innerHTML += categories[i];
 	}
+
+	add_button();
 }

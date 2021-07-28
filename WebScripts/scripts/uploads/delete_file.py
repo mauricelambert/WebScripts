@@ -51,6 +51,7 @@ __all__ = []
 from modules.uploads_management import delete_file
 import sys
 
+
 def main() -> None:
 
     """This function uploads a file on a WebScripts Server."""
@@ -68,6 +69,7 @@ def main() -> None:
         sys.exit(127)
 
     print(f"Deleted file:\n\t - Name: {upload.name}")
+
 
 if __name__ == "__main__":
     main()

@@ -1,20 +1,20 @@
 /*
 
-    Scripts for script.html
-    Copyright (C) 2021  Maurice Lambert
+		Scripts for script.html
+		Copyright (C) 2021	Maurice Lambert
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+		GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+		You should have received a copy of the GNU General Public License
+		along with this program.	If not, see <https://www.gnu.org/licenses/>.
 
 */
 
@@ -25,6 +25,8 @@ let download_text="";
 let download_type="plain"
 let download_separator="\n";
 let execution_number = 0;
+let progress = true;
+let is_running = false;
 
 function build_script_interface (scripts) {
 	script = scripts[script_name];
@@ -48,7 +50,7 @@ function add_arguments (script) {
 	let script_interface = document.getElementById("script_interface");
 	let input_wrapper;
 
-	for (let i in script.args) {
+	for (let i=0; i < script.args.length; ++i) {
 		arg=script.args[i];
 		input_wrapper = document.createElement("div");
 		input_wrapper.classList.add("input_wrapper");
@@ -63,7 +65,7 @@ function add_arguments (script) {
 
 		label = document.createElement("label");
 		label.htmlFor = argument.name;
-		label.innerText = argument.name + ":";
+		label.innerText = argument.name + " :";
 		label.classList.add("inline");
 		label.classList.add("script_presentation");
 
@@ -86,6 +88,9 @@ function add_arguments (script) {
 
 		script_interface.insertBefore(div, submit_row);
 	}
+
+	add_button();
+	url_default_values();
 }
 
 function start_script_execution (event) {
@@ -118,7 +123,7 @@ function get_arguments () {
 	for (let i=0; i < selects.length; ++i) {
 		select = selects[i];
 
-		for (let l in select.options) {
+		for (let l=0; l < select.options.length; ++l) {
 			option = select.options[l];
 
 			if (option.selected) {
@@ -143,7 +148,7 @@ function add_value_for_request(arguments_, name, value) {
 		arguments_[name] = {"value": value};
 
 		let arg;
-		for (let i in script.args) {
+		for (let i=0; i < script.args.length; ++i) {
 			arg=script.args[i];
 
 			if (arg.name !== name) {
@@ -174,6 +179,7 @@ function make_json_request (arguments_) {
 }
 
 function send_request (json) {
+
 	let xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = () => {
 		if (xhttp.readyState === 4 && xhttp.status === 200) {
@@ -185,6 +191,8 @@ function send_request (json) {
 		} else if (xhttp.readyState === 4 && xhttp.status === 302 && script_name === "/auth/") {
 			window.location = new URL("/web/", window.location);
 		}
+
+		is_running = false;
 	}
 
 	let url;
@@ -197,11 +205,15 @@ function send_request (json) {
 	xhttp.open("POST", url, true);
 	xhttp.setRequestHeader('Content-Type', 'application/json');
 	xhttp.send(json);
+
+	is_running = true;
+	progress_bar();
 }
 
 function build_output_interface (output, add_history_=true) {
 	let console_div = document.getElementById("script_outputs");
 	let content_type = output["Content-Type"];
+	let new_output = document.createElement("div");
 
 	if (add_history_) {
 		add_history(
@@ -222,13 +234,13 @@ function build_output_interface (output, add_history_=true) {
 	code.innerText = `>>> ${script_name}\tExitCode: ${output.code}\tError: ${output.error}`;
 
 	console_.appendChild(code);
-	console_div.appendChild(console_);
+	new_output.appendChild(console_);
 
 	if (content_type.includes("text/html")) {
 		download_extension = ".html";
 		download_separator = "\n<br>\n";
 		download_type = "html";
-		console_div.innerHTML += `${output.stdout}${output.stderr}`;
+		new_output.innerHTML += `${output.stdout}${output.stderr}`;
 	} else {
 		download_extension = ".txt";
 		download_separator = "\n";
@@ -236,7 +248,14 @@ function build_output_interface (output, add_history_=true) {
 		code.innerText += `\n${output.stdout}${output.stderr}\n`;
 	}
 
+	console_div.appendChild(new_output);
 	download_text += `${output.stdout}${output.stderr}${download_separator}`;
+
+	if (localStorage.getItem('theme') === "light") {
+		light_mode(class_name='light', element=new_output);
+	} else if (localStorage.getItem('theme') === null) {
+		light_mode(class_name='default_theme', element=new_output);
+	}
 }
 
 function add_history (value, code, error, content_type) {
@@ -255,11 +274,18 @@ function add_history (value, code, error, content_type) {
 	button.innerText=execution_number;
 	execution_number++;
 	document.getElementById("webscripts_border_right").appendChild(button);
+
+	if (localStorage.getItem('theme') === "light") {
+		button.classList.toggle("light");
+	} else if (localStorage.getItem('theme') === null) {
+		button.classList.toggle("default_theme");
+	}
 }
 
 function add_argument_select (argument) {
 	let option;
 	let select = document.createElement("select");
+	select.id = argument.name;
 	select.name = argument.name;
 
 	if (argument.list) {
@@ -270,7 +296,7 @@ function add_argument_select (argument) {
 		select.value = argument.default_value;
 	}
 
-	for (let i in argument.predefined_values) {
+	for (let i=0; i < argument.predefined_values.length; ++i) {
 		option = document.createElement("option");
 		option.innerText = argument.predefined_values[i];
 		option.value = argument.predefined_values[i];
@@ -283,6 +309,7 @@ function add_argument_select (argument) {
 
 function get_input (arg) {
 	let input = document.createElement("input");
+	input.id = arg.name;
 	input.name = arg.name;
 	input.type = arg.html_type;
 
@@ -334,13 +361,13 @@ function index_page () {
 }
 
 function download() {
-    let download_link = document.createElement('a');
-    download_link.setAttribute('href', `data:text/${download_type};charset=utf-8,` + encodeURIComponent(download_text));
-    download_link.setAttribute('download', `result_${script_name}` + download_extension);
+		let download_link = document.createElement('a');
+		download_link.setAttribute('href', `data:text/${download_type};charset=utf-8,` + encodeURIComponent(download_text));
+		download_link.setAttribute('download', `result_${script_name}` + download_extension);
 
-    document.body.appendChild(download_link);
-    download_link.click();
-    document.body.removeChild(download_link);
+		document.body.appendChild(download_link);
+		download_link.click();
+		document.body.removeChild(download_link);
 }
 
 function add_buttons () {
@@ -375,4 +402,51 @@ function add_buttons () {
 	border_left.appendChild(console_button);
 	border_left.appendChild(history_button);
 	border_left.appendChild(download_button);
+}
+
+function progress_bar () {
+	if (progress) {
+		progress = false;
+
+		function running () {
+			if (width >= 100) {
+				clearInterval(interval);
+				progress = true;
+
+				if (is_running) {
+					progress_bar();
+				} else {
+					bar.style.textAlign = "center";
+					bar.innerText = "Completed.";
+				}
+			} else {
+				width++;
+				bar.style.width = width + "%";
+			}
+		}
+
+		let bar = document.getElementById("bar");
+		let width = 1;
+		bar.innerText = "Script is running...";
+		bar.style.textAlign = "left";
+		bar.style.padding = "1%";
+		let interval = setInterval(running, 10);
+	}
+}
+
+function url_default_values () {
+	let event;
+	let element;
+	let query = location.search;
+	query = query.substr(1);
+	query.split("&").forEach(function(part) {
+		let item = part.split("=");
+
+		element = document.getElementById(decodeURIComponent(item[0]));
+		if (element) {
+			element.value = decodeURIComponent(item[1]);
+			event = new Event('change');
+			element.dispatchEvent(event);
+		}
+	});
 }

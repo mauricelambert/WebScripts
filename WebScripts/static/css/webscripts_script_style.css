@@ -89,3 +89,15 @@ td {
 #script_outputs {
 	margin-top: 1%;
 }
+
+#progress_bar {
+	margin-top: 1%;
+	width: 100%;
+}
+
+#bar {
+	width: 0%;
+	background-color: #895100;
+	color: #ffc26a;
+	border-radius: 5px;
+}

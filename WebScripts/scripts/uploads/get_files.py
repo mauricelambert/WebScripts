@@ -51,6 +51,7 @@ __all__ = []
 from modules.uploads_management import get_visible_files
 import sys
 
+
 def main() -> None:
 
     """Print the HTML table of uploaded files."""
@@ -80,6 +81,7 @@ def main() -> None:
         )
 
     print("</table>")
+
 
 if __name__ == "__main__":
     main()

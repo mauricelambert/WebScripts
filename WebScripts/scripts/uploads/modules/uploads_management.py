@@ -48,7 +48,6 @@ __copyright__ = copyright
 
 __all__ = [
     "Upload",
-    "add_file",
     "read_file",
     "write_file",
     "delete_file",
@@ -62,24 +61,22 @@ from typing import Tuple, List, TypeVar
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
 from os import environ, path, chdir
-from fnmatch import fnmatch
-from hashlib import md5
 import json
 import csv
 
 Upload = namedtuple(
     "Upload",
     [
-        "ID", 
-        "name", 
-        "read_permission", 
-        "write_permission", 
-        "delete_permission", 
-        "hidden", 
+        "ID",
+        "name",
+        "read_permission",
+        "write_permission",
+        "delete_permission",
+        "hidden",
         "is_deleted",
-        "is_binary", 
-        "timestamp", 
-        "user", 
+        "is_binary",
+        "timestamp",
+        "user",
         "version",
     ],
 )
@@ -88,6 +85,7 @@ DIRECTORY = "data"
 FILES_DIRECTORY = "uploads"
 User = TypeVar("User")
 Data = TypeVar("Data", str, bytes)
+
 
 def get_files() -> Iterator[Upload]:
 
@@ -98,6 +96,7 @@ def get_files() -> Iterator[Upload]:
         Upload._make, csv.reader(open(path.join(DIRECTORY, FILE), "r", newline=""))
     )
 
+
 def get_visible_files() -> Iterator[Upload]:
 
     """This function return upload if not hidden."""
@@ -107,10 +106,13 @@ def get_visible_files() -> Iterator[Upload]:
     for file in get_files():
         if file.hidden != "hidden" and file.is_deleted != "deleted":
             files[file.name] = file
-        elif (file.hidden == "hidden" or file.is_deleted == "deleted") and file.name in files.keys():
+        elif (
+            file.hidden == "hidden" or file.is_deleted == "deleted"
+        ) and file.name in files.keys():
             del files[file.name]
 
     return files
+
 
 def write_file(
     data: str,
@@ -131,7 +133,7 @@ def write_file(
     if len(uploads) != 0:
         file = uploads[-1]
         check_permissions(file, owner, "write")
-    
+
     timestamp = time()
 
     upload = Upload(
@@ -165,6 +167,7 @@ def write_file(
 
     return upload
 
+
 def delete_file(name: str) -> Upload:
 
     """This function delete an uploaded file."""
@@ -172,9 +175,7 @@ def delete_file(name: str) -> Upload:
     uploads, counter = get_file(name)
 
     if len(uploads) == 0:
-        raise FileNotFoundError(
-            f"No such file or directory: {name}."
-        )
+        raise FileNotFoundError(f"No such file or directory: {name}.")
 
     file = uploads[-1]
     owner = get_user()
@@ -198,6 +199,7 @@ def delete_file(name: str) -> Upload:
 
     return upload
 
+
 def write_action(upload: Upload) -> None:
 
     """This function write a new line in CSV database."""
@@ -206,14 +208,19 @@ def write_action(upload: Upload) -> None:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(upload)
 
+
 def check_permissions(file: Upload, owner: User, attr: str) -> None:
 
-    """This function raises a PermissionError if 
+    """This function raises a PermissionError if
     the user does not have write permission."""
 
     permission = int(getattr(file, f"{attr}_permission"))
-    
-    if attr == "write" and permission > max(owner["groups"]) and file.is_deleted != "deleted":
+
+    if (
+        attr == "write"
+        and permission > max(owner["groups"])
+        and file.is_deleted != "deleted"
+    ):
         raise PermissionError(
             f"To write on this file ({file.name}) a group ID greater than {permission} is required."
         )
@@ -222,9 +229,8 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
             f"To read/delete this file ({file.name}) a group ID greater than {permission} is required."
         )
     elif (attr == "read" or attr == "delete") and file.is_deleted == "deleted":
-        raise FileNotFoundError(
-            f"No such file or directory: {file.name}."
-        )
+        raise FileNotFoundError(f"No such file or directory: {file.name}.")
+
 
 def get_user() -> User:
 
@@ -233,6 +239,7 @@ def get_user() -> User:
     user = json.loads(environ["USER"])
     return user
 
+
 def read_file(name: str, user: User = None) -> str:
 
     """This function return a base64 of the file."""
@@ -240,18 +247,17 @@ def read_file(name: str, user: User = None) -> str:
     uploads, counter = get_file(name)
 
     if len(uploads) == 0:
-        raise FileNotFoundError(
-            f"No such file or directory: {name}."
-        )
+        raise FileNotFoundError(f"No such file or directory: {name}.")
 
     file = uploads[-1]
     owner = get_user()
     check_permissions(file, owner, "read")
 
-    with open(get_real_file_name(file.name, float(file.timestamp)), 'rb') as file:
+    with open(get_real_file_name(file.name, float(file.timestamp)), "rb") as file:
         data = b64encode(file.read()).decode()
 
     return data
+
 
 def get_file(name: str) -> Tuple[List[Upload], Counter]:
 
@@ -267,6 +273,7 @@ def get_file(name: str) -> Tuple[List[Upload], Counter]:
 
     return versions, counter
 
+
 def get_real_file_name(filename: str, timestamp: float) -> str:
 
     """This function return the real filename of a file."""
@@ -277,4 +284,4 @@ def get_real_file_name(filename: str, timestamp: float) -> str:
         DIRECTORY,
         FILES_DIRECTORY,
         f"{filename}_{strftime('%y%m%d_%H%M%S', localtime(timestamp))}{extension}",
-    ) 
+    )

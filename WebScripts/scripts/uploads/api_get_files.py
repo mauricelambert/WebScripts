@@ -52,6 +52,7 @@ from modules.uploads_management import get_visible_files
 import json
 import sys
 
+
 def main() -> None:
 
     """Print the JSON object of uploaded files."""
@@ -70,9 +71,15 @@ def main() -> None:
         print(f"{e.__class__.__name__}: {e}")
         sys.exit(127)
 
-    files = {key:value for file in files.values() for key, value in file._asdict().items() if key in fields}
+    files = {
+        key: value
+        for file in files.values()
+        for key, value in file._asdict().items()
+        if key in fields
+    }
 
     print(json.dumps(files, indent=4))
+
 
 if __name__ == "__main__":
     main()

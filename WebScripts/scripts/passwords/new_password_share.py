@@ -55,12 +55,13 @@ __all__ = [
     "main",
 ]
 
+from os import path, chdir, environ
 from secrets import token_bytes
 from hashlib import pbkdf2_hmac
+from urllib.parse import quote
 from csv import reader, writer
 from typing import Tuple, List
 from base64 import b64encode
-from os import path, chdir
 from random import randint
 from time import time
 from sys import argv
@@ -132,6 +133,33 @@ def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
     return password, key
 
 
+def get_url(token: str) -> str:
+
+    """This function build an URL to get
+    the password share.
+
+    This function comes from PEP-3333:
+        - https://www.python.org/dev/peps/pep-3333/#url-reconstruction
+    """
+
+    url = environ['wsgi.url_scheme']+'://'
+
+    if environ.get('HTTP_HOST'):
+        url += environ['HTTP_HOST']
+    else:
+        url += environ['SERVER_NAME']
+
+        if environ['wsgi.url_scheme'] == 'https':
+            if environ['SERVER_PORT'] != '443':
+               url += ':' + environ['SERVER_PORT']
+        else:
+            if environ['SERVER_PORT'] != '80':
+               url += ':' + environ['SERVER_PORT']
+
+    url += f"/web/scripts/get_password_share.py?token={quote(token)}"
+    return url
+
+
 def main() -> None:
 
     """Main function to add secure password sharing."""
@@ -161,7 +189,7 @@ def main() -> None:
     passwords.append([timestamp, password, views, hash_, iteration, id_])
     save(passwords, id_)
 
-    print(f"{id_}:{key}")
+    print(f'Your secure password sharing is here: {get_url(f"{id_}:{key}")}')
 
 
 if __name__ == "__main__":

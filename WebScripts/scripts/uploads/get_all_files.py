@@ -51,6 +51,7 @@ __all__ = []
 from modules.uploads_management import get_files
 import sys
 
+
 def main() -> None:
 
     """Print the HTML table of uploaded files."""
@@ -65,7 +66,10 @@ def main() -> None:
     print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
 
     try:
-        files = {file.name:{field: getattr(file, field) for field in fields} for file in get_files()}
+        files = {
+            file.name: {field: getattr(file, field) for field in fields}
+            for file in get_files()
+        }
     except Exception as e:
         print(f"{e.__class__.__name__}: {e}")
         sys.exit(127)
@@ -80,6 +84,7 @@ def main() -> None:
         )
 
     print("</table>")
+
 
 if __name__ == "__main__":
     main()

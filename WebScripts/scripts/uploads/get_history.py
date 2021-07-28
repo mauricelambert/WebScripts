@@ -51,6 +51,7 @@ __all__ = []
 from modules.uploads_management import get_file
 import sys
 
+
 def main() -> None:
 
     """Print the HTML table of file history."""
@@ -62,16 +63,16 @@ def main() -> None:
     filename = sys.argv[1]
 
     fields = [
-        "ID", 
-        "name", 
-        "read_permission", 
-        "write_permission", 
-        "delete_permission", 
-        "hidden", 
+        "ID",
+        "name",
+        "read_permission",
+        "write_permission",
+        "delete_permission",
+        "hidden",
         "is_deleted",
-        "is_binary", 
-        "timestamp", 
-        "user", 
+        "is_binary",
+        "timestamp",
+        "user",
         "version",
     ]
     print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
@@ -86,6 +87,7 @@ def main() -> None:
         print(f"<tr><td>{'</td><td>'.join(file)}</td></tr>")
 
     print("</table>")
+
 
 if __name__ == "__main__":
     main()

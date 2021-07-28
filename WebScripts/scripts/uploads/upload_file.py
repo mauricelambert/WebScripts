@@ -52,6 +52,7 @@ from modules.uploads_management import write_file, get_user
 from argparse import ArgumentParser, Namespace
 import sys
 
+
 def parse_args() -> Namespace:
 
     """This function parse command line arguments."""
@@ -60,14 +61,51 @@ def parse_args() -> Namespace:
     groupID = max(owner["groups"])
 
     parser = ArgumentParser()
-    parser.add_argument('name', help="The filename of uploaded file.")
-    parser.add_argument("--read-permission", "-r", help="Minimum Group ID to read the file", type=int, default=groupID)
-    parser.add_argument("--write-permission", "-w", help="Minimum Group ID to write the file", type=int, default=groupID)
-    parser.add_argument("--delete-permission", "-d", help="Minimum Group ID to delete the file", type=int, default=groupID)
-    parser.add_argument("--hidden", "-H", help="Hidden file (unlisted in Web Interface)", action="store_true", default=False)
-    parser.add_argument("--binary", "-b", help="Upload a binary file (ZIP, executable...)", action="store_true", default=False)
-    parser.add_argument("--is-b64", "-i", help="Using base64 to upload the file", action="store_true", default=False)
+    parser.add_argument("name", help="The filename of uploaded file.")
+    parser.add_argument(
+        "--read-permission",
+        "-r",
+        help="Minimum Group ID to read the file",
+        type=int,
+        default=groupID,
+    )
+    parser.add_argument(
+        "--write-permission",
+        "-w",
+        help="Minimum Group ID to write the file",
+        type=int,
+        default=groupID,
+    )
+    parser.add_argument(
+        "--delete-permission",
+        "-d",
+        help="Minimum Group ID to delete the file",
+        type=int,
+        default=groupID,
+    )
+    parser.add_argument(
+        "--hidden",
+        "-H",
+        help="Hidden file (unlisted in Web Interface)",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--binary",
+        "-b",
+        help="Upload a binary file (ZIP, executable...)",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--is-b64",
+        "-i",
+        help="Using base64 to upload the file",
+        action="store_true",
+        default=False,
+    )
     return parser.parse_args()
+
 
 def main() -> None:
 
@@ -87,6 +125,7 @@ def main() -> None:
         f"w={upload.write_permission};d={upload.delete_permission};"
         f"\n\t - {upload.hidden}"
     )
+
 
 if __name__ == "__main__":
     main()

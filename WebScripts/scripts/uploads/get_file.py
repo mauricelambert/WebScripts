@@ -51,9 +51,10 @@ __all__ = []
 from modules.uploads_management import read_file
 import sys
 
+
 def main() -> None:
 
-    """Print the HTML link to download the file or 
+    """Print the HTML link to download the file or
     exit with an error code."""
 
     if len(sys.argv) != 2:
@@ -68,7 +69,10 @@ def main() -> None:
         print(f"{e.__class__.__name__}: {e}")
         sys.exit(127)
 
-    print(f'<a href="data:application/octet-stream;base64, {data}" download="{filename}">Click here to download {filename}</a>')
+    print(
+        f'<a href="data:application/octet-stream;base64, {data}" download="{filename}">Click here to download {filename}</a>'
+    )
+
 
 if __name__ == "__main__":
     main()

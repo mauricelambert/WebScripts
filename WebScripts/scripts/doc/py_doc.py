@@ -52,7 +52,7 @@ from pydoc import resolve, html, describe, ErrorDuringImport
 from os import path, getcwd, chdir
 import sys
 
-chdir(path.join(path.dirname(__file__), "..", ".."))
+# chdir(path.join(path.dirname(__file__), "..", ".."))
 
 
 def main() -> None:

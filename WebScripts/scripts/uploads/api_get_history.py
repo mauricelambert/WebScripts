@@ -52,6 +52,7 @@ from modules.uploads_management import get_file
 import json
 import sys
 
+
 def main() -> None:
 
     """Print the JSON objects of file history."""
@@ -71,6 +72,7 @@ def main() -> None:
     versions = [file._asdict() for file in files]
 
     print(json.dumps(versions, indent=4))
+
 
 if __name__ == "__main__":
     main()

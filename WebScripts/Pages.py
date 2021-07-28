@@ -77,7 +77,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -130,9 +130,23 @@ def execute_scripts(
     script_env["USER"] = json.dumps(user.get_dict())
     script_env["SCRIPT_CONFIG"] = json.dumps(script.get_JSON_API())
 
-    to_delete = [key for key in script_env.keys() if "wsgi." in key]
+    to_delete = [
+        key
+        for key in script_env.keys()
+        if key in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
+    ]
     for key in to_delete:
         del script_env[key]
+
+    script_env["wsgi.version"] = ".".join(
+        [str(version) for version in script_env["wsgi.version"]]
+    )
+    script_env["wsgi.multithread"] = str(script_env["wsgi.multithread"])
+    script_env["wsgi.multiprocess"] = str(script_env["wsgi.multiprocess"])
+
+    for key, value in script_env.items():
+        if not isinstance(value, str):
+            print(key, value)
 
     process = Popen(
         arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env
