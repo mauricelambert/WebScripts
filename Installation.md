@@ -45,5 +45,20 @@ Create a directory named `logs` to launch the *WebScripts Server*.
 mkdir logs
 ```
 
+## Linux Configurations
+
+On Linux the default configurations **may not work**, replace all *script launchers* with `python3` (default is `python`).
+
+## Start the server
+
+You can now start the server with this simple command:
+```bash
+WebScripts
+```
+
+## First connection
+
+To log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**.
+
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

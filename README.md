@@ -91,10 +91,6 @@ httpd = simple_server.make_server(server.interface, server.port, server.app)
 httpd.serve_forever()
 ```
 
-## Default Configurations
-
-On Linux the default configurations **may not work**, replace all *script launchers* with `python3` (default is `python`).
-
 ## Documentation
 
 ### Wiki
@@ -127,10 +123,17 @@ On Linux the default configurations **may not work**, replace all *script launch
  - [utils](https://mauricelambert.github.io/info/python/code/WebScripts/utils.html)
  - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
  - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
+ - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
 
 ## Links
  - [Pypi](https://pypi.org/project/WebScripts)
  - [Github](https://github.com/mauricelambert/WebScripts)
+
+## Pictures
+
+![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.JPG "Index page (dark)")
+![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.JPG "Text script (dark)")
+![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.JPG "HTML script (light)")
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
