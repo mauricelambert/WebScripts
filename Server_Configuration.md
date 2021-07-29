@@ -12,8 +12,8 @@ Priority:
 The default configuration JSON files:
 ```json
 {
-	"server": {
-		"interface": "127.0.0.1",
+    "server": {
+        "interface": "127.0.0.1",
         "port": 8000,
 
         "debug": false,

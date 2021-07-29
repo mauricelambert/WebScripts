@@ -5,11 +5,11 @@
 JSON configuration:
 ```json
 {
-	"config_delete_user": {
-		"args": "config_delete_user_args"
-	},
+    "config_delete_user": {
+        "args": "config_delete_user_args"
+    },
 
-	"config_delete_user_args": {
+    "config_delete_user_args": {
         "id": "arg_id"
     },
 
@@ -17,6 +17,7 @@ JSON configuration:
         "list": false,
         "input": false,
         "example": "55",
+        "is_advanced": true,
         "html_type": "number",
         "default_value": null,
         "predefined_values": null,
@@ -57,3 +58,4 @@ input=false                                                                     
  - `example`: add an example for the value (not required)
  - `list`: if defined as `true` the user can add values (as much as the user wants) (not required, default is `false`)
  - `input`: if defined as `true` value(s) will be send in *stdin* (user input, interactive mode) (not required, default is `false`)
+ - `is_advanced`: if set as `true` the html input will be hidden by default, users can click the` show advanced arguments` button to print hidden inputs (not required, default is `false`)

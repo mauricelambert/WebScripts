@@ -9,11 +9,11 @@ In the main file for configuration (JSON syntax first and second with INI syntax
 
 ```json
 {
-	"scripts": {
-		"change_my_password.py": "config_change_my_password"
-	},
+    "scripts": {
+        "change_my_password.py": "config_change_my_password"
+    },
 
-	"config_change_my_password": {
+    "config_change_my_password": {
         "configuration_file": "./config/files/change_my_password.json"
     },
 }
@@ -35,14 +35,14 @@ configuration_file=./config/files/change_my_password.json                       
 The specific file content (with JSON syntax):
 ```json
 {
-	"script": {
-		"launcher": "python",
-		"minimum_access": 50,
-		"category": "My Account",
-		"args": "change_my_password_args",
-		"description": "This script can change your own password (for all authenticated users).",
-		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
-	}
+    "script": {
+        "launcher": "python",
+        "minimum_access": 50,
+        "category": "My Account",
+        "args": "change_my_password_args",
+        "description": "This script can change your own password (for all authenticated users).",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+    }
 }
 ```
 
@@ -59,11 +59,11 @@ The specific file content (with JSON syntax):
 JSON example:
 ```json
 {
-	"scripts": {
-		"delete_user.py": "config_delete_user"
-	},
+    "scripts": {
+        "delete_user.py": "config_delete_user"
+    },
 
-	"config_delete_user": {
+    "config_delete_user": {
         "timeout": null,
         "access_users": [],
         "launcher": "python",
@@ -148,9 +148,9 @@ Example: `python "%(dirname)s/../doc/py_doc.py" "%(path)s"`.
 All administraters (group ID: `1000`), the users with ID 5 and 7, all groups with ID greater than 1050 need to acces this script:
 ```json
 {
-	"access_groups": [1000],
-	"access_users": [5, 7],
-	"minimum_access": 1050
+    "access_groups": [1000],
+    "access_users": [5, 7],
+    "minimum_access": 1050
 }
 ```
 
@@ -173,16 +173,16 @@ In this example i add a key.
 The configuration:
 ```json
 {
-	"scripts": {
-		"example.py": "config_example"
-	},
+    "scripts": {
+        "example.py": "config_example"
+    },
 
-	"config_example": {
-		"description": "Python executable file for the example configuration",
-		"secrets": {
-			"key": "azerty"
-		},
-		"web_interface_color": "orange"
+    "config_example": {
+        "description": "Python executable file for the example configuration",
+        "secrets": {
+            "key": "azerty"
+        },
+        "web_interface_color": "orange"
     }
 }
 ```
