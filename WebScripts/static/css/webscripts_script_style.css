@@ -101,3 +101,18 @@ td {
 	color: #ffc26a;
 	border-radius: 5px;
 }
+
+#advanced_button_arguments {
+	width: 10%;
+	float: right;
+}
+
+#advanced_arguments {
+	display: none;
+}
+
+#print_advanced {
+	background-color: #895100;
+	border-radius: 5px;
+	color: #222222;
+}

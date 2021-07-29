@@ -52,34 +52,40 @@
 	"arg_read_permission": {
 		"example": "255",
 		"html_type": "number",
-		"description": "The minimum group ID to read this file."
+		"description": "The minimum group ID to read this file.",
+		"is_advanced": true
 	},
 
 	"arg_write_permission": {
 		"example": "255",
 		"html_type": "number",
-		"description": "The minimum group ID to write this file."
+		"description": "The minimum group ID to write this file.",
+		"is_advanced": true
 	},
 
 	"arg_delete_permission": {
 		"example": "255",
 		"html_type": "number",
-		"description": "The minimum group ID to delete this file."
+		"description": "The minimum group ID to delete this file.",
+		"is_advanced": true
 	},
 
 	"arg_hidden": {
 		"html_type": "checkbox",
-		"description": "Hide the uploaded file (not visible in the Web Interface)."
+		"description": "Hide the uploaded file (not visible in the Web Interface).",
+		"is_advanced": true
 	},
 
 	"arg_binary": {
 		"html_type": "checkbox",
-		"description": "The uploaded file is binary file (not human readable)."
+		"description": "The uploaded file is binary file (not human readable).",
+		"is_advanced": true
 	},
 
 	"arg_is_b64": {
 		"html_type": "checkbox",
-		"description": "Using base64 to upload the file."
+		"description": "Using base64 to upload the file.",
+		"is_advanced": true
 	},
 
 	"arg_content": {

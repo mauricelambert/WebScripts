@@ -46,12 +46,13 @@ function add_arguments (script) {
 	let label;
 	let paragraph;
 
-	let submit_row = document.getElementById("submit_row");
+	let advanced_container = document.getElementById("advanced_container");
+	let advanced_arguments = document.getElementById("advanced_arguments");
 	let script_interface = document.getElementById("script_interface");
 	let input_wrapper;
 
 	for (let i=0; i < script.args.length; ++i) {
-		arg=script.args[i];
+		arg = script.args[i];
 		input_wrapper = document.createElement("div");
 		input_wrapper.classList.add("input_wrapper");
 
@@ -62,35 +63,69 @@ function add_arguments (script) {
 		}
 
 		input_wrapper.appendChild(argument);
-
-		label = document.createElement("label");
-		label.htmlFor = argument.name;
-		label.innerText = argument.name + " :";
-		label.classList.add("inline");
-		label.classList.add("script_presentation");
-
-		paragraph = document.createElement("p");
-		paragraph.classList.add("inline");
-		paragraph.classList.add("description");
-		paragraph.classList.add("script_presentation");
+		label = add_label(argument);
+		paragraph = add_paragraph();
 
 		if (arg.description !== undefined && arg.description !== null) {
 			paragraph.innerText = arg.description;
 		}
 
 		input_wrapper.classList.add("inline");
+		div = add_div_row(label, paragraph, input_wrapper);
 
-		div = document.createElement("div");
-		div.classList.add("row");
-		div.appendChild(label);
-		div.appendChild(paragraph);
-		div.appendChild(input_wrapper);
-
-		script_interface.insertBefore(div, submit_row);
+		if (arg.is_advanced) {
+			advanced_arguments.appendChild(div);
+		} else {
+			script_interface.insertBefore(div, advanced_container);
+		}
 	}
 
 	add_button();
 	url_default_values();
+	config_advanced_arguments(advanced_container, advanced_arguments);
+}
+
+function config_advanced_arguments (advanced_container, advanced_arguments) {
+	if (!advanced_container.getElementsByClassName("row").length) {
+		advanced_container.style.display = "none";
+	} else {
+		let button = document.getElementById("print_advanced");
+		button.onclick = () => {
+			if (advanced_arguments.style.display === "none") {
+				advanced_arguments.style.display = "block";
+				button.innerText = "Hide advanced arguments";
+			} else {
+				advanced_arguments.style.display = "none";
+				button.innerText = "Show advanced arguments";
+			}
+		};
+	}
+}
+
+function add_div_row (label, paragraph, input_wrapper) {
+	let div = document.createElement("div");
+	div.classList.add("row");
+	div.appendChild(label);
+	div.appendChild(paragraph);
+	div.appendChild(input_wrapper);
+	return div;
+}
+
+function add_paragraph () {
+	let paragraph = document.createElement("p");
+	paragraph.classList.add("inline");
+	paragraph.classList.add("description");
+	paragraph.classList.add("script_presentation");
+	return paragraph;
+}
+
+function add_label (argument) {
+	let label = document.createElement("label");
+	label.htmlFor = argument.name;
+	label.innerText = argument.name + " :";
+	label.classList.add("inline");
+	label.classList.add("script_presentation");
+	return label;
 }
 
 function start_script_execution (event) {

@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -123,6 +123,7 @@ class Argument(DefaultNamespace):
         "input",
         "example",
         "html_type",
+        "is_advanced",
         "description",
         "default_value",
         "predefined_values",
@@ -133,9 +134,11 @@ class Argument(DefaultNamespace):
         "description": None,
         "example": None,
         "input": None,
+        "is_advanced": False,
     }
     __types__ = {
         "predefined_values": list,
+        "is_advanced": bool,
         "input": bool,
         "list": bool,
     }
