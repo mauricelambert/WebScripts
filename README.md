@@ -110,7 +110,7 @@ httpd.serve_forever()
 
 ### Examples
 
- - [Deployment (using virtual environment and NGINX as proxy HTTPS)](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
+ - [Deployment](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
  - [Add a bash script (for authentication)](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
  - [Add a module](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
  - [Make a custom API client](https://github.com/mauricelambert/WebScripts/wiki/API-Client)
