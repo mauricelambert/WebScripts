@@ -77,7 +77,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -141,12 +141,7 @@ def execute_scripts(
     script_env["wsgi.version"] = ".".join(
         [str(version) for version in script_env["wsgi.version"]]
     )
-    script_env["wsgi.multithread"] = str(script_env["wsgi.multithread"])
-    script_env["wsgi.multiprocess"] = str(script_env["wsgi.multiprocess"])
-
-    for key, value in script_env.items():
-        if not isinstance(value, str):
-            print(key, value)
+    script_env = {key:str(value) for key, value in script_env.items()}
 
     process = Popen(
         arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env
