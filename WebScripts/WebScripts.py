@@ -82,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -313,7 +313,9 @@ class Server:
             user = self.get_session(cookies.split("; "), ip)
 
         elif credentials is not None and credentials.startswith("Basic "):
-            credentials = b64decode(credentials.split(maxsplit=1)[1]).decode()
+            credentials = b64decode(
+                credentials.split(" ", maxsplit=1)[1]
+            ).decode()
 
             if ":" in credentials:
                 username, password = credentials.split(":", maxsplit=1)
@@ -375,13 +377,12 @@ class Server:
             self.configuration
         )
 
-        lib_directory = path.dirname(__file__)
         current_directory = getcwd()
 
         Pages.statics_paths = {}
         Pages.js_paths = {}
 
-        for dirname in (lib_directory, current_directory):
+        for dirname in (server_path, current_directory):
             for js_glob in self.configuration.js_path:
 
                 js_glob = path.join(dirname, path.normcase(js_glob))
@@ -557,9 +558,9 @@ class Server:
         ) and (
             environ["PATH_INFO"] != "/auth/"
             and environ["PATH_INFO"] != "/web/auth/"
+            and environ["PATH_INFO"] != "/api/"
             and not environ["PATH_INFO"].startswith("/js/")
             and not environ["PATH_INFO"].startswith("/static/")
-            and not environ["PATH_INFO"].startswith("/api/")
         ):
             self.send_headers(respond, "302 Found", {"Location": "/web/auth/"})
             return [
@@ -610,7 +611,7 @@ class Server:
 
     @log_trace
     def send_headers(
-        self, respond: FunctionType, error: str = None, headers: Dict[str, str] = {}
+        self, respond: FunctionType, error: str = None, headers: Dict[str, str] = None
     ) -> None:
 
         """This function send error code, message and headers."""
@@ -859,7 +860,6 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
 
     """This generator return configurations dict."""
 
-    lib_directory = path.dirname(__file__)
     current_directory = getcwd()
 
     config_files = (
@@ -867,7 +867,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
         path.join("config", "server.json"),
     )
 
-    for dirname in (lib_directory, current_directory):
+    for dirname in (server_path, current_directory):
         for filename in config_files:
 
             _path = path.join(dirname, filename)

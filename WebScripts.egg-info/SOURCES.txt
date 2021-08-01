@@ -97,3 +97,7 @@ WebScripts/static/js/webscripts_js_scripts.js
 WebScripts/static/js/webscripts_script_js_scripts.js
 WebScripts/static/templates/index.html
 WebScripts/static/templates/script.html
+test/TestWebScripts.py
+test/modules/test.py
+test/static/css/test.css
+test/static/js/test.js
