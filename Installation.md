@@ -58,7 +58,7 @@ WebScripts
 
 ## First connection
 
-To log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**.
+To log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `127.0.0.1` by default, you can use `curl` or a custom script to change the password if your server don't have a Web Browser.
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
