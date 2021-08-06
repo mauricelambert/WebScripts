@@ -5,6 +5,7 @@
 		"delete_file.py": "config_delete_file",
 		"get_history.py": "config_get_history",
 		"upload_file.py": "config_upload_file",
+		"get_any_file.py": "config_get_any_file",
 		"api_get_files.py": "config_api_get_files",
 		"get_all_files.py": "config_get_all_files",
 		"api_get_history.py": "config_api_get_history",
@@ -156,5 +157,31 @@
         "access_groups": [1000],
 		"description": "This script list all versions for an uploaded file.",
         "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_get_any_file": {
+		"launcher": "python",
+        "category": "Upload",
+        "access_groups": [1000],
+        "args": "args_get_any_file",
+        "content_type": "text/html",
+        "description": "This script returns a download link for any file (old version and without permission).",
+        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"args_get_any_file": {
+		"type": "arg_identifier_type",
+		"identifier": "arg_identifier"
+	},
+
+	"arg_identifier_type": {
+		"description": "Type o the identifier (ID or name).",
+		"example": "name",
+		"predefined_values": ["name", "ID"]
+	},
+
+	"arg_identifier": {
+		"description": "The name of the file or the ID of the version.",
+		"example": "LICENSE.txt"
 	}
 }

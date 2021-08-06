@@ -61,6 +61,7 @@ function add_arguments (script) {
 		} else {
 			argument = get_input(arg);
 		}
+		set_custom_attributes(argument, arg);
 
 		input_wrapper.appendChild(argument);
 		label = add_label(argument);
@@ -83,6 +84,14 @@ function add_arguments (script) {
 	add_button();
 	url_default_values();
 	config_advanced_arguments(advanced_container, advanced_arguments);
+}
+
+function set_custom_attributes (argument, config) {
+	attributes = config.javascript_attributs;
+
+	for (attribute in attributes) {
+		argument.setAttribute(attribute, attributes[attribute]);
+	}
 }
 
 function config_advanced_arguments (advanced_container, advanced_arguments) {
@@ -138,8 +147,39 @@ function get_arguments () {
 	let input, select, option;
 	let inputs = document.getElementsByTagName('input');
 	let selects = document.getElementsByTagName('select');
+	let script_interface = document.getElementById('script_interface');
 	let arguments_ = {};
 
+	arguments_ = add_inputs_arguments(arguments_, inputs);
+	arguments_ = add_select_arguments(arguments_, selects);
+	arguments_ = sort_arguments(arguments_);
+
+	return arguments_;
+}
+
+function sort_arguments (arguments_) {
+	let send_object = {};
+	let sort = [];
+
+	for (argument in arguments_) {
+		sort.push([argument, arguments_[argument]["position"]]);
+	}
+
+	sort.sort(function(a, b) {
+		return a[1] - b[1];
+	});
+
+	for (argument in sort) {
+		argument = sort[argument][0];
+		send_object[argument] = {};
+		send_object[argument]["value"] = arguments_[argument]["value"];
+		send_object[argument]["input"] = arguments_[argument]["input"];
+	}
+
+	return send_object;
+}
+
+function add_inputs_arguments (arguments_, inputs) {
 	for (let i=0; i < inputs.length; ++i) {
 		input = inputs[i];
 
@@ -148,13 +188,29 @@ function get_arguments () {
 		}
 
 		if (input.type === "checkbox") {
-			arguments_ = add_value_for_request(arguments_, input.name, input.checked);
+			arguments_ = add_value_for_request(
+				arguments_, 
+				script_interface,
+				input.id, 
+				input.name, 
+				input.checked
+			);
 		} else {
-			arguments_ = add_value_for_request(arguments_, input.name, input.value);			
+			arguments_ = add_value_for_request(
+				arguments_, 
+				script_interface,
+				input.id, 
+				input.name, 
+				input.value
+			);			
 		}
 
 	}
 
+	return arguments_;
+}
+
+function add_select_arguments (arguments_, selects) {
 	for (let i=0; i < selects.length; ++i) {
 		select = selects[i];
 
@@ -162,7 +218,13 @@ function get_arguments () {
 			option = select.options[l];
 
 			if (option.selected) {
-				arguments_ = add_value_for_request(arguments_, select.name, option.value);
+				arguments_ = add_value_for_request(
+					arguments_, 
+					script_interface,
+					select.id, 
+					select.name, 
+					option.value
+				);
 			}
 		}
 	}
@@ -170,7 +232,7 @@ function get_arguments () {
 	return arguments_;
 }
 
-function add_value_for_request(arguments_, name, value) {
+function add_value_for_request(arguments_, script_interface, id, name, value) {
 	if (arguments_[name] !== undefined) {
 		if (!Array.isArray(arguments_[name]["value"])) {
 			arguments_[name]["value"] = [arguments_[name]["value"]];
@@ -180,7 +242,10 @@ function add_value_for_request(arguments_, name, value) {
 			arguments_[name]["value"].push(value);
 		}
 	} else {
-		arguments_[name] = {"value": value};
+		arguments_[name] = {
+			"value": value, 
+			"position": script_interface.innerHTML.indexOf(`id="${id}"`)
+		};
 
 		let arg;
 		for (let i=0; i < script.args.length; ++i) {
@@ -225,6 +290,10 @@ function send_request (json) {
 			);
 		} else if (xhttp.readyState === 4 && xhttp.status === 302 && script_name === "/auth/") {
 			window.location = new URL("/web/", window.location);
+		} else if (xhttp.readyState === 4 && xhttp.status === 500) {
+			document.getElementById("bar").innerText = "ERROR 500: Internal Server Error.";
+		} else if (xhttp.readyState === 4 && xhttp.status === 403) {
+			document.getElementById("bar").innerText = "ERROR 403: Forbidden. (Refresh the page or re-authenticate please)";
 		}
 
 		is_running = false;
@@ -452,7 +521,10 @@ function progress_bar () {
 					progress_bar();
 				} else {
 					bar.style.textAlign = "center";
-					bar.innerText = "Completed.";
+
+					if (bar.innerText == "Script is running...") {
+						bar.innerText = "Completed.";
+					}
 				}
 			} else {
 				width++;

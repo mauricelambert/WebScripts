@@ -75,6 +75,7 @@ WebScripts/scripts/uploads/api_get_files.py
 WebScripts/scripts/uploads/api_get_history.py
 WebScripts/scripts/uploads/delete_file.py
 WebScripts/scripts/uploads/get_all_files.py
+WebScripts/scripts/uploads/get_any_file.py
 WebScripts/scripts/uploads/get_file.py
 WebScripts/scripts/uploads/get_files.py
 WebScripts/scripts/uploads/get_history.py
@@ -91,12 +92,12 @@ WebScripts/static/html/manage_defaults_databases.html
 WebScripts/static/html/uploads_management.html
 WebScripts/static/html/utils.html
 WebScripts/static/images/webscripts_header.jpg
-WebScripts/static/images/webscripts_icon.jpg
 WebScripts/static/js/webscripts_index_js_scripts.js
 WebScripts/static/js/webscripts_js_scripts.js
 WebScripts/static/js/webscripts_script_js_scripts.js
 WebScripts/static/templates/index.html
 WebScripts/static/templates/script.html
+test/TestErrors.py
 test/TestWebScripts.py
 test/modules/test.py
 test/static/css/test.css

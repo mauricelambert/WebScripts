@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage uploads on WebScripts."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -60,7 +60,7 @@ from time import time, strftime, localtime
 from typing import Tuple, List, TypeVar
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
-from os import environ, path, chdir
+from os import environ, path
 import json
 import csv
 
@@ -81,7 +81,13 @@ Upload = namedtuple(
     ],
 )
 FILE = "uploads.csv"
-DIRECTORY = "data"
+DIRECTORY = path.join(
+    path.dirname(__file__), 
+    "..", 
+    "..", 
+    "..", 
+    "data",
+)
 FILES_DIRECTORY = "uploads"
 User = TypeVar("User")
 Data = TypeVar("Data", str, bytes)
@@ -91,7 +97,6 @@ def get_files() -> Iterator[Upload]:
 
     """This function build Uploads from database."""
 
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
     yield from map(
         Upload._make, csv.reader(open(path.join(DIRECTORY, FILE), "r", newline=""))
     )
@@ -123,6 +128,7 @@ def write_file(
     hidden: bool,
     binary: bool,
     is_b64: bool,
+    with_access: bool = True,
 ) -> Upload:
 
     """This function upload a file."""
@@ -130,7 +136,7 @@ def write_file(
     owner = get_user()
     uploads, counter = get_file(name)
 
-    if len(uploads) != 0:
+    if with_access and len(uploads) != 0:
         file = uploads[-1]
         check_permissions(file, owner, "write")
 
@@ -242,7 +248,8 @@ def get_user() -> User:
 
 def read_file(name: str, user: User = None) -> str:
 
-    """This function return a base64 of the file."""
+    """This function check permission and 
+    return a base64 of the file content."""
 
     uploads, counter = get_file(name)
 
@@ -257,6 +264,48 @@ def read_file(name: str, user: User = None) -> str:
         data = b64encode(file.read()).decode()
 
     return data
+
+
+def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
+
+    """This function return a base64 of the file 
+    content and the filename (without check permissions).
+
+    If id_ and name arguments are None this function return None.
+
+    Using a name this function return the last versions of the file content.
+    Using an ID this function return the version of this ID."""
+
+    if id_ is not None:
+
+        uploads = []
+        for file in get_files():
+            if file.ID == id_:
+                uploads.append(file)
+        
+        error_description = f'using "{id_}" as ID'
+    elif name is not None:
+        uploads, counter = get_file(name)
+        error_description = f'using "{name}" as name'
+
+    if len(uploads) == 0:
+        raise FileNotFoundError(
+            f"No such file or directory: {error_description}."
+        )
+
+    file = uploads[-1]
+    filename = get_real_file_name(file.name, float(file.timestamp))
+
+    if not path.exists(filename):
+        raise FileNotFoundError(
+            f"No such file or directory: {error_description}."
+        )
+
+    only_filename = path.split(file.name)[1]
+    with open(filename, "rb") as file:
+        data = b64encode(file.read()).decode()
+
+    return data, only_filename
 
 
 def get_file(name: str) -> Tuple[List[Upload], Counter]:

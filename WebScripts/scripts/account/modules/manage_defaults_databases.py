@@ -277,6 +277,18 @@ def delete_user(id_: int) -> User:
     for user in get_users():
         if user.ID != "ID" and int(user.ID) == id_:
             deleted_user = user
+            users.append(
+                User(
+                    user.ID,
+                    "",
+                    "",
+                    "",
+                    "0",
+                    "",
+                    "",
+                    "",
+                )
+            )
         else:
             users.append(user)
 

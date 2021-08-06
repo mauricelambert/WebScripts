@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -127,14 +127,16 @@ class Argument(DefaultNamespace):
         "description",
         "default_value",
         "predefined_values",
+        "javascript_attributs",
     ]
     __defaults__ = {
+        "javascript_attributs": {},
         "default_value": None,
+        "is_advanced": False,
         "html_type": "text",
         "description": None,
         "example": None,
         "input": None,
-        "is_advanced": False,
     }
     __types__ = {
         "predefined_values": list,
@@ -200,48 +202,66 @@ class ScriptConfig(DefaultNamespace):
 
     __required__ = ["name", "dirname"]
     __defaults__ = {
-        "documentation_file": None,
-        "content_type": "text/plain",
         "documentation_content_type": "text/html",
         "command_generate_documentation": None,
+        "content_type": "text/plain",
+        "documentation_file": None,
         "minimum_access": None,
         "access_groups": None,
         "access_users": None,
         "description": None,
         "category": None,
         "launcher": None,
-        "path": "",
         "timeout": None,
+        "path": "",
         "args": [],
     }
     __optional__ = [
         "command_generate_documentation",
         "documentation_content_type",
         "documentation_file",
-        "content_type",
         "minimum_access",
         "access_groups",
+        "content_type",
         "access_users",
         "description",
         "category",
         "launcher",
+        "timeout",
         "path",
         "args",
-        "timeout",
     ]
     __types__ = {
-        "minimum_access": int,
         "access_groups": List[int],
         "access_users": List[int],
+        "minimum_access": int,
         "timeout": int,
     }
 
     @log_trace
-    def build_args(self):
+    def build_args(self, configuration: Configuration):
 
         """This function build Arguments from self.args: List[Dict[str, str]]"""
 
-        self.args = [Argument.default_build(**arg) for arg in self.args]
+        args = []
+        for arg in self.args:
+            arg = Argument.default_build(**arg)
+            
+            javascript_section = arg.get("javascript_section")
+            if javascript_section is not None:
+                javascript_configuration = configuration.get(javascript_section)
+
+                if not isinstance(javascript_configuration, dict):
+                    raise WebScriptsConfigurationError(
+                        f'"{javascript_section}" doesn\'t exist or '
+                        'is not a javascript object (a dictionnary)'
+                    )
+
+                arg.javascript_attributs = javascript_configuration
+
+            args.append(arg)
+
+        self.args = args
 
     @classmethod
     @log_trace
@@ -350,7 +370,7 @@ class ScriptConfig(DefaultNamespace):
             script_section["dirname"] = path.dirname(script_section["path"])
 
             scripts_config[name] = cls.default_build(**script_section)
-            scripts_config[name].build_args()
+            scripts_config[name].build_args(configuration)
 
         return scripts_config
 

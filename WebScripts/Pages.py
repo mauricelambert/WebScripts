@@ -77,7 +77,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -216,7 +216,7 @@ def decode_output(data: bytes) -> str:
 
     try:
         output = data.decode(device_encoding(0))
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, TypeError):
         pass
     else:
         return output
