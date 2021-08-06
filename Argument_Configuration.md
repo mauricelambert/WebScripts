@@ -21,7 +21,12 @@ JSON configuration:
         "html_type": "number",
         "default_value": null,
         "predefined_values": null,
+        "javascript_section": "javascript_id",
         "description": "User ID (must be unique)"
+    },
+
+    "javascript_id": {
+        "step": "0.002"
     }
 }
 ```
@@ -42,6 +47,10 @@ predefined_values                                                               
 example=user                                                                                   # Add example (placeholder in HTML)
 list=false                                                                                     # Only one username, if true the user can add usernames (as much as the user wants)
 input=false                                                                                    # To send the argument in STDIN (interactive mode)
+javascript_section=javascript_id                                                               # Define the Javascript section
+
+[javascript_id]
+title=Your username (to log in)                                                                # Add a title on the input (javascript attribute is "title")
 ```
 
 1. In the script section, add the `args` configuration to define the name of the *arguments section*
@@ -58,4 +67,4 @@ input=false                                                                     
  - `example`: add an example for the value (not required)
  - `list`: if defined as `true` the user can add values (as much as the user wants) (not required, default is `false`)
  - `input`: if defined as `true` value(s) will be send in *stdin* (user input, interactive mode) (not required, default is `false`)
- - `is_advanced`: if set as `true` the html input will be hidden by default, users can click the` show advanced arguments` button to print hidden inputs (not required, default is `false`)
+ - `is_advanced`: if set as `true` the html input will be hidden by default, users can click the `show advanced arguments` button to print hidden inputs (not required, default is `false`)
