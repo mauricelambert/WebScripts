@@ -47,9 +47,9 @@ predefined_values                                                               
 example=user                                                                                   # Add example (placeholder in HTML)
 list=false                                                                                     # Only one username, if true the user can add usernames (as much as the user wants)
 input=false                                                                                    # To send the argument in STDIN (interactive mode)
-javascript_section=javascript_id                                                               # Define the Javascript section
+javascript_section=javascript_username                                                         # Define the Javascript section
 
-[javascript_id]
+[javascript_username]
 title=Your username (to log in)                                                                # Add a title on the input (javascript attribute is "title")
 ```
 
@@ -68,3 +68,4 @@ title=Your username (to log in)                                                 
  - `list`: if defined as `true` the user can add values (as much as the user wants) (not required, default is `false`)
  - `input`: if defined as `true` value(s) will be send in *stdin* (user input, interactive mode) (not required, default is `false`)
  - `is_advanced`: if set as `true` the html input will be hidden by default, users can click the `show advanced arguments` button to print hidden inputs (not required, default is `false`)
+ - `javascript_section`: set the section name to define javascript attributes and values

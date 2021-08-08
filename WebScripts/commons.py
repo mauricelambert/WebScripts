@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -209,6 +209,7 @@ class ScriptConfig(DefaultNamespace):
         "minimum_access": None,
         "access_groups": None,
         "access_users": None,
+        "no_password": False,
         "description": None,
         "category": None,
         "launcher": None,
@@ -224,6 +225,7 @@ class ScriptConfig(DefaultNamespace):
         "access_groups",
         "content_type",
         "access_users",
+        "no_password",
         "description",
         "category",
         "launcher",
@@ -235,6 +237,7 @@ class ScriptConfig(DefaultNamespace):
         "access_groups": List[int],
         "access_users": List[int],
         "minimum_access": int,
+        "no_password": bool,
         "timeout": int,
     }
 

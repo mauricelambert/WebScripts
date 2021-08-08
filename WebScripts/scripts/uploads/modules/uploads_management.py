@@ -48,11 +48,12 @@ __copyright__ = copyright
 
 __all__ = [
     "Upload",
+    "get_file",
     "read_file",
     "write_file",
     "delete_file",
+    "get_file_content",
     "get_visible_files",
-    "get_file",
 ]
 
 from collections import namedtuple, Counter
@@ -246,7 +247,7 @@ def get_user() -> User:
     return user
 
 
-def read_file(name: str, user: User = None) -> str:
+def read_file(name: str) -> str:
 
     """This function check permission and 
     return a base64 of the file content."""

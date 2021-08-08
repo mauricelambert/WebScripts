@@ -77,7 +77,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -125,23 +125,7 @@ def execute_scripts(
     if script.launcher is not None:
         arguments.insert(0, script.launcher)
 
-    script_env = environ.copy()
-
-    script_env["USER"] = json.dumps(user.get_dict())
-    script_env["SCRIPT_CONFIG"] = json.dumps(script.get_JSON_API())
-
-    to_delete = [
-        key
-        for key in script_env.keys()
-        if key in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
-    ]
-    for key in to_delete:
-        del script_env[key]
-
-    script_env["wsgi.version"] = ".".join(
-        [str(version) for version in script_env["wsgi.version"]]
-    )
-    script_env = {key:str(value) for key, value in script_env.items()}
+    script_env = get_environ(environ, user, script)
 
     process = Popen(
         arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env
@@ -159,16 +143,48 @@ def execute_scripts(
         stdout, stderr = process.communicate()
         error = "TimeoutError"
 
+    return stdout, stderr, process.returncode, error
+
+
+def execution_logs(script: ScriptConfig, user: User, process: Popen, stderr: bytes) -> None:
+
+    """This function logs the script execution."""
+
+    if script.no_password:
+        Logs.info(f"Command: {process.args}")
+
     if process.returncode or stderr:
         Logs.error(
-            f"SCRIPT ERROR: script {script.name} user {user.name} code {process.returncode} STDERR {stderr.decode('latin-1')}"
+            f"SCRIPT ERROR: script {script.name} user {user.name} code {process.returncode} STDERR {decode_output(stderr)}"
         )
     else:
         Logs.debug(
             f'SCRIPT "{script_name}" executed without error for user named "{user.name}".'
         )
 
-    return stdout, stderr, process.returncode, error
+
+def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str, str]:
+
+    """This function builds the environment variables for the new process."""
+
+    script_env = environ.copy()
+
+    script_env["USER"] = json.dumps(user.get_dict())
+    script_env["SCRIPT_CONFIG"] = json.dumps(script.get_JSON_API())
+
+    to_delete = [
+        key
+        for key in script_env.keys()
+        if key in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
+    ]
+    for key in to_delete:
+        del script_env[key]
+
+    script_env["wsgi.version"] = ".".join(
+        [str(version) for version in script_env["wsgi.version"]]
+    )
+    
+    return {key:str(value) for key, value in script_env.items()}
 
 
 def check_right(user: User, configuration: ScriptConfig) -> bool:
