@@ -66,6 +66,7 @@ JSON example:
     "config_delete_user": {
         "timeout": null,
         "access_users": [],
+        "no_password": true,
         "launcher": "python",
         "access_groups": [1000],
         "content_type": "text/plain",
@@ -91,6 +92,7 @@ auth.py=config_auth                                                             
 
 [config_auth]
 launcher=python                                                                                # Define the launcher for this script (if script is executable this line is not necessary)
+no_password=false                                                                              # If no_password is true the command line will be written to the logs
 path=./scripts/account/auth.py                                                                 # Only necessary if the location of the script is not in "scripts_path"
 documentation_file=./doc/auth.html                                                             # Only needed if the location of the documentation does not match the paths defined in "documentations_path"
 content_type=text/plain                                                                        # Define the script output content-type (HTTP headers/javascript interpretation)
@@ -128,6 +130,7 @@ This configuration makes no sense because with `minimum_access=0` all user can a
  - `documentation_file`: documentation path and file name (absolute or relative path) (not required and not necessary if the documentation is in `documentations_path`, a server configuration)
  - `documentation_content_type`: The content type for documentation page (not required, default is `text/html`)
  - `command_generate_documentation`: A command to build the documentation file (not required)
+ - `no_password`: If `no_password` is `true` the command line will be written to the logs (not required, default is `false`)
 
 ### Command to generate the documentation file
 
