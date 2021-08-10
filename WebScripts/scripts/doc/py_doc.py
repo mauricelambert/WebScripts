@@ -25,7 +25,7 @@ in a web interface.
 
 This file write HTML documentation using pydoc."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,7 +49,7 @@ __copyright__ = copyright
 __all__ = []
 
 from pydoc import resolve, html, describe, ErrorDuringImport
-from os import path, getcwd, chdir
+from os import path, chdir
 import sys
 
 # chdir(path.join(path.dirname(__file__), "..", ".."))
@@ -86,7 +86,7 @@ def main() -> None:
             page = page.replace(f'bgcolor="{old_color}"', f'bgcolor="{new_color}"')
 
         # filename = path.join(getcwd(), "documentation", name)
-        filename = path.join(getcwd(), "doc", name)
+        filename = path.join(path.dirname(__file__), "..", "..", "doc", name)
 
         with open(f"{filename}.html", "w", encoding="utf-8") as file:
             file.write(page)

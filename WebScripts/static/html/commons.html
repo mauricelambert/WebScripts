@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.0.3)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.0.6)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
@@ -78,13 +78,13 @@ Static methods defined here:<br>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>__defaults__</strong> = {'default_value': None, 'description': None, 'example': None, 'html_type': 'text', 'input': None}</dl>
+<dl><dt><strong>__defaults__</strong> = {'default_value': None, 'description': None, 'example': None, 'html_type': 'text', 'input': None, 'is_advanced': False, 'javascript_attributs': {}}</dl>
 
-<dl><dt><strong>__optional__</strong> = ['list', 'input', 'example', 'html_type', 'description', 'default_value', 'predefined_values']</dl>
+<dl><dt><strong>__optional__</strong> = ['list', 'input', 'example', 'html_type', 'is_advanced', 'description', 'default_value', 'predefined_values', 'javascript_attributs']</dl>
 
 <dl><dt><strong>__required__</strong> = ['name']</dl>
 
-<dl><dt><strong>__types__</strong> = {'input': &lt;class 'bool'&gt;, 'list': &lt;class 'bool'&gt;, 'predefined_values': &lt;class 'list'&gt;}</dl>
+<dl><dt><strong>__types__</strong> = {'input': &lt;class 'bool'&gt;, 'is_advanced': &lt;class 'bool'&gt;, 'list': &lt;class 'bool'&gt;, 'predefined_values': &lt;class 'list'&gt;}</dl>
 
 <hr>
 Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
@@ -275,7 +275,7 @@ This&nbsp;class&nbsp;get&nbsp;script&nbsp;config.<br>&nbsp;</tt></td></tr>
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="ScriptConfig-build_args"><strong>build_args</strong></a>(self)</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;Arguments&nbsp;from&nbsp;self.<strong>args</strong>:&nbsp;List[Dict[str,&nbsp;str]]</tt></dd></dl>
+<dl><dt><a name="ScriptConfig-build_args"><strong>build_args</strong></a>(self, configuration: ~Configuration)</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;Arguments&nbsp;from&nbsp;self.<strong>args</strong>:&nbsp;List[Dict[str,&nbsp;str]]</tt></dd></dl>
 
 <dl><dt><a name="ScriptConfig-get_JSON_API"><strong>get_JSON_API</strong></a>(self) -&gt; Dict</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;for&nbsp;JSON&nbsp;API&nbsp;(visible&nbsp;configuration&nbsp;for&nbsp;user).</tt></dd></dl>
 
@@ -305,11 +305,11 @@ script&nbsp;configuration&nbsp;from&nbsp;configuration.</tt></dd></dl>
 Data and other attributes defined here:<br>
 <dl><dt><strong>__defaults__</strong> = {'access_groups': None, 'access_users': None, 'args': [], 'category': None, 'command_generate_documentation': None, 'content_type': 'text/plain', 'description': None, 'documentation_content_type': 'text/html', 'documentation_file': None, 'launcher': None, ...}</dl>
 
-<dl><dt><strong>__optional__</strong> = ['command_generate_documentation', 'documentation_content_type', 'documentation_file', 'content_type', 'minimum_access', 'access_groups', 'access_users', 'description', 'category', 'launcher', 'path', 'args', 'timeout']</dl>
+<dl><dt><strong>__optional__</strong> = ['command_generate_documentation', 'documentation_content_type', 'documentation_file', 'minimum_access', 'access_groups', 'content_type', 'access_users', 'no_password', 'description', 'category', 'launcher', 'timeout', 'path', 'args']</dl>
 
 <dl><dt><strong>__required__</strong> = ['name', 'dirname']</dl>
 
-<dl><dt><strong>__types__</strong> = {'access_groups': typing.List[int], 'access_users': typing.List[int], 'minimum_access': &lt;class 'int'&gt;, 'timeout': &lt;class 'int'&gt;}</dl>
+<dl><dt><strong>__types__</strong> = {'access_groups': typing.List[int], 'access_users': typing.List[int], 'minimum_access': &lt;class 'int'&gt;, 'no_password': &lt;class 'bool'&gt;, 'timeout': &lt;class 'int'&gt;}</dl>
 
 <hr>
 Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>

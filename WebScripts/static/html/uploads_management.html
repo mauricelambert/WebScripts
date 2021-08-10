@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>uploads_management</strong></big></big> (version 0.0.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>uploads_management</strong></big></big> (version 0.0.2)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="uploads_management.py">uploads_management.py</a></font></td></tr></table>
     <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
@@ -165,9 +165,17 @@ Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<b
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-delete_file"><strong>delete_file</strong></a>(name: str) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;an&nbsp;uploaded&nbsp;file.</tt></dd></dl>
  <dl><dt><a name="-get_file"><strong>get_file</strong></a>(name: str) -&gt; Tuple[List[uploads_management.Upload], collections.Counter]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;history&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(name: str = None, id_: str = None) -&gt; Tuple[str, str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;<br>
+content&nbsp;and&nbsp;the&nbsp;filename&nbsp;(without&nbsp;check&nbsp;permissions).<br>
+&nbsp;<br>
+If&nbsp;id_&nbsp;and&nbsp;name&nbsp;arguments&nbsp;are&nbsp;None&nbsp;this&nbsp;function&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+Using&nbsp;a&nbsp;name&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;last&nbsp;versions&nbsp;of&nbsp;the&nbsp;file&nbsp;content.<br>
+Using&nbsp;an&nbsp;ID&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;version&nbsp;of&nbsp;this&nbsp;ID.</tt></dd></dl>
  <dl><dt><a name="-get_visible_files"><strong>get_visible_files</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;upload&nbsp;if&nbsp;not&nbsp;hidden.</tt></dd></dl>
- <dl><dt><a name="-read_file"><strong>read_file</strong></a>(name: str, user: ~User = None) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file.</tt></dd></dl>
- <dl><dt><a name="-write_file"><strong>write_file</strong></a>(data: str, name: str, read_access: int, write_access: int, delete_access: int, hidden: bool, binary: bool, is_b64: bool) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;upload&nbsp;a&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-read_file"><strong>read_file</strong></a>(name: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;permission&nbsp;and&nbsp;<br>
+return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
+ <dl><dt><a name="-write_file"><strong>write_file</strong></a>(data: str, name: str, read_access: int, write_access: int, delete_access: int, hidden: bool, binary: bool, is_b64: bool, with_access: bool = True) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;upload&nbsp;a&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -175,7 +183,7 @@ Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<b
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__all__</strong> = ['Upload', 'upload_file', 'read_file', 'write_file', 'delete_file', 'get_visible_files', 'get_file']<br>
+<td width="100%"><strong>__all__</strong> = ['Upload', 'get_file', 'read_file', 'write_file', 'delete_file', 'get_file_content', 'get_visible_files']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021  Maurice Lambert...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
 <strong>__description__</strong> = 'This package implements a web server to run scri...nt some functions to manage uploads on WebScripts'<br>
