@@ -30,8 +30,8 @@ the Server class and the Configuration class)."""
 from types import SimpleNamespace, ModuleType, FunctionType
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
-from os import environ, path, _Environ, getcwd
 from typing import TypeVar, Tuple, List, Dict
+from os import path, _Environ, getcwd
 from wsgiref import simple_server
 from base64 import b64decode
 from glob import iglob
@@ -313,9 +313,7 @@ class Server:
             user = self.get_session(cookies.split("; "), ip)
 
         elif credentials is not None and credentials.startswith("Basic "):
-            credentials = b64decode(
-                credentials.split(" ", maxsplit=1)[1]
-            ).decode()
+            credentials = b64decode(credentials.split(" ", maxsplit=1)[1]).decode()
 
             if ":" in credentials:
                 username, password = credentials.split(":", maxsplit=1)

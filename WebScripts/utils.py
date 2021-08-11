@@ -29,14 +29,16 @@ and scripts (Logs, Namespace for configuration, ...)."""
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
+from os import path, system, device_encoding
 from configparser import ConfigParser
-from os import path, system, environ
+from contextlib import suppress
 from functools import wraps
 from logging import Logger
 from os import _Environ
 import logging.config
 import platform
 import logging
+import locale
 import json
 
 if __package__:
@@ -56,7 +58,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -85,6 +87,7 @@ __all__ = [
     "get_ip",
     "get_file_content",
     "get_real_path",
+    "get_encodings",
     "get_ini_dict",
     "server_path",
 ]
@@ -547,6 +550,17 @@ class DefaultNamespace(SimpleNamespace):
 
 
 @log_trace
+def get_encodings():
+
+    """This function returns the probable encodings."""
+
+    yield locale.getpreferredencoding()
+    yield device_encoding(0)
+    yield "utf-8"
+    yield "latin-1"
+
+
+@log_trace
 def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 
     """This function return a dict from ini filename."""
@@ -574,9 +588,16 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
 
     """This function return the file content."""
 
-    with open(get_real_path(file_path), *args, **kwargs) as file:
-        content = file.read()
-    return content
+    if "encoding" in kwargs:
+        with open(get_real_path(file_path), *args, **kwargs) as file:
+            content = file.read()
+        return content
+
+    for encoding in get_encodings():
+        with suppress(UnicodeDecodeError):
+            with open(get_real_path(file_path), *args, **kwargs) as file:
+                content = file.read()
+            return content
 
 
 @log_trace

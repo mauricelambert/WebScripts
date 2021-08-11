@@ -27,9 +27,9 @@ in a web interface.
 This file implement Pages (Api and Web system), script execution and right system."""
 
 from subprocess import Popen, PIPE, TimeoutExpired
-from os import _Environ, device_encoding, path
 from typing import Tuple, List, Dict
-import locale
+from contextlib import suppress
+from os import _Environ, path
 import json
 
 try:
@@ -51,6 +51,7 @@ try:
         Logs,
         get_file_content,
         get_real_path,
+        get_encodings,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
@@ -73,11 +74,12 @@ except ImportError:
         Logs,
         get_file_content,
         get_real_path,
+        get_encodings,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -146,7 +148,9 @@ def execute_scripts(
     return stdout, stderr, process.returncode, error
 
 
-def execution_logs(script: ScriptConfig, user: User, process: Popen, stderr: bytes) -> None:
+def execution_logs(
+    script: ScriptConfig, user: User, process: Popen, stderr: bytes
+) -> None:
 
     """This function logs the script execution."""
 
@@ -183,8 +187,8 @@ def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str
     script_env["wsgi.version"] = ".".join(
         [str(version) for version in script_env["wsgi.version"]]
     )
-    
-    return {key:str(value) for key, value in script_env.items()}
+
+    return {key: str(value) for key, value in script_env.items()}
 
 
 def check_right(user: User, configuration: ScriptConfig) -> bool:
@@ -222,34 +226,10 @@ def decode_output(data: bytes) -> str:
     """This function decode outputs (try somes encoding)."""
 
     output = None
-
-    try:
-        output = data.decode(locale.getpreferredencoding())
-    except UnicodeDecodeError:
-        pass
-    else:
-        return output
-
-    try:
-        output = data.decode(device_encoding(0))
-    except (UnicodeDecodeError, TypeError):
-        pass
-    else:
-        return output
-
-    try:
-        output = data.decode("utf-8")
-    except UnicodeDecodeError:
-        pass
-    else:
-        return output
-
-    try:
-        output = data.decode("latin-1")
-    except UnicodeDecodeError:
-        pass
-    else:
-        return output
+    for encoding in get_encodings():
+        with suppress(UnicodeDecodeError):
+            data.decode(encoding)
+            return output
 
 
 class Api:

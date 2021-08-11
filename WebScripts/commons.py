@@ -83,6 +83,7 @@ if __package__:
         Logs,
         get_file_content,
         get_real_path,
+        get_encodings,
         WebScriptsConfigurationError,
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
@@ -98,6 +99,7 @@ else:
         Logs,
         get_file_content,
         get_real_path,
+        get_encodings,
         WebScriptsConfigurationError,
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
@@ -249,7 +251,7 @@ class ScriptConfig(DefaultNamespace):
         args = []
         for arg in self.args:
             arg = Argument.default_build(**arg)
-            
+
             javascript_section = arg.get("javascript_section")
             if javascript_section is not None:
                 javascript_configuration = configuration.get(javascript_section)
@@ -257,7 +259,7 @@ class ScriptConfig(DefaultNamespace):
                 if not isinstance(javascript_configuration, dict):
                     raise WebScriptsConfigurationError(
                         f'"{javascript_section}" doesn\'t exist or '
-                        'is not a javascript object (a dictionnary)'
+                        "is not a javascript object (a dictionnary)"
                     )
 
                 arg.javascript_attributs = javascript_configuration
