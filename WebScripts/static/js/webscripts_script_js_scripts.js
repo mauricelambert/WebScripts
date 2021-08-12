@@ -279,14 +279,32 @@ function make_json_request (arguments_) {
 }
 
 function send_request (json) {
+	let start;
+	let end;
 
 	let xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = () => {
 		if (xhttp.readyState === 4 && xhttp.status === 200) {
+			end = Date.now();
 			let response_object = JSON.parse(xhttp.responseText);
+
 			document.getElementById("csrf_token").value = response_object.csrf;
+
+			diff_seconds = Math.round((end.valueOf() - start.valueOf()) / 1000);
+			minutes = Math.round(diff_seconds / 60);
+			seconds = diff_seconds - minutes * 60;
+
+			if (minutes < 10) {
+				minutes=`0${minutes}`;
+			}
+			if (seconds < 10) {
+				seconds=`0${seconds}`;
+			}
+
 			build_output_interface(
-				response_object
+				response_object,
+				true,
+				`${minutes}:${seconds}`
 			);
 		} else if (xhttp.readyState === 4 && xhttp.status === 302 && script_name === "/auth/") {
 			window.location = new URL("/web/", window.location);
@@ -309,15 +327,40 @@ function send_request (json) {
 	xhttp.open("POST", url, true);
 	xhttp.setRequestHeader('Content-Type', 'application/json');
 	xhttp.send(json);
+	start = Date.now();
 
 	is_running = true;
 	progress_bar();
 }
 
-function build_output_interface (output, add_history_=true) {
+function build_code (output, time) {
+	let code = document.createElement("code");
+	code.id="code";
+	code.classList.add("code");
+	code.innerText = `>>> ${script_name}\tExitCode: ${output.code}\tError: ${output.error}`;
+
+	if (time) {
+		code.innerText += `\tExecutionTime: ${time}`;
+	}
+	return code;
+}
+
+function build_new_output (code) {
+	let new_output = document.createElement("div");
+	let console_ = document.createElement("pre");
+
+	console_.id="console";
+	console_.classList.add("console");
+
+	console_.appendChild(code);
+	new_output.appendChild(console_);
+
+	return new_output;
+}
+
+function build_output_interface (output, add_history_=true, time=null) {
 	let console_div = document.getElementById("script_outputs");
 	let content_type = output["Content-Type"];
-	let new_output = document.createElement("div");
 
 	if (add_history_) {
 		add_history(
@@ -328,17 +371,10 @@ function build_output_interface (output, add_history_=true) {
 		);
 	}
 
-	let console_ = document.createElement("pre");
-	console_.id="console";
-	console_.classList.add("console");
-
-	let code = document.createElement("code");
-	code.id="code";
-	code.classList.add("code");
-	code.innerText = `>>> ${script_name}\tExitCode: ${output.code}\tError: ${output.error}`;
-
-	console_.appendChild(code);
-	new_output.appendChild(console_);
+	console.log(output);
+	let code = build_code(output, time);
+	let new_output = build_new_output(code);
+	console.log(output);
 
 	if (content_type.includes("text/html")) {
 		download_extension = ".html";

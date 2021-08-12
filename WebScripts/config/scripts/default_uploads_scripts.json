@@ -13,6 +13,7 @@
 	},
 
 	"config_get_file": {
+		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
@@ -27,6 +28,7 @@
 	},
 
     "config_get_files": {
+    	"no_password": true,
         "launcher": "python",
         "category": "Upload",
 		"minimum_access": 50,
@@ -41,6 +43,7 @@
     },
 
 	"config_delete_file": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "minimum_access": 50,
@@ -96,6 +99,7 @@
 	},
 
 	"config_get_history": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
 		"args": "args_get_file",
@@ -106,6 +110,7 @@
 	},
 
 	"config_upload_file": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "minimum_access": 50,
@@ -126,6 +131,7 @@
 	},
 
 	"config_api_get_files": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "minimum_access": 50,
@@ -134,6 +140,7 @@
 	},
 
 	"config_get_all_files": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "access_groups": [1000],
@@ -143,6 +150,7 @@
 	},
 
 	"config_api_get_history": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "access_groups": [1000],
@@ -152,6 +160,7 @@
 	},
 
 	"config_api_get_all_files": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "access_groups": [1000],
@@ -160,6 +169,7 @@
 	},
 
 	"config_get_any_file": {
+		"no_password": true,
 		"launcher": "python",
         "category": "Upload",
         "access_groups": [1000],

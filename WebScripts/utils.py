@@ -29,12 +29,11 @@ and scripts (Logs, Namespace for configuration, ...)."""
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
-from os import path, system, device_encoding
+from os import path, system, _Environ, device_encoding
 from configparser import ConfigParser
 from contextlib import suppress
 from functools import wraps
 from logging import Logger
-from os import _Environ
 import logging.config
 import platform
 import logging

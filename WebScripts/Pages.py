@@ -79,7 +79,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -145,6 +145,8 @@ def execute_scripts(
         stdout, stderr = process.communicate()
         error = "TimeoutError"
 
+    execution_logs(script, user, process, stderr)
+
     return stdout, stderr, process.returncode, error
 
 
@@ -163,7 +165,7 @@ def execution_logs(
         )
     else:
         Logs.debug(
-            f'SCRIPT "{script_name}" executed without error for user named "{user.name}".'
+            f'SCRIPT "{script.name}" executed without error for user named "{user.name}".'
         )
 
 
@@ -228,7 +230,7 @@ def decode_output(data: bytes) -> str:
     output = None
     for encoding in get_encodings():
         with suppress(UnicodeDecodeError):
-            data.decode(encoding)
+            output = data.decode(encoding)
             return output
 
 

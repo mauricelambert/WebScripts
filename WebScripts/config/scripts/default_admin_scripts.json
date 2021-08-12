@@ -29,6 +29,7 @@
     "config_delete_user": {
         "timeout": null,
         "access_users": [],
+        "no_password": true,
         "launcher": "python",
         "access_groups": [1000],
         "content_type": "text/plain",
@@ -101,6 +102,7 @@
 	},
 
 	"config_view_users": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
@@ -111,6 +113,7 @@
 	},
 
 	"config_api_view_users": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
@@ -140,6 +143,7 @@
 	},
 
 	"config_add_group": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "add_group_args",
@@ -166,6 +170,7 @@
 	},
 
 	"config_delete_group": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "delete_group_args",
@@ -185,6 +190,7 @@
 	},
 
 	"config_view_groups": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",
@@ -195,6 +201,7 @@
 	},
 
 	"config_api_view_groups": {
+		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",

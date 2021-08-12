@@ -63,6 +63,7 @@
     },
 
     "config_show_licence": {
+        "no_password": true,
         "launcher": "python",
         "category": "License",
         "args": "args_show_license",
