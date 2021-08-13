@@ -2,7 +2,3 @@ ID,name,password,salt,enumerations,IPs,groups,apikey,categories,scripts
 0,Not Authenticated,,,,*,0,,*,*
 1,Unknow,,,,*,"0,1",,*,*
 2,Admin,pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo6OMusFKbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw==,c2FsdA==,1000,"192.168.*,172.16.*,10.*,127.0.*","50,1000",AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin,*,*
-3,,,,0,,,,,
-4,,,,0,,,,,
-5,,,,0,,,,,
-6,Test,4EDmEzGzEPLcBO0XjhTu1xcqNsaknYmVYjpCQBJ1SILtxhY1THH8vaDiKRq9nrbLT+9LK4tHhNEEGrRLbLLE+A==,SJW2RnncwBtpQGgvXj7vk5IeBoVr8Y9k5Rw75toEJe4=,105778,127.*,50,ON3cp0PZ/4nbOsjujkhySLOiJ2RnjNLPMaoOrnX6MDqAhm3H2vvOCaLG3p7gCv7OaX/PxIGh48XyPtAlkMVGIs78qikAlZIaqHex6iX8Od+c1bV7Ec4VAvOwSED40Z+Yl8fETSLLBAyKG9Ffz6P1Yd7h64hP01AQx870uio=,"License,*Account","*file*,*password*"
