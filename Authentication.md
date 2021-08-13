@@ -22,7 +22,9 @@ Attribute required are:
  - `ip`: the IP address of the client
  - `id`: the **unique ID** of the client 
  - `name`: the name of the client
- - `groups`: the list of group IDs (group ID must be **unique**), the list can use the JSON syntax: `[50, 1000]` or the INI syntax: `"50,1000"`.
+ - `groups`: the list of group IDs (group ID must be **unique**), the list can use the JSON syntax: `[50, 1000]` or the INI syntax: `"50,1000"`
+ - `categories`: list of glob syntax for authorized categories
+ - `scripts`: list of glob syntax for authorized scripts
 
 Sample python code to follow all requirements:
 ```python
@@ -41,6 +43,8 @@ print(
                 "name": "Not Authenticated",
                 "ip": ip,
                 "groups": "0",
+                "categories": ["*"],
+                "scripts": ["*"]
             }
         )
     )
