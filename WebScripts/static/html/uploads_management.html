@@ -165,7 +165,7 @@ Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<b
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-delete_file"><strong>delete_file</strong></a>(name: str) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;an&nbsp;uploaded&nbsp;file.</tt></dd></dl>
  <dl><dt><a name="-get_file"><strong>get_file</strong></a>(name: str) -&gt; Tuple[List[uploads_management.Upload], collections.Counter]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;history&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
- <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(name: str = None, id_: str = None) -&gt; Tuple[str, str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;<br>
+ <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(name: str = None, id_: str = None) -&gt; Tuple[str, str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file<br>
 content&nbsp;and&nbsp;the&nbsp;filename&nbsp;(without&nbsp;check&nbsp;permissions).<br>
 &nbsp;<br>
 If&nbsp;id_&nbsp;and&nbsp;name&nbsp;arguments&nbsp;are&nbsp;None&nbsp;this&nbsp;function&nbsp;return&nbsp;None.<br>
@@ -173,7 +173,7 @@ If&nbsp;id_&nbsp;and&nbsp;name&nbsp;arguments&nbsp;are&nbsp;None&nbsp;this&nbsp;
 Using&nbsp;a&nbsp;name&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;last&nbsp;versions&nbsp;of&nbsp;the&nbsp;file&nbsp;content.<br>
 Using&nbsp;an&nbsp;ID&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;version&nbsp;of&nbsp;this&nbsp;ID.</tt></dd></dl>
  <dl><dt><a name="-get_visible_files"><strong>get_visible_files</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;upload&nbsp;if&nbsp;not&nbsp;hidden.</tt></dd></dl>
- <dl><dt><a name="-read_file"><strong>read_file</strong></a>(name: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;permission&nbsp;and&nbsp;<br>
+ <dl><dt><a name="-read_file"><strong>read_file</strong></a>(name: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;permission&nbsp;and<br>
 return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
  <dl><dt><a name="-write_file"><strong>write_file</strong></a>(data: str, name: str, read_access: int, write_access: int, delete_access: int, hidden: bool, binary: bool, is_b64: bool, with_access: bool = True) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;upload&nbsp;a&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>

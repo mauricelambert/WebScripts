@@ -60,14 +60,12 @@ def main() -> None:
     """This file write HTML documentation using pydoc."""
 
     if len(sys.argv) != 2:
-        print(
-            "USAGE: py_doc.py [filename string required]"
-        )
+        print("USAGE: py_doc.py [filename string required]")
         sys.exit(1)
 
     COLORS = {
         "#ffc8d8": "#EEC477",
-#        "#ee77aa": "#A57927",
+        #        "#ee77aa": "#A57927",
         "#ee77aa": "#C89B48",
         "#aa55cc": "#4A948C",
     }

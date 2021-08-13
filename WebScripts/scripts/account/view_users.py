@@ -25,7 +25,7 @@ in a web interface.
 
 This file can print users in HTML table."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -96,7 +96,8 @@ def main() -> None:
         ):
             print(
                 f"<tr><td>{user.ID}</td><td>{user.name}</td><td>{user.IPs}</td>"
-                f"<td>{user.groups}</td><td>{user.apikey}</td></tr>"
+                f"<td>{user.groups}</td><td>{user.apikey}</td><td>{user.categories}</td>"
+                f"<td>{user.scripts}</td></tr>"
             )
 
     print("</table>")

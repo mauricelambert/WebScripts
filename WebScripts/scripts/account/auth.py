@@ -105,6 +105,8 @@ def main() -> None:
                 or environ.get("X_FORWARDED_HOST")
                 or environ["REMOTE_ADDR"],
                 "groups": user.groups,
+                "categories": user.categories,
+                "scripts": user.scripts,
             }
         )
     )

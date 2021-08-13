@@ -25,7 +25,7 @@ in a web interface.
 
 This file can add a user."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -77,6 +77,22 @@ def parse_args() -> Namespace:
         nargs="+",
         default=["*"],
     )
+    parser.add_argument(
+        "--categories",
+        "-c",
+        help="List of glob syntax for authorized categories",
+        type=str,
+        nargs="+",
+        default=["*"],
+    )
+    parser.add_argument(
+        "--scripts",
+        "-s",
+        help="List of glob syntax for authorized scripts",
+        type=str,
+        nargs="+",
+        default=["*"],
+    )
     return parser.parse_args()
 
 
@@ -88,7 +104,12 @@ def main() -> None:
 
     try:
         user = add_user(
-            arguments.username, arguments.password, arguments.groups, arguments.ips
+            arguments.username,
+            arguments.password,
+            arguments.groups,
+            arguments.ips,
+            arguments.categories,
+            arguments.scripts,
         )
     except UserError as error:
         print(error)

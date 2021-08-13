@@ -71,7 +71,9 @@
 		"username": "arg_username",
 		"password": "arg_password",
 		"--ips": "arg_ips",
-		"--groups": "arg_group_ids"
+		"--groups": "arg_group_ids",
+		"--categories": "arg_categories",
+		"--scripts": "arg_scripts"
 	},
 
 	"arg_username": {
@@ -83,7 +85,7 @@
 
 	"arg_group_ids": {
 		"list": true,
-		"example": "5",
+		"example": "50",
 		"html_type": "number",
 		"description": "List of groups IDs to add permissions to the new user."
 	},
@@ -99,6 +101,20 @@
 		"example": "password",
 		"html_type": "password",
 		"description": "The user password"
+	},
+
+	"arg_scripts": {
+		"list": true,
+		"is_advanced": true,
+		"example": "antivirus*.py",
+		"description": "List of glob syntax for authorized scripts."
+	},
+
+	"arg_categories": {
+		"list": true,
+		"is_advanced": true,
+		"example": "Admin*",
+		"description": "List of glob syntax for authorized categories."
 	},
 
 	"config_view_users": {

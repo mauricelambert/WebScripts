@@ -30,6 +30,7 @@ from subprocess import Popen, PIPE, TimeoutExpired
 from typing import Tuple, List, Dict
 from contextlib import suppress
 from os import _Environ, path
+from fnmatch import fnmatch
 import json
 
 try:
@@ -79,7 +80,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.8"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -103,12 +104,14 @@ __copyright__ = copyright
 __all__ = ["Pages"]
 
 
+@log_trace
 def execute_scripts(
     script_name: str,
     user: User,
     environ: _Environ,
     arguments: List[str],
     inputs: List[str],
+    is_auth: bool = False,
 ) -> Tuple[bytes, bytes]:
 
     """This function execute script from script name and return output and errors."""
@@ -119,7 +122,7 @@ def execute_scripts(
     if script is None:
         return None, b"404", -1, error
 
-    if not check_right(user, script):
+    if not is_auth and not check_right(user, script):
         return None, b"403", -1, error
 
     arguments.insert(0, script.path)
@@ -150,6 +153,7 @@ def execute_scripts(
     return stdout, stderr, process.returncode, error
 
 
+@log_trace
 def execution_logs(
     script: ScriptConfig, user: User, process: Popen, stderr: bytes
 ) -> None:
@@ -169,6 +173,7 @@ def execution_logs(
         )
 
 
+@log_trace
 def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str, str]:
 
     """This function builds the environment variables for the new process."""
@@ -193,6 +198,7 @@ def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str
     return {key: str(value) for key, value in script_env.items()}
 
 
+@log_trace
 def check_right(user: User, configuration: ScriptConfig) -> bool:
 
     """This function check rights for script/user and return boolean."""
@@ -202,13 +208,13 @@ def check_right(user: User, configuration: ScriptConfig) -> bool:
         and configuration.access_groups
         and any(group in user.groups for group in configuration.access_groups)
     ):
-        return True
+        return check_categories_scripts_access(user, configuration)
     elif configuration.access_users and user.id in configuration.access_users:
-        return True
-    elif configuration.minimum_access and any(
+        return check_categories_scripts_access(user, configuration)
+    elif isinstance(configuration.minimum_access, int) and any(
         group >= configuration.minimum_access for group in user.groups
     ):
-        return True
+        return check_categories_scripts_access(user, configuration)
     elif all(
         v is None
         for v in (
@@ -217,12 +223,35 @@ def check_right(user: User, configuration: ScriptConfig) -> bool:
             configuration.access_groups,
         )
     ):
-        return True
+        return check_categories_scripts_access(user, configuration)
     else:
         Logs.error(f"HTTP 403: Access denied for {user.name} on {configuration.name}")
         return False
 
 
+@log_trace
+def check_categories_scripts_access(user: User, configuration: ScriptConfig) -> bool:
+
+    """This function check access on script and categories."""
+
+    if any([fnmatch(configuration.category, access) for access in user.categories]):
+        Logs.info(
+            f"{user.name} get access to category {configuration.category} ({user.categories})"
+        )
+        return True
+    elif any([fnmatch(configuration.name, access) for access in user.scripts]):
+        Logs.info(
+            f"{user.name} get access to script {configuration.name} ({user.scripts})"
+        )
+        return True
+    else:
+        Logs.error(
+            f"HTTP 403: {user.name} doesn't match with category ({configuration.category}) and script ({configuration.name})"
+        )
+        return False
+
+
+@log_trace
 def decode_output(data: bytes) -> str:
 
     """This function decode outputs (try somes encoding)."""
@@ -588,7 +617,12 @@ class Pages:
 
         Logs.info("Run authentication script.")
         stdout, stderr, code, error = execute_scripts(
-            server_configuration.auth_script, user, environ, commande, inputs
+            server_configuration.auth_script,
+            user,
+            environ,
+            commande,
+            inputs,
+            is_auth=True,
         )
 
         if len(stderr) == 3:

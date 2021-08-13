@@ -67,15 +67,12 @@ def main() -> None:
     _, type_, identifier = sys.argv
     type_ = type_.lower()
 
-
     if type_ == "id":
         id_, name = identifier, None
     elif type_ == "name":
         name, id_ = identifier, None
     else:
-        print(
-            'ERROR: TYPE must be "ID" or "name"'
-        )
+        print('ERROR: TYPE must be "ID" or "name"')
         sys.exit(2)
 
     try:

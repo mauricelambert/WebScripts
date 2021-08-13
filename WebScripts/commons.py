@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -213,9 +213,9 @@ class ScriptConfig(DefaultNamespace):
         "access_users": None,
         "no_password": False,
         "description": None,
-        "category": None,
         "launcher": None,
         "timeout": None,
+        "category": "",
         "path": "",
         "args": [],
     }
@@ -584,15 +584,28 @@ class User(DefaultNamespace):
 
     """This class implement User object"""
 
-    __required__ = ["id", "name", "groups", "csrf", "ip", "check_csrf"]
+    __required__ = [
+        "id",
+        "name",
+        "groups",
+        "csrf",
+        "ip",
+        "categories",
+        "scripts",
+        "check_csrf",
+    ]
     __types__ = {
         "id": int,
-        "groups": List[int],
         "check_csrf": bool,
+        "groups": List[int],
+        "scripts": list,
+        "categories": list,
     }
     __defaults__ = {
         "csrf": {},
         "groups": [],
+        "scripts": ["*"],
+        "categories": ["*"],
         "check_csrf": False,
     }
 

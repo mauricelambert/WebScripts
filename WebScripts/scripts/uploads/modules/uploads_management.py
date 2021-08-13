@@ -83,10 +83,10 @@ Upload = namedtuple(
 )
 FILE = "uploads.csv"
 DIRECTORY = path.join(
-    path.dirname(__file__), 
-    "..", 
-    "..", 
-    "..", 
+    path.dirname(__file__),
+    "..",
+    "..",
+    "..",
     "data",
 )
 FILES_DIRECTORY = "uploads"
@@ -249,7 +249,7 @@ def get_user() -> User:
 
 def read_file(name: str) -> str:
 
-    """This function check permission and 
+    """This function check permission and
     return a base64 of the file content."""
 
     uploads, counter = get_file(name)
@@ -269,7 +269,7 @@ def read_file(name: str) -> str:
 
 def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
 
-    """This function return a base64 of the file 
+    """This function return a base64 of the file
     content and the filename (without check permissions).
 
     If id_ and name arguments are None this function return None.
@@ -283,24 +283,20 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
         for file in get_files():
             if file.ID == id_:
                 uploads.append(file)
-        
+
         error_description = f'using "{id_}" as ID'
     elif name is not None:
         uploads, counter = get_file(name)
         error_description = f'using "{name}" as name'
 
     if len(uploads) == 0:
-        raise FileNotFoundError(
-            f"No such file or directory: {error_description}."
-        )
+        raise FileNotFoundError(f"No such file or directory: {error_description}.")
 
     file = uploads[-1]
     filename = get_real_file_name(file.name, float(file.timestamp))
 
     if not path.exists(filename):
-        raise FileNotFoundError(
-            f"No such file or directory: {error_description}."
-        )
+        raise FileNotFoundError(f"No such file or directory: {error_description}.")
 
     only_filename = path.split(file.name)[1]
     with open(filename, "rb") as file:

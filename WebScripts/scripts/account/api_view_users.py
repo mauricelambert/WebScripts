@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints users in JSON objects."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"

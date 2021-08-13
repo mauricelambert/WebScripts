@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage WebScript default databases."""
 
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -65,20 +65,31 @@ __all__ = [
 from secrets import randbelow, token_bytes
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
-from os import environ, path, chdir
 from collections import namedtuple
 from hashlib import pbkdf2_hmac
+from os import environ, path
 from fnmatch import fnmatch
 from typing import List
 import csv
 
 User = namedtuple(
     "User",
-    ["ID", "name", "password", "salt", "enumerations", "IPs", "groups", "apikey"],
+    [
+        "ID",
+        "name",
+        "password",
+        "salt",
+        "enumerations",
+        "IPs",
+        "groups",
+        "apikey",
+        "categories",
+        "scripts",
+    ],
 )
 Group = namedtuple("Group", ["ID", "name"])
 FILES = ("users.csv", "groups.csv")
-DIRECTORY = "data"
+DIRECTORY = path.join(path.dirname(__file__), "..", "..", "..", "data")
 
 
 class UserError(Exception):
@@ -91,11 +102,44 @@ class GroupError(Exception):
     """This class can raise a GroupError."""
 
 
+def upgrade_database() -> None:
+
+    """This function upgrade the database.
+
+    Add default categories ("*")
+    Add default scripts    ("*")
+    """
+
+    users = []
+    first = False
+
+    with open(path.join(DIRECTORY, FILES[0]), newline="") as csvfile:
+        csvreader = csv.reader(csvfile)
+
+        for row in csvreader:
+            if len(row) == 8:
+
+                if first:
+                    row.append("*")
+                    row.append("*")
+                else:
+                    row.append("categories")
+                    row.append("scripts")
+                    first = True
+
+            users.append(row)
+
+    with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        for user in users:
+            csvwriter.writerow(user)
+
+
 def get_users() -> Iterator[User]:
 
     """This function get users from CSV database."""
 
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
     yield from map(
         User._make, csv.reader(open(path.join(DIRECTORY, FILES[0]), "r", newline=""))
     )
@@ -105,7 +149,6 @@ def get_groups() -> Iterator[Group]:
 
     """This function get groups from CSV database."""
 
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
     yield from map(
         Group._make, csv.reader(open(path.join(DIRECTORY, FILES[1]), "r", newline=""))
     )
@@ -163,12 +206,15 @@ def change_user_password(id_: str, new_password: str, old_password: str = None) 
 
 
 def add_user(
-    name: str, password: str, groups: List[int], ips: List[str] = ["*"]
+    name: str,
+    password: str,
+    groups: List[int],
+    ips: List[str] = ["*"],
+    categories: List[str] = ["*"],
+    scripts: List[str] = ["*"],
 ) -> User:
 
     """This function add user in database or raise a UserError."""
-
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
 
     for i, user in enumerate(get_users()):
         if name == user.name:
@@ -188,6 +234,8 @@ def add_user(
         ",".join(ips),
         ",".join([str(group) for group in groups]),
         b64encode(token_bytes(125)).decode(),
+        ",".join(categories),
+        ",".join(scripts),
     )
 
     with open(path.join(DIRECTORY, FILES[0]), "a", newline="") as csvfile:
@@ -220,7 +268,7 @@ def auth_username_password(name: str, password: str) -> User:
                 if fnmatch(environ["REMOTE_ADDR"], glob_ip):
                     return user
 
-    return User("0", "Not Authenticated", "", "", "", "*", "0", "")
+    return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
 
 
 def auth_apikey(apikey: str) -> User:
@@ -232,7 +280,7 @@ def auth_apikey(apikey: str) -> User:
         if apikey == user.apikey:
             return user
 
-    return User("0", "Not Authenticated", "", "", "", "*", "0", "")
+    return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
 
 
 def auth(username: str = None, password: str = None, apikey: str = None) -> User:
@@ -249,8 +297,6 @@ def auth(username: str = None, password: str = None, apikey: str = None) -> User
 def add_group(name: str, id_: int) -> Group:
 
     """This function add group in database or raise a GroupError."""
-
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
 
     for group in get_groups():
         if name == group.name:
@@ -287,6 +333,8 @@ def delete_user(id_: int) -> User:
                     "",
                     "",
                     "",
+                    "",
+                    "",
                 )
             )
         else:
@@ -301,8 +349,6 @@ def rewrite_users(users: List[User]) -> None:
 
     """This function rewrite a list of User."""
 
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
-
     with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile)
         # csv_writer.writerow(User._fields)
@@ -313,8 +359,6 @@ def rewrite_users(users: List[User]) -> None:
 def delete_group(id_: int) -> Group:
 
     """This function delete a group by id and return the deleted group."""
-
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
 
     groups = []
     deleted_group = None
@@ -338,11 +382,9 @@ def create_default_databases() -> None:
 
     """This function create defaults users and groups."""
 
-    chdir(path.join(path.dirname(__file__), "..", "..", ".."))
-
     default_users = [
-        User("0", "Not Authenticated", "", "", "", "*", "0", ""),
-        User("1", "Unknow", "", "", "", "*", "0,1", ""),
+        User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*"),
+        User("1", "Unknow", "", "", "", "*", "0,1", "", "*", "*"),
         User(
             "2",
             "Admin",
@@ -352,6 +394,8 @@ def create_default_databases() -> None:
             "192.168.*,172.16.*,10.*,127.0.*",
             "50,1000",
             "Admin" * 32,
+            "*",
+            "*",
         ),
     ]
     default_groups = [
@@ -363,17 +407,13 @@ def create_default_databases() -> None:
         Group("1000", "Administrators"),
     ]
 
-    with open(
-        path.join(DIRECTORY, FILES[0]), "w", newline=""
-    ) as csvfile:
+    with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(User._fields)
         for user in default_users:
             csv_writer.writerow(user)
 
-    with open(
-        path.join(DIRECTORY, FILES[1]), "w", newline=""
-    ) as csvfile:
+    with open(path.join(DIRECTORY, FILES[1]), "w", newline="") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(Group._fields)
         for group in default_groups:
@@ -382,3 +422,9 @@ def create_default_databases() -> None:
 
 if __name__ == "__main__":
     create_default_databases()
+
+try:
+    for user in get_users():
+        break
+except TypeError:
+    upgrade_database()

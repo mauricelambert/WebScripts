@@ -142,19 +142,19 @@ def get_url(token: str) -> str:
         - https://www.python.org/dev/peps/pep-3333/#url-reconstruction
     """
 
-    url = environ['wsgi.url_scheme']+'://'
+    url = environ["wsgi.url_scheme"] + "://"
 
-    if environ.get('HTTP_HOST'):
-        url += environ['HTTP_HOST']
+    if environ.get("HTTP_HOST"):
+        url += environ["HTTP_HOST"]
     else:
-        url += environ['SERVER_NAME']
+        url += environ["SERVER_NAME"]
 
-        if environ['wsgi.url_scheme'] == 'https':
-            if environ['SERVER_PORT'] != '443':
-               url += ':' + environ['SERVER_PORT']
+        if environ["wsgi.url_scheme"] == "https":
+            if environ["SERVER_PORT"] != "443":
+                url += ":" + environ["SERVER_PORT"]
         else:
-            if environ['SERVER_PORT'] != '80':
-               url += ':' + environ['SERVER_PORT']
+            if environ["SERVER_PORT"] != "80":
+                url += ":" + environ["SERVER_PORT"]
 
     url += f"/web/scripts/get_password_share.py?token={quote(token)}"
     return url

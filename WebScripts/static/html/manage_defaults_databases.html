@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>manage_defaults_databases</strong></big></big> (version 0.0.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>manage_defaults_databases</strong></big></big> (version 1.0.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="manage_defaults_databases.py">manage_defaults_databases.py</a></font></td></tr></table>
     <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
@@ -206,9 +206,9 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <font color="#000000" face="helvetica, arial"><a name="User">class <strong>User</strong></a>(<a href="builtins.html#tuple">builtins.tuple</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)<br>
+<td colspan=2><tt><a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey,&nbsp;categories,&nbsp;scripts)<br>
 &nbsp;<br>
-<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)<br>&nbsp;</tt></td></tr>
+<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey,&nbsp;categories,&nbsp;scripts)<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="manage_defaults_databases.html#User">User</a></dd>
@@ -231,7 +231,7 @@ Class methods defined here:<br>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="User-__new__"><strong>__new__</strong></a>(_cls, ID, name, password, salt, enumerations, IPs, groups, apikey)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey)</tt></dd></dl>
+<dl><dt><a name="User-__new__"><strong>__new__</strong></a>(_cls, ID, name, password, salt, enumerations, IPs, groups, apikey, categories, scripts)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#User">User</a>(ID,&nbsp;name,&nbsp;password,&nbsp;salt,&nbsp;enumerations,&nbsp;IPs,&nbsp;groups,&nbsp;apikey,&nbsp;categories,&nbsp;scripts)</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -259,11 +259,17 @@ Data descriptors defined here:<br>
 <dl><dt><strong>apikey</strong></dt>
 <dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;7</tt></dd>
 </dl>
+<dl><dt><strong>categories</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;8</tt></dd>
+</dl>
+<dl><dt><strong>scripts</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;9</tt></dd>
+</dl>
 <hr>
 Data and other attributes defined here:<br>
 <dl><dt><strong>_field_defaults</strong> = {}</dl>
 
-<dl><dt><strong>_fields</strong> = ('ID', 'name', 'password', 'salt', 'enumerations', 'IPs', 'groups', 'apikey')</dl>
+<dl><dt><strong>_fields</strong> = ('ID', 'name', 'password', 'salt', 'enumerations', 'IPs', 'groups', 'apikey', 'categories', 'scripts')</dl>
 
 <hr>
 Methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
@@ -378,7 +384,7 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-add_group"><strong>add_group</strong></a>(name: str, id_: int) -&gt; manage_defaults_databases.Group</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;group&nbsp;in&nbsp;database&nbsp;or&nbsp;raise&nbsp;a&nbsp;<a href="#GroupError">GroupError</a>.</tt></dd></dl>
- <dl><dt><a name="-add_user"><strong>add_user</strong></a>(name: str, password: str, groups: List[int], ips: List[str] = ['*']) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;user&nbsp;in&nbsp;database&nbsp;or&nbsp;raise&nbsp;a&nbsp;<a href="#UserError">UserError</a>.</tt></dd></dl>
+ <dl><dt><a name="-add_user"><strong>add_user</strong></a>(name: str, password: str, groups: List[int], ips: List[str] = ['*'], categories: List[str] = ['*'], scripts: List[str] = ['*']) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;user&nbsp;in&nbsp;database&nbsp;or&nbsp;raise&nbsp;a&nbsp;<a href="#UserError">UserError</a>.</tt></dd></dl>
  <dl><dt><a name="-change_user_password"><strong>change_user_password</strong></a>(id_: str, new_password: str, old_password: str = None) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;change&nbsp;a&nbsp;user&nbsp;password.</tt></dd></dl>
  <dl><dt><a name="-create_default_databases"><strong>create_default_databases</strong></a>() -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;create&nbsp;defaults&nbsp;users&nbsp;and&nbsp;groups.</tt></dd></dl>
  <dl><dt><a name="-delete_group"><strong>delete_group</strong></a>(id_: int) -&gt; manage_defaults_databases.Group</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;a&nbsp;group&nbsp;by&nbsp;id&nbsp;and&nbsp;return&nbsp;the&nbsp;deleted&nbsp;group.</tt></dd></dl>
@@ -400,7 +406,8 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
+<strong>__warningregistry__</strong> = {'version': 0}</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">
 <td colspan=3 valign=bottom>&nbsp;<br>
