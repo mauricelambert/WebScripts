@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file test the WebScript.py file
+#    This file test the Errors.py file
 #    from the command line and display the result in a web interface.
 #    Copyright (C) 2021  Maurice Lambert
 
@@ -20,7 +20,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This file test the WebScripts.py file"""
+"""This file test the Errors.py file"""
 
 from unittest import TestCase, main
 from os import path

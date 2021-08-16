@@ -100,6 +100,7 @@ WebScripts/static/js/webscripts_script_js_scripts.js
 WebScripts/static/templates/index.html
 WebScripts/static/templates/script.html
 test/TestErrors.py
+test/TestUtils.py
 test/TestWebScripts.py
 test/modules/test.py
 test/static/css/test.css
