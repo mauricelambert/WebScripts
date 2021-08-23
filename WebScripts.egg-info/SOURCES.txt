@@ -87,6 +87,7 @@ WebScripts/static/css/webscripts_style.css
 WebScripts/static/html/Errors.html
 WebScripts/static/html/Pages.html
 WebScripts/static/html/WebScripts.html
+WebScripts/static/html/__init__.html
 WebScripts/static/html/commons.html
 WebScripts/static/html/index.html
 WebScripts/static/html/manage_defaults_databases.html

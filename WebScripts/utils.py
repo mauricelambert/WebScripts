@@ -57,7 +57,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -333,7 +333,7 @@ if platform.system() == "Windows":
         WINDOWS_LOGS = True
 
     system(
-        "reg add HKEY_CURRENT_USER\\Console /v VirtualTerminalLevel /t REG_DWORD /d 0x00000001 /f > null"
+        "reg add HKEY_CURRENT_USER\\Console /v VirtualTerminalLevel /t REG_DWORD /d 0x00000001 /f > NUL"
     )  # Active colors in console (for logs)
 
     Logs = WindowsLogs
@@ -556,14 +556,14 @@ def get_encodings():
     encoding = locale.getpreferredencoding()
     if encoding is not None:
         yield encoding
-    
+
     encoding = device_encoding(0)
     if encoding is not None:
         yield encoding
 
-    yield "utf-8"         # Default for Linux
-    yield "cp1252"        # Default for Windows
-    yield "latin-1"       # Can read all files
+    yield "utf-8"  # Default for Linux
+    yield "cp1252"  # Default for Windows
+    yield "latin-1"  # Can read all files
 
 
 @log_trace

@@ -94,6 +94,7 @@
 
 	"arg_content": {
 		"input": true,
+		"html_type": "file",
 		"description": "Content of the uploaded file.",
 		"example": "Data, base64 or text of this file."
 	},
