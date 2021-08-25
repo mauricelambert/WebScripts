@@ -24,7 +24,7 @@
 executables from the command line and display the result 
 in a web interface."""
 
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"

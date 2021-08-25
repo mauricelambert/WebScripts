@@ -376,7 +376,7 @@ function add_INPUT_argument(input, values, counter, arguments_) {
     }
 }
 
-function add_SELECT_arguments(select, values, counter, arguments_) {
+function add_SELECT_argument(select, values, counter, arguments_) {
 
     for (let l = 0; l < select.options.length; ++l) {
         option = select.options[l];

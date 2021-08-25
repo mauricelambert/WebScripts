@@ -1,95 +1,95 @@
 {
-    "server": {
-        "interface": "127.0.0.1",
-        "port": 8000,
+	"server": {
+		"interface": "127.0.0.1",
+		"port": 8000,
 
-        "debug": false,
-        "security": true,
-        "accept_unknow_user": false,
-        "accept_unauthenticated_user": false,
-        "active_auth": true,
-        "auth_script": "auth.py",
+		"debug": false,
+		"security": true,
+		"accept_unknow_user": false,
+		"accept_unauthenticated_user": false,
+		"active_auth": true,
+		"auth_script": "auth.py",
 
-        "scripts_path": ["./scripts/account", "./scripts/passwords", "./scripts/uploads"],
-        "json_scripts_config": ["./config/scripts/*.json"],
-        "ini_scripts_config": ["./config/scripts/*.ini"],
-        "documentations_path": ["./doc/*.html"],
-        "modules": null,
-        "modules_path": null,
-        "js_path": ["./static/js/*.js"],
-        "statics_path": ["./static/html/*.html", "./static/css/*.css", "./static/images/*.png", "./static/images/*.jpg", "./static/pdf/*.pdf"],
+		"scripts_path": ["./scripts/account", "./scripts/passwords", "./scripts/uploads"],
+		"json_scripts_config": ["./config/scripts/*.json"],
+		"ini_scripts_config": ["./config/scripts/*.ini"],
+		"documentations_path": ["./doc/*.html"],
+		"modules": null,
+		"modules_path": null,
+		"js_path": ["./static/js/*.js"],
+		"statics_path": ["./static/html/*.html", "./static/css/*.css", "./static/images/*.png", "./static/images/*.jpg", "./static/pdf/*.pdf"],
 
-        "log_level": "0",
-        "log_filename": "./logs/root.logs",
-        "log_format": "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
-        "log_date_format": "%d/%m/%Y %H:%M:%S",
-        "log_encoding": "utf-8",
+		"log_level": "0",
+		"log_filename": "./logs/root.logs",
+		"log_format": "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
+		"log_date_format": "%d/%m/%Y %H:%M:%S",
+		"log_encoding": "utf-8",
 
-        "auth_failures_to_blacklist": 3,
-        "blacklist_time": 30
-    },
+		"auth_failures_to_blacklist": 3,
+		"blacklist_time": 30
+	},
 
-    "scripts": {
-        "auth.py": "config_auth",
-        "show_license.py": "config_show_licence",
-        "change_my_password.py": "config_change_my_password"
-    },
+	"scripts": {
+		"auth.py": "config_auth",
+		"show_license.py": "config_show_licence",
+		"change_my_password.py": "config_change_my_password"
+	},
 
-    "config_auth": {
-        "args": "auth_args",
-        "launcher": "python",
-        "category": "My Account",
-        "description": "This script authenticates users."
-    },
+	"config_auth": {
+		"args": "auth_args",
+		"launcher": "python",
+		"category": "My Account",
+		"description": "This script authenticates users."
+	},
 
-    "auth_args": {
-        "--username": "arg_username",
-        "--password": "arg_password"
-    },
+	"auth_args": {
+		"--username": "arg_username",
+		"--password": "arg_password"
+	},
 
-    "arg_password": {
-        "example": "password",
-        "html_type": "password",
-        "description": "Your password (to log in)"
-    },
+	"arg_password": {
+		"example": "password",
+		"html_type": "password",
+		"description": "Your password (to log in)"
+	},
 
-    "arg_username": {
-        "example": "user",
-        "description": "Your username (to log in)"
-    },
+	"arg_username": {
+		"example": "user",
+		"description": "Your username (to log in)"
+	},
 
-    "config_change_my_password": {
-        "configuration_file": "./config/files/change_my_password.json"
-    },
+	"config_change_my_password": {
+		"configuration_file": "./config/files/change_my_password.json"
+	},
 
-    "config_show_licence": {
-        "no_password": true,
-        "launcher": "python",
-        "category": "License",
-        "args": "args_show_license",
-        "path": "./scripts/py/show_license.py",
-        "description": "This file display the license and copyright of WebScripts.",
-        "command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
-    },
+	"config_show_licence": {
+		"no_password": true,
+		"launcher": "python",
+		"category": "License",
+		"args": "args_show_license",
+		"path": "./scripts/py/show_license.py",
+		"description": "This file display the license and copyright of WebScripts.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
 
-    "args_show_license": {
-        "license": "arg_license",
-        "copyright": "arg_copyright",
-        "codeheader": "arg_codeheader"
-    },
+	"args_show_license": {
+		"license": "arg_license",
+		"copyright": "arg_copyright",
+		"codeheader": "arg_codeheader"
+	},
 
-    "arg_codeheader": {
-        "html_type": "checkbox",
-        "description": "Display the header of the WebScripts code"
-    },
+	"arg_codeheader": {
+		"html_type": "checkbox",
+		"description": "Display the header of the WebScripts code"
+	},
 
-    "arg_license": {
-        "html_type": "checkbox",
-        "description": "View full license"
-    },
+	"arg_license": {
+		"html_type": "checkbox",
+		"description": "View full license"
+	},
 
-    "arg_copyright": {
-        "html_type": "checkbox",
-        "description": "See copyright"
-    }
+	"arg_copyright": {
+		"html_type": "checkbox",
+		"description": "See copyright"
+	}
 }
