@@ -17,6 +17,11 @@ Optional on Windows:
 pip install WebScripts
 ```
 
+## Pypi
+
+[![PyPI version](https://badge.fury.io/py/WebScripts.svg)](https://badge.fury.io/py/WebScripts)
+[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
+
 ## Basic Usages
 
 ### Command line
