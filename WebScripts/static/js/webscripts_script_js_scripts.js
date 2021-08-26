@@ -17,6 +17,7 @@
 		along with this program.	If not, see <https://www.gnu.org/licenses/>.
 
 */
+
 let script_name;
 let script;
 let download_extension = ".txt";
@@ -305,22 +306,18 @@ function add_arguments(values, counter, arguments_) {
 
     function make_json_request(arguments_) {
         let csrf = document.getElementById("csrf_token");
-        console.log("send");
         send_request(JSON.stringify({
             "csrf_token": csrf.value,
             "arguments": arguments_,
         }));
     }
 
-    console.log(counter);
-    console.log(arguments_);
     if (counter < values.length) {
         let value = values[counter];
         counter++;
         window[`add_${value.tagName}_argument`](value, values, counter,
             arguments_);
     } else {
-        console.log("passe");
         arguments_ = sort_arguments(arguments_);
         make_json_request(arguments_);
         return;
@@ -362,6 +359,8 @@ function add_INPUT_argument(input, values, counter, arguments_) {
 
         if (input.files.length) {
             reader.readAsBinaryString(input.files[0]);
+        } else {
+            add_arguments(values, counter, arguments_);
         }
     } else {
         add_value_for_request(
