@@ -429,7 +429,13 @@ function send_request(json) {
             );
         } else if (xhttp.readyState === 4 && xhttp.status === 302 &&
             script_name === "/auth/") {
-            window.location = new URL("/web/", window.location);
+
+            if (document.referrer && document.referrer.startsWith(window.location.origin)) {
+                window.location = document.referrer;
+            } else {
+                window.location = new URL("/web/", window.location);
+            }
+            
         } else if (xhttp.readyState === 4 && xhttp.status === 500) {
             document.getElementById("bar").innerText =
                 "ERROR 500: Internal Server Error.";

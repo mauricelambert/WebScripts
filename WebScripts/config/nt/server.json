@@ -16,10 +16,10 @@
 			"./scripts/uploads"
 		],
 		"json_scripts_config": [
-			"./config/scripts/*.json"
+			"./config/nt/scripts/*.json"
 		],
 		"ini_scripts_config": [
-			"./config/scripts/*.ini"
+			"./config/nt/scripts/*.ini"
 		],
 		"documentations_path": [
 			"./doc/*.html"
@@ -55,7 +55,7 @@
 
 	"config_auth": {
 		"args": "auth_args",
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "My Account",
 		"description": "This script authenticates users."
 	},
@@ -77,17 +77,17 @@
 	},
 
 	"config_change_my_password": {
-		"configuration_file": "./config/files/change_my_password.json"
+		"configuration_file": "./config/nt/files/change_my_password.json"
 	},
 
 	"config_show_licence": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "License",
 		"args": "args_show_license",
 		"path": "./scripts/py/show_license.py",
 		"description": "This file display the license and copyright of WebScripts.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_show_license": {

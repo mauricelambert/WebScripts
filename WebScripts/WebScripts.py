@@ -36,6 +36,7 @@ from wsgiref import simple_server
 from base64 import b64decode
 from glob import iglob
 import traceback
+import platform
 import logging
 import json
 import sys
@@ -249,6 +250,7 @@ class Server:
             self.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
             self.headers["Cross-Origin-Opener-Policy"] = "same-origin"
             self.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+            self.headers["X-Server"] = "WebScripts"
         else:
             self.headers[
                 "Content-Security-Policy-Report-Only"
@@ -860,24 +862,27 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
 
     current_directory = getcwd()
 
-    config_files = (
-        path.join("config", "server.ini"),
-        path.join("config", "server.json"),
-    )
+    paths = [
+        path.join(current_directory, "config", "server.ini"),
+        path.join(current_directory, "config", "server.json"),
+    ]
+    if platform.system() == "Windows":
+        paths.insert(0, path.join(server_path, "config", "nt", "server.json"))
+        paths.insert(0, path.join(server_path, "config", "nt", "server.ini"))
+    else:
+        paths.insert(0, path.join(server_path, "config", "server.json"))
+        paths.insert(0, path.join(server_path, "config", "server.ini"))
 
-    for dirname in (server_path, current_directory):
-        for filename in config_files:
+    for filename in paths:
+        Logs.warning(f"Configuration file detection: {filename}")
 
-            _path = path.join(dirname, filename)
-            Logs.warning(f"Configuration file detection: {_path}")
-
-            if path.exists(_path):
-                if ".json" in filename:
-                    yield json.loads(get_file_content(_path))
-                elif ".ini" in filename:
-                    yield get_ini_dict(filename)
-            else:
-                Logs.error(f"Configuration named {_path} doesn't exists.")
+        if path.exists(filename):
+            if filename.endswith(".json"):
+                yield json.loads(get_file_content(filename))
+            elif filename.endswith(".ini"):
+                yield get_ini_dict(filename)
+        else:
+            Logs.error(f"Configuration named {filename} doesn't exists.")
 
     for filename in arguments.config_cfg:
         Logs.warning(f"Configuration file detection (type cfg): {filename}")
@@ -1009,8 +1014,7 @@ def main() -> None:
         Logs.critical("Server is down.")
         httpd.server_close()
 
-    sys.exit(0)
-
 
 if __name__ == "__main__":
     main()
+    sys.exit(0)

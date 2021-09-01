@@ -422,6 +422,7 @@ class Web:
 
         if script.command_generate_documentation is not None:
             command = script.command_generate_documentation % script.get_dict()
+            Logs.info(f"Command for documentation: {command}")
             process = Popen(command, shell=True)
             process.communicate()
 

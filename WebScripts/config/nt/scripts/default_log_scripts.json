@@ -6,24 +6,24 @@
 
 	"config_log_analysis": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Security",
 		"minimum_access": 1000,
 		"content_type": "text/html",
 		"path": "./scripts/logs/log_analysis.py",
 		"description": "This file displays an HTML table for log and activity analysis.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_log_viewer": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Security",
 		"minimum_access": 1000,
 		"args": "args_log_viewer",
 		"path": "./scripts/logs/log_viewer.py",
 		"description": "This file can display the latest logs.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_log_viewer": {

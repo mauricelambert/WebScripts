@@ -13,12 +13,12 @@
 	},
 
 	"config_change_user_password": {
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"category": "Administration",
 		"args": "args_change_user_password",
 		"description": "This script reset a user password (for admin only)",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 	
 	"args_change_user_password": {
@@ -30,7 +30,7 @@
 		"timeout": null,
 		"access_users": [],
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"content_type": "text/plain",
 		"category": "Administration",
@@ -39,7 +39,7 @@
 		"path": "./scripts/account/delete_user.py",
 		"documentation_file": "./doc/delete_user.html",
 		"description": "This script delete user from ID.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_delete_user_args": {
@@ -57,13 +57,13 @@
 	},
 
 	"config_add_user": {
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"content_type": "text/plain",
 		"category": "Administration",
 		"args": "config_add_user_args",
 		"description": "This script add a new user.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 
 	},
 
@@ -119,24 +119,24 @@
 
 	"config_view_users": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
 		"content_type": "text/html",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_api_view_users": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
 		"content_type": "text/plain",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"view_users_args": {
@@ -160,12 +160,12 @@
 
 	"config_add_group": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "add_group_args",
 		"category": "Administration",
 		"description": "This script can add group (to define new access level).",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"add_group_args": {
@@ -187,12 +187,12 @@
 
 	"config_delete_group": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "delete_group_args",
 		"category": "Administration",
 		"description": "This script can delete group from ID.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"delete_group_args": {
@@ -207,24 +207,24 @@
 
 	"config_view_groups": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",
 		"content_type": "text/html",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_api_view_groups": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",
 		"content_type": "text/plain",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"view_groups_args": {
@@ -233,12 +233,12 @@
 	},
 
 	"config_get_apikey": {
-		"launcher": "python3",
+		"launcher": "python",
 		"minimum_access": 50,
 		"category": "My Account",
 		"args": "args_get_apikey",
 		"description": "This script print the API key of the current user.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_get_apikey": {

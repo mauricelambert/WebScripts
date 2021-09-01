@@ -14,13 +14,13 @@
 
 	"config_get_file": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
 		"args": "args_get_file",
 		"content_type": "text/html",
 		"description": "This script returns a download link for a file.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 	
 	"args_get_file": {
@@ -29,12 +29,12 @@
 
 	"config_get_files": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
 		"content_type": "text/html",
 		"description": "This script returns a HTML table of uploaded files.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"arg_filename": {
@@ -44,12 +44,12 @@
 
 	"config_delete_file": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
 		"args": "args_get_file",
 		"description": "This script delete an uploaded file.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 
 	},
 
@@ -100,23 +100,23 @@
 
 	"config_get_history": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"args": "args_get_file",
 		"access_groups": [1000],
 		"content_type": "text/html",
 		"description": "This script list all versions for an uploaded file.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_upload_file": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
 		"args": "args_upload_file",
 		"description": "This script uploads a file on the WebScripts Server.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_upload_file": {
@@ -132,51 +132,51 @@
 
 	"config_api_get_files": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"minimum_access": 50,
 		"description": "This script returns a JSON object of uploaded files.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_get_all_files": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"access_groups": [1000],
 		"content_type": "text/html",
 		"description": "This script returns a HTML table of all uploaded files.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_api_get_history": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"access_groups": [1000],
 		"args": "args_get_file",
 		"description": "This script list all groups to get IDs, access level and names.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_api_get_all_files": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"access_groups": [1000],
 		"description": "This script list all versions for an uploaded file.",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"config_get_any_file": {
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"category": "Upload",
 		"access_groups": [1000],
 		"args": "args_get_any_file",
 		"content_type": "text/html",
 		"description": "This script returns a download link for any file (old version and without permission).",
-		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_get_any_file": {
