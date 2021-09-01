@@ -128,6 +128,9 @@ sudo nano /var/www/WebScripts/wsgi.py
 ```python
 #!/path/to/virtualenv/bin/python3
 
+from os import path, chdir
+chdir('/path/to/virtualenv/')
+
 activator = '/path/to/virtualenv/bin/activate_this.py'
 with open(activator) as f:
     exec(f.read(), {'__file__': activator})
@@ -141,7 +144,6 @@ from WebScripts.WebScripts import (
     Server,
 )
 from typing import List
-from os import path
 import logging
 
 class Paths:
