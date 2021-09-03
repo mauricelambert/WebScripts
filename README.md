@@ -1,5 +1,8 @@
 # WebScripts
 
+[![PyPI version](https://badge.fury.io/py/WebScripts.svg)](https://badge.fury.io/py/WebScripts)
+[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
+
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
 
@@ -16,11 +19,6 @@ Optional on Windows:
 ```bash
 pip install WebScripts
 ```
-
-## Pypi
-
-[![PyPI version](https://badge.fury.io/py/WebScripts.svg)](https://badge.fury.io/py/WebScripts)
-[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
 
 ## Basic Usages
 
@@ -107,6 +105,7 @@ httpd.serve_forever()
  - [Logs](https://github.com/mauricelambert/WebScripts/wiki/Logs)
  - [Authentication](https://github.com/mauricelambert/WebScripts/wiki/Authentication)
  - [Default Database](https://github.com/mauricelambert/WebScripts/wiki/Default-Database)
+ - [Access and Permissions](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions)
  - [Security Considerations](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
  - [API](https://github.com/mauricelambert/WebScripts/wiki/API)
  - [Custom WEB Interface](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)

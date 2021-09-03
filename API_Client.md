@@ -62,3 +62,29 @@ pprint(loads(response.read()))
            '<tr><td>2</td><td>Admin</td><td>192.168.*,172.16.*,10.*,127.0.*</td><td>50,1000</td><td>AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin</td></tr>\r\n'
            '</table>\r\n'}
 ```
+
+## Upload client
+
+### Linux
+
+#### Download
+```bash
+curl -u 'Admin:Admin' -d '{"arguments":{"filename":{"value":"LICENSE.txt","input":false}}}' http://127.0.0.1:8000/api/scripts/get_file.py > download_link.html
+```
+
+#### Upload
+```bash
+curl -u 'Admin:Admin' -d '{"arguments":{"name":{"value":"file.txt","input":false},"content":{"value":"data","input":true}}}' http://127.0.0.1:8000/api/scripts/upload_file.py
+```
+
+### Windows
+
+#### Download
+```bash
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body '{"arguments":{"filename":{"value":"LICENSE.txt","input":false}}}' -Uri http://127.0.0.1:8000/api/scripts/get_file.py
+```
+
+#### Upload
+```bash
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body '{"arguments":{"name":{"value":"file.txt","input":false},"content":{"value":"data","input":true}}}' -Uri http://127.0.0.1:8000/api/scripts/upload_file.py
+```

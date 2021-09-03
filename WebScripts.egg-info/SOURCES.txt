@@ -17,6 +17,7 @@ Script_Configuration.md
 Security_Considerations.md
 Server_Configuration.md
 Usages.md
+Users_Access_and_Rights.md
 WEB_Interface.md
 setup.py
 WebScripts/Errors.py
