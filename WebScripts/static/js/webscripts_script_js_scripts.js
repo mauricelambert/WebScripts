@@ -430,7 +430,7 @@ function send_request(json) {
         } else if (xhttp.readyState === 4 && xhttp.status === 302 &&
             script_name === "/auth/") {
 
-            if (document.referrer && document.referrer.startsWith(window.location.origin)) {
+            if (document.referrer && document.referrer.startsWith(window.location.origin) && !document.referrer.endsWith("/web/auth/")) {
                 window.location = document.referrer;
             } else {
                 window.location = new URL("/web/", window.location);
