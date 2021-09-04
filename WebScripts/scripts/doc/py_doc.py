@@ -49,10 +49,8 @@ __copyright__ = copyright
 __all__ = []
 
 from pydoc import resolve, html, describe, ErrorDuringImport
-from os import path, chdir
+from os import path
 import sys
-
-# chdir(path.join(path.dirname(__file__), "..", ".."))
 
 
 def main() -> None:
@@ -83,7 +81,6 @@ def main() -> None:
         for old_color, new_color in COLORS.items():
             page = page.replace(f'bgcolor="{old_color}"', f'bgcolor="{new_color}"')
 
-        # filename = path.join(getcwd(), "documentation", name)
         filename = path.join(path.dirname(__file__), "..", "..", "doc", name)
 
         with open(f"{filename}.html", "w", encoding="utf-8") as file:
