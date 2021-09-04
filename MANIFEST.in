@@ -4,6 +4,7 @@ include test/*.py
 include WebScripts/*.txt
 include WebScripts/data/id
 include WebScripts/data/*.csv
+include WebScripts/modules/*.py
 include WebScripts/doc/empty.html
 include WebScripts/data/uploads/*.txt
 recursive-include test/modules *.py

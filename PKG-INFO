@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 1.2.7
+Version: 1.2.8
 Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
