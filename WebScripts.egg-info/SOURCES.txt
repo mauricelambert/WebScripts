@@ -52,13 +52,12 @@ WebScripts/config/scripts/default_uploads_scripts.json
 WebScripts/data/groups.csv
 WebScripts/data/id
 WebScripts/data/passwords.csv
-WebScripts/data/request.csv
 WebScripts/data/requests.csv
 WebScripts/data/uploads.csv
 WebScripts/data/users.csv
 WebScripts/data/uploads/LICENSE_210725_181116.txt
 WebScripts/doc/empty.html
-WebScripts/modules/errors.py
+WebScripts/modules/error_pages.py
 WebScripts/scripts/account/add_group.py
 WebScripts/scripts/account/add_user.py
 WebScripts/scripts/account/api_view_groups.py
@@ -100,6 +99,7 @@ WebScripts/static/html/Errors_.html
 WebScripts/static/html/Pages.html
 WebScripts/static/html/WebScripts.html
 WebScripts/static/html/commons.html
+WebScripts/static/html/error_pages.html
 WebScripts/static/html/index.html
 WebScripts/static/html/manage_defaults_databases.html
 WebScripts/static/html/uploads_management.html
