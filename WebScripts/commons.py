@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"

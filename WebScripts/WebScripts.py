@@ -356,7 +356,9 @@ class Server:
 
         """This function add packages and modules to build custom page."""
 
-        sys.path = self.configuration.modules_path + sys.path
+        for module_path in self.configuration.modules_path[::-1]:
+            sys.path.insert(0, path.join(server_path, module_path))
+            sys.path.insert(0, module_path)
 
         Pages.packages = DefaultNamespace()
         for package in self.configuration.modules:
