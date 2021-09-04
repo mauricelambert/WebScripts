@@ -447,7 +447,7 @@ function send_request(json) {
                 "ERROR 403: Forbidden. (Refresh the page or re-authenticate please)";
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
-                `HTTP ERROR ${xhttp.status}. You can report a bug <a href="/errors/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `HTTP ERROR ${xhttp.status}. You can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
         }
 
         is_running = false;
