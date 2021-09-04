@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 1.2.6
+Version: 1.2.7
 Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -139,6 +139,7 @@ Description: # WebScripts
          - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
          - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
          - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
+         - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/errors.html)
         
         ## Links
          - [Pypi](https://pypi.org/project/WebScripts)

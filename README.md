@@ -128,6 +128,7 @@ httpd.serve_forever()
  - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
  - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
  - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
+ - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/errors.html)
 
 ## Links
  - [Pypi](https://pypi.org/project/WebScripts)
