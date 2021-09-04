@@ -542,6 +542,7 @@ class ScriptConfig(DefaultNamespace):
             "minimum_access",
             "access_groups",
             "access_users",
+            "no_password",
             "launcher",
             "timeout",
             "dirname",

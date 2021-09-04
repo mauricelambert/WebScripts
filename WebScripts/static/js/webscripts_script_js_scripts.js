@@ -422,6 +422,9 @@ function send_request(json) {
                 seconds = `0${seconds}`;
             }
 
+            console.log(minutes);
+            console.log(seconds);
+
             build_output_interface(
                 response_object,
                 true,
@@ -442,13 +445,16 @@ function send_request(json) {
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
             document.getElementById("bar").innerText =
                 "ERROR 403: Forbidden. (Refresh the page or re-authenticate please)";
+        } else if (xhttp.readyState === 4) {
+            document.getElementById("bar").innerHTML =
+                `HTTP ERROR ${xhttp.status}. You can report a bug <a href="/errors/Report/new/${xhttp.status}">on the local report page</a>.`;
         }
 
         is_running = false;
     }
 
     let url;
-    if (script_name === "/auth/") {
+    if (script_name[0] === "/") {
         url = script_name;
     } else {
         url = "/api/scripts/" + script_name;

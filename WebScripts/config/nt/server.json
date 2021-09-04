@@ -24,8 +24,8 @@
 		"documentations_path": [
 			"./doc/*.html"
 		],
-		"modules": null,
-		"modules_path": null,
+		"modules": ["errors"],
+		"modules_path": ["./modules"],
 		"js_path": [
 			"./static/js/*.js"
 		],
