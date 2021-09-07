@@ -5,7 +5,7 @@
 ### Bandit
 
 ```bash
-bandit -i -l -r -v -f json -o "vulns.json" WebScripts
+bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
 ```
 
 ```json
