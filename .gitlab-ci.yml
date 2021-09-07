@@ -1,0 +1,17 @@
+test:unittest:
+  image: python:3.9
+  script:
+    - python3.9 -m unittest discover -p Test*.py -v
+
+
+stages:
+  - dast
+  - test
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+spotbugs-sast:
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
