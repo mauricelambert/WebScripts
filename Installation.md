@@ -45,10 +45,6 @@ Create a directory named `logs` to launch the *WebScripts Server*.
 mkdir logs
 ```
 
-## Linux Configurations
-
-On Linux the default configurations **may not work**, replace all *script launchers* with `python3` (default is `python`).
-
 ## Start the server
 
 You can now start the server with this simple command:

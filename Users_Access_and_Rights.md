@@ -38,7 +38,7 @@ Example:
 
 Somes users should not access to all normal scripts (for example a generic user for `SupportX` teams).
 
-Users have a list of glob syntax for script names and a list of glob syntax for categories. If the script category match with any glob syntax for categories or the script name match with any glob syntax for script names.
+Users have a list of glob syntax for script names and a list of glob syntax for categories. If the script category match with any glob syntax for categories or the script name match with any glob syntax for script names the user get the access on this script.
 
 The `SupportX` user with this list of glob syntax for categories `["*Account*", "*License*"]` and this list of glob syntax for script names `["*password*"]` can access to this default scripts: 
  1. Authentication

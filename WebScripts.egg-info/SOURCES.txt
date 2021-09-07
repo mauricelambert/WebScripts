@@ -4,7 +4,7 @@ Add_Module.md
 Add_Script.md
 Argument_Configuration.md
 Authentication.md
-Code_Ananlysis_for_Security.md
+Code_Analysis_for_Security.md
 Default_Database.md
 Deployment.md
 Installation.md
