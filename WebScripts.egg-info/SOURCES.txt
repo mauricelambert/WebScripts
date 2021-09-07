@@ -4,6 +4,7 @@ Add_Module.md
 Add_Script.md
 Argument_Configuration.md
 Authentication.md
+Code_Ananlysis_for_Security.md
 Default_Database.md
 Deployment.md
 Installation.md
@@ -48,6 +49,7 @@ WebScripts/config/nt/scripts/default_uploads_scripts.json
 WebScripts/config/scripts/default_admin_scripts.json
 WebScripts/config/scripts/default_log_scripts.json
 WebScripts/config/scripts/default_password_scripts.json
+WebScripts/config/scripts/default_requests_scripts.json
 WebScripts/config/scripts/default_uploads_scripts.json
 WebScripts/data/groups.csv
 WebScripts/data/id
@@ -80,6 +82,10 @@ WebScripts/scripts/passwords/password_generator.py
 WebScripts/scripts/py/hello.py
 WebScripts/scripts/py/show_license.py
 WebScripts/scripts/py/test_config.py
+WebScripts/scripts/request/delete_request.py
+WebScripts/scripts/request/get_request.py
+WebScripts/scripts/request/get_requests.py
+WebScripts/scripts/request/modules/requests_management.py
 WebScripts/scripts/uploads/api_get_all_files.py
 WebScripts/scripts/uploads/api_get_files.py
 WebScripts/scripts/uploads/api_get_history.py
@@ -95,7 +101,6 @@ WebScripts/static/css/webscripts_index_style.css
 WebScripts/static/css/webscripts_script_style.css
 WebScripts/static/css/webscripts_style.css
 WebScripts/static/html/Errors.html
-WebScripts/static/html/Errors_.html
 WebScripts/static/html/Pages.html
 WebScripts/static/html/WebScripts.html
 WebScripts/static/html/commons.html

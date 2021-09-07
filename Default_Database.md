@@ -7,6 +7,7 @@
  - `data/passwords.csv`: temp passswords share
  - `data/id`: the last ID for temp passwords share
  - `data/uploads.csv`: versions and actions of uploaded files
+ - `data/requests.csv`: user requests or reports
 
 Delimiter is `,` and quote is `"`.
 
@@ -35,7 +36,7 @@ The passwords database columns:
  2. password: Encrypted password (using XOR, the key and the salt is 60 random bytes using `secrets.token_bytes(60)`)
  3. views: The number of views remaining
  4. hash: Hexadecimal of the password hash (SHA512 using `hashlib.pbkdf2_hmac`)
- 5. iteration: Random integer between *9999* and *15000* using `random.randint(9999, 15000)`
+ 5. iteration: Random integer between *9999* and *15000* using `9999 + secrets.randbelow(5001)`
  6. ID: The unique ID of the password
 
 Passwords are automatically deleted when they expire.
@@ -54,6 +55,19 @@ The uploads database columns:
  9. timestamp: time of this action (a float)
  10. user: the "owner" of the file (the user of this action)
  11. version: the version of the file
+
+## Requests
+
+The requests database columns:
+ 1. ID: the request ID (an auto-incremented integer)
+ 2. Time: timestamp of request creation
+ 3. UserName: user name used to create the request
+ 4. ErrorCode: the HTTP error code page used to create the request
+ 5. Page: URL used to create the request
+ 6. UserAgent: the UserAgent used to create the request
+ 7. Subject: subject of the request
+ 8. Reason: reason of the request
+ 9. Name: the name of the person creating the request
 
 ### Using uploads in python script
 

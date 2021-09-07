@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 1.2.10
+Version: 1.2.11
 Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -16,6 +16,21 @@ Description: # WebScripts
         
         ## Description
         This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
+        
+        ## Goals
+        Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
+         - secure
+           - [SAST - Static Application Security Testing using bandit](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
+           - [Web pentest using Kali Linux Web tools and my little experience in Web Hacking](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
+           - centralization of logs (using Syslog on Linux and Event Viewer on Windows)
+           - easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
+           - easy to deploy securely
+             - [Apache and mod_wsgi](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod)
+             - [nginx HTTPS proxy](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https)
+           - easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
+             - INI/CFG syntax
+             - JSON syntax
+           - [unittest](#run-tests)
         
         ## Requirements
         This package require:
@@ -121,6 +136,7 @@ Description: # WebScripts
          - [API](https://github.com/mauricelambert/WebScripts/wiki/API)
          - [Custom WEB Interface](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
          - [Modules (Custom responses and code)](https://github.com/mauricelambert/WebScripts/wiki/Modules)
+         - [Code analysis for security (SAST)](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
          - [Security checks and tests (pentest tools)](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
         
         ### Examples
@@ -139,6 +155,7 @@ Description: # WebScripts
          - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
          - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
          - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
+         - [Default Request Manager](https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html)
          - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html)
         
         ## Links
@@ -155,6 +172,11 @@ Description: # WebScripts
         ## License
         Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
         
+        ## Run tests
+        
+        ```bash
+        python -m unittest discover -s test -p Test*.py -v
+        ```
 Keywords: Server,Web,Scripts,SOC,Administration,DevOps,WebScripts
 Platform: Windows
 Platform: Linux
