@@ -19,4 +19,4 @@ jobs:
         with:
           python-version: 3.9
       - name: Test WebScripts with unittest
-        run: python3.9 -m unittest discover -p Test*.py -v
+        run: python3.9 -m unittest discover -s test -p Test*.py -v
