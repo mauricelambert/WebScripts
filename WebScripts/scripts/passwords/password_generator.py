@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints a random ASCII password."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -48,16 +48,11 @@ __copyright__ = copyright
 
 __all__ = []
 
-from random import choices, choice
+from secrets import randbelow, choice
 import sys
 
-print(
-    "".join(
-        choices(
-            "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-            k=choice(range(20, 35)),
-        )
-    )
-)
+characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+
+print("".join([choice(characters) for i in range(20 + randbelow(15))]))
 
 sys.exit(0)

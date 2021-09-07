@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints a HTML table of uploaded file versions
+#    This file prints a HTML table of user requests
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 executables from the command line and display the result 
 in a web interface.
 
-This file prints a HTML table of uploaded file versions."""
+This file prints an HTML table of user requests."""
 
 __version__ = "0.0.1"
 __author__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
 executables from the command line and display the result in a web interface.
 
-This file prints a HTML table of uploaded file versions"""
+This file prints a HTML table of user requests"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,48 +48,45 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.uploads_management import get_file
+from modules.requests_management import get_requests
 from time import localtime, strftime
 import sys
 
 
 def main() -> None:
 
-    """Print the HTML table of file history."""
-
-    if len(sys.argv) != 2:
-        print("USAGE: get_history.py [FILENAME required string]")
-        sys.exit(1)
-
-    filename = sys.argv[1]
+    """Print the HTML table of user requests."""
 
     fields = [
         "ID",
-        "name",
-        "read_permission",
-        "write_permission",
-        "delete_permission",
-        "hidden",
-        "is_deleted",
-        "is_binary",
-        "timestamp",
-        "user",
-        "version",
+        "Time",
+        "UserName",
+        "Subject",
+        "ErrorCode",
+        "Page",
     ]
     print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
 
     try:
-        files, counter = get_file(filename)
+        requests = get_requests()
     except Exception as e:
         print(f"{e.__class__.__name__}: {e}")
         sys.exit(127)
 
-    for file in files:
-        file = file._replace(
-            ID=f'<a href="get_any_file.py?type=ID&identifier={file.ID}">{file.ID}</a>',
-            timestamp=strftime("%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp))),
-        )
-        print(f'<tr><td>{"</td><td>".join(file)}</td></tr>')
+    not_first = False
+    for request in requests:
+        if not_first:
+            print(
+                f'<tr><td><a href="get_request.py?ID={request.ID}">'
+                f"{request.ID}</a></td>"
+                f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}</td>"
+                f"<td>{request.UserName}</td>"
+                f"<td>{request.Subject}</td>"
+                f"<td>{request.ErrorCode}</td>"
+                f"<td>{request.Page}</td></tr>"
+            )
+        else:
+            not_first = True
 
     print("</table>")
 

@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -402,7 +402,10 @@ class ScriptConfig(DefaultNamespace):
             return
 
         process = Popen(
-            ["cmd", "/c", "assoc", extension], stdout=PIPE, stderr=PIPE, text=True
+            [r"C:\WINDOWS\system32\cmd.exe", "/c", "assoc", extension],
+            stdout=PIPE,
+            stderr=PIPE,
+            text=True,
         )
         stdout, stderr = process.communicate()
 
@@ -411,7 +414,10 @@ class ScriptConfig(DefaultNamespace):
         filetype = stdout.split("=")[1] if "=" in stdout else ""
 
         process = Popen(
-            ["cmd", "/c", "ftype", filetype], stdout=PIPE, stderr=PIPE, text=True
+            [r"C:\WINDOWS\system32\cmd", "/c", "ftype", filetype],
+            stdout=PIPE,
+            stderr=PIPE,
+            text=True,
         )
         stdout, stderr = process.communicate()
 

@@ -49,6 +49,7 @@ __copyright__ = copyright
 __all__ = []
 
 from modules.uploads_management import get_files
+from time import localtime, strftime
 import sys
 
 
@@ -58,6 +59,7 @@ def main() -> None:
 
     fields = [
         "name",
+        "timestamp",
         "read_permission",
         "write_permission",
         "delete_permission",
@@ -76,7 +78,8 @@ def main() -> None:
 
     for file in files.values():
         print(
-            f"<tr><td>{file['name']}</td>"
+            f'<tr><td><a href="get_file.py?filename={file["name"]}">{file["name"]}</a></td>'
+            f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(file['timestamp'])))}</td>"
             f"<td>{file['read_permission']}</td>"
             f"<td>{file['write_permission']}</td>"
             f"<td>{file['delete_permission']}</td>"

@@ -29,7 +29,8 @@ and scripts (Logs, Namespace for configuration, ...)."""
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
-from os import path, system, _Environ, device_encoding
+from os import path, _Environ, device_encoding
+from subprocess import check_call, DEVNULL
 from configparser import ConfigParser
 from contextlib import suppress
 from functools import wraps
@@ -57,7 +58,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -332,8 +333,21 @@ if platform.system() == "Windows":
     else:
         WINDOWS_LOGS = True
 
-    system(
-        "reg add HKEY_CURRENT_USER\\Console /v VirtualTerminalLevel /t REG_DWORD /d 0x00000001 /f > NUL"
+    check_call(
+        [
+            r"C:\WINDOWS\system32\reg.exe",
+            "add",
+            r"HKEY_CURRENT_USER\Console",
+            "/v",
+            "VirtualTerminalLevel",
+            "/t",
+            "REG_DWORD",
+            "/d",
+            "0x00000001",
+            "/f",
+        ],
+        stdout=DEVNULL,
+        stderr=DEVNULL,
     )  # Active colors in console (for logs)
 
     Logs = WindowsLogs

@@ -25,7 +25,7 @@ in a web interface.
 
 This file can share a password securely."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -55,14 +55,13 @@ __all__ = [
     "main",
 ]
 
+from secrets import token_bytes, randbelow
 from os import path, chdir, environ
-from secrets import token_bytes
 from hashlib import pbkdf2_hmac
 from urllib.parse import quote
 from csv import reader, writer
 from typing import Tuple, List
 from base64 import b64encode
-from random import randint
 from time import time
 from sys import argv
 import sys
@@ -80,7 +79,7 @@ def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
 
     key = token_bytes(SIZE)
     cipher = []
-    iteration = randint(9999, 15000)
+    iteration = 9999 + randbelow(5001)
 
     for i, car in enumerate(password):
         cipher.append(key[i % SIZE] ^ ord(car))

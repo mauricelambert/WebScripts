@@ -30,6 +30,7 @@ from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 from os import _Environ, path
+from time import time
 import secrets
 import json
 import csv
@@ -37,7 +38,7 @@ import csv
 ServerConfiguration = TypeVar("ServerConfiguration")
 User = TypeVar("User")
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -264,7 +265,15 @@ class Report:
 
         """This function returns the report page by default."""
 
-        return send_error_page("200 OK", code)
+        nonce = secrets.token_hex(10)
+        return (
+            "200 OK",
+            {
+                "Content-Security-Policy": f"default-src 'self'; form-action 'none'; script-src 'self' 'nonce-{nonce}'",
+                "Content-Type": "text/html; charset=utf-8",
+            },
+            page.format(code=code, nonce=nonce, message=code),
+        )
 
 
 class Request:
@@ -314,9 +323,29 @@ class Request:
 
         filename = path.join(path.dirname(__file__), "..", "data", "requests.csv")
 
+        with open(filename) as file:
+            id_ = 0
+            line = file.readline()  # First line is columns
+            line = file.readline()
+            while line:
+                id_ = int(line.split(",")[0]) + 1
+                line = file.readline()
+
         with open(filename, "a", newline="") as file:
             csvfile = csv.writer(file)
-            csvfile.writerow([username, code, url, user_agent, subject, name, reason])
+            csvfile.writerow(
+                [
+                    id_,
+                    str(time()),
+                    username,
+                    code,
+                    url,
+                    user_agent,
+                    subject,
+                    name,
+                    reason,
+                ]
+            )
 
     def send(
         environ: _Environ,
@@ -340,7 +369,7 @@ class Request:
             arguments.append(None)
 
         notification = (
-            f'The user named: "{user.name}" get a HTTP error code {code} on {referer} using "{user_agent}".'
+            f'The user named: "{user.name}" get a HTTP error code {code} on "{referer}" using "{user_agent}".'
             f'\nRequest or report from "{name}": \n\tSubject: {subject} \n\tReason: {reason}'
         )
 

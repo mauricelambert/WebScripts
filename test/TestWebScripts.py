@@ -33,8 +33,6 @@ import logging.config
 import json
 import sys
 
-sys.path.append(path.join(path.dirname(__file__), ".."))
-
 from WebScripts.WebScripts import Configuration, Server, WebScriptsConfigurationTypeError
 from WebScripts.commons import Blacklist, Session
 

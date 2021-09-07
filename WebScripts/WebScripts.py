@@ -41,7 +41,6 @@ import logging
 import json
 import sys
 
-
 if __package__:
     from .Pages import (
         Pages,
@@ -83,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.3"
+__version__ = "0.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -356,9 +355,12 @@ class Server:
 
         """This function add packages and modules to build custom page."""
 
+        modules_path = []
         for module_path in self.configuration.modules_path[::-1]:
-            sys.path.insert(0, path.join(server_path, module_path))
-            sys.path.insert(0, module_path)
+            modules_path.append(module_path)
+            modules_path.append(path.join(server_path, module_path))
+
+        sys.path = modules_path + sys.path
 
         Pages.packages = DefaultNamespace()
         for package in self.configuration.modules:
@@ -367,7 +369,7 @@ class Server:
             package = __import__(package)
             setattr(Pages.packages, package.__name__, package)
 
-        for path_ in self.configuration.modules_path:
+        for path_ in modules_path:
             sys.path.remove(path_)
 
     @log_trace
