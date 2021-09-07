@@ -30,7 +30,7 @@ and scripts (Logs, Namespace for configuration, ...)."""
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
 from os import path, _Environ, device_encoding
-from subprocess import check_call, DEVNULL
+from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from contextlib import suppress
 from functools import wraps
@@ -348,7 +348,7 @@ if platform.system() == "Windows":
         ],
         stdout=DEVNULL,
         stderr=DEVNULL,
-    )  # Active colors in console (for logs)
+    )  # Active colors in console (for logs) # nosec
 
     Logs = WindowsLogs
     if not WINDOWS_LOGS:

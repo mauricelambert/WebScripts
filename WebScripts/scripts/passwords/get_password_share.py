@@ -67,7 +67,7 @@ def decrypt(key: bytes, password: bytes, hash_: str, iteration: int) -> Password
     """This function checks the integrity of the
     password and returns the decrypted password."""
 
-    password_ = ""
+    password_ = ""  # nosec
     key_length = len(key)
     for i, car in enumerate(password):
         password_ += chr(key[i % key_length] ^ car)

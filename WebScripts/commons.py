@@ -29,7 +29,7 @@ This file implement commons functions and class for WebScripts package."""
 from typing import TypeVar, Tuple, List, Dict
 from configparser import ConfigParser
 from collections.abc import Callable
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE  # nosec
 from types import SimpleNamespace
 from base64 import b64encode
 from os import path, getcwd
@@ -406,7 +406,7 @@ class ScriptConfig(DefaultNamespace):
             stdout=PIPE,
             stderr=PIPE,
             text=True,
-        )
+        )  # nosec
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
@@ -418,7 +418,7 @@ class ScriptConfig(DefaultNamespace):
             stdout=PIPE,
             stderr=PIPE,
             text=True,
-        )
+        )  # nosec
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:

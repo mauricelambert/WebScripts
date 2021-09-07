@@ -26,7 +26,7 @@ in a web interface.
 
 This file implement Pages (Api and Web system), script execution and right system."""
 
-from subprocess import Popen, PIPE, TimeoutExpired
+from subprocess import Popen, PIPE, TimeoutExpired  # nosec
 from typing import Tuple, List, Dict
 from contextlib import suppress
 from os import _Environ, path
@@ -134,7 +134,7 @@ def execute_scripts(
 
     process = Popen(
         arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env
-    )
+    )  # nosec
 
     try:
         stdout, stderr = process.communicate(
@@ -423,7 +423,7 @@ class Web:
         if script.command_generate_documentation is not None:
             command = script.command_generate_documentation % script.get_dict()
             Logs.info(f"Command for documentation: {command}")
-            process = Popen(command, shell=True)
+            process = Popen(command, shell=True)  # nosec
             process.communicate()
 
         docfile = get_real_path(script.documentation_file)
