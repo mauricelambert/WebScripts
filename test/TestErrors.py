@@ -38,35 +38,36 @@ from WebScripts.Errors import (
     WebScriptsSecurityError,
 )
 
-class TestErrors(TestCase):
 
+class TestErrors(TestCase):
     def test_WebScriptsError(self):
         with self.assertRaises(WebScriptsError):
-            raise WebScriptsError('test')
+            raise WebScriptsError("test")
 
     def test_WebScriptsConfigurationError(self):
         with self.assertRaises(WebScriptsConfigurationError):
-            raise WebScriptsConfigurationError('test')
+            raise WebScriptsConfigurationError("test")
 
     def test_WebScriptsConfigurationTypeError(self):
         with self.assertRaises(WebScriptsConfigurationTypeError):
-            raise WebScriptsConfigurationTypeError('test')
+            raise WebScriptsConfigurationTypeError("test")
 
     def test_WebScriptsArgumentError(self):
         with self.assertRaises(WebScriptsArgumentError):
-            raise WebScriptsArgumentError('test')
+            raise WebScriptsArgumentError("test")
 
     def test_ScriptConfigurationError(self):
         with self.assertRaises(ScriptConfigurationError):
-            raise ScriptConfigurationError('test')
+            raise ScriptConfigurationError("test")
 
     def test_MissingAttributesError(self):
         with self.assertRaises(MissingAttributesError):
-            raise MissingAttributesError('test')
+            raise MissingAttributesError("test")
 
     def test_WebScriptsSecurityError(self):
         with self.assertRaises(WebScriptsSecurityError):
-            raise WebScriptsSecurityError('test')
+            raise WebScriptsSecurityError("test")
+
 
 if __name__ == "__main__":
     main()

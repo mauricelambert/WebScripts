@@ -102,7 +102,7 @@ def save(passwords: List[List[str]], id_: int) -> None:
     """This function save passwords and ID."""
 
     with open(filename, "w", newline="") as file:
-        csvfile = writer(file)
+        csvfile = writer(file, quoting=csv.QUOTE_ALL)
         for password in passwords:
             csvfile.writerow(password)
 

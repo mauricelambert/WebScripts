@@ -212,7 +212,7 @@ def write_action(upload: Upload) -> None:
     """This function write a new line in CSV database."""
 
     with open(path.join(DIRECTORY, FILE), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(upload)
 
 

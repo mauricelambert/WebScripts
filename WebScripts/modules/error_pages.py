@@ -332,7 +332,7 @@ class Request:
                 line = file.readline()
 
         with open(filename, "a", newline="") as file:
-            csvfile = csv.writer(file)
+            csvfile = csv.writer(file, quoting=csv.QUOTE_ALL)
             csvfile.writerow(
                 [
                     id_,

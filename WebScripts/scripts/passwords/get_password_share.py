@@ -179,7 +179,7 @@ def save(passwords: List[List[PasswordInfo]]) -> None:
     """This function re-saves passwords."""
 
     with open(filename, "w", newline="") as file:
-        csvfile = writer(file)
+        csvfile = writer(file, quoting=csv.QUOTE_ALL)
         for password in passwords:
             csvfile.writerow(password[:-1])
 

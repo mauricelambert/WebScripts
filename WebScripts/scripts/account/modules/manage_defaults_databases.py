@@ -130,7 +130,7 @@ def upgrade_database() -> None:
             users.append(row)
 
     with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csvwriter = csv.writer(csvfile)
+        csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
 
         for user in users:
             csvwriter.writerow(user)
@@ -239,7 +239,7 @@ def add_user(
     )
 
     with open(path.join(DIRECTORY, FILES[0]), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(user)
 
     return user
@@ -307,7 +307,7 @@ def add_group(name: str, id_: int) -> Group:
     group = Group(id_, name)
 
     with open(path.join(DIRECTORY, FILES[1]), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(group)
 
     return group
@@ -350,7 +350,7 @@ def rewrite_users(users: List[User]) -> None:
     """This function rewrite a list of User."""
 
     with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         # csv_writer.writerow(User._fields)
         for user in users:
             csv_writer.writerow(user)
@@ -370,7 +370,7 @@ def delete_group(id_: int) -> Group:
             groups.append(group)
 
     with open(path.join(DIRECTORY, FILES[1]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         # csv_writer.writerow(Group._fields)
         for group in groups:
             csv_writer.writerow(group)
@@ -408,13 +408,13 @@ def create_default_databases() -> None:
     ]
 
     with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(User._fields)
         for user in default_users:
             csv_writer.writerow(user)
 
     with open(path.join(DIRECTORY, FILES[1]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile)
+        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(Group._fields)
         for group in default_groups:
             csv_writer.writerow(group)

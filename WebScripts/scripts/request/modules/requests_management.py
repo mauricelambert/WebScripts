@@ -112,7 +112,7 @@ def delete_request(id_: str) -> Request:
     filename = path.join(DIRECTORY, f"{FILE}.new")
 
     with open(filename, "w", newline="") as file:
-        csvwriter = csv.writer(file)
+        csvwriter = csv.writer(file, quoting=csv.QUOTE_ALL)
 
         for request in get_requests():
             if request.ID == id_:

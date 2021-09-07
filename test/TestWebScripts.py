@@ -26,24 +26,25 @@ from unittest.mock import MagicMock, patch, Mock
 from base64 import b64decode, b64encode
 from unittest import TestCase, main
 from types import ModuleType
+from os import path, getcwd
 from io import BytesIO
-from os import path
 
 import logging.config
 import json
 import sys
 
-from WebScripts.WebScripts import Configuration, Server, WebScriptsConfigurationTypeError
+from WebScripts.WebScripts import (
+    Configuration,
+    Server,
+    WebScriptsConfigurationTypeError,
+)
 from WebScripts.commons import Blacklist, Session
 
-logging.config.dictConfig({
-    'version': 1,
-    'disable_existing_loggers': True
-})
+logging.config.dictConfig({"version": 1, "disable_existing_loggers": True})
 logging.disable()
 
-class TestConfiguration(TestCase):
 
+class TestConfiguration(TestCase):
     def setUp(self):
         self.conf = Configuration()
 
@@ -54,15 +55,17 @@ class TestConfiguration(TestCase):
         self.conf.Dict = {"0": "0", "1": "0"}
         self.conf.Value = "abc"
 
-        self.conf.add_conf(**{
-            "String": "qwerty",
-            "None": None,
-            "List": ["1", "2"],
-            "Dict": {"1": "1", "2": "2"},
-            "Int" : 1,
-            "ListString": "1,2",
-            "Value": None,
-        })
+        self.conf.add_conf(
+            **{
+                "String": "qwerty",
+                "None": None,
+                "List": ["1", "2"],
+                "Dict": {"1": "1", "2": "2"},
+                "Int": 1,
+                "ListString": "1,2",
+                "Value": None,
+            }
+        )
 
         self.assertListEqual(self.conf.List, ["0", "1", "2"])
         self.assertListEqual(self.conf.ListString, ["0", "1", "2"])
@@ -77,8 +80,8 @@ class TestConfiguration(TestCase):
         with self.assertRaises(WebScriptsConfigurationTypeError):
             self.conf.add_conf(**{"List": 1})
 
-class TestServer(TestCase):
 
+class TestServer(TestCase):
     def setUp(self):
         self.conf = Configuration()
         self.conf.interface = ""
@@ -89,61 +92,49 @@ class TestServer(TestCase):
         self.server = Server(self.conf)
 
     def test_check_blacklist(self):
-        self.assertTrue(
-            self.server.check_blacklist(None, "")
-        )
+        self.assertTrue(self.server.check_blacklist(None, ""))
 
         with patch.object(
-            Blacklist, 
-            'is_blacklist', 
+            Blacklist,
+            "is_blacklist",
             return_value=True,
         ) as mock_method:
 
             self.server.pages.ip_blacklist["ip"] = Blacklist(self.conf)
-            self.assertFalse(
-                self.server.check_blacklist(None, "ip")
-            )
+            self.assertFalse(self.server.check_blacklist(None, "ip"))
 
         with patch.object(
-            Blacklist, 
-            'is_blacklist', 
+            Blacklist,
+            "is_blacklist",
             return_value=False,
         ) as mock_method:
 
             self.server.pages.ip_blacklist["ip"] = Blacklist(self.conf)
-            self.assertTrue(
-                self.server.check_blacklist(None, "ip")
-            )
+            self.assertTrue(self.server.check_blacklist(None, "ip"))
 
         user = Mock()
         user.name = "a"
         user.id = 0
 
-        self.assertTrue(
-            self.server.check_blacklist(user, "")
-        )
+        self.assertTrue(self.server.check_blacklist(user, ""))
 
         with patch.object(
-            Blacklist, 
-            'is_blacklist', 
+            Blacklist,
+            "is_blacklist",
             return_value=True,
         ) as mock_method:
 
             self.server.pages.user_blacklist[0] = Blacklist(self.conf)
-            self.assertFalse(
-                self.server.check_blacklist(user, "")
-            )
+            self.assertFalse(self.server.check_blacklist(user, ""))
 
         with patch.object(
-            Blacklist, 
-            'is_blacklist', 
+            Blacklist,
+            "is_blacklist",
             return_value=False,
         ) as mock_method:
 
             self.server.pages.user_blacklist[0] = Blacklist(self.conf)
-            self.assertTrue(
-                self.server.check_blacklist(user, "")
-            )
+            self.assertTrue(self.server.check_blacklist(user, ""))
 
     def test_get_session(self):
         self.assertIsNone(self.server.get_session([], ""))
@@ -153,36 +144,25 @@ class TestServer(TestCase):
         user.ip = "ip"
 
         with patch.object(
-            Session, 
-            'check_session', 
+            Session,
+            "check_session",
             return_value=user,
         ) as mock_method:
 
-            self.assertEqual(
-                self.server.get_session(["SessionID="], "ip"),
-                user
-            )
+            self.assertEqual(self.server.get_session(["SessionID="], "ip"), user)
             self.assertTrue(user.check_csrf)
 
         with patch.object(
-            Session, 
-            'check_session', 
+            Session,
+            "check_session",
             return_value=user,
         ) as mock_method:
 
             user = self.server.get_session(["SessionID="], "")
-            self.assertEqual(
-                user.id, 1
-            )
-            self.assertEqual(
-                user.ip, ""
-            )
-            self.assertEqual(
-                user.name, "Unknow"
-            )
-            self.assertListEqual(
-                user.groups, [0,1]
-            )
+            self.assertEqual(user.id, 1)
+            self.assertEqual(user.ip, "")
+            self.assertEqual(user.name, "Unknow")
+            self.assertListEqual(user.groups, [0, 1])
 
     def test_check_auth(self):
         environ = {
@@ -192,14 +172,10 @@ class TestServer(TestCase):
             "REMOTE_ADDR": "ip",
         }
 
-        user, blacklisted = self.server.check_auth(
-            {"REMOTE_ADDR": "ip"}
-        )
+        user, blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
         self.assertEqual(user.id, 0)
         self.assertEqual(user.name, "Not Authenticated")
-        self.assertListEqual(
-            user.groups, [0]
-        )
+        self.assertListEqual(user.groups, [0])
         self.assertTrue(blacklisted)
 
         user = Mock()
@@ -209,43 +185,37 @@ class TestServer(TestCase):
         user.ip = "ip"
 
         with patch.object(
-            self.server, 
-            'get_session', 
+            self.server,
+            "get_session",
             return_value=user,
         ) as mock_method:
 
-            user_2, blacklisted = self.server.check_auth(
-                environ
-            )
+            user_2, blacklisted = self.server.check_auth(environ)
             self.assertTrue(blacklisted)
             self.assertEqual(user_2, user)
 
         del environ["HTTP_COOKIE"]
 
-        user_2, blacklisted = self.server.check_auth(
-            environ
-        )
+        user_2, blacklisted = self.server.check_auth(environ)
 
         self.assertEqual(user_2.id, 0)
         self.assertEqual(user_2.name, "Not Authenticated")
-        self.assertListEqual(
-            user_2.groups, [0]
-        )
+        self.assertListEqual(user_2.groups, [0])
         self.assertTrue(blacklisted)
 
         with patch.object(
-            self.server.pages, 
-            'auth', 
+            self.server.pages,
+            "auth",
             return_value=(None, {}, None),
         ) as mock_method:
 
             with patch.object(
-                Session, 
-                'check_session', 
+                Session,
+                "check_session",
                 return_value=user,
             ) as mock_method:
 
-                environ["HTTP_AUTHORIZATION"] += b64encode(b':').decode()
+                environ["HTTP_AUTHORIZATION"] += b64encode(b":").decode()
                 user_2, blacklisted = self.server.check_auth(environ)
 
                 self.assertTrue(blacklisted)
@@ -259,14 +229,14 @@ class TestServer(TestCase):
                 self.assertEqual(user_2, user)
 
         with patch.object(
-            self.server.pages, 
-            'auth', 
+            self.server.pages,
+            "auth",
             return_value=(None, {}, None),
         ) as mock_method:
 
             with patch.object(
-                self.server, 
-                'check_blacklist', 
+                self.server,
+                "check_blacklist",
                 return_value=False,
             ) as mock_method:
 
@@ -274,28 +244,40 @@ class TestServer(TestCase):
 
                 self.assertEqual(user_2.id, 0)
                 self.assertEqual(user_2.name, "Not Authenticated")
-                self.assertListEqual(
-                    user_2.groups, [0]
-                )
+                self.assertListEqual(user_2.groups, [0])
                 self.assertFalse(blacklisted)
 
     def test_add_module_or_package(self):
-        self.conf.modules_path = ["modules"]
+        if getcwd() == path.dirname(__file__):
+            self.conf.modules_path = ["modules"]
+        else:
+            self.conf.modules_path = [path.join(path.dirname(__file__), "modules")]
         self.conf.modules = ["test"]
 
         default_path = sys.path.copy()
 
         self.server.add_module_or_package()
         self.assertListEqual(sys.path, default_path)
-        
+
         try:
             self.assertTrue(self.server.pages.packages.test.is_imported)
         except:
             self.assertTrue(False)
 
     def test_add_paths(self):
-        self.server.configuration.statics_path = [path.join("static", "css", "*.css")]
-        self.server.configuration.js_path = [path.join("static", "js", "*.js")]
+        if getcwd() == path.dirname(__file__):
+            self.server.configuration.statics_path = [
+                path.join("static", "css", "*.css")
+            ]
+            self.server.configuration.js_path = [path.join("static", "js", "*.js")]
+        else:
+            self.server.configuration.statics_path = [
+                path.join(path.dirname(__file__), "static", "css", "*.css")
+            ]
+            self.server.configuration.js_path = [
+                path.join(path.dirname(__file__), "static", "js", "*.js")
+            ]
+
         self.server.add_paths()
 
         if self.server.pages.statics_paths.get("test.css"):
@@ -350,7 +332,7 @@ class TestServer(TestCase):
     def test_get_attributes(self):
         object_ = Mock(a=Mock(b=object))
         callable_, filename = self.server.get_attributes(object_, ["a", "b", "test"])
-        
+
         self.assertIs(callable_, object)
         self.assertEqual(filename, "test")
 
@@ -362,7 +344,7 @@ class TestServer(TestCase):
 
     def test_get_inputs(self):
         arguments = [
-            {"value": 1, "input": True}, 
+            {"value": 1, "input": True},
             {"value": 2, "input": False},
         ]
         inputs, arguments = self.server.get_inputs(arguments)
@@ -371,10 +353,14 @@ class TestServer(TestCase):
         self.assertListEqual(arguments, [2])
 
     def test_parse_body(self):
-        data = BytesIO(json.dumps({
-            "arguments": {"-a": {"value": "abc", "input": False}},
-            "csrf_token": "azerty",
-        }).encode())
+        data = BytesIO(
+            json.dumps(
+                {
+                    "arguments": {"-a": {"value": "abc", "input": False}},
+                    "csrf_token": "azerty",
+                }
+            ).encode()
+        )
         environ = {
             "CONTENT_LENGTH": str(len(data.getvalue())),
             "wsgi.input": data,
@@ -385,9 +371,9 @@ class TestServer(TestCase):
         self.assertListEqual(
             arguments,
             [
-                {'value': '-a', 'input': False},
-                {'value': 'abc', 'input': False},
-            ]
+                {"value": "-a", "input": False},
+                {"value": "abc", "input": False},
+            ],
         )
 
         environ["CONTENT_LENGTH"] = "0"
@@ -413,11 +399,9 @@ class TestServer(TestCase):
         self.server.get_function_page = MagicMock(return_value=(None, None))
 
         with patch.object(
-            self.server, 
-            'check_auth', 
-            return_value=(Mock(
-                name="a", ip="ip", id=0, groups=[0]
-            ), False),
+            self.server,
+            "check_auth",
+            return_value=(Mock(name="a", ip="ip", id=0, groups=[0]), False),
         ) as mock_method:
 
             response = self.server.app(environ, Mock())
@@ -472,19 +456,19 @@ class TestServer(TestCase):
         self.assertNotEqual(page_2, page)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("403", {}, b'')), None)
+            return_value=(MagicMock(return_value=("403", {}, b"")), None)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("403", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("404", {}, b'')), None)
+            return_value=(MagicMock(return_value=("404", {}, b"")), None)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("404", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("500", {}, b'')), None)
+            return_value=(MagicMock(return_value=("500", {}, b"")), None)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("500", response)
@@ -496,13 +480,13 @@ class TestServer(TestCase):
         self.assertEqual("500", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, b'')), None)
+            return_value=(MagicMock(return_value=(None, {}, b"")), None)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, '')), None)
+            return_value=(MagicMock(return_value=(None, {}, "")), None)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
@@ -511,30 +495,30 @@ class TestServer(TestCase):
         start_response = Mock()
         self.server.send_headers(start_response)
         start_response.assert_called_once_with(
-            self.server.error,
-            [(k,v) for k,v in self.server.headers.items()]
+            self.server.error, [(k, v) for k, v in self.server.headers.items()]
         )
 
         start_response = Mock()
-        self.server.send_headers(start_response, error="500 Internal Server Error", headers={"Test": "Test"})
+        self.server.send_headers(
+            start_response, error="500 Internal Server Error", headers={"Test": "Test"}
+        )
         headers = self.server.headers.copy()
         headers.update({"Test": "Test"})
 
         start_response.assert_called_once_with(
-            "500 Internal Server Error",
-            [(k,v) for k,v in headers.items()]
+            "500 Internal Server Error", [(k, v) for k, v in headers.items()]
         )
 
     def test_page_500(self):
         a = object()
 
         with patch.object(
-            self.server, 
-            'send_error_page', 
-            return_value=b'500',
+            self.server,
+            "send_error_page",
+            return_value=b"500",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_500('500', a), b'500')
+            self.assertEqual(self.server.page_500("500", a), b"500")
         mock_method.assert_called_once_with(
             "500 Internal Error",
             b"500",
@@ -545,12 +529,12 @@ class TestServer(TestCase):
         a = object()
 
         with patch.object(
-            self.server, 
-            'send_error_page', 
-            return_value=b'404',
+            self.server,
+            "send_error_page",
+            return_value=b"404",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_404('404', a), b'404')
+            self.assertEqual(self.server.page_404("404", a), b"404")
         mock_method.assert_called_once_with(
             "404 Not Found",
             b"This URL: 404, doesn't exist on this server.\nURLs:\n\t - /api/\n\t - /web/",
@@ -561,12 +545,12 @@ class TestServer(TestCase):
         a = object()
 
         with patch.object(
-            self.server, 
-            'send_error_page', 
-            return_value=b'401',
+            self.server,
+            "send_error_page",
+            return_value=b"401",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_401('401', a), b'401')
+            self.assertEqual(self.server.page_401("401", a), b"401")
         mock_method.assert_called_once_with(
             "401 Unauthorized",
             b"Unauthorized (You don't have permissions)",
@@ -577,12 +561,12 @@ class TestServer(TestCase):
         a = object()
 
         with patch.object(
-            self.server, 
-            'send_error_page', 
-            return_value=b'403',
+            self.server,
+            "send_error_page",
+            return_value=b"403",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_403('403', a), b'403')
+            self.assertEqual(self.server.page_403("403", a), b"403")
         mock_method.assert_called_once_with(
             "403 Forbidden",
             b"Forbidden (You don't have permissions)",
@@ -601,14 +585,14 @@ class TestServer(TestCase):
 
         with patch.object(
             self.server,
-            'send_custom_error',
+            "send_custom_error",
             return_value=None,
         ) as mock_method:
 
             self.assertEqual(
                 self.server.send_error_page(
                     "403 Forbidden",
-                    b'',
+                    b"",
                     a,
                 ),
                 page,
@@ -624,17 +608,21 @@ class TestServer(TestCase):
 
         with patch.object(
             self.server,
-            'send_custom_error',
-            return_value=("401 Unauthorized", {"Content-Type": "text/html; charset=utf-8"}, b'401'),
+            "send_custom_error",
+            return_value=(
+                "401 Unauthorized",
+                {"Content-Type": "text/html; charset=utf-8"},
+                b"401",
+            ),
         ) as mock_method:
 
             self.assertEqual(
                 self.server.send_error_page(
                     "403 Forbidden",
-                    b'',
+                    b"",
                     a,
                 ),
-                b'401',
+                b"401",
             )
 
         b.assert_called_once_with(
@@ -647,19 +635,23 @@ class TestServer(TestCase):
         self.server.debug = True
 
         page.append(b"\n\n")
-        page.append(b'403')
-        page.append(b'')
+        page.append(b"403")
+        page.append(b"")
 
         with patch.object(
             self.server,
-            'send_custom_error',
-            return_value=("401 Unauthorized", {"Content-Type": "text/html; charset=utf-8"}, b'401'),
+            "send_custom_error",
+            return_value=(
+                "401 Unauthorized",
+                {"Content-Type": "text/html; charset=utf-8"},
+                b"401",
+            ),
         ) as mock_method:
 
             self.assertEqual(
                 self.server.send_error_page(
                     "403 Forbidden",
-                    b'403',
+                    b"403",
                     a,
                 ),
                 page,
@@ -672,18 +664,16 @@ class TestServer(TestCase):
         )
 
     def test_send_custom_error(self):
-        a = ModuleType('a')
+        a = ModuleType("a")
         a.page_403 = Mock()
 
         self.server.pages.packages.a = a
         self.assertIsInstance(
-            self.server.send_custom_error(
-                "403 Forbidden", "403"
-            ),
-            Mock
+            self.server.send_custom_error("403 Forbidden", "403"), Mock
         )
 
         a.page_403.assert_called_once_with("403 Forbidden")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
