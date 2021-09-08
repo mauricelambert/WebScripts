@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage requests/reports on WebScripts."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -91,7 +91,7 @@ def get_requests() -> Iterator[Request]:
     """This function build Uploads from database."""
 
     yield from map(
-        Request._make, csv.reader(open(path.join(DIRECTORY, FILE), "r", newline=""))
+        Request._make, csv.reader(open(path.join(DIRECTORY, FILE), "r", newline=""), quoting=csv.QUOTE_ALL)
     )
 
 def get_request(id_: str) -> Request:

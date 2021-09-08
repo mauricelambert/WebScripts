@@ -31,7 +31,7 @@ from types import SimpleNamespace, ModuleType, FunctionType
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
 from typing import TypeVar, Tuple, List, Dict
-from os import path, _Environ, getcwd
+from os import path, _Environ, getcwd, mkdir
 from wsgiref import simple_server
 from base64 import b64decode
 from glob import iglob
@@ -82,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -152,6 +152,13 @@ class Configuration(DefaultNamespace):
         "log_encoding",
         "auth_failures_to_blacklist",
         "blacklist_time",
+        "smtp_server",
+        "smtp_starttls",
+        "smtp_password",
+        "smtp_port",
+        "smtp_ssl",
+        "admin_adresses",
+        "notification_address",
     )
     __types__ = {
         "port": int,
@@ -170,6 +177,10 @@ class Configuration(DefaultNamespace):
         "ini_scripts_config": list,
         "auth_failures_to_blacklist": int,
         "blacklist_time": int,
+        "smtp_starttls": bool,
+        "smtp_port": int,
+        "smtp_ssl": bool,
+        "admin_adresses": list,
     }
 
     @log_trace
@@ -730,7 +741,11 @@ def parse_args() -> Namespace:
 
     """This function parse command line arguments."""
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description="This package implements a web server to run scripts or "
+        "executables from the command line and display the result "
+        "in a web interface.",
+    )
     parser.add_argument(
         "-i", "--interface", help="Interface to launch WebScripts server."
     )
@@ -742,6 +757,7 @@ def parse_args() -> Namespace:
         "-c",
         "--config-cfg",
         help="Config filename (syntax config,ini).",
+        action="extend",
         nargs="+",
         default=[],
     )
@@ -749,24 +765,30 @@ def parse_args() -> Namespace:
         "-j",
         "--config-json",
         help="Config filename (syntax json).",
+        action="extend",
         nargs="+",
         default=[],
     )
 
-    parser.add_argument(
+    dev = parser.add_argument_group(
+        "DEV",
+        "Arguments for development and debugging [do NOT use these arguments in production !]",
+    )
+    dev.add_argument(
         "-d",
         "--debug",
         help="Debug (to get errors details).",
         action="store_true",
         default=None,
     )
-    parser.add_argument(
+    dev.add_argument(
         "-s",
         "--security",
         help="Remove HTTP security headers [Disable security].",
         action="store_false",
         default=None,
     )
+
     parser.add_argument(
         "-a",
         "--active-auth",
@@ -792,6 +814,7 @@ def parse_args() -> Namespace:
         "-S",
         "--scripts-path",
         help="Add directory to search scripts",
+        action="extend",
         nargs="+",
         default=[],
     )
@@ -799,16 +822,23 @@ def parse_args() -> Namespace:
         "-C",
         "--scripts-config",
         help="Add file for scripts configuration (glob syntax)",
+        action="extend",
         nargs="+",
         default=[],
     )
     parser.add_argument(
-        "-m", "--modules", help="Add modules to add urls.", nargs="+", default=[]
+        "-m",
+        "--modules",
+        help="Add modules to add urls.",
+        nargs="+",
+        action="extend",
+        default=[],
     )
     parser.add_argument(
         "-I",
         "--modules-path",
         help="Add directory to search modules/packages",
+        action="extend",
         nargs="+",
         default=[],
     )
@@ -816,6 +846,7 @@ def parse_args() -> Namespace:
         "-D",
         "--documentations-path",
         help="Add directory to search documentations",
+        action="extend",
         nargs="+",
         default=[],
     )
@@ -823,6 +854,7 @@ def parse_args() -> Namespace:
         "-J",
         "--js-path",
         help="Add directory to get Javascript files.",
+        action="extend",
         nargs="+",
         default=[],
     )
@@ -830,20 +862,23 @@ def parse_args() -> Namespace:
         "-T",
         "--statics-path",
         help="Add directory to get static files",
+        action="extend",
         nargs="+",
         default=[],
     )
 
-    parser.add_argument(
+    logs = parser.add_argument_group("LOGS", "logs configurations")
+    logs.add_argument(
         "-l",
         "--log-level",
         help="Log level for ROOT logger.",
         choices=["0", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
     )
-    parser.add_argument("-f", "--log-filename", help="Log filename for ROOT logger.")
-    parser.add_argument("--log-format", help="Format for ROOT logger.")
-    parser.add_argument("--log-date-format", help="Date format for ROOT logger.")
-    parser.add_argument("--log-encoding", help="Encoding for ROOT logger.")
+    logs.add_argument("-f", "--log-filename", help="Log filename for ROOT logger.")
+    logs.add_argument("--log-format", help="Format for ROOT logger.")
+    logs.add_argument("--log-date-format", help="Date format for ROOT logger.")
+    logs.add_argument("--log-encoding", help="Encoding for ROOT logger.")
+
     parser.add_argument(
         "-b",
         "--auth-failures-to-blacklist",
@@ -855,6 +890,50 @@ def parse_args() -> Namespace:
         "--blacklist-time",
         type=int,
         help="Time (in seconds) to blacklist an IP or user.",
+    )
+
+    smtp = parser.add_argument_group(
+        "SMTP", "SMTP configurations to send email notifications"
+    )
+    smtp.add_argument(
+        "--smtp-server",
+        "--s-server",
+        help="The SMTP server to use to send email notification.",
+    )
+    smtp.add_argument(
+        "--smtp-starttls",
+        "--s-tls",
+        help="Use STARTTLS to secure the connection.",
+        action="store_true",
+    )
+    smtp.add_argument(
+        "--smtp-password",
+        "--s-password",
+        help="The SMTP password to login the notification account.",
+    )
+    smtp.add_argument(
+        "--smtp-port",
+        "--s-port",
+        help="The SMTP port to use to send email notification.",
+        type=int,
+    )
+    smtp.add_argument(
+        "--smtp-ssl",
+        "--s-ssl",
+        help="Use SSL to secure the connection",
+        action="store_true",
+    )
+    smtp.add_argument(
+        "--admin-adresses",
+        "--a-adr",
+        help="The admintrators email addresses to receive the email notifications.",
+        nargs="+",
+        action="extend",
+    )
+    smtp.add_argument(
+        "--notification-address",
+        "--n-adr",
+        help="The email address to send notifications.",
     )
     return parser.parse_args()
 
@@ -967,14 +1046,27 @@ def add_configuration(
     return configuration
 
 
-def main() -> None:
+def configure_logs_system() -> None:
 
-    """Main function to launch server, get configuration and logs."""
+    """This function try to create the logs directory
+    if not found and configure logs."""
+
+    if not path.isdir("logs"):
+        Logs.info("./logs directory not found.")
+        try:
+            mkdir("logs")
+        except PermissionError:
+            Logs.error(
+                "Get a PermissionError to create " "the non-existent ./logs directory."
+            )
+        else:
+            Logs.info("./logs directory is created.")
 
     logging.config.fileConfig(
         path.join(server_path, "config", "loggers.ini"),
         disable_existing_loggers=False,
     )
+
     logging.basicConfig(
         format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
         datefmt="%d/%m/%Y %H:%M:%S",
@@ -984,6 +1076,28 @@ def main() -> None:
         force=True,
     )
 
+
+def send_mail(configuration: Configuration, message: str) -> int:
+
+    """This function send a mail to adminitrators
+    using the error_pages modules.
+
+    Return 0 if message is sent else 1."""
+
+    error_pages = getattr(Pages.packages, "error_pages", None)
+    if error_pages:
+        error_pages.Request.send_mail(configuration, message)
+        return 0
+
+    return 1
+
+
+def main() -> None:
+
+    """Main function to build the
+    configurations and launch the server."""
+
+    configure_logs_system()
     args = parse_args()
 
     Logs.debug("Load configuration...")
@@ -1012,11 +1126,19 @@ def main() -> None:
 
     Logs.warning(f"Starting server on http://{server.interface}:{server.port}/ ...")
     print(copyright)
+
+    send_mail(
+        configuration, f"Server is up on http://{server.interface}:{server.port}/."
+    )
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         Logs.critical("Server is down.")
         httpd.server_close()
+
+    send_mail(
+        configuration, f"Server is down on http://{server.interface}:{server.port}/."
+    )
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage WebScript default databases."""
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -114,7 +114,7 @@ def upgrade_database() -> None:
     first = False
 
     with open(path.join(DIRECTORY, FILES[0]), newline="") as csvfile:
-        csvreader = csv.reader(csvfile)
+        csvreader = csv.reader(csvfile, quoting=csv.QUOTE_ALL)
 
         for row in csvreader:
             if len(row) == 8:
@@ -141,7 +141,10 @@ def get_users() -> Iterator[User]:
     """This function get users from CSV database."""
 
     yield from map(
-        User._make, csv.reader(open(path.join(DIRECTORY, FILES[0]), "r", newline=""))
+        User._make,
+        csv.reader(
+            open(path.join(DIRECTORY, FILES[0]), "r", newline=""), quoting=csv.QUOTE_ALL
+        ),
     )
 
 
@@ -150,7 +153,10 @@ def get_groups() -> Iterator[Group]:
     """This function get groups from CSV database."""
 
     yield from map(
-        Group._make, csv.reader(open(path.join(DIRECTORY, FILES[1]), "r", newline=""))
+        Group._make,
+        csv.reader(
+            open(path.join(DIRECTORY, FILES[1]), "r", newline=""), quoting=csv.QUOTE_ALL
+        ),
     )
 
 

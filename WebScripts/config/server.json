@@ -44,7 +44,18 @@
 		"log_encoding": "utf-8",
 
 		"auth_failures_to_blacklist": 3,
-		"blacklist_time": 30
+		"blacklist_time": 30,
+
+		"smtp_server": null,
+		"smtp_starttls": false,
+		"smtp_password": null,
+		"smtp_port": 25,
+		"smtp_ssl": false,
+		"admin_adresses": [
+			"admin1@webscripts.local",
+			"admin2@webscripts.local"
+		],
+		"notification_address": "notification@webscripts.local"
 	},
 
 	"scripts": {

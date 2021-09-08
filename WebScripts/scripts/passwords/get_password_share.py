@@ -25,7 +25,7 @@ in a web interface.
 
 This file can decrypt and print a secure password share."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -56,6 +56,7 @@ from os import path, chdir
 from time import time
 from sys import argv
 import sys
+import csv
 
 PasswordOrFalse = TypeVar("PasswordOrFalse", str, bool)
 PasswordInfo = TypeVar("PasswordInfo", str, int, bool)
@@ -89,7 +90,7 @@ def get_passwords(
     password_ = None
 
     with open(filename, newline="") as file:
-        passwords = list(reader(file))
+        passwords = list(reader(file, quoting=csv.QUOTE_ALL))
 
         for password in passwords:
             if float(password[0]) >= now:

@@ -25,7 +25,7 @@ in a web interface.
 
 This file can share a password securely."""
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -65,6 +65,7 @@ from base64 import b64encode
 from time import time
 from sys import argv
 import sys
+import csv
 
 
 # csv format: timestamp,password,view_number,hash,iterations,id
@@ -93,7 +94,7 @@ def get_passwords() -> List[List[str]]:
     """This function returns a list of encrypted passwords."""
 
     with open(filename, newline="") as file:
-        passwords = list(reader(file))
+        passwords = list(reader(file, quoting=csv.QUOTE_ALL))
     return passwords
 
 

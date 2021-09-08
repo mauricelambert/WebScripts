@@ -307,7 +307,7 @@ class Request:
         email["From"] = configuration.notification_address
         email["Subject"] = "[! WebScripts Notification ]"
 
-        server.send_message(email.as_string())
+        server.send_message(email)
 
     def save(
         username: str,
@@ -328,7 +328,7 @@ class Request:
             line = file.readline()  # First line is columns
             line = file.readline()
             while line:
-                id_ = int(line.split(",")[0]) + 1
+                id_ = int(line.split(",")[0][1:-1]) + 1
                 line = file.readline()
 
         with open(filename, "a", newline="") as file:
@@ -362,8 +362,8 @@ class Request:
         referer = environ.get("HTTP_REFERER")
         user_agent = environ.get("HTTP_USER_AGENT")
         subject = arguments[0]
-        name = arguments[1]
-        reason = arguments[2]
+        name = arguments[2]
+        reason = arguments[1]
 
         while len(arguments) < 4:
             arguments.append(None)
