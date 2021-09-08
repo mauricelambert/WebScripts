@@ -42,6 +42,10 @@ An example of deployment for production is available [here](https://github.com/m
 
  - `auth_failures_to_blacklist` and `blacklist_time` configuration should be set, to protect your passwords againts bruteforce attacks.
 
+### SMTP password
+
+ - Do not use SMTP password (`smtp_password != None`) without StartTLS (`smtp_starttls == True`) or SSL (`smtp_ssl == True`).
+
 ## Credentials
 
 Change the password of the `Admin` user and the API key or use custom authentication script, database and system.

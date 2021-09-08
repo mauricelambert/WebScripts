@@ -2,6 +2,8 @@
 
 ## SAST
 
+1. A vulnerability is found with: `Popen(..., shell=True, ...)` used for generating documentation. The vulnerability is not dangerous if the configrations files are protected by the system (rights and write permissions to these files).
+
 ### Bandit
 
 ```bash
@@ -666,7 +668,32 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
 
 ### Semgrep
 
-Semgrep tests are coming.
+```txt
+| versions          - semgrep 0.64.0 on Python 3.9.6
+| environment       - running in environment github-actions, triggering event is 'push'
+| manage            - not logged in
+=== setting up agent configuration
+| using semgrep rules from https://semgrep.dev/c/p/security-audit
+| using semgrep rules from https://semgrep.dev/c/p/secrets
+| using default path ignore rules of common test and dependency directories
+| found 129 files in the paths to be scanned
+| skipping 2 files based on path ignore rules
+=== looking for current issues in 127 files
+| 1 current issue found
+| No ignored issues found
+=== not looking at pre-existing issues since all files with current issues are newly created
+python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+=== exiting with failing status
+     > WebScripts/Pages.py:426
+     ╷
+  426│   process = Popen(command, shell=True)  # nosec
+     ╵
+     = Found 'subprocess' function 'Popen' with 'shell=True'. This is dangerous
+       because this call will spawn the command using a shell process. Doing so
+       propagates current shell settings and variables, which makes it much
+       easier for a malicious actor to execute commands. Use 'shell=False'
+       instead.
+```
 
 ## DAST
 

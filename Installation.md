@@ -37,14 +37,6 @@ To centralize logs in Event Viewer.
 python -m pip install pywin32
 ```
 
-## Logs directory
-
-Create a directory named `logs` to launch the *WebScripts Server*.
-
-```bash
-mkdir logs
-```
-
 ## Start the server
 
 You can now start the server with this simple command:
@@ -55,6 +47,14 @@ WebScripts
 ## First connection
 
 To log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `192.168.*`, `172.16.*`,`10.*` and `127.0.*` (private network and localhost) by default.
+
+## Logs directory
+
+Create a directory named `logs` to launch the *WebScripts Server*. If `logs` directory does not exists or is not a directory, the WebScripts Server will try to create it.
+
+```bash
+mkdir logs
+```
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

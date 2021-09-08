@@ -142,6 +142,8 @@ from WebScripts.WebScripts import (
     add_configuration,
     logs_configuration,
     Server,
+    configure_logs_system,
+    send_mail,
 )
 from typing import List
 import logging
@@ -154,19 +156,7 @@ class Paths:
         self.config_cfg = config_cfg
         self.config_json = config_json
 
-logging.config.fileConfig(
-    path.join(server_path, "config", "loggers.ini"),
-    disable_existing_loggers=False,
-)
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
-    datefmt="%d/%m/%Y %H:%M:%S",
-    encoding="utf-8",
-    level=0,
-    filename="/path/to/logs/root.logs",
-    force=True,
-)
-
+configure_logs_system()
 paths = Paths([], [])
 
 configuration = Configuration()
@@ -181,6 +171,10 @@ configuration.get_unexpecteds()
 configuration.build_types()
 
 server = Server(configuration)
+
+send_mail(
+    configuration, f"Server is up on http://{server.interface}:{server.port}/."
+)
 
 application = server.app
 ```

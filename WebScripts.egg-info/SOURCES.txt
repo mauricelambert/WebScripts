@@ -45,6 +45,7 @@ WebScripts/config/nt/files/change_my_password.json
 WebScripts/config/nt/scripts/default_admin_scripts.json
 WebScripts/config/nt/scripts/default_log_scripts.json
 WebScripts/config/nt/scripts/default_password_scripts.json
+WebScripts/config/nt/scripts/default_requests_scripts.json
 WebScripts/config/nt/scripts/default_uploads_scripts.json
 WebScripts/config/scripts/default_admin_scripts.json
 WebScripts/config/scripts/default_log_scripts.json

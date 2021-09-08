@@ -39,7 +39,18 @@ The default configuration JSON files:
         "log_encoding": "utf-8",
 
         "auth_failures_to_blacklist": 3,
-        "blacklist_time": 30
+        "blacklist_time": 30,
+
+        "smtp_server": null,
+        "smtp_starttls": false,
+        "smtp_password": null,
+        "smtp_port": 25,
+        "smtp_ssl": false,
+        "admin_adresses": [
+            "admin1@webscripts.local",
+            "admin2@webscripts.local"
+        ],
+        "notification_address": "notification@webscripts.local"
     }
 }
 ```
@@ -76,6 +87,14 @@ log_encoding=utf-8                                                              
 
 auth_failures_to_blacklist=3                                                                   # Number of authentication failures to blacklist an IP address or user
 blacklist_time=30                                                                              # Blacklist time in seconds
+
+smtp_server                                                                                    # SMTP configuration is used to send notifications, the server name or the IP address of the SMTP server
+smtp_starttls=false                                                                            # Using starttls to secure the connection
+smtp_password                                                                                  # Password for email account (username is the notification_address configuration), if password is None the client send email without authentication
+smtp_port=25                                                                                   # SMTP port
+smtp_ssl=false                                                                                 # Using SSL (not starttls) to secure the connection
+admin_adresses=admin1@webscripts.local,admin2@webscripts.local                                 # Administrators email addresses to receive the notification
+notification_address=notification@webscripts.local                                             # Notification address to send the notification (the sender email address)
 ```
 
  - *interface*: to change the connection interface
@@ -95,6 +114,13 @@ blacklist_time=30                                                               
  - *log_encoding*: encoding for log file (impact *ROOT* logger only, recommended value: "utf-8")
  - *auth_failures_to_blacklist*: Number of authentication failures to blacklist an IP address or user
  - *blacklist_time*: Time in seconds to blacklist an IP address or user
+ - *smtp_server*: The SMTP server name to send email notifications (if it's `None` notifications will not be sent)
+ - *smtp_starttls*: Use StartTLS to secure the connection
+ - *smtp_password*: Login as `notification_address` configuration using this password. If it's `None` notifications will be sent without authentication.
+ - *smtp_port*: The SMTP server port.
+ - *smtp_ssl*: Use SSL to secure the connection
+ - *admin_adresses*: Administrators email addresses to receive email notification
+ - *notification_address*: Address to send email notifications (and username if password is not `None`)
 
 ## INI syntax
 

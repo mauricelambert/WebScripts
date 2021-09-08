@@ -1,5 +1,13 @@
 # Logs
 
+## Logs directory
+
+Create a directory named `logs` to launch the *WebScripts Server*. If `logs` directory does not exists or is not a directory, the WebScripts Server will try to create it.
+
+```bash
+mkdir logs
+```
+
 ## Default logging
 
 ### Level
