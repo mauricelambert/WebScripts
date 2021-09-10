@@ -2,6 +2,14 @@
 
 [![PyPI version](https://badge.fury.io/py/WebScripts.svg)](https://badge.fury.io/py/WebScripts)
 [![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/mauricelambert/WebScripts/main)
+![PyPI - Status](https://img.shields.io/pypi/status/WebScripts)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/WebScripts)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/mauricelambert/WebScripts)
+![GitHub top language](https://img.shields.io/github/languages/top/mauricelambert/WebScripts)
+![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts)
+![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts)
+![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts)
 
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
@@ -169,3 +177,9 @@ Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
 ```bash
 python -m unittest discover -s test -p Test*.py -v
 ```
+
+| File          | Statements | missing | coverage |
+|---------------|------------|---------|----------|
+| WebScripts.py | 472        | 7       | 99%      |
+| utils.py      | 297        | 7       | 98%      |
+| Errors.py     | 27         | 0       | 100%     |
