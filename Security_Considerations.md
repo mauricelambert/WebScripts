@@ -44,7 +44,7 @@ An example of deployment for production is available [here](https://github.com/m
 
 ### SMTP password
 
- - Do not use SMTP password (`smtp_password != None`) without StartTLS (`smtp_starttls == True`) or SSL (`smtp_ssl == True`).
+ - Do not use SMTP password (`smtp_password != None`) without StartTLS (`smtp_starttls == True`) or SSL (`smtp_ssl == True`). If connection is not secure the password may be sniffed.
 
 ## Credentials
 

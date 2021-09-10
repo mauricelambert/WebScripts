@@ -8,18 +8,18 @@ This package implements a web server to run scripts or executables from the comm
 
 ## Goals
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
- - secure
-   - [SAST - Static Application Security Testing using bandit](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
+ - Secure
+   - [SAST - Static Application Security Testing using bandit and semgrep](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
    - [Web pentest using Kali Linux Web tools and my little experience in Web Hacking](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
-   - centralization of logs (using Syslog on Linux and Event Viewer on Windows)
-   - easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
-   - easy to deploy securely
+   - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
+   - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
+   - Easy to deploy securely
      - [Apache and mod_wsgi](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod)
-     - [nginx HTTPS proxy](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https)
-   - easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
+     - [Nginx as HTTPS proxy](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https)
+   - Easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
      - INI/CFG syntax
      - JSON syntax
-   - [unittest](#run-tests)
+   - [Unittest](#run-tests)
 
 ## Requirements
 This package require:
@@ -155,8 +155,11 @@ httpd.serve_forever()
 ## Pictures
 
 ![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.JPG "Index page (dark)")
+*Index page (dark)*
 ![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.JPG "Text script (dark)")
+*Text script (dark)*
 ![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.JPG "HTML script (light)")
+*HTML script (light)*
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
