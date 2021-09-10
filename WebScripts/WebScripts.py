@@ -82,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -120,6 +120,7 @@ class Configuration(DefaultNamespace):
         "port": 8000,
         "modules": [],
         "js_path": [],
+        "log_level": 0,
         "statics_path": [],
         "scripts_path": [],
         "modules_path": [],
@@ -981,7 +982,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
         Logs.warning(f"Configuration file detection (type json): {filename}")
 
         if path.exists(filename):
-            yield json.loads(_path)
+            yield json.loads(get_file_content(filename))
         else:
             Logs.error(f"Configuration named {filename} doesn't exists.")
 
@@ -1000,10 +1001,17 @@ def logs_configuration(configuration: NameSpace) -> None:
 
     log_config = {}
 
-    if configuration.log_level == "0":
-        configuration.log_level = 0
-    else:
+    if isinstance(configuration.log_level, int):
+        pass
+    elif isinstance(configuration.log_level, str) and configuration.log_level.isdigit():
+        configuration.log_level = int(configuration.log_level)
+    elif isinstance(configuration.log_level, str):
         configuration.log_level = getattr(logging, configuration.log_level, 0)
+    else:
+        raise WebScriptsConfigurationError(
+            "log_level configuration must be an integer or a "
+            'string in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]'
+        )
 
     for attr, item in {
         "log_format": "format",

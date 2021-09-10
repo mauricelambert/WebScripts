@@ -22,26 +22,113 @@
 
 """This file test the WebScripts.py file"""
 
+from os import path, getcwd, chdir, rename, listdir
 from unittest.mock import MagicMock, patch, Mock
 from base64 import b64decode, b64encode
 from unittest import TestCase, main
 from types import ModuleType
-from os import path, getcwd
+from shutil import rmtree
 from io import BytesIO
 
 import logging.config
+import importlib
 import json
 import sys
+
+dir_path = path.dirname(__file__)
+
+
+def disable_logs():
+    logging.config.dictConfig({"version": 1, "disable_existing_loggers": True})
+    logging.disable()
+
+
+def import_without_package():
+    ################
+    # SAVE VARIABLES
+    ################
+
+    path_ = sys.path.copy()
+    modules = sys.modules.copy()
+    locals_ = locals().copy()
+    globals_ = globals().copy()
+    current_path = getcwd()
+    dst1 = path.join(dir_path, "..", "WebScripts", "__init__.py")
+    dst2 = path.join(dir_path, "..", "test", "init.py")
+
+    ########################
+    # CHANGE CONTEXT AND SYS
+    ########################
+
+    for i in [0, 0, -1, -1]:
+        sys.path.pop(i)
+
+    rename(dst1, dst2)
+    chdir(path.join(dir_path, "..", "WebScripts"))
+    sys.path.insert(0, "")
+
+    for name in [
+        "WebScripts",
+        "Configuration",
+        "Server",
+        "WebScriptsConfigurationTypeError",
+        "commons",
+        "Blacklist",
+        "Session",
+    ]:
+        if name in locals().keys():
+            del locals()[name]
+        if name in globals().keys():
+            del globals()[name]
+
+    remove_names = []
+    for name in sys.modules.keys():
+        if "WebScripts." in name or name == "WebScripts":
+            remove_names.append(name)
+
+    for name in remove_names:
+        del sys.modules[name]
+
+    from WebScripts import (
+        Configuration,
+        Server,
+        WebScriptsConfigurationTypeError,
+    )
+    from commons import Blacklist, Session
+
+    #########################
+    # REBUILD CONTEXT AND SYS
+    #########################
+    sys.path = path_
+    sys.modules = modules
+    rename(dst2, dst1)
+    chdir(current_path)
+
+    for name, value in locals_.items():
+        locals()[name] = value
+
+    for name, value in globals_.items():
+        globals()[name] = value
+
+
+disable_logs()
+import_without_package()
 
 from WebScripts.WebScripts import (
     Configuration,
     Server,
+    WebScriptsConfigurationError,
     WebScriptsConfigurationTypeError,
+    parse_args,
+    get_server_config,
+    logs_configuration,
+    configure_logs_system,
+    add_configuration,
+    send_mail,
+    main,
 )
 from WebScripts.commons import Blacklist, Session
-
-logging.config.dictConfig({"version": 1, "disable_existing_loggers": True})
-logging.disable()
+import WebScripts
 
 
 class TestConfiguration(TestCase):
@@ -89,7 +176,15 @@ class TestServer(TestCase):
         self.conf.set_defaults()
         self.conf.build_types()
 
+        self.conf_unsecure = Configuration()
+        self.conf_unsecure.interface = ""
+        self.conf_unsecure.port = 0
+        self.conf_unsecure.security = False
+        self.conf_unsecure.set_defaults()
+        self.conf_unsecure.build_types()
+
         self.server = Server(self.conf)
+        self.server_unsecure = Server(self.conf_unsecure)
 
     def test_check_blacklist(self):
         self.assertTrue(self.server.check_blacklist(None, ""))
@@ -172,11 +267,11 @@ class TestServer(TestCase):
             "REMOTE_ADDR": "ip",
         }
 
-        user, blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
+        user, not_blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
         self.assertEqual(user.id, 0)
         self.assertEqual(user.name, "Not Authenticated")
         self.assertListEqual(user.groups, [0])
-        self.assertTrue(blacklisted)
+        self.assertTrue(not_blacklisted)
 
         user = Mock()
         user.id = 2
@@ -190,18 +285,31 @@ class TestServer(TestCase):
             return_value=user,
         ) as mock_method:
 
-            user_2, blacklisted = self.server.check_auth(environ)
-            self.assertTrue(blacklisted)
+            user_2, not_blacklisted = self.server.check_auth(environ)
+            self.assertTrue(not_blacklisted)
             self.assertEqual(user_2, user)
+
+            with patch.object(
+                self.server,
+                "check_blacklist",
+                return_value=False,
+            ) as mock_method:
+
+                user_2, not_blacklisted = self.server.check_auth(environ)
+
+                self.assertEqual(user_2.id, 1)
+                self.assertEqual(user_2.name, "Unknow")
+                self.assertListEqual(user_2.groups, [0, 1])
+                self.assertFalse(not_blacklisted)
 
         del environ["HTTP_COOKIE"]
 
-        user_2, blacklisted = self.server.check_auth(environ)
+        user_2, not_blacklisted = self.server.check_auth(environ)
 
         self.assertEqual(user_2.id, 0)
         self.assertEqual(user_2.name, "Not Authenticated")
         self.assertListEqual(user_2.groups, [0])
-        self.assertTrue(blacklisted)
+        self.assertTrue(not_blacklisted)
 
         with patch.object(
             self.server.pages,
@@ -216,16 +324,16 @@ class TestServer(TestCase):
             ) as mock_method:
 
                 environ["HTTP_AUTHORIZATION"] += b64encode(b":").decode()
-                user_2, blacklisted = self.server.check_auth(environ)
+                user_2, not_blacklisted = self.server.check_auth(environ)
 
-                self.assertTrue(blacklisted)
+                self.assertTrue(not_blacklisted)
                 self.assertEqual(user_2, user)
 
                 del environ["HTTP_AUTHORIZATION"]
 
                 user_2, blacklisted = self.server.check_auth(environ)
 
-                self.assertTrue(blacklisted)
+                self.assertTrue(not_blacklisted)
                 self.assertEqual(user_2, user)
 
         with patch.object(
@@ -240,12 +348,12 @@ class TestServer(TestCase):
                 return_value=False,
             ) as mock_method:
 
-                user_2, blacklisted = self.server.check_auth(environ)
+                user_2, not_blacklisted = self.server.check_auth(environ)
 
                 self.assertEqual(user_2.id, 0)
                 self.assertEqual(user_2.name, "Not Authenticated")
                 self.assertListEqual(user_2.groups, [0])
-                self.assertFalse(blacklisted)
+                self.assertFalse(not_blacklisted)
 
     def test_add_module_or_package(self):
         if getcwd() == path.dirname(__file__):
@@ -289,6 +397,11 @@ class TestServer(TestCase):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+
+        self.conf.auth_script = "test_auth_scripts.test"
+        self.conf.active_auth = True
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.server.add_paths()
 
     def test_get_function_page(self):
         callable_, filename = self.server.get_function_page("/api/")
@@ -336,6 +449,11 @@ class TestServer(TestCase):
         self.assertIs(callable_, object)
         self.assertEqual(filename, "test")
 
+        callable_, filename = self.server.get_attributes("test", ["test"])
+
+        self.assertIsNone(callable_)
+        self.assertIsNone(filename)
+
         object_ = object()
         callable_, filename = self.server.get_attributes(object_, ["a", "bc", "test"])
 
@@ -377,6 +495,12 @@ class TestServer(TestCase):
         )
 
         environ["CONTENT_LENGTH"] = "0"
+        arguments, csrf = self.server.parse_body(environ)
+
+        self.assertIsNone(csrf)
+        self.assertListEqual(arguments, [])
+
+        environ["CONTENT_LENGTH"] = "abc"
         arguments, csrf = self.server.parse_body(environ)
 
         self.assertIsNone(csrf)
@@ -673,6 +797,128 @@ class TestServer(TestCase):
         )
 
         a.page_403.assert_called_once_with("403 Forbidden")
+
+
+class TestFunctions(TestCase):
+    def setUp(self):
+        self.conf = Configuration()
+        self.conf.interface = ""
+        self.conf.port = 0
+        self.conf.set_defaults()
+        self.conf.build_types()
+
+        self.server = Server(self.conf)
+
+    def test_main(self):
+        global WebScripts
+
+        def raise_keyboard(self):
+            raise KeyboardInterrupt
+
+        WebScripts.simple_server.make_server = Mock(
+            serve_forever=raise_keyboard, server_close=lambda x: None
+        )
+        WebScripts.__name__ = "__main__"
+        argv = sys.argv.copy()
+        sys.argv = ["WebScripts", "--debug"]
+
+        main()
+
+        sys.argv = argv
+
+    def test_parse_args(self):
+        argv = sys.argv.copy()
+        sys.argv = ["WebScripts"]
+        arguments = parse_args()
+
+        for config, value in arguments.__dict__.items():
+            if value is None:
+                self.assertIsNone(value)  # always pass
+            else:
+                self.assertEqual(len(value), 0)
+
+        sys.argv = argv
+
+    def test_get_server_config(self):
+        argv = sys.argv.copy()
+        sys.argv = [
+            "WebScripts",
+            "--config-cfg",
+            "test_inexistant_file",
+            "test.ini",
+            "--config-json",
+            "test_inexistant_file",
+            "test.json",
+        ]
+        arguments = parse_args()
+
+        for configurations in get_server_config(arguments):
+            self.assertTrue(isinstance(configurations, dict))
+
+        arguments = parse_args()
+        with patch.object(
+            WebScripts.platform,
+            "system",
+            return_value="Linux"
+            if WebScripts.platform.system() == "Windows"
+            else "Windows",
+        ) as mock_method:
+            for configurations in get_server_config(arguments):
+                self.assertTrue(isinstance(configurations, dict))
+
+        sys.argv = argv
+
+    def test_logs_configuration(self):
+        logs_configuration(self.conf)
+        self.conf.log_level = "0"
+        logs_configuration(self.conf)
+        self.conf.log_level = "DEBUG"
+        logs_configuration(self.conf)
+
+        self.conf.log_level = []
+        with self.assertRaises(WebScriptsConfigurationError):
+            logs_configuration(self.conf)
+
+        disable_logs()
+
+    def test_configure_logs_system(self):
+        global WebScripts
+
+        def raise_permission(file):
+            raise PermissionError
+
+        rmtree("logs", ignore_errors=True)
+
+        configure_logs_system()
+        disable_logs()
+
+        self.assertTrue(path.isdir("logs"))
+        self.assertTrue(path.isfile(path.join("logs", "root.logs")))
+
+        WebScripts.mkdir = raise_permission
+        with patch.object(
+            sys.modules["os"],
+            "mkdir",
+            return_value=raise_permission,
+        ) as mock_method:
+            configure_logs_system()
+        disable_logs()
+
+    def test_add_configuration(self):
+        conf = {"server": {"test1": "test1"}, "test2": "test2"}
+        conf_based = Configuration()
+
+        new_conf = add_configuration(conf_based, conf)
+
+        self.assertIs(new_conf, conf_based)
+        self.assertEqual(conf_based.test1, "test1")
+        self.assertEqual(conf_based.test2, "test2")
+
+    def test_send_mail(self):
+        self.assertEqual(send_mail(self.conf, "test"), 1)
+
+        self.server.pages.packages.error_pages = Mock(Request=Mock(send_mail=Mock()))
+        self.assertEqual(send_mail(self.conf, "test"), 0)
 
 
 if __name__ == "__main__":
