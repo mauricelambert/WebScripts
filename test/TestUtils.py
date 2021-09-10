@@ -22,7 +22,7 @@
 
 """This file test the WebScripts.py file"""
 
-from os import path, device_encoding
+from os import path, device_encoding, getcwd
 from unittest import TestCase, main
 from unittest.mock import Mock
 from types import MethodType
@@ -86,6 +86,7 @@ class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
             EVENTLOG_ERROR_TYPE=30,
         )
         WebScripts.utils.ReportEvent = Mock()
+        WebScripts.utils.WINDOWS_LOGS = True
         self.logs = WindowsLogs
 
     def test_debug(self):
@@ -357,7 +358,10 @@ class TestFunctions(TestCase):
         self.assertEqual(get_ip(env), "ip4")
 
     def test_get_ini_dict(self):
-        self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict("test.ini"))
+        if getcwd().endswith('test'):
+            self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict("test.ini"))
+        else:
+            self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict(path.normcase("test/test.ini")))
 
 
 if __name__ == "__main__":
