@@ -905,6 +905,7 @@ def parse_args() -> Namespace:
         "--s-tls",
         help="Use STARTTLS to secure the connection.",
         action="store_true",
+        default=None,
     )
     smtp.add_argument(
         "--smtp-password",
@@ -922,6 +923,7 @@ def parse_args() -> Namespace:
         "--s-ssl",
         help="Use SSL to secure the connection",
         action="store_true",
+        default=None,
     )
     smtp.add_argument(
         "--admin-adresses",
