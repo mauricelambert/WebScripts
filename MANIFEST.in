@@ -7,8 +7,7 @@ include WebScripts/data/*.csv
 include WebScripts/modules/*.py
 include WebScripts/doc/empty.html
 include WebScripts/data/uploads/*.txt
-recursive-include test/modules *.py
-recursive-include test/static *.css *.js
+recursive-include test test.*
 recursive-include WebScripts/scripts *.py
 recursive-include WebScripts/config *.ini *.json
 recursive-include WebScripts/static *.css *.js *.html *.jpg *.png

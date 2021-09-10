@@ -1,15 +1,15 @@
 # WebScripts
 
-[![PyPI version](https://badge.fury.io/py/WebScripts.svg)](https://badge.fury.io/py/WebScripts)
+![PyPI](https://img.shields.io/pypi/v/WebScripts?color=orange)
 [![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
-![GitHub branch checks state](https://img.shields.io/github/checks-status/mauricelambert/WebScripts/main)
-![PyPI - Status](https://img.shields.io/pypi/status/WebScripts)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/WebScripts)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/y/mauricelambert/WebScripts)
-![GitHub top language](https://img.shields.io/github/languages/top/mauricelambert/WebScripts)
-![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts)
-![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts)
-![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/mauricelambert/WebScripts/main?color=orange)
+![PyPI - Status](https://img.shields.io/pypi/status/WebScripts?color=orange)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/WebScripts?color=orange)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/mauricelambert/WebScripts?color=orange)
+![GitHub top language](https://img.shields.io/github/languages/top/mauricelambert/WebScripts?color=orange)
+![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts?color=orange)
+![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
+![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
 
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
