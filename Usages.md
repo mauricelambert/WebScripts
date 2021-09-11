@@ -96,22 +96,36 @@ WebScripts -I "./modules/1/" "./modules/2/" -I "./modules/3/"
 ### Documentation paths
 
 ```bash
-WebScripts --documentations-path "./doc/1/" "./doc/2/" --documentations-path "./doc/3/"
-WebScripts -D "./doc/1/" "./doc/2/" -D "./doc/3/"
+WebScripts --documentations-path "./doc/1/*.html" "./doc/2/*.txt" --documentations-path "./doc/3/*.html"
+WebScripts -D "./doc/1/*.html" "./doc/2/*.txt" -D "./doc/3/*.html"
 ```
 
 ### Javascript paths
 
 ```bash
-WebScripts --js-path "./js/1/" "./js/2/" --js-path "./js/3/"
-WebScripts -J "./js/1/" "./js/2/" -J "./js/3/"
+WebScripts --js-path "./js/1/*.js" "./js/2/*.js" --js-path "./js/3/*.js"
+WebScripts -J "./js/1/*.js" "./js/2/*.js" -J "./js/3/*.js"
 ```
 
 ### Static paths
 
 ```bash
-WebScripts --statics-path "./images/1/" "./templates/html/2/" --statics-path "./css/3/"
-WebScripts -T "./images/1/" "./templates/html/2/" -T "./css/3/"
+WebScripts --statics-path "./images/1/*.jpg" "./templates/html/2/*.html" --statics-path "./css/3/*.css"
+WebScripts -T "./images/1/*.png" "./templates/html/2/*.html" -T "./pdf/3/*.pdf"
+```
+
+### Auth failures to blacklist
+
+```bash
+WebScripts --auth-failures-to-blacklist 3
+WebScripts -b 3
+```
+
+### Blacklist time
+
+```bash
+WebScripts --blacklist-time 30
+WebScripts -B 30
 ```
 
 ### DEV

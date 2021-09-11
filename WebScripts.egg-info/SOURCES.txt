@@ -106,6 +106,7 @@ WebScripts/static/html/Pages.html
 WebScripts/static/html/WebScripts.html
 WebScripts/static/html/commons.html
 WebScripts/static/html/error_pages.html
+WebScripts/static/html/get_request.html
 WebScripts/static/html/index.html
 WebScripts/static/html/manage_defaults_databases.html
 WebScripts/static/html/uploads_management.html

@@ -1,7 +1,7 @@
 # WebScripts
 
 ![PyPI](https://img.shields.io/pypi/v/WebScripts?color=orange)
-[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
+[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/mauricelambert/WebScripts/main?color=orange)
 ![PyPI - Status](https://img.shields.io/pypi/status/WebScripts?color=orange)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/WebScripts?color=orange)
