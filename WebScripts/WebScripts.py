@@ -236,7 +236,7 @@ class Server:
         self.pages = Pages()
 
         self.headers = {
-            "Server": f"WebScripts {__version__}",
+            "Server": f"WebScripts {sys.modules[__package__].__version__ if __package__ else __version__}",
             "Content-Type": "text/html; charset=utf-8",
         }
 
@@ -250,12 +250,13 @@ class Server:
             ] = "max-age=63072000; includeSubDomains; preload"
             self.headers[
                 "Content-Security-Policy"
-            ] = "default-src 'self'; form-action 'none'"
+            ] = "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
             self.headers["X-Frame-Options"] = "deny"
             self.headers["X-XSS-Protection"] = "1; mode=block"
             self.headers["X-Content-Type-Options"] = "nosniff"
             self.headers["Referrer-Policy"] = "origin-when-cross-origin"
             self.headers["Cache-Control"] = "no-store"
+            self.headers["Pragma"] = "no-store"
             self.headers["Clear-Site-Data"] = "*"
             self.headers["Feature-Policy"] = "microphone 'none'; camera 'none'"
             self.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
@@ -265,7 +266,7 @@ class Server:
         else:
             self.headers[
                 "Content-Security-Policy-Report-Only"
-            ] = "default-src 'self'; form-action 'none'"
+            ] = "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
 
         self.add_module_or_package()
         self.add_paths()

@@ -25,7 +25,7 @@ in a web interface.
 
 This file can print users in HTML table."""
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,6 +50,7 @@ __all__ = []
 
 from modules.manage_defaults_databases import get_users
 from argparse import ArgumentParser, Namespace
+import html
 import sys
 
 
@@ -83,7 +84,7 @@ def main() -> None:
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
+            print(f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.')
             sys.exit(3)
 
     print("<table>")
@@ -95,9 +96,9 @@ def main() -> None:
             or (arguments.names and user.name in arguments.names)
         ):
             print(
-                f"<tr><td>{user.ID}</td><td>{user.name}</td><td>{user.IPs}</td>"
-                f"<td>{user.groups}</td><td>{user.apikey}</td><td>{user.categories}</td>"
-                f"<td>{user.scripts}</td></tr>"
+                f"<tr><td>{html.escape(user.ID)}</td><td>{html.escape(user.name)}</td><td>{html.escape(user.IPs)}</td>"
+                f"<td>{html.escape(user.groups)}</td><td>{html.escape(user.apikey)}</td><td>{html.escape(user.categories)}</td>"
+                f"<td>{html.escape(user.scripts)}</td></tr>"
             )
 
     print("</table>")

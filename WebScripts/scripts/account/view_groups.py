@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints groups in a HTML table."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,6 +50,7 @@ __all__ = []
 
 from modules.manage_defaults_databases import get_groups
 from argparse import ArgumentParser, Namespace
+import html
 import sys
 
 
@@ -83,7 +84,7 @@ def main() -> None:
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
+            print(f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.')
             sys.exit(3)
 
     print("<table>")
@@ -94,7 +95,9 @@ def main() -> None:
             or (arguments.ids and group.ID in arguments.ids)
             or (arguments.names and group.name in arguments.names)
         ):
-            print(f"<tr><td>{group.ID}</td><td>{group.name}</td></tr>")
+            print(
+                f"<tr><td>{html.escape(group.ID)}</td><td>{html.escape(group.name)}</td></tr>"
+            )
 
     print("</table>")
 

@@ -31,6 +31,7 @@ from typing import Tuple, List, Dict
 from contextlib import suppress
 from os import _Environ, path
 from fnmatch import fnmatch
+from html import escape
 import json
 
 try:
@@ -151,6 +152,32 @@ def execute_scripts(
     execution_logs(script, user, process, stderr)
 
     return stdout, stderr, process.returncode, error
+
+
+@log_trace
+def anti_XSS(json_value: JsonValue) -> JsonValue:
+
+    """This function clean a JSON object."""
+
+    if isinstance(json_value, str):
+        return escape(json_value)
+    elif isinstance(json_value, int):
+        return json_value
+    elif isinstance(json_value, list):
+        for i, value in enumerate(json_value):
+            value[i] = anti_XSS(json_value)
+        return json_value
+    elif isinstance(json_value, dict):
+        for attribut, value in json_value.items():
+            json_value[attribut] = anti_XSS(value)
+        return json_value
+    elif json_value is None:
+        return json_value
+    else:
+        raise NotImplementedError(
+            f"type({type(json_value)}) is not implemented, supported types are: "
+            "\n\t - str\n\t - int\n\t - list\n\t - dict\n\t - NoneType"
+        )
 
 
 @log_trace
@@ -389,7 +416,7 @@ class Web:
         return (
             "200 OK",
             {
-                "Content-Security-Policy": "default-src 'self'; form-action 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='"
+                "Content-Security-Policy": "default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='"
             },
             CallableFile.template_index,
         )
@@ -632,7 +659,7 @@ class Pages:
         if code or stdout is None or stderr:
             return "500", {}, ""
 
-        user = User.default_build(**json.loads(stdout))
+        user = User.default_build(**anti_XSS(json.loads(stdout)))
 
         if user.id == 0:
             Pages.ip_blacklist[ip] = Blacklist(

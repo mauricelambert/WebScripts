@@ -30,6 +30,7 @@ from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 from os import _Environ, path
+from html import escape
 from time import time
 import secrets
 import json
@@ -38,7 +39,7 @@ import csv
 ServerConfiguration = TypeVar("ServerConfiguration")
 User = TypeVar("User")
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -238,11 +239,12 @@ def send_error_page(error: str, code: str) -> Tuple[str, Dict[str, str], List[by
 
     """This function returns the default error code, headers and formatted pages."""
 
-    nonce = secrets.token_hex(10)
+    nonce = secrets.token_hex(20)
+    code = escape(code)
     return (
         error,
         {
-            "Content-Security-Policy": f"default-src 'self'; form-action 'none'; script-src 'self' 'nonce-{nonce}'",
+            "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
             "Content-Type": "text/html; charset=utf-8",
         },
         [page.format(code=code, nonce=nonce, message=error).encode("utf-8")],
@@ -265,14 +267,15 @@ class Report:
 
         """This function returns the report page by default."""
 
-        nonce = secrets.token_hex(10)
+        nonce = secrets.token_hex(20)
+        code = escape(code)
         return (
             "200 OK",
             {
-                "Content-Security-Policy": f"default-src 'self'; form-action 'none'; script-src 'self' 'nonce-{nonce}'",
+                "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
                 "Content-Type": "text/html; charset=utf-8",
             },
-            page.format(code=code, nonce=nonce, message=code),
+            page.format(code=code, nonce=nonce, message=f"Report an error {code}"),
         )
 
 
@@ -335,7 +338,7 @@ class Request:
             csvfile = csv.writer(file, quoting=csv.QUOTE_ALL)
             csvfile.writerow(
                 [
-                    id_,
+                    str(id_),
                     str(time()),
                     username,
                     code,
@@ -359,11 +362,13 @@ class Request:
 
         """This function save and send request or report."""
 
-        referer = environ.get("HTTP_REFERER")
-        user_agent = environ.get("HTTP_USER_AGENT")
-        subject = arguments[0]
-        name = arguments[2]
-        reason = arguments[1]
+        referer = escape(environ.get("HTTP_REFERER"))
+        user_agent = escape(environ.get("HTTP_USER_AGENT"))
+        subject = escape(arguments[0])
+        name = escape(arguments[2])
+        reason = escape(arguments[1])
+        code = escape(code)
+        user.name = escape(user.name)
 
         while len(arguments) < 4:
             arguments.append(None)

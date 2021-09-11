@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints a HTML table of uploaded file versions."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,6 +50,8 @@ __all__ = []
 
 from modules.uploads_management import get_file
 from time import localtime, strftime
+from urllib.parse import quote
+import html
 import sys
 
 
@@ -81,15 +83,15 @@ def main() -> None:
     try:
         files, counter = get_file(filename)
     except Exception as e:
-        print(f"{e.__class__.__name__}: {e}")
+        print(html.escape(f"{e.__class__.__name__}: {e}"))
         sys.exit(127)
 
     for file in files:
         file = file._replace(
-            ID=f'<a href="get_any_file.py?type=ID&identifier={file.ID}">{file.ID}</a>',
+            ID=f'<a href="get_any_file.py?type=ID&identifier={quote(file.ID)}">{html.escape(file.ID)}</a>',
             timestamp=strftime("%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp))),
         )
-        print(f'<tr><td>{"</td><td>".join(file)}</td></tr>')
+        print(f'<tr><td>{"</td><td>".join([html.escape(x) for x in file])}</td></tr>')
 
     print("</table>")
 

@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints an HTML table of user requests."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,6 +50,8 @@ __all__ = []
 
 from modules.requests_management import get_requests
 from time import localtime, strftime
+from urllib.parse import quote
+import html
 import sys
 
 
@@ -70,20 +72,20 @@ def main() -> None:
     try:
         requests = get_requests()
     except Exception as e:
-        print(f"{e.__class__.__name__}: {e}")
+        print(html.escape(f"{e.__class__.__name__}: {e}"))
         sys.exit(127)
 
     not_first = False
     for request in requests:
         if not_first:
             print(
-                f'<tr><td><a href="get_request.py?ID={request.ID}">'
-                f"{request.ID}</a></td>"
+                f'<tr><td><a href="get_request.py?ID={quote(request.ID)}">'
+                f"{html.escape(request.ID)}</a></td>"
                 f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}</td>"
-                f"<td>{request.UserName}</td>"
-                f"<td>{request.Subject}</td>"
-                f"<td>{request.ErrorCode}</td>"
-                f"<td>{request.Page}</td></tr>"
+                f"<td>{html.escape(request.UserName)}</td>"
+                f"<td>{html.escape(request.Subject)}</td>"
+                f"<td>{html.escape(request.ErrorCode)}</td>"
+                f"<td>{html.escape(request.Page)}</td></tr>"
             )
         else:
             not_first = True

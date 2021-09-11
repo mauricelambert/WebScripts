@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage requests/reports on WebScripts."""
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -59,6 +59,7 @@ from typing import Tuple, List, TypeVar
 from os import environ, path, replace
 from collections.abc import Iterator
 from collections import namedtuple
+from html import escape
 import json
 import csv
 
@@ -85,6 +86,14 @@ DIRECTORY = path.join(
     "data",
 )
 
+def anti_XSS(named_tuple: namedtuple) -> namedtuple:
+
+    """This function returns a namedtuple without HTML special characters."""
+
+    new = {}
+    for attribut, value in named_tuple._asdict().items():
+        new[attribut] = escape(value)
+    return named_tuple.__class__(**new)
 
 def get_requests() -> Iterator[Request]:
 
@@ -100,7 +109,7 @@ def get_request(id_: str) -> Request:
 
     for request in get_requests():
         if request.ID == id_:
-            return request
+            return anti_XSS(request)
 
     raise ValueError("This request ID doesn't exists.")
 
@@ -118,10 +127,10 @@ def delete_request(id_: str) -> Request:
             if request.ID == id_:
                 deleted_request = request
             else:
-                csvwriter.writerow(request)
+                csvwriter.writerow(anti_XSS(request))
 
     if deleted_request is None:
         raise ValueError("This request ID doesn't exists.")
 
     replace(filename, path.join(DIRECTORY, FILE))
-    return deleted_request
+    return anti_XSS(deleted_request)

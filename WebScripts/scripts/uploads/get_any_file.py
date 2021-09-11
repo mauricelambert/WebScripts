@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints a HTML link to download a file."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,6 +49,8 @@ __copyright__ = copyright
 __all__ = []
 
 from modules.uploads_management import get_file_content
+from urllib.parse import quote
+import html
 import sys
 
 
@@ -78,12 +80,12 @@ def main() -> None:
     try:
         data, filename = get_file_content(name=name, id_=id_)
     except Exception as e:
-        print(f"{e.__class__.__name__}: {e}")
+        print(html.escape(f"{e.__class__.__name__}: {e}"))
         sys.exit(127)
 
     print(
         f'<a href="data:application/octet-stream;base64, {data}" '
-        f'download="{filename}">Click here to download {filename}</a>'
+        f'download="{quote(filename)}">Click here to download {html.escape(filename)}</a>'
     )
 
 

@@ -727,12 +727,12 @@ class CallableFile(Callable):
                     get_file_content(self.path, "rb"),
                 )
         elif self.type == "script":
-            nonce = secrets.token_hex(10)
+            nonce = secrets.token_hex(20)
             return (
                 "200 OK",
                 {
                     "Content-Type": "text/html",
-                    "Content-Security-Policy": f"default-src 'self'; form-action 'none'; script-src 'self' 'nonce-{nonce}'",
+                    "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
                 },
                 CallableFile.template_script
                 % {

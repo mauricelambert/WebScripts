@@ -62,6 +62,7 @@ from typing import Tuple, List, TypeVar
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
 from os import environ, path
+from html import escape
 import json
 import csv
 
@@ -94,6 +95,16 @@ User = TypeVar("User")
 Data = TypeVar("Data", str, bytes)
 
 
+def anti_XSS(named_tuple: namedtuple) -> namedtuple:
+
+    """This function returns a namedtuple without HTML special characters."""
+
+    new = {}
+    for attribut, value in named_tuple._asdict().items():
+        new[attribut] = escape(value)
+    return named_tuple.__class__(**new)
+
+
 def get_files() -> Iterator[Upload]:
 
     """This function build Uploads from database."""
@@ -113,6 +124,7 @@ def get_visible_files() -> Iterator[Upload]:
     files = {}
 
     for file in get_files():
+        file = anti_XSS(file)
         if file.hidden != "hidden" and file.is_deleted != "deleted":
             files[file.name] = file
         elif (
@@ -146,18 +158,20 @@ def write_file(
 
     timestamp = time()
 
-    upload = Upload(
-        str(sum(counter.values())),
-        name,
-        str(read_access),
-        str(write_access),
-        str(delete_access),
-        "hidden" if hidden else "visible",
-        "exist",
-        "binary" if binary else "text",
-        str(timestamp),
-        owner["name"],
-        str(counter[name]),
+    upload = anti_XSS(
+        Upload(
+            str(sum(counter.values())),
+            name,
+            str(read_access),
+            str(write_access),
+            str(delete_access),
+            "hidden" if hidden else "visible",
+            "exist",
+            "binary" if binary else "text",
+            str(timestamp),
+            owner["name"],
+            str(counter[name]),
+        )
     )
 
     write_action(upload)
@@ -192,18 +206,20 @@ def delete_file(name: str) -> Upload:
     check_permissions(file, owner, "delete")
     timestamp = time()
 
-    upload = Upload(
-        str(sum(counter.values())),
-        file.name,
-        file.read_permission,
-        file.write_permission,
-        file.delete_permission,
-        file.hidden,
-        "deleted",
-        file.is_binary,
-        str(timestamp),
-        owner["name"],
-        file.version,
+    upload = anti_XSS(
+        Upload(
+            str(sum(counter.values())),
+            file.name,
+            file.read_permission,
+            file.write_permission,
+            file.delete_permission,
+            file.hidden,
+            "deleted",
+            file.is_binary,
+            str(timestamp),
+            owner["name"],
+            file.version,
+        )
     )
     write_action(upload)
 
@@ -216,7 +232,7 @@ def write_action(upload: Upload) -> None:
 
     with open(path.join(DIRECTORY, FILE), "a", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        csv_writer.writerow(upload)
+        csv_writer.writerow(anti_XSS(upload))
 
 
 def check_permissions(file: Upload, owner: User, attr: str) -> None:
@@ -316,6 +332,7 @@ def get_file(name: str) -> Tuple[List[Upload], Counter]:
     counter = Counter()
 
     for file in get_files():
+        file = anti_XSS(file)
         counter[file.name] += 1
         if file.name == name:
             versions.append(file)

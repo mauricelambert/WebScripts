@@ -25,7 +25,7 @@ in a web interface.
 
 This file implement some functions to manage WebScript default databases."""
 
-__version__ = "1.0.1"
+__version__ = "1.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -70,6 +70,7 @@ from hashlib import pbkdf2_hmac
 from os import environ, path
 from fnmatch import fnmatch
 from typing import List
+from html import escape
 import csv
 
 User = namedtuple(
@@ -171,7 +172,17 @@ def get_apikey(id_: str, password: str) -> str:
             if user.ID == "0":
                 return None
 
-            return user.apikey
+            return escape(user.apikey)
+
+
+def anti_XSS(named_tuple: namedtuple) -> namedtuple:
+
+    """This function returns a namedtuple without HTML special characters."""
+
+    new = {}
+    for attribut, value in named_tuple._asdict().items():
+        new[attribut] = escape(value)
+    return named_tuple.__class__(**new)
 
 
 def change_user_password(id_: str, new_password: str, old_password: str = None) -> User:
@@ -208,7 +219,7 @@ def change_user_password(id_: str, new_password: str, old_password: str = None) 
         users.append(user)
 
     rewrite_users(users)
-    return user_
+    return anti_XSS(user_)
 
 
 def add_user(
@@ -222,6 +233,7 @@ def add_user(
 
     """This function add user in database or raise a UserError."""
 
+    name = escape(name)
     for i, user in enumerate(get_users()):
         if name == user.name:
             raise UserError(f'unique constraint failed: name "{name}" is used')
@@ -231,17 +243,19 @@ def add_user(
     hash_ = b64encode(
         pbkdf2_hmac("sha512", password.encode(), salt, enumerations)
     ).decode()
-    user = User(
-        str(i),
-        name,
-        hash_,
-        b64encode(salt).decode(),
-        str(enumerations),
-        ",".join(ips),
-        ",".join([str(group) for group in groups]),
-        b64encode(token_bytes(125)).decode(),
-        ",".join(categories),
-        ",".join(scripts),
+    user = anti_XSS(
+        User(
+            str(i),
+            name,
+            hash_,
+            b64encode(salt).decode(),
+            str(enumerations),
+            ",".join(ips),
+            ",".join([str(group) for group in groups]),
+            b64encode(token_bytes(125)).decode(),
+            ",".join(categories),
+            ",".join(scripts),
+        )
     )
 
     with open(path.join(DIRECTORY, FILES[0]), "a", newline="") as csvfile:
@@ -256,6 +270,7 @@ def auth_username_password(name: str, password: str) -> User:
     """This function verifies the authentication
     with user name and password."""
 
+    name = escape(name)
     for user in get_users():
         if (
             user.password
@@ -272,7 +287,7 @@ def auth_username_password(name: str, password: str) -> User:
         ):
             for glob_ip in user.IPs.split(","):
                 if fnmatch(environ["REMOTE_ADDR"], glob_ip):
-                    return user
+                    return anti_XSS(user)
 
     return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
 
@@ -284,7 +299,7 @@ def auth_apikey(apikey: str) -> User:
 
     for user in get_users():
         if apikey == user.apikey:
-            return user
+            return anti_XSS(user)
 
     return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
 
@@ -310,7 +325,7 @@ def add_group(name: str, id_: int) -> Group:
         elif id_ == group.ID:
             raise GroupError(f"unique constraint failed: ID {id_} is used")
 
-    group = Group(id_, name)
+    group = anti_XSS(Group(id_, name))
 
     with open(path.join(DIRECTORY, FILES[1]), "a", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
@@ -348,7 +363,7 @@ def delete_user(id_: int) -> User:
 
     rewrite_users(users)
 
-    return deleted_user
+    return anti_XSS(deleted_user)
 
 
 def rewrite_users(users: List[User]) -> None:
@@ -359,7 +374,7 @@ def rewrite_users(users: List[User]) -> None:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         # csv_writer.writerow(User._fields)
         for user in users:
-            csv_writer.writerow(user)
+            csv_writer.writerow(anti_XSS(user))
 
 
 def delete_group(id_: int) -> Group:
@@ -379,9 +394,9 @@ def delete_group(id_: int) -> Group:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         # csv_writer.writerow(Group._fields)
         for group in groups:
-            csv_writer.writerow(group)
+            csv_writer.writerow(anti_XSS(group))
 
-    return deleted_group
+    return anti_XSS(deleted_group)
 
 
 def create_default_databases() -> None:

@@ -25,7 +25,7 @@ in a web interface.
 
 This file prints a HTML table of uploaded files."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,6 +50,8 @@ __all__ = []
 
 from modules.uploads_management import get_visible_files
 from time import localtime, strftime
+from urllib.parse import quote
+import html
 import sys
 
 
@@ -70,17 +72,17 @@ def main() -> None:
     try:
         files = get_visible_files()
     except Exception as e:
-        print(f"{e.__class__.__name__}: {e}")
+        print(html.escape(f"{e.__class__.__name__}: {e}"))
         sys.exit(127)
 
     for file in files.values():
         print(
-            f'<tr><td><a href="get_file.py?filename={file.name}">{file.name}</a></td>'
+            f'<tr><td><a href="get_file.py?filename={quote(file.name)}">{html.escape(file.name)}</a></td>'
             f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(file.timestamp)))}</td>"
-            f"<td>{file.read_permission}</td>"
-            f"<td>{file.write_permission}</td>"
-            f"<td>{file.delete_permission}</td>"
-            f"<td>{file.user}</td></tr>"
+            f"<td>{html.escape(file.read_permission)}</td>"
+            f"<td>{html.escape(file.write_permission)}</td>"
+            f"<td>{html.escape(file.delete_permission)}</td>"
+            f"<td>{html.escape(file.user)}</td></tr>"
         )
 
     print("</table>")
