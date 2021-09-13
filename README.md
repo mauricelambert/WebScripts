@@ -1,15 +1,18 @@
 # WebScripts
 
 ![PyPI](https://img.shields.io/pypi/v/WebScripts?color=orange)
-[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
+[![Downloads](https://static.pepy.tech/personalized-badge/webscripts?period=total&units=none&left_color=grey&right_color=orange&left_text=Downloads)](https://pepy.tech/project/webscripts)
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/mauricelambert/WebScripts/main?color=orange)
 ![PyPI - Status](https://img.shields.io/pypi/status/WebScripts?color=orange)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/WebScripts?color=orange)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/mauricelambert/WebScripts?color=orange)
 ![GitHub top language](https://img.shields.io/github/languages/top/mauricelambert/WebScripts?color=orange)
+![GitHub issues](https://img.shields.io/github/issues/mauricelambert/WebScripts?color=orange)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/mauricelambert/WebScripts?color=orange)
 ![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts?color=orange)
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
+[![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](#python3.8)
 
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
@@ -115,6 +118,26 @@ config.build_types()
 server = Server(config)
 httpd = simple_server.make_server(server.interface, server.port, server.app)
 httpd.serve_forever()
+```
+
+## Compatibility
+
+### Python3.8
+
+```bash
+python3.8 WebScripts/scripts/to_3.8/to_3.8.py
+python3.8 setup38.py install
+python3.8 -m WebScripts38
+```
+
+```python
+# Launch this commands line:
+#   - python3.8 WebScripts/scripts/to_3.8/to_3.8.py
+#   - python3.8 setup38.py install
+# And use the package:
+
+import WebScripts38
+WebScripts38.main()
 ```
 
 ## Documentation

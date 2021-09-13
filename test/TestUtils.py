@@ -314,7 +314,6 @@ class TestFunctions(TestCase):
 
     def test_get_file_content(self):
         with open("test.json") as file:
-            print(file)
             self.assertDictEqual(
                 json.loads(get_file_content("test.json", encoding="latin-1")),
                 json.load(file),

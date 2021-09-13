@@ -388,15 +388,12 @@ class TestServer(TestCase):
 
         self.server.add_paths()
 
-        if self.server.pages.statics_paths.get("test.css"):
-            self.assertTrue(True)
-        else:
-            self.assertTrue(False)
-
-        if self.server.pages.js_paths.get("test.js"):
-            self.assertTrue(True)
-        else:
-            self.assertTrue(False)
+        self.assertIsNotNone(
+            self.server.pages.statics_paths.get("test.css")
+        )
+        self.assertIsNotNone(
+            self.server.pages.js_paths.get("test.js")
+        )
 
         self.conf.auth_script = "test_auth_scripts.test"
         self.conf.active_auth = True

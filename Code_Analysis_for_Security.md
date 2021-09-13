@@ -4,6 +4,16 @@
 
 1. A vulnerability is found with: `Popen(..., shell=True, ...)` used for generating documentation. The vulnerability is not dangerous if the configrations files are protected by the system (rights and write permissions to these files).
 
+## Reports
+
+Github Actions and Gitlab-CI scan and generate these reports.
+
+ - [dirb.txt](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt)
+ - [nikto.html](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html)
+ - [ZAP.html](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html)
+ - [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html)
+ - [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.html)
+
 ### Bandit
 
 ```bash
