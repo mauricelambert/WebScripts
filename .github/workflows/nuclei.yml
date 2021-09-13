@@ -1,0 +1,26 @@
+name: Nuclei - DAST Scan
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python 3.9  
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Launch WebScripts
+        run: |
+          python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+
+      - name: Nuclei - DAST Scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          target: http://127.0.0.1:8000

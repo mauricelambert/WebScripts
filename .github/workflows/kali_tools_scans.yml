@@ -1,0 +1,100 @@
+name: Custom DAST Scans
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  scans:
+    runs-on: ubuntu-latest
+    steps:
+      #
+      # UPDATE AND INSTALL
+      #
+
+      - uses: actions/checkout@v2
+
+      - name: update and install
+        run: |
+          #
+          # UPDATE
+          #
+          sudo apt update -y
+          sudo apt upgrade -y
+          #
+          # INSTALL KALI TOOLS
+          #
+          sudo apt install -y dirb nikto whatweb zip
+          #
+          # INSTALL SKIPFISH
+          #
+          sudo apt install wget libc6 libidn11 libpcre3 zlib1g debconf perl-base -y
+          wget -O debconf.deb http://archive.ubuntu.com/ubuntu/pool/main/d/debconf/debconf_1.5.66_all.deb
+          wget -O libssl.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5_amd64.deb
+          wget -O skipfish.deb http://archive.ubuntu.com/ubuntu/pool/universe/s/skipfish/skipfish_2.10b-1.1_amd64.deb
+          sudo dpkg -i debconf.deb
+          sudo dpkg -i libssl.deb
+          sudo dpkg -i skipfish.deb
+
+      - name: Setup Python 3.9  
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      #
+      # LAUNCH SERVICE
+      #
+
+      - name: Launch WebScripts
+        run: |
+          python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+
+      #
+      # LAUNCH SCANS
+      #
+
+      - name: dirb scan
+        run: |
+          dirb http://127.0.0.1:8000/web/ -u Admin:Admin -o dirb.txt
+
+      - name: nikto scan
+        run: |
+          nikto -o nikto.html -Format html -Tuning x -evasion 12345678AB -id Admin:Admin -C all -h http://127.0.0.1:8000/web/auth/
+
+      - name: whatweb scan
+        run: |
+          whatweb -u Admin:Admin -v -a 4 http://127.0.0.1:8000/ --log-json=whatweb.json
+
+      - name: skipfish scan
+        run: |
+          skipfish -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
+          zip -r skipfish.zip skipfish
+
+      #
+      # UPLOAD REPORTS
+      #
+          
+      - name: nikto uploads
+        uses: actions/upload-artifact@v1
+        with:
+            name: nikto_report
+            path: nikto.html
+
+      - name: skipfish uploads
+        uses: actions/upload-artifact@v1
+        with:
+            name: skipfish_report
+            path: skipfish.zip
+
+      - name: whatweb uploads
+        uses: actions/upload-artifact@v1
+        with:
+            name: whatweb_report
+            path: whatweb.json
+
+      - name: dirb uploads
+        uses: actions/upload-artifact@v1
+        with:
+            name: dirb_report
+            path: dirb.txt

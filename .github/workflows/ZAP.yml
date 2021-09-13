@@ -1,0 +1,30 @@
+on: [push]
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Setup Python 3.9 
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Launch WebScripts
+        run: |
+          python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+      
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.4.0
+        with:
+          docker_name: 'owasp/zap2docker-stable'
+          target: 'http://127.0.0.1:8000'
+          cmd_options: '-a'
+          fail_action: false
+          allow_issue_writing: false
+          issue_title: "ZAP report"
