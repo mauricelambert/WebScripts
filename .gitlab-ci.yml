@@ -1,17 +1,77 @@
-test:unittest:
-  image: python:3.9
-  script:
-    - python3.9 -m unittest discover -s test -p Test*.py -v
-
-
 stages:
-  - dast
+  - unittest
   - test
+  - ZAP
+  - pentest
 
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-spotbugs-sast:
+unittest:
+  stage: unittest
+  image: python:3.9
+  script:
+    - python3.9 -m unittest discover -s test -p Test*.py -v
+
+pentest:
+  variables:
+    DEBIAN_FRONTEND: noninteractive
+  stage: pentest
+  image: ubuntu:latest
+  when: always
+  allow_failure: false
+  before_script:
+    - |
+      #
+      # UPDATE
+      #
+      apt update -y
+      apt upgrade -y
+      #
+      # INSTALL KALI TOOLS
+      #
+      apt install -y dirb nikto whatweb python3.9 zip
+      #
+      # INSTALL SKIPFISH
+      #
+      ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+      apt install wget libc6 libidn11 libpcre3 zlib1g debconf perl-base -y
+      dpkg-reconfigure --frontend noninteractive tzdata
+      wget -O debconf.deb http://archive.ubuntu.com/ubuntu/pool/main/d/debconf/debconf_1.5.66_all.deb
+      wget -O libssl.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5_amd64.deb
+      wget -O skipfish.deb http://archive.ubuntu.com/ubuntu/pool/universe/s/skipfish/skipfish_2.10b-1.1_amd64.deb
+      dpkg -i debconf.deb
+      dpkg -i libssl.deb
+      dpkg -i skipfish.deb
+  script:
+    - |
+      python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+      sleep 20
+      dirb http://127.0.0.1:8000/web/ -u Admin:Admin -o dirb.txt
+      nikto -o nikto.html -Format html -Tuning x -evasion 12345678AB -id Admin:Admin -C all -h http://127.0.0.1:8000/web/auth/ --log-json=whatweb.json
+      whatweb -u Admin:Admin -v -a 4 http://127.0.0.1:8000/
+      skipfish -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
+      zip -r skipfish.zip skipfish
   artifacts:
-    reports:
-      sast: gl-sast-report.json
+    when: always
+    paths: 
+      - nikto.html
+      - dirb.txt
+      - whatweb.json
+      - skipfish/
+
+ZAP:
+  stage: ZAP
+  image: owasp/zap2docker-stable
+  when: always
+  allow_failure: false
+  script:
+    - |
+      mkdir -p /zap/wrk/
+      python3.8 WebScripts/scripts/to_3.8/to_3.8.py
+      python3.8 -m WebScripts38 --port 8000 --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+      zap-full-scan.py -t http://127.0.0.1:8000 -r ZAP.html
+      cp /zap/wrk/ZAP.html ./ZAP.html
+  artifacts:
+    when: always
+    paths: [ZAP.html]
