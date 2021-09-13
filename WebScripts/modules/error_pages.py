@@ -30,6 +30,7 @@ from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 from os import _Environ, path
+from string import Template
 from html import escape
 from time import time
 import secrets
@@ -69,17 +70,18 @@ __all__ = [
     "Report",
 ]
 
-page = """
+page = Template(
+    """
 <html>
     <head>
-        <title>Error {code}</title>
+        <title>Error ${code}</title>
         <meta charset="utf-8">
         <link rel="shortcut icon" type="image/png" href="/static/webscripts_icon.png"/>
         <link rel="stylesheet" type="text/css" href="/static/webscripts_style.css">
         <link rel="stylesheet" type="text/css" href="/static/webscripts_script_style.css">
         <script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
         <script type="text/javascript" src="/js/webscripts_script_js_scripts.js"></script>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'nonce-{nonce}'">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'nonce-${nonce}'">
     </head>
 
     <body>
@@ -98,7 +100,7 @@ page = """
 
         <div id="webscripts_content">
             <div id="script_presentation">
-                <h1 id="script_title">Error {code} - request or report</h1>
+                <h1 id="script_title">Error ${code} - request or report</h1>
                 <p class="description" id="script_description">
                     This script sends a request or a report to the administrator of this Web server.
                 </p>
@@ -106,7 +108,7 @@ page = """
                 <a href="/web/">Index</a>
             </div>
 
-            <p>{message}</p>
+            <p>${message}</p>
 
             <div id="script_interface">
                 <div class="row">
@@ -134,8 +136,8 @@ page = """
                 </div>
 
                 <div id="submit_row" class="row">
-                    <input type="hidden" id="code" name="code" value="{code}">
-                    <input type="hidden" name="csrf_token" id="csrf_token" value="{{csrf}}">
+                    <input type="hidden" id="code" name="code" value="${code}">
+                    <input type="hidden" name="csrf_token" id="csrf_token" value="{csrf}">
                     <div class="submit_position">
                         <input id="submit_button" type="submit" class="submit" value="Start script execution">
                     </div>
@@ -173,38 +175,39 @@ page = """
             </ul>
         </footer>
 
-        <script type="text/javascript" nonce="{nonce}">
+        <script type="text/javascript" nonce="${nonce}">
             document.getElementById("submit_button").onclick=start_script_execution;
-            script_name="/error_pages/Request/send/{code}";
+            script_name="/error_pages/Request/send/${code}";
             document.getElementById("prevent_no_javascript").style.display='none';
             document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";
             add_buttons();
-            script =  {{
+            script =  {
                 "content_type": "text/plain", 
-                "name": "/error_pages/request/{code}", 
+                "name": "/error_pages/request/${code}", 
                 "args": [
-                    {{ 
+                    { 
                         "input": false, 
                         "name": "title"
-                    }},
-                    {{ 
+                    },
+                    { 
                         "input": false, 
                         "name": "request"
-                    }},
-                    {{ 
+                    },
+                    { 
                         "input": false, 
                         "name": "name"
-                    }},
-                    {{ 
+                    },
+                    { 
                         "input": false, 
                         "name": "code"
-                    }}
+                    }
                 ]
-            }};
+            };
         </script>
     </body>
 </html>
 """
+)
 
 
 def page_500(error: str) -> Tuple[str, Dict[str, str], List[bytes]]:
@@ -247,7 +250,7 @@ def send_error_page(error: str, code: str) -> Tuple[str, Dict[str, str], List[by
             "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
             "Content-Type": "text/html; charset=utf-8",
         },
-        [page.format(code=code, nonce=nonce, message=error).encode("utf-8")],
+        [page.substitute(code=code, nonce=nonce, message=error).encode("utf-8")],
     )
 
 
@@ -275,7 +278,7 @@ class Report:
                 "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
                 "Content-Type": "text/html; charset=utf-8",
             },
-            page.format(code=code, nonce=nonce, message=f"Report an error {code}"),
+            page.substitute(code=code, nonce=nonce, message=f"Report an error {code}"),
         )
 
 

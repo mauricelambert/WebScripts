@@ -86,6 +86,7 @@ DIRECTORY = path.join(
     "data",
 )
 
+
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
     """This function returns a namedtuple without HTML special characters."""
@@ -95,13 +96,18 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
         new[attribut] = escape(value)
     return named_tuple.__class__(**new)
 
+
 def get_requests() -> Iterator[Request]:
 
     """This function build Uploads from database."""
 
     yield from map(
-        Request._make, csv.reader(open(path.join(DIRECTORY, FILE), "r", newline=""), quoting=csv.QUOTE_ALL)
+        Request._make,
+        csv.reader(
+            open(path.join(DIRECTORY, FILE), "r", newline=""), quoting=csv.QUOTE_ALL
+        ),
     )
+
 
 def get_request(id_: str) -> Request:
 
@@ -112,6 +118,7 @@ def get_request(id_: str) -> Request:
             return anti_XSS(request)
 
     raise ValueError("This request ID doesn't exists.")
+
 
 def delete_request(id_: str) -> Request:
 
