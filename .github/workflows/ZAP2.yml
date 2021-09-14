@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
           
       - name: Setup Python 3.9 
         uses: actions/setup-python@v2
