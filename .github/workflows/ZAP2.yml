@@ -1,3 +1,5 @@
+name: ZAP full scan
+
 on: [push]
 
 jobs:

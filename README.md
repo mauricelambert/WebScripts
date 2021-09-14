@@ -125,6 +125,8 @@ httpd.serve_forever()
 ### Python3.8
 
 ```bash
+git clone https://github.com/mauricelambert/WebScripts.git
+cd WebScripts
 python3.8 WebScripts/scripts/to_3.8/to_3.8.py
 python3.8 setup38.py install
 python3.8 -m WebScripts38
@@ -132,6 +134,8 @@ python3.8 -m WebScripts38
 
 ```python
 # Launch this commands line:
+#   - git clone https://github.com/mauricelambert/WebScripts.git
+#   - cd WebScripts
 #   - python3.8 WebScripts/scripts/to_3.8/to_3.8.py
 #   - python3.8 setup38.py install
 # And use the package:

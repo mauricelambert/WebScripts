@@ -1,7 +1,10 @@
+name: Pycharm Security
+
 on:
   push:
     branches:
       - master
+      - main
 
 jobs:
   build:

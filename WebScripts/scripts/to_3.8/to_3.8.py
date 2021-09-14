@@ -70,6 +70,21 @@ def change_setup(filename: str) -> None:
 
     logging.info("New setup is changed.")
 
+def change_manifest(filename: str) -> None:
+
+    """This function change the manifest.in file."""
+
+    content = open(filename).read()
+    logging.warning("Change the new manifest content...")
+
+    with open(filename, "w") as file:
+        file.write(content.replace(
+            "WebScripts/",
+            "WebScripts38/"
+        ))
+
+    logging.info("New manifest is changed.")
+
 def change_utils(filename: str):
 
     """This function change the utils.py file."""
@@ -132,6 +147,7 @@ def main():
     new_setup = path.join(webscript_dir, "setup38.py")
 
     copy(webscript_dir, new_setup)
+    change_manifest(path.join(webscript_dir, "MANIFEST.in"))
     change_setup(new_setup)
     change_utils(path.join(webscript_dir, "WebScripts38", "utils.py"))
     change_WebScripts(path.join(webscript_dir, "WebScripts38", "WebScripts.py"))

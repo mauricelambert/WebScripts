@@ -1,3 +1,5 @@
+name: ZAP Baseline
+
 on: [push]
 
 jobs:

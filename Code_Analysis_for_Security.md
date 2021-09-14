@@ -8,6 +8,7 @@
 
 Github Actions and Gitlab-CI scan and generate these reports.
 
+ - [bandit.txt](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt)
  - [dirb.txt](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt)
  - [nikto.html](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html)
  - [ZAP.html](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html)
