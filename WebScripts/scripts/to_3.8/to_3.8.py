@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This package implements a web server to run scripts or executables
+#    This file change the code for python3.8 compatibility
 #    from the command line and display the result in a web interface.
 #    Copyright (C) 2021  Maurice Lambert
 
@@ -35,6 +35,29 @@ The new package is named WebScripts38.
 
 Impact: "log_encoding" configuration is not use.
 """
+
+__version__ = "0.0.2"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = """This package implements a web server to run scripts or 
+executables from the command line and display the result in a web interface.
+
+This file change the code for python3.8 compatibility."""
+__license__ = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+license = __license__
+__copyright__ = copyright
+
+__all__ = []
 
 from shutil import copytree, copyfile
 from os import path

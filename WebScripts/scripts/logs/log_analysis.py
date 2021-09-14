@@ -25,7 +25,7 @@ in a web interface.
 
 This file displays an HTML table for log and activity analysis."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,7 +49,7 @@ __copyright__ = copyright
 __all__ = ["get_line", "build_html_table", "main"]
 
 from typing import Dict, List
-from os import path, chdir
+from os import path  # , chdir
 import sys
 
 
@@ -95,7 +95,7 @@ def main() -> None:
 
     """This function read the logfile and parse lines."""
 
-    chdir(path.join(path.dirname(__file__), "..", ".."))
+    # chdir(path.join(path.dirname(__file__), "..", ".."))
 
     table = {}
     last_char = -1

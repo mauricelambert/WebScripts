@@ -25,7 +25,7 @@ in a web interface.
 
 This file can display the latest logs."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,7 +49,7 @@ __copyright__ = copyright
 __all__ = []
 
 from collections import deque
-from os import path, chdir
+from os import path  # , chdir
 import sys
 
 
@@ -57,7 +57,7 @@ def main() -> None:
 
     """Main function to display the latest logs."""
 
-    chdir(path.join(path.dirname(__file__), "..", ".."))
+    # chdir(path.join(path.dirname(__file__), "..", ".."))
 
     if len(sys.argv) < 2 or not sys.argv[1].isdigit():
         print(
