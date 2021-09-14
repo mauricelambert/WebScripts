@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 1.4.1
+Version: 1.4.2
 Summary: This package implements a web server to run scripts or  executables from the command line and display the result in a web interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -136,6 +136,8 @@ Description: # WebScripts
         ### Python3.8
         
         ```bash
+        git clone https://github.com/mauricelambert/WebScripts.git
+        cd WebScripts
         python3.8 WebScripts/scripts/to_3.8/to_3.8.py
         python3.8 setup38.py install
         python3.8 -m WebScripts38
@@ -143,6 +145,8 @@ Description: # WebScripts
         
         ```python
         # Launch this commands line:
+        #   - git clone https://github.com/mauricelambert/WebScripts.git
+        #   - cd WebScripts
         #   - python3.8 WebScripts/scripts/to_3.8/to_3.8.py
         #   - python3.8 setup38.py install
         # And use the package:
