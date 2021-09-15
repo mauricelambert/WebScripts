@@ -12,7 +12,7 @@
 ![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts?color=orange)
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
-[![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](#python3.8)
+[![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](#python38)
 
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.

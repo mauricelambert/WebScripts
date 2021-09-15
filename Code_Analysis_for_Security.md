@@ -13,7 +13,7 @@ Github Actions and Gitlab-CI scan and generate these reports.
  - [nikto.html](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html)
  - [ZAP.html](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html)
  - [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html)
- - [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.html)
+ - [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json)
 
 ### Bandit
 
