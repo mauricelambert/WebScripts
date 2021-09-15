@@ -72,6 +72,27 @@ __all__ = [
 
 page = Template(
     """
+<!--
+
+    HTML page to launch scripts.
+    Copyright (C) 2021  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
 <html>
     <head>
         <title>Error ${code}</title>
@@ -172,6 +193,8 @@ page = Template(
                 <li id="webscripts_footer_list_source" class="bullet_point footer border">Local pydoc documentation for Errors.py is <a id="webscripts_link_source" href="/static/Errors.html">here</a>.</li>
                 <li id="webscripts_footer_list_source" class="bullet_point footer border">Local pydoc documentation for manage_defaults_databases.py is <a id="webscripts_link_source" href="/static/manage_defaults_databases.html">here</a>.</li>
                 <li id="webscripts_footer_list_source" class="bullet_point footer border">Local pydoc documentation for uploads_management.py is <a id="webscripts_link_source" href="/static/uploads_management.html">here</a>.</li>
+                <li id="webscripts_footer_list_source" class="bullet_point footer border">Local pydoc documentation for requests_management.py is <a id="webscripts_link_source" href="/static/requests_management.html">here</a>.</li>
+                <li id="webscripts_footer_list_source" class="bullet_point footer border">Local pydoc documentation for module errors.py is <a id="webscripts_link_source" href="/static/error_pages.html">here</a>.</li>
             </ul>
         </footer>
 

@@ -62,10 +62,13 @@ def main() -> None:
         sys.exit(1)
 
     COLORS = {
-        "#ffc8d8": "#EEC477",
-        #        "#ee77aa": "#A57927",
-        "#ee77aa": "#C89B48",
-        "#aa55cc": "#4A948C",
+        "#ffc8d8": "#EEC477",  # pink
+        # "#ee77aa": "#A57927",
+        "#ee77aa": "#C89B48",  # pink
+        "#aa55cc": "#75B4AD",  # purple
+        "#7799ee": "#9286C2",  # blue
+        "#55aa55": "#18675F",  # green
+        "#eeaa77": "#A57927",  # orange
     }
 
     filename = sys.argv[1]
@@ -95,7 +98,3 @@ def main() -> None:
 if __name__ == "__main__":
     main()
     sys.exit(0)
-
-
-# ffc8d8: Light pink -> Pale yellow: #EEC477
-# ee77aa: Dark pink  -> Dark yellow: #A57927

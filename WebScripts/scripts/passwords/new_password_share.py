@@ -25,7 +25,7 @@ in a web interface.
 
 This file can share a password securely."""
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -81,11 +81,14 @@ def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
     key = token_bytes(SIZE)
     cipher = []
     iteration = 9999 + randbelow(5001)
+    encoded_password = []
 
     for i, car in enumerate(password):
-        cipher.append(key[i % SIZE] ^ ord(car))
+        car = ord(car)
+        encoded_password.append(car)
+        cipher.append(key[i % SIZE] ^ car)
 
-    hash_ = pbkdf2_hmac("sha512", password.encode(), key, iteration).hex()
+    hash_ = pbkdf2_hmac("sha512", bytes(encoded_password), key, iteration).hex()
     return bytes(cipher), hash_, iteration, key
 
 
@@ -189,7 +192,9 @@ def main() -> None:
     passwords.append([timestamp, password, views, hash_, iteration, id_])
     save(passwords, id_)
 
-    print(f'Your secure password sharing is here: {get_url(f"{id_}:{key}")}')
+    print(
+        f'<a href="{get_url(f"{id_}:{key}")}">Click on this link or copy it to access to the password.</a>'
+    )
 
 
 if __name__ == "__main__":
