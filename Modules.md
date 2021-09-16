@@ -4,6 +4,7 @@ Module is useful to send custom response:
  - Custom headers
  - Custom dynamic page
  - Custom URL
+ - Custom request (POST form, custom JSON content...)
  - Custom authentication and permissions
  - ...
 

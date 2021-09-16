@@ -358,10 +358,12 @@ class TestFunctions(TestCase):
         self.assertEqual(get_ip(env), "ip4")
 
     def test_get_ini_dict(self):
-        if getcwd().endswith('test'):
+        if getcwd().endswith("test"):
             self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict("test.ini"))
         else:
-            self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict(path.normcase("test/test.ini")))
+            self.assertDictEqual(
+                {"test": {"test": "test"}}, get_ini_dict(path.normcase("test/test.ini"))
+            )
 
 
 if __name__ == "__main__":

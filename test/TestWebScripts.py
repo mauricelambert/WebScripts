@@ -34,6 +34,7 @@ import logging.config
 import importlib
 import json
 import sys
+import pdb
 
 dir_path = path.dirname(__file__)
 
@@ -185,6 +186,19 @@ class TestServer(TestCase):
 
         self.server = Server(self.conf)
         self.server_unsecure = Server(self.conf_unsecure)
+
+        self.assertEqual(
+            self.server_unsecure.headers["Content-Security-Policy-Report-Only"],
+            "default-src 'self'; form-action 'none'; frame-ancestors 'none'; report-uri /csp/debug/",
+        )
+
+        self.assertListEqual(self.conf_unsecure.modules, ["csp"])
+
+        self.assertListEqual(self.conf_unsecure.modules_path, ["modules"])
+
+        self.conf_unsecure.modules = []
+        self.conf_unsecure.modules_path = []
+        delattr(self.server_unsecure.pages.packages, "csp")
 
     def test_check_blacklist(self):
         self.assertTrue(self.server.check_blacklist(None, ""))
@@ -388,12 +402,8 @@ class TestServer(TestCase):
 
         self.server.add_paths()
 
-        self.assertIsNotNone(
-            self.server.pages.statics_paths.get("test.css")
-        )
-        self.assertIsNotNone(
-            self.server.pages.js_paths.get("test.js")
-        )
+        self.assertIsNotNone(self.server.pages.statics_paths.get("test.css"))
+        self.assertIsNotNone(self.server.pages.js_paths.get("test.js"))
 
         self.conf.auth_script = "test_auth_scripts.test"
         self.conf.active_auth = True
@@ -406,12 +416,16 @@ class TestServer(TestCase):
         self.assertTrue(is_not_package)
         self.assertEqual(callable_, self.server.pages.api)
 
-        callable_, filename, is_not_package = self.server.get_function_page("/api/api.py")
+        callable_, filename, is_not_package = self.server.get_function_page(
+            "/api/api.py"
+        )
         self.assertTrue(is_not_package)
         self.assertEqual("api.py", filename)
         self.assertEqual(callable_, self.server.pages.api)
 
-        callable_, filename, is_not_package = self.server.get_function_page("/this/url/doesn't/exist")
+        callable_, filename, is_not_package = self.server.get_function_page(
+            "/this/url/doesn't/exist"
+        )
         self.assertFalse(is_not_package)
         self.assertIsNone(filename)
         self.assertIsNone(callable_)
@@ -444,7 +458,9 @@ class TestServer(TestCase):
 
     def test_get_attributes(self):
         object_ = Mock(a=Mock(b=object))
-        callable_, filename, bool_ = self.server.get_attributes(object_, ["a", "b", "test"], True)
+        callable_, filename, bool_ = self.server.get_attributes(
+            object_, ["a", "b", "test"], True
+        )
 
         self.assertTrue(bool_)
         self.assertIs(callable_, object)
@@ -457,7 +473,9 @@ class TestServer(TestCase):
         self.assertIsNone(filename)
 
         object_ = object()
-        callable_, filename, bool_ = self.server.get_attributes(object_, ["a", "bc", "test"])
+        callable_, filename, bool_ = self.server.get_attributes(
+            object_, ["a", "bc", "test"]
+        )
 
         self.assertTrue(bool_)
         self.assertIsNone(callable_)
@@ -531,10 +549,10 @@ class TestServer(TestCase):
             {
                 "": {"-a": {"value": "abc", "input": False}},
                 "csrf_token": "azerty",
-            }
+            },
         )
 
-        data = BytesIO(b'abc')
+        data = BytesIO(b"abc")
         environ = {
             "CONTENT_LENGTH": str(len(data.getvalue())),
             "wsgi.input": data,
@@ -543,7 +561,7 @@ class TestServer(TestCase):
         arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
         self.assertFalse(is_webscripts_request)
         self.assertIsNone(csrf)
-        self.assertEqual(arguments, b'abc')
+        self.assertEqual(arguments, b"abc")
 
     def test_app(self):
         environ = {
@@ -871,15 +889,17 @@ class TestFunctions(TestCase):
 
         self.server = Server(self.conf)
 
+    @patch.object(
+        WebScripts.simple_server,
+        "make_server",
+        Mock(return_value=Mock(serve_forever=Mock(side_effect=KeyboardInterrupt()))),
+    )
     def test_main(self):
         global WebScripts
 
         def raise_keyboard(self):
             raise KeyboardInterrupt
 
-        WebScripts.simple_server.make_server = Mock(
-            serve_forever=raise_keyboard, server_close=lambda x: None
-        )
         WebScripts.__name__ = "__main__"
         argv = sys.argv.copy()
         sys.argv = ["WebScripts", "--debug"]
@@ -908,9 +928,11 @@ class TestFunctions(TestCase):
             "--config-cfg",
             "test_inexistant_file",
             "test.ini",
+            "test/test.ini",
             "--config-json",
             "test_inexistant_file",
             "test.json",
+            "test/test.json",
         ]
         arguments = parse_args()
 
@@ -949,7 +971,8 @@ class TestFunctions(TestCase):
         def raise_permission(file):
             raise PermissionError
 
-        rmtree("logs", ignore_errors=True)
+        if path.isdir("logs"):
+            rmtree("logs", ignore_errors=True)
 
         configure_logs_system()
         disable_logs()
@@ -957,13 +980,14 @@ class TestFunctions(TestCase):
         self.assertTrue(path.isdir("logs"))
         self.assertTrue(path.isfile(path.join("logs", "root.logs")))
 
+        if path.isdir("logs"):
+            rmtree("logs", ignore_errors=True)
+
         WebScripts.mkdir = raise_permission
-        with patch.object(
-            sys.modules["os"],
-            "mkdir",
-            return_value=raise_permission,
-        ) as mock_method:
-            configure_logs_system()
+        sys.modules["os"].mkdir = raise_permission
+        WebScripts.mkdir = Mock(side_effect=PermissionError())
+
+        configure_logs_system()
         disable_logs()
 
     def test_add_configuration(self):

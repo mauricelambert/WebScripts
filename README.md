@@ -30,7 +30,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
    - Easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
      - INI/CFG syntax
      - JSON syntax
-   - [Unittest](#run-tests)
+   - [Unittest](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#run-tests)
 
 ## Requirements
 This package require:
@@ -158,13 +158,13 @@ WebScripts38.main()
  - [Access and Permissions](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions)
  - [Security Considerations](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
  - [API](https://github.com/mauricelambert/WebScripts/wiki/API)
+ - [Development and Administration Tools](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools)
  - [Custom WEB Interface](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
  - [Modules (Custom responses and code)](https://github.com/mauricelambert/WebScripts/wiki/Modules)
  - [Code analysis for security (SAST)](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
  - [Security checks and tests (pentest tools)](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
 
 ### Examples
-
  - [Deployment](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
  - [Add a bash script (for authentication)](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
  - [Add a module](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
@@ -198,15 +198,3 @@ WebScripts38.main()
 
 ## License
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
-
-## Run tests
-
-```bash
-python -m unittest discover -s test -p Test*.py -v
-```
-
-| File          | Statements | missing | coverage |
-|---------------|------------|---------|----------|
-| WebScripts.py | 472        | 7       | 99%      |
-| utils.py      | 297        | 7       | 98%      |
-| Errors.py     | 27         | 0       | 100%     |
