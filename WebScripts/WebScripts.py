@@ -108,6 +108,7 @@ __all__ = ["Configuration", "Server", "main"]
 
 NameSpace = TypeVar("NameSpace", SimpleNamespace, Namespace)
 FunctionOrNone = TypeVar("FunctionOrNone", FunctionType, None)
+Content = TypeVar("Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes)
 
 
 class Configuration(DefaultNamespace):
@@ -433,24 +434,28 @@ class Server:
             )
 
     @log_trace
-    def get_function_page(self, path: str) -> FunctionOrNone:
+    def get_function_page(self, path: str) -> Tuple[FunctionOrNone, str, bool]:
 
-        """This function find function from URL path."""
+        """This function find function from URL path.
+        If the function is a WebScripts built-in function,
+        return the function, filename and True. Else return the
+        function, filename and False."""
 
         path = path.split("/")
         del path[0]
 
-        default, filename = self.get_attributes(self.pages, path)
+        default, filename, _ = self.get_attributes(self.pages, path)
 
         if default is not None:
-            return default, filename
+            return default, filename, True
         else:
-            return self.get_attributes(self.pages.packages, path)
+            return self.get_attributes(self.pages.packages, path, False)
 
     @log_trace
     def get_URLs(self) -> List[str]:
 
-        """This function return a list of string."""
+        """This function return a list of urls (scripts, documentation...)
+        and the start of the URL of custom packages."""
 
         urls = ["/api/", "/web/"]
 
@@ -477,8 +482,8 @@ class Server:
 
     @log_trace
     def get_attributes(
-        self, object_: object, attributes: List[str]
-    ) -> Tuple[FunctionOrNone, str]:
+        self, object_: object, attributes: List[str], is_not_package: bool = True
+    ) -> Tuple[FunctionOrNone, str, bool]:
 
         """This function get recursive attribute from object."""
 
@@ -487,12 +492,12 @@ class Server:
             object_ = getattr(object_, attribute, None)
 
             if object_ is None:
-                return None, None
+                return None, None, is_not_package
 
         if isinstance(object_, Callable):
-            return object_, attributes[-1]
+            return object_, attributes[-1], is_not_package
         else:
-            return None, None
+            return None, None, is_not_package
 
     @log_trace
     def get_inputs(
@@ -517,7 +522,7 @@ class Server:
         return inputs, arguments
 
     @log_trace
-    def parse_body(self, environ: _Environ) -> Tuple[List[Dict[str, JsonValue]], str]:
+    def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
 
         """This function return arguments from body."""
 
@@ -531,15 +536,31 @@ class Server:
         body = environ["wsgi.input"].read(content_length)
 
         if content_length:
-            body = json.loads(body)
+            try:
+                body = json.loads(body)
+            except json.decoder.JSONDecodeError:
+                Logs.warning("Non-JSON content detected")
+                Logs.info(
+                    "This request is not available for"
+                    " the default functions of WebScripts"
+                )
+                return body, None, False
 
-            arguments = []
-            for name, argument in body["arguments"].items():
-                arguments += Argument.get_command(name, argument)
+            if "arguments" in body.keys():
+                arguments = []
+                for name, argument in body["arguments"].items():
+                    arguments += Argument.get_command(name, argument)
 
-            return arguments, body.get("csrf_token")
+                return arguments, body.get("csrf_token"), True
 
-        return [], None
+            Logs.warning('Section "arguments" is not defined in the JSON content.')
+            Logs.info(
+                "This request is not available for"
+                " the default functions of WebScripts"
+            )
+            return body, None, False
+
+        return [], None, True
 
     @log_trace
     def app(self, environ: _Environ, respond: FunctionType) -> List[bytes]:
@@ -552,7 +573,9 @@ class Server:
             f"Request ({environ['REQUEST_METHOD']}) from {get_ip(environ)} on {environ['PATH_INFO']}."
         )
 
-        get_response, filename = self.get_function_page(environ["PATH_INFO"])
+        get_response, filename, is_not_package = self.get_function_page(
+            environ["PATH_INFO"]
+        )
 
         user, not_blacklisted = self.check_auth(environ)
 
@@ -562,9 +585,17 @@ class Server:
             )
             return self.page_403(None, respond)
 
-        arguments, csrf_token = self.parse_body(environ)
-        inputs, arguments = self.get_inputs(arguments)
-        error: str = None
+        arguments, csrf_token, is_webscripts_request = self.parse_body(environ)
+
+        if is_webscripts_request:
+            inputs, arguments = self.get_inputs(arguments)
+        else:
+            inputs = []
+
+        if is_not_package and not is_webscripts_request:
+            error = "406"
+        else:
+            error: str = None
 
         if (
             (
@@ -589,6 +620,9 @@ class Server:
 
         if get_response is None:
             return self.page_404(environ["PATH_INFO"], respond)
+
+        if error == "406":
+            return self.page_406(None, respond)
 
         try:
             error, headers, page = get_response(
@@ -678,6 +712,15 @@ class Server:
 
         error_code = "403 Forbidden"
         error = b"Forbidden (You don't have permissions)"
+        return self.send_error_page(error_code, error, respond)
+
+    @log_trace
+    def page_406(self, error_description: str, respond: FunctionType):
+
+        """This function return error 406 web page."""
+
+        error_code = "406 Not Acceptable"
+        error = b"Not Acceptable, your request is not a valid WebScripts request."
         return self.send_error_page(error_code, error, respond)
 
     @log_trace
