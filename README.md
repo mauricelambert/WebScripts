@@ -185,7 +185,7 @@ WebScripts38.main()
 ## Links
  - [Pypi](https://pypi.org/project/WebScripts)
  - [Github](https://github.com/mauricelambert/WebScripts)
- - [RSS feed](https://libraries.io/pypi/WebScripts/versions.atom)
+ - [RSS feed](https://pypi.org/rss/project/webscripts/releases.xml)
 
 ## Pictures
 

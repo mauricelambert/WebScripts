@@ -13,13 +13,17 @@ Module is a python file or a *package* imported in *WebScripts Server*.
 
 Signature:
 ```python
+from typing import TypeVar
+
+Json = TypeVar("Json", dict, list, str, int, None)
+
 def example(
         environ: _Environ,
         user: User,
         server_configuration: ServerConfiguration,
         filename: str,
-        arguments: List[str],
-        inputs: List[str],
+        arguments: List[str],       # Arguments is a list of str, if you send a "WebScripts request" (a JSON object with "arguments" as attribute)
+        inputs: List[str],          # Value of inputs
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
@@ -28,6 +32,38 @@ def example(
 		{"Content-Security-Policy": "default-src 'self'"},
 		"Response text."
 	)
+
+def example(
+        environ: _Environ,
+        user: User,
+        server_configuration: ServerConfiguration,
+        filename: str,
+        arguments: Json,            # Arguments is a loaded JSON, if you send a JSON content without attribute named "arguments" 
+        inputs: List[str],          # Inputs will be a empty list
+        csrf_token: str = None,
+    ) -> Tuple[str, Dict[str, str], str]:
+
+        return (
+                "200 OK",
+                {"Content-Security-Policy": "default-src 'self'"},
+                "Response text."
+        )
+
+def example(
+        environ: _Environ,
+        user: User,
+        server_configuration: ServerConfiguration,
+        filename: str,
+        arguments: bytes,           # Arguments is bytes, if you send a non JSON request
+        inputs: List[str],          # Inputs will be a empty list
+        csrf_token: str = None,
+    ) -> Tuple[str, Dict[str, str], str]:
+
+        return (
+                "200 OK",
+                {"Content-Security-Policy": "default-src 'self'"},
+                "Response text."
+        )
 ```
 
 ### Arguments
@@ -37,8 +73,8 @@ def example(
 , optional: *your custom user configurations*)
  3. `server_configuration` (no default value): Server configurations (attributes: `["interface", "port", "debug", "security", "active_auth", "auth_script", "accept_unknow_user", "accept_unauthenticated_user", "modules", "modules_path", "js_path", "statics_path", "documentations_path", "scripts_path", "json_scripts_config", "ini_scripts_config", "log_level", "log_filename", "log_level", "log_format", "log_date_format", "log_encoding", "auth_failures_to_blacklist", "blacklist_time"]`)
  4. `filename` (no default value): element after the last `/`
- 5. `arguments` (no default value): list of command line arguments (to launch a *script*)
- 6. `inputs` (no default value): list of inputs (for *script stdin*)
+ 5. `arguments` (no default value): list of command line arguments (to launch a *script*) or a loaded JSON (JSON content without "arguments" attribute) or bytes (non-JSON content)
+ 6. `inputs` (no default value): list of inputs (for *stdin* of the script) or empty list (if the content is a non WebScripts request: non-JSON content or JSON without "arguments" attribute)
  7. `csrf_token` (optional: default value is `None`)
 
 The `arguments` and `inputs` lists are built from the JSON body with the *WebScripts Server* body parser, you must respect the default JSON syntax.

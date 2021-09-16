@@ -401,15 +401,18 @@ class TestServer(TestCase):
             self.server.add_paths()
 
     def test_get_function_page(self):
-        callable_, filename = self.server.get_function_page("/api/")
+        callable_, filename, is_not_package = self.server.get_function_page("/api/")
         self.assertEqual("", filename)
+        self.assertTrue(is_not_package)
         self.assertEqual(callable_, self.server.pages.api)
 
-        callable_, filename = self.server.get_function_page("/api/api.py")
+        callable_, filename, is_not_package = self.server.get_function_page("/api/api.py")
+        self.assertTrue(is_not_package)
         self.assertEqual("api.py", filename)
         self.assertEqual(callable_, self.server.pages.api)
 
-        callable_, filename = self.server.get_function_page("/this/url/doesn't/exist")
+        callable_, filename, is_not_package = self.server.get_function_page("/this/url/doesn't/exist")
+        self.assertFalse(is_not_package)
         self.assertIsNone(filename)
         self.assertIsNone(callable_)
 
@@ -441,19 +444,22 @@ class TestServer(TestCase):
 
     def test_get_attributes(self):
         object_ = Mock(a=Mock(b=object))
-        callable_, filename = self.server.get_attributes(object_, ["a", "b", "test"])
+        callable_, filename, bool_ = self.server.get_attributes(object_, ["a", "b", "test"], True)
 
+        self.assertTrue(bool_)
         self.assertIs(callable_, object)
         self.assertEqual(filename, "test")
 
-        callable_, filename = self.server.get_attributes("test", ["test"])
+        callable_, filename, bool_ = self.server.get_attributes("test", ["test"], False)
 
+        self.assertFalse(bool_)
         self.assertIsNone(callable_)
         self.assertIsNone(filename)
 
         object_ = object()
-        callable_, filename = self.server.get_attributes(object_, ["a", "bc", "test"])
+        callable_, filename, bool_ = self.server.get_attributes(object_, ["a", "bc", "test"])
 
+        self.assertTrue(bool_)
         self.assertIsNone(callable_)
         self.assertIsNone(filename)
 
@@ -481,7 +487,8 @@ class TestServer(TestCase):
             "wsgi.input": data,
         }
 
-        arguments, csrf = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        self.assertTrue(is_webscripts_request)
         self.assertEqual(csrf, "azerty")
         self.assertListEqual(
             arguments,
@@ -492,20 +499,55 @@ class TestServer(TestCase):
         )
 
         environ["CONTENT_LENGTH"] = "0"
-        arguments, csrf = self.server.parse_body(environ)
-
+        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        self.assertTrue(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertListEqual(arguments, [])
 
         environ["CONTENT_LENGTH"] = "abc"
-        arguments, csrf = self.server.parse_body(environ)
-
+        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        self.assertTrue(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertListEqual(arguments, [])
 
+        data = BytesIO(
+            json.dumps(
+                {
+                    "": {"-a": {"value": "abc", "input": False}},
+                    "csrf_token": "azerty",
+                }
+            ).encode()
+        )
+        environ = {
+            "CONTENT_LENGTH": str(len(data.getvalue())),
+            "wsgi.input": data,
+        }
+
+        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        self.assertFalse(is_webscripts_request)
+        self.assertIsNone(csrf)
+        self.assertDictEqual(
+            arguments,
+            {
+                "": {"-a": {"value": "abc", "input": False}},
+                "csrf_token": "azerty",
+            }
+        )
+
+        data = BytesIO(b'abc')
+        environ = {
+            "CONTENT_LENGTH": str(len(data.getvalue())),
+            "wsgi.input": data,
+        }
+
+        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        self.assertFalse(is_webscripts_request)
+        self.assertIsNone(csrf)
+        self.assertEqual(arguments, b'abc')
+
     def test_app(self):
         environ = {
-            "PATH_INFO": "/web/scripts/view_users.py",
+            "PATH_INFO": "/static/test.css",
             "REQUEST_METHOD": "",
             "REMOTE_ADDR": "",
         }
@@ -513,11 +555,12 @@ class TestServer(TestCase):
         self.server.page_401 = MagicMock(return_value="401")
         self.server.page_403 = MagicMock(return_value="403")
         self.server.page_404 = MagicMock(return_value="404")
+        self.server.page_406 = MagicMock(return_value="406")
         self.server.page_500 = MagicMock(return_value="500")
 
-        self.server.parse_body = MagicMock(return_value=([], None))
+        self.server.parse_body = MagicMock(return_value=([], None, False))
         self.server.get_inputs = MagicMock(return_value=([], []))
-        self.server.get_function_page = MagicMock(return_value=(None, None))
+        self.server.get_function_page = MagicMock(return_value=(Mock(), None, True))
 
         with patch.object(
             self.server,
@@ -544,6 +587,12 @@ class TestServer(TestCase):
         self.server.configuration.accept_unknow_user = False
         self.server.configuration.accept_unauthenticated_user = False
         self.server.configuration.active_auth = True
+
+        self.assertEqual(self.server.app(environ, Mock()), "406")
+        self.server.parse_body = MagicMock(return_value=([], None, True))
+
+        environ["PATH_INFO"] = "/web/scripts/view_users.py"
+        self.server.get_function_page = MagicMock(return_value=(None, None, True))
 
         page_2 = self.server.app(environ, Mock())
         self.assertListEqual(page, page_2)
@@ -577,37 +626,37 @@ class TestServer(TestCase):
         self.assertNotEqual(page_2, page)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("403", {}, b"")), None)
+            return_value=(MagicMock(return_value=("403", {}, b"")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("403", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("404", {}, b"")), None)
+            return_value=(MagicMock(return_value=("404", {}, b"")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("404", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=("500", {}, b"")), None)
+            return_value=(MagicMock(return_value=("500", {}, b"")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("500", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=None), None)
+            return_value=(MagicMock(return_value=None), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertEqual("500", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, b"")), None)
+            return_value=(MagicMock(return_value=(None, {}, b"")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, "")), None)
+            return_value=(MagicMock(return_value=(None, {}, "")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
@@ -691,6 +740,22 @@ class TestServer(TestCase):
         mock_method.assert_called_once_with(
             "403 Forbidden",
             b"Forbidden (You don't have permissions)",
+            a,
+        )
+
+    def test_page_406(self):
+        a = object()
+
+        with patch.object(
+            self.server,
+            "send_error_page",
+            return_value=b"406",
+        ) as mock_method:
+
+            self.assertEqual(self.server.page_406("406", a), b"406")
+        mock_method.assert_called_once_with(
+            "406 Not Acceptable",
+            b"Not Acceptable, your request is not a valid WebScripts request.",
             a,
         )
 
