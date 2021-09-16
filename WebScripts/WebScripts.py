@@ -125,6 +125,8 @@ class Configuration(DefaultNamespace):
         "statics_path": [],
         "scripts_path": [],
         "modules_path": [],
+        "exclude_auth_paths": ["/static/", "/js/"],
+        "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
         "auth_script": None,
         "active_auth": False,
         "documentations_path": [],
@@ -265,9 +267,17 @@ class Server:
             self.headers["Cross-Origin-Resource-Policy"] = "same-origin"
             self.headers["X-Server"] = "WebScripts"
         else:
-            self.headers[
-                "Content-Security-Policy-Report-Only"
-            ] = "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
+            if "csp" not in configuration.modules:
+                configuration.modules.append("csp")
+            if "modules" not in configuration.modules_path:
+                configuration.modules_path.append("modules")
+            if "/csp/debug/" not in configuration.exclude_auth_pages:
+                configuration.exclude_auth_pages.append("/csp/debug/")
+
+            self.headers["Content-Security-Policy-Report-Only"] = (
+                "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
+                "; report-uri /csp/debug/"
+            )
 
         self.add_module_or_package()
         self.add_paths()
@@ -593,6 +603,7 @@ class Server:
             inputs = []
 
         if is_not_package and not is_webscripts_request:
+            Logs.error(f'HTTP 406: for "{user.name}" on "{environ["PATH_INFO"]}"')
             error = "406"
         else:
             error: str = None
@@ -604,11 +615,11 @@ class Server:
             )
             and self.configuration.active_auth
         ) and (
-            environ["PATH_INFO"] != "/auth/"
-            and environ["PATH_INFO"] != "/web/auth/"
-            and environ["PATH_INFO"] != "/api/"
-            and not environ["PATH_INFO"].startswith("/js/")
-            and not environ["PATH_INFO"].startswith("/static/")
+            environ["PATH_INFO"] not in self.configuration.exclude_auth_pages
+            and not any(
+                environ["PATH_INFO"].startswith(x)
+                for x in self.configuration.exclude_auth_paths
+            )
         ):
             self.send_headers(respond, "302 Found", {"Location": "/web/auth/"})
             return [

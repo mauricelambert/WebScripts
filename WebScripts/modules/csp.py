@@ -22,15 +22,19 @@
 
 """This package implements a web server to run scripts or 
 executables from the command line and display the result 
-in a web interface."""
+in a web interface.
 
-__version__ = "1.4.5"
+This file implement a Content-Security-Policy debug page."""
+
+__version__ = "0.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """This package implements a web server to run scripts or 
-executables from the command line and display the result in a web interface."""
+executables from the command line and display the result in a web interface.
+
+This file implement a Content-Security-Policy debug page."""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -43,11 +47,42 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-print(copyright)
+from typing import Tuple, Dict, List, TypeVar
+from error_pages import Request
+from os import _Environ
+import json
 
-__all__ = ["Configuration", "Server", "main"]
+global csp_report
 
-if __package__:
-    from .WebScripts import Configuration, Server, main
-else:
-    from WebScripts import Configuration, Server, main
+ServerConfiguration = TypeVar("ServerConfiguration")
+User = TypeVar("User")
+
+csp_report = {"report": "No CSP report yet."}
+
+
+def debug(
+    environ: _Environ,
+    user: User,
+    configuration: ServerConfiguration,
+    code: str,
+    arguments: Dict[str, Dict[str, str]],
+    inputs: List[str],
+    csrf_token: str = None,
+) -> Tuple[str, Dict[str, str], str]:
+
+    """This function implement a debug page."""
+
+    global csp_report
+
+    if isinstance(arguments, dict):
+        csp_report = arguments
+        Request.send_mail(configuration, json.dumps(csp_report, indent=4))
+
+    return (
+        "200 OK",
+        {
+            "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'",
+            "Content-Type": "application/json; charset=utf-8",
+        },
+        json.dumps(csp_report, indent=4),
+    )
