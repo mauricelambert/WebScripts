@@ -82,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.7"
+__version__ = "0.0.9"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -141,6 +141,8 @@ class Configuration(DefaultNamespace):
         "auth_script",
         "accept_unknow_user",
         "accept_unauthenticated_user",
+        "exclude_auth_paths",
+        "exclude_auth_pages",
         "modules",
         "modules_path",
         "js_path",
@@ -840,30 +842,61 @@ def parse_args() -> Namespace:
     dev.add_argument(
         "-s",
         "--security",
-        help="Remove HTTP security headers [Disable security].",
+        help="Remove HTTP security headers [Disable security],"
+        " active the Content-Security-Policy-Report-Only header"
+        ' and the CSP debug module (URL: "/csp/debug/")',
         action="store_false",
         default=None,
     )
 
-    parser.add_argument(
+    auth = parser.add_argument_group("AUTH", "authentication configurations")
+    auth.add_argument(
         "-a",
         "--active-auth",
         help="Disable authentication page [Disable auth (force to accept unknow and unauthenticated user)].",
         action="store_false",
         default=None,
     )
-    parser.add_argument("--auth-script", help="Script for authentication.")
-    parser.add_argument(
+    auth.add_argument("--auth-script", help="Script for authentication.")
+    auth.add_argument(
         "--accept-unauthenticated-user",
         help="Accept unauthenticated user.",
         action="store_true",
         default=None,
     )
-    parser.add_argument(
+    auth.add_argument(
         "--accept-unknow-user",
         help="Accept unknow user.",
         action="store_true",
         default=None,
+    )
+    auth.add_argument(
+        "-b",
+        "--auth-failures-to-blacklist",
+        type=int,
+        help="Number of authentication failures to blacklist an IP or user.",
+    )
+    auth.add_argument(
+        "-B",
+        "--blacklist-time",
+        type=int,
+        help="Time (in seconds) to blacklist an IP or user.",
+    )
+    auth.add_argument(
+        "--e-auth-paths",
+        "--exclude-auth-paths",
+        action="extend",
+        nargs="+",
+        default=[],
+        help="Start of paths where the unauthenticated user gets access.",
+    )
+    auth.add_argument(
+        "--e-auth-pages",
+        "--exclude-auth-pages",
+        action="extend",
+        nargs="+",
+        default=[],
+        help="Specific page where the unauthenticated user has access.",
     )
 
     parser.add_argument(
@@ -934,19 +967,6 @@ def parse_args() -> Namespace:
     logs.add_argument("--log-format", help="Format for ROOT logger.")
     logs.add_argument("--log-date-format", help="Date format for ROOT logger.")
     logs.add_argument("--log-encoding", help="Encoding for ROOT logger.")
-
-    parser.add_argument(
-        "-b",
-        "--auth-failures-to-blacklist",
-        type=int,
-        help="Number of authentication failures to blacklist an IP or user.",
-    )
-    parser.add_argument(
-        "-B",
-        "--blacklist-time",
-        type=int,
-        help="Time (in seconds) to blacklist an IP or user.",
-    )
 
     smtp = parser.add_argument_group(
         "SMTP", "SMTP configurations to send email notifications"

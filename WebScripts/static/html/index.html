@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>__init__</strong></big></big> (version 1.4.3)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>__init__</strong></big></big> (version 1.4.6)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="__init__.py">__init__.py</a></font></td></tr></table>
     <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
@@ -57,7 +57,7 @@ Methods defined here:<br>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>__defaults__</strong> = {'accept_unauthenticated_user': True, 'accept_unknow_user': True, 'active_auth': False, 'auth_script': None, 'documentations_path': [], 'interface': '127.0.0.1', 'js_path': [], 'log_level': 0, 'modules': [], 'modules_path': [], ...}</dl>
+<dl><dt><strong>__defaults__</strong> = {'accept_unauthenticated_user': True, 'accept_unknow_user': True, 'active_auth': False, 'auth_script': None, 'documentations_path': [], 'exclude_auth_pages': ['/api/', '/auth/', '/web/auth/'], 'exclude_auth_paths': ['/static/', '/js/'], 'interface': '127.0.0.1', 'js_path': [], 'log_level': 0, ...}</dl>
 
 <dl><dt><strong>__optional__</strong> = ('debug', 'security', 'active_auth', 'auth_script', 'accept_unknow_user', 'accept_unauthenticated_user', 'modules', 'modules_path', 'js_path', 'statics_path', 'documentations_path', 'scripts_path', 'json_scripts_config', 'ini_scripts_configlog_level', 'log_filename', 'log_level', 'log_format', 'log_date_format', 'log_encoding', 'auth_failures_to_blacklist', ...)</dl>
 
@@ -170,11 +170,15 @@ return&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
 <dl><dt><a name="Server-check_blacklist"><strong>check_blacklist</strong></a>(self, user: WebScripts.commons.User, ip: str) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;that&nbsp;the&nbsp;IP&nbsp;and&nbsp;the<br>
 username&nbsp;are&nbsp;not&nbsp;in&nbsp;the&nbsp;blacklist.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_URLs"><strong>get_URLs</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;string.</tt></dd></dl>
+<dl><dt><a name="Server-get_URLs"><strong>get_URLs</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;urls&nbsp;(scripts,&nbsp;documentation...)<br>
+and&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;URL&nbsp;of&nbsp;custom&nbsp;packages.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(self, object_: object, attributes: List[str]) -&gt; Tuple[~FunctionOrNone, str]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(self, object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str) -&gt; ~FunctionOrNone</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.</tt></dd></dl>
+<dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.<br>
+If&nbsp;the&nbsp;function&nbsp;is&nbsp;a&nbsp;WebScripts&nbsp;built-in&nbsp;function,<br>
+return&nbsp;the&nbsp;function,&nbsp;filename&nbsp;and&nbsp;True.&nbsp;Else&nbsp;return&nbsp;the<br>
+function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
 
@@ -186,9 +190,11 @@ username&nbsp;are&nbsp;not&nbsp;in&nbsp;the&nbsp;blacklist.</tt></dd></dl>
 
 <dl><dt><a name="Server-page_404"><strong>page_404</strong></a>(self, url: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;404&nbsp;web&nbsp;page.</tt></dd></dl>
 
+<dl><dt><a name="Server-page_406"><strong>page_406</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;406&nbsp;web&nbsp;page.</tt></dd></dl>
+
 <dl><dt><a name="Server-page_500"><strong>page_500</strong></a>(self, error: str, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;500&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[List[Dict[str, ~JsonValue]], str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
+<dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[~Content, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
 
 <dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
 
