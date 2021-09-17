@@ -191,10 +191,9 @@ class TestServer(TestCase):
             self.server_unsecure.headers["Content-Security-Policy-Report-Only"],
             "default-src 'self'; form-action 'none'; frame-ancestors 'none'; report-uri /csp/debug/",
         )
-
         self.assertListEqual(self.conf_unsecure.modules, ["csp"])
-
         self.assertListEqual(self.conf_unsecure.modules_path, ["modules"])
+        self.assertListEqual(self.conf_unsecure.exclude_auth_pages, ["/api/", "/auth/", "/web/auth/", "/csp/debug/"])
 
         self.conf_unsecure.modules = []
         self.conf_unsecure.modules_path = []
@@ -614,6 +613,19 @@ class TestServer(TestCase):
 
         page_2 = self.server.app(environ, Mock())
         self.assertListEqual(page, page_2)
+
+        self.conf.exclude_auth_pages.append("/web/scripts/view_users.py")
+
+        page_2 = self.server.app(environ, Mock())
+        self.assertNotEqual(page, page_2)
+
+        self.conf.exclude_auth_pages.pop()
+        self.conf.exclude_auth_paths.append("/web/scripts/view")
+
+        page_2 = self.server.app(environ, Mock())
+        self.assertNotEqual(page, page_2)
+
+        self.conf.exclude_auth_paths.pop()
 
         page_2 = self.server.app(environ, Mock())
         self.assertListEqual(page, page_2)

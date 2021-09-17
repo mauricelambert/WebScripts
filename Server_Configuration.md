@@ -18,10 +18,15 @@ The default configuration JSON files:
 
         "debug": false,
         "security": true,
+        
         "accept_unknow_user": false,
         "accept_unauthenticated_user": false,
         "active_auth": true,
         "auth_script": "auth.py",
+        "auth_failures_to_blacklist": 3,
+        "blacklist_time": 30,
+        "exclude_auth_paths": ["/static/", "/js/"],
+        "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
 
         "scripts_path": ["./scripts/account", "./scripts/passwords"],
         "json_scripts_config": ["./config/scripts/*.json"],
@@ -37,9 +42,6 @@ The default configuration JSON files:
         "log_format": "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
         "log_date_format": "%d/%m/%Y %H:%M:%S",
         "log_encoding": "utf-8",
-
-        "auth_failures_to_blacklist": 3,
-        "blacklist_time": 30,
 
         "smtp_server": null,
         "smtp_starttls": false,
@@ -63,10 +65,15 @@ port=8000                                                                       
 
 debug=false                                                                                    # Export config and get error messages on HTTP errors pages [NEVER true in production]
 security=true                                                                                  # Add security HTTP headers
+
 accept_unknow_user=false                                                                       # Don't force a user to re-authenticate
 accept_unauthenticated_user=false                                                              # Don't force authentication for new user
 active_auth=true                                                                               # Active auth page
 auth_script=auth.py                                                                            # Change it to use a custom authentication script
+auth_failures_to_blacklist=3                                                                   # Number of authentication failures to blacklist an IP address or user
+blacklist_time=30                                                                              # Blacklist time in seconds
+exclude_auth_paths=/static/,/js/                                                               # Start of paths where the unauthenticated user gets access
+exclude_auth_pages=/api/,/auth/,/web/auth/                                                     # Specific page where the unauthenticated user has access
 
 scripts_path=./scripts/account,./scripts/passwords                                             # Add scripts from location
 json_scripts_config=./config/scripts/*.json                                                    # Add server configuration (syntax: json)
@@ -85,9 +92,6 @@ log_format=%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%
 log_date_format=%d/%m/%Y %H:%M:%S                                                              # Format date for your custom logs (https://docs.python.org/3/library/time.html#time.strftime)
 log_encoding=utf-8                                                                             # Encoding for your custom log file
 
-auth_failures_to_blacklist=3                                                                   # Number of authentication failures to blacklist an IP address or user
-blacklist_time=30                                                                              # Blacklist time in seconds
-
 smtp_server                                                                                    # SMTP configuration is used to send notifications, the server name or the IP address of the SMTP server
 smtp_starttls=false                                                                            # Using starttls to secure the connection
 smtp_password                                                                                  # Password for email account (username is the notification_address configuration), if password is None the client send email without authentication
@@ -100,10 +104,14 @@ notification_address=notification@webscripts.local                              
  - *interface*: to change the connection interface
  - *port*: to change the connection port
  - *debug*: active the debug mode (export configuration, print error message and existing URLs in web page)
- - *security*: send security HTTP headers
+ - *security*: send security HTTP headers, desactive the Content-Security-Policy-Report-Only header and debug module for Content-Security-Policy
  - *accept_unknow_user* and *accept_unknow_user*: don't force client authentication
  - *active_auth*: active the authentication script
  - *auth_script*: filename for the authentication script
+ - *auth_failures_to_blacklist*: Number of authentication failures to blacklist an IP address or user
+ - *blacklist_time*: Time in seconds to blacklist an IP address or user
+ - *exclude_auth_paths*: Start of paths where the unauthenticated user gets access
+ - *exclude_auth_pages*: Specific page where the unauthenticated user has access
  - *scripts_path*: paths to research a script (if not defined in script configuration)
  - *json_scripts_config*: **glob syntax** to get JSON files
  - *statics_path*: **glob syntax** to get static files (HTML files, CSS files, pictures, PDF files, text files...)
@@ -112,8 +120,6 @@ notification_address=notification@webscripts.local                              
  - *log_format*: log format for *ROOT* logger (impact *ROOT* logger only), [references](https://docs.python.org/3/library/logging.html#id2)
  - *log_date_format*: date format for logs (impact *ROOT* logger only), [references](https://docs.python.org/3/library/time.html#time.strftime)
  - *log_encoding*: encoding for log file (impact *ROOT* logger only, recommended value: "utf-8")
- - *auth_failures_to_blacklist*: Number of authentication failures to blacklist an IP address or user
- - *blacklist_time*: Time in seconds to blacklist an IP address or user
  - *smtp_server*: The SMTP server name to send email notifications (if it's `None` notifications will not be sent)
  - *smtp_starttls*: Use StartTLS to secure the connection
  - *smtp_password*: Login as `notification_address` configuration using this password. If it's `None` notifications will be sent without authentication.

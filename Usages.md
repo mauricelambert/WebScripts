@@ -32,12 +32,6 @@ WebScripts --interface "192.168.1.2" --port 80
 WebScripts -i "192.168.1.2" -p 80
 ```
 
-### Accept unauthenticated user
-
-```bash
-WebScripts --accept-unauthenticated-user --accept-unknow-user
-```
-
 ### Add configuration from INI files
 
 ```bash
@@ -50,19 +44,6 @@ WebScripts -c "config1.ini" "config2.ini" -c "config3.ini"
 ```bash
 WebScripts --config-json "config1.json" "config2.json" --config-json "config3.json"
 WebScripts -j "config1.json" "config2.json" -j "config3.json"
-```
-
-### Desactive authentication script
-
-```bash
-WebScripts --active-auth
-WebScripts -a
-```
-
-### Auth script
-
-```bash
-WebScripts --auth-script "auth.py"
 ```
 
 ### Script paths
@@ -114,6 +95,27 @@ WebScripts --statics-path "./images/1/*.jpg" "./templates/html/2/*.html" --stati
 WebScripts -T "./images/1/*.png" "./templates/html/2/*.html" -T "./pdf/3/*.pdf"
 ```
 
+### AUTH
+
+### Desactive authentication script
+
+```bash
+WebScripts --active-auth
+WebScripts -a
+```
+
+### Auth script
+
+```bash
+WebScripts --auth-script "auth.py"
+```
+
+### Accept unauthenticated user
+
+```bash
+WebScripts --accept-unauthenticated-user --accept-unknow-user
+```
+
 ### Auth failures to blacklist
 
 ```bash
@@ -126,6 +128,20 @@ WebScripts -b 3
 ```bash
 WebScripts --blacklist-time 30
 WebScripts -B 30
+```
+
+### Paths without authentication
+
+```bash
+WebScripts --exclude-auth-paths "/auth/" "/help/" --exclude-auth-paths "/contacts/"
+WebScripts --e-auth-paths "/auth/" "/help/" --e-auth-paths "/contacts/"
+```
+
+### Pages without authentication
+
+```bash
+WebScripts --exclude-auth-pages "/auth/page.py" "/help/page.html" --exclude-auth-pages "/contacts/page.html"
+WebScripts --e-auth-pages "/auth/page.py" "/help/page.html" --e-auth-pages "/contacts/page.html"
 ```
 
 ### DEV
@@ -143,6 +159,8 @@ WebScripts -d
 #### Mode not secure
 
  - Do not use HTTP security headers, useful for debugging web scripts (*javascript*)
+ - Active the Content-Security-Policy-Report-Only header
+ - Active the debug module for Content-Security-Policy (URL: "/csp/debug/")
 ```bash
 WebScripts --security
 WebScripts -s

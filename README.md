@@ -30,7 +30,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
    - Easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
      - INI/CFG syntax
      - JSON syntax
-   - [Unittest](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#run-tests)
+   - [Unittest](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest)
 
 ## Requirements
 This package require:
