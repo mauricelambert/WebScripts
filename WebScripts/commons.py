@@ -40,7 +40,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -206,6 +206,7 @@ class ScriptConfig(DefaultNamespace):
     __defaults__ = {
         "documentation_content_type": "text/html",
         "command_generate_documentation": None,
+        "stderr_content_type": "text/plain",
         "content_type": "text/plain",
         "documentation_file": None,
         "minimum_access": None,
@@ -222,6 +223,7 @@ class ScriptConfig(DefaultNamespace):
     __optional__ = [
         "command_generate_documentation",
         "documentation_content_type",
+        "stderr_content_type",
         "documentation_file",
         "minimum_access",
         "access_groups",

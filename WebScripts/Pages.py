@@ -382,6 +382,7 @@ class Api:
             "stderr": decode_output(stderr),
             "code": code,
             "Content-Type": Pages.scripts[filename].content_type,
+            "Stderr-Content-Type": Pages.scripts[filename].stderr_content_type,
             "error": error,
         }
 

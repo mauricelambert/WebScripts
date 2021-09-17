@@ -311,14 +311,14 @@ def log_trace(function: FunctionType):
 
     @wraps(function)
     def wrapper(*args, **kwds):
-        if isinstance(function, classmethod) or isinstance(function, staticmethod):
-            name = function.__func__.__name__
-        else:
-            name = function.__name__
+        # if isinstance(function, classmethod) or isinstance(function, staticmethod):
+        #    name = function.__func__.__name__
+        # else:
+        #    name = function.__name__
 
-        Logs.trace(f"Start {name}...")
+        Logs.trace(f"Start {function.__name__}...")
         values = function(*args, **kwds)
-        Logs.trace(f"End of {name}.")
+        Logs.trace(f"End of {function.__name__}.")
         return values
 
     return wrapper

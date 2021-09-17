@@ -422,9 +422,6 @@ function send_request(json) {
                 seconds = `0${seconds}`;
             }
 
-            console.log(minutes);
-            console.log(seconds);
-
             build_output_interface(
                 response_object,
                 true,
@@ -499,30 +496,45 @@ function build_output_interface(output, add_history_ = true, time = null) {
 
     let console_div = document.getElementById("script_outputs");
     let content_type = output["Content-Type"];
+    let stderr_content_type = output["Stderr-Content-Type"];
 
     if (add_history_) {
         add_history(
-            `${output.stdout}${output.stderr}`,
+            output.stdout,
+            output.stderr,
             output.code,
             output.error,
-            content_type
+            content_type,
+            stderr_content_type
         );
     }
 
     let code = build_code(output, time);
     let new_output = build_new_output(code);
 
+    let text = "\n";
+    let html = "";
+
+    if (stderr_content_type.includes("text/html")) {
+        html += output.stderr;
+    } else {
+        text += output.stderr;
+    }
+
     if (content_type.includes("text/html")) {
         download_extension = ".html";
         download_separator = "\n<br>\n";
         download_type = "html";
-        new_output.innerHTML += `${output.stdout}${output.stderr}`;
+        html = output.stdout + html;
     } else {
         download_extension = ".txt";
         download_separator = "\n";
         download_type = "plain";
-        code.innerText += `\n${output.stdout}${output.stderr}\n`;
+        text = `\n${output.stdout}${text}`;
     }
+
+    code.innerText += text;
+    new_output.innerHTML += html;
 
     console_div.appendChild(new_output);
     download_text += `${output.stdout}${output.stderr}${download_separator}`;
@@ -534,15 +546,16 @@ function build_output_interface(output, add_history_ = true, time = null) {
     }
 }
 
-function add_history(value, code, error, content_type) {
+function add_history(stdout, stderr, code, error, content_type, stderr_content_type) {
     let button = document.createElement("button");
     button.onclick = build_output_interface.bind(
         button, {
-            'stdout': value,
-            'stderr': '',
+            'stdout': stdout,
+            'stderr': stderr,
             'code': code,
             'error': error,
             'Content-Type': content_type,
+            'Stderr-Content-Type': stderr_content_type,
         },
         add_history_ = false
     );
