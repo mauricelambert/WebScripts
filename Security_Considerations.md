@@ -46,6 +46,17 @@ An example of deployment for production is available [here](https://github.com/m
 
  - Do not use SMTP password (`smtp_password != None`) without StartTLS (`smtp_starttls == True`) or SSL (`smtp_ssl == True`). If connection is not secure the password may be sniffed.
 
+### Script configurations
+
+#### Logs
+
+ - You should set to `true` the `no_password` configuration when you don't have a password in command lines arguments to logs command line.
+
+#### Content type
+
+ - You should never set `stderr_content_type` to `text/html` because it may be used for XSS (HTML and javascript injection).
+ - Some script required the `text/html` as `content_type`, i should use [specific function for XSS protection](#XSS).
+
 ## Credentials
 
 Change the password of the `Admin` user and the API key or use custom authentication script, database and system.
@@ -133,6 +144,26 @@ Some examples of **Remote Code Execution** in php script:
 <?php 
   shell_exec($argv[1]);           // Run the first argument as a command line
   eval($argv[1]);                 // Run the first argument as php code
+?>
+```
+
+## XSS
+
+You should never print a user entry (headers, arguments, inputs, URLs, content, username, cookie, ...), when the output `content-type` is set to `text/html`,  without change HTML scpecial characters.
+
+### Python
+
+```python
+import html
+
+print(html.escape(user.name))
+```
+
+### PHP
+
+```php
+<?php
+    echo(htmlspecialchars(cookie));
 ?>
 ```
 

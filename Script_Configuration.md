@@ -119,7 +119,7 @@ This configuration makes no sense because with `minimum_access=0` all user can a
 
  - `launcher`: executable to launch a script (not required and not necessary if the script is executable on **Linux**, on Windows the *WebScripts Server* search the default launcher for the file extension of the script)
  - `path`: the path of the script (absolute or relative path) (not required and not necessary if the script is in `scripts_path`, a server configuration)
- - `content_type`: The content type of *stdout* and *stderr* (script output) must be `text/html` or `text/plain` (not required, default is `text/plain`)
+ - `content_type`: The content type of *stdout* (script output) should be `text/html` or `text/plain` (not required, default is `text/plain`)
  - `minimum_access`: Define who can access it (view the *access* subtitle) (not required)
  - `access_groups`: Define who can access it (view the *access* subtitle) (not required)
  - `access_users`: Define who can access it (view the *access* subtitle) (not required)
@@ -131,6 +131,7 @@ This configuration makes no sense because with `minimum_access=0` all user can a
  - `documentation_content_type`: The content type for documentation page (not required, default is `text/html`)
  - `command_generate_documentation`: A command to build the documentation file (not required)
  - `no_password`: If `no_password` is `true` the command line will be written to the logs (not required, default is `false`)
+ - `stderr_content_type`: The content type of *stderr* (script erreurs) should be `text/plain` (not required, default is `text/plain`). Possible values: `text/plain` and `text/html`, for security reason you should never set the `stderr_content_type` to `text/html`.
 
 ### Command to generate the documentation file
 

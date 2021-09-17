@@ -26,6 +26,7 @@ from os import path, device_encoding, getcwd
 from unittest import TestCase, main
 from unittest.mock import Mock
 from types import MethodType
+from importlib import reload
 from typing import List
 from json import load
 import platform
@@ -285,19 +286,21 @@ class TestDefaultNamespace(TestCase):
 
 
 class TestFunctions(TestCase):
-    @staticmethod
-    @log_trace
-    def log_trace_staticmethod():
-        pass
-
-    def log_trace():
-        pass
 
     def test_log_trace(self):  # Code coverage, no tests on Logs functions
-        self.log_trace_staticmethod()
-        self.static = staticmethod(self.log_trace)
-        self.trace = log_trace(self.static)
-        # self.static()
+        test = lambda: None
+        static = staticmethod(test)
+        log_trace(static)
+
+    def test_no_pywin32(self):
+        path_ = sys.path.copy()
+        sys.path = [x for x in sys.path if not "c:\\users\\csu1\\documents\\dev\\test" in x.lower()]
+        sys.modules = {x:y for x, y in sys.modules.items() if not x.startswith("win32")}
+
+        reload(WebScripts.utils)
+        sys.path = path_
+
+        # self.assertFalse(WebScripts.utils.WINDOWS_LOGS)
 
     def test_get_encodings(self):
         encodings = ["utf-8", "cp1252", "latin-1"]
