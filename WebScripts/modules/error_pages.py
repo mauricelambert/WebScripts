@@ -180,8 +180,8 @@ page = Template(
         <footer id="webscripts_footer" class="footer border">
             <ul id="webscripts_footer_list" class="list footer border">
                 <li id="webscripts_footer_list_source" class="bullet_point footer border">Source code and contact is <a id="webscripts_link_source" href="https://github.com/mauricelambert/WebScripts">here (on my github)</a>.</li>
-                <li id="webscripts_footer_list_documentation" class="bullet_point footer border">Documentation is <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/index.html">here (on my github)</a>.</li>
-                <li id="webscripts_footer_list_wiki" class="bullet_point footer border">Wiki is <a id="webscripts_link_wiki" href="https://github.com/mauricelambert/WebScripts/wiki">here (on my github)</a>.</li>
+                <li id="webscripts_footer_list_wiki" class="bullet_point footer border">Wiki (documentation) is <a id="webscripts_link_wiki" href="https://github.com/mauricelambert/WebScripts/wiki">here (on my github)</a>.</li>
+                <li id="webscripts_footer_list_documentation" class="bullet_point footer border">Pydoc online is here: <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/index.html">__init__.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.html">WebScripts.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/Pages.html">Pages.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/commons.html">commons.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/utils.html">utils.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html">Errors.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html">manage_defaults_databases.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html">uploads_management.py</a>, <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html">requests_management.py</a> and <a id="webscripts_link_documentation" href="https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html">error_pages.py</a>.</li>
                 <li id="webscripts_footer_list_wiki" class="bullet_point footer border">License: <a id="webscripts_link_wiki" href="https://www.gnu.org/licenses/">GPL-3.0 License</a>.</li>
             </ul>
 
@@ -391,8 +391,8 @@ class Request:
         referer = escape(environ.get("HTTP_REFERER"))
         user_agent = escape(environ.get("HTTP_USER_AGENT"))
         subject = escape(arguments[0])
-        name = escape(arguments[2])
-        reason = escape(arguments[1])
+        name = escape(arguments[1])
+        reason = escape(arguments[2])
         code = escape(code)
         user.name = escape(user.name)
 
@@ -416,6 +416,7 @@ class Request:
                     "stderr": "",
                     "code": 0,
                     "Content-Type": "text/plain",
+                    "Stderr-Content-Type": "text/plain",
                     "error": "No errors",
                     "csrf": "{csrf}",
                 }

@@ -437,14 +437,14 @@ function send_request(json) {
             }
             
         } else if (xhttp.readyState === 4 && xhttp.status === 500) {
-            document.getElementById("bar").innerText =
-                "ERROR 500: Internal Server Error.";
+            document.getElementById("bar").innerHTML =
+                `ERROR 500: Internal Server Error. \nYou can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
-            document.getElementById("bar").innerText =
-                "ERROR 403: Forbidden. (Refresh the page or re-authenticate please)";
+            document.getElementById("bar").innerHTML =
+                `ERROR 403: Forbidden. (Refresh the page or re-authenticate please). \nYou can <a href="/error_pages/Report/new/${xhttp.status}">request access to the administrator</a>.`;
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
-                `HTTP ERROR ${xhttp.status}. You can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
         }
 
         is_running = false;
@@ -494,9 +494,21 @@ function build_output_interface(output, add_history_ = true, time = null) {
         return new_output;
     }
 
+    const unescape = str => str.replace(/&amp;/g , '&').replace(/&lt;/g  , '<').replace(/&gt;/g  , '>').replace(/&#0*39;/g , "'").replace(/&quot;/g, '"');
     let console_div = document.getElementById("script_outputs");
     let content_type = output["Content-Type"];
-    let stderr_content_type = output["Stderr-Content-Type"];
+    let stderr_content_type;
+    let text = "\n";
+    let html = "";
+
+    if (output.hasOwnProperty("Stderr-Content-Type")) {
+        stderr_content_type = output["Stderr-Content-Type"];
+    } else {
+        stderr_content_type = "text/plain";
+    }
+
+    let code = build_code(output, time);
+    let new_output = build_new_output(code);
 
     if (add_history_) {
         add_history(
@@ -508,12 +520,6 @@ function build_output_interface(output, add_history_ = true, time = null) {
             stderr_content_type
         );
     }
-
-    let code = build_code(output, time);
-    let new_output = build_new_output(code);
-
-    let text = "\n";
-    let html = "";
 
     if (stderr_content_type.includes("text/html")) {
         html += output.stderr;
@@ -533,7 +539,7 @@ function build_output_interface(output, add_history_ = true, time = null) {
         text = `\n${output.stdout}${text}`;
     }
 
-    code.innerText += text;
+    code.innerText += unescape(text);
     new_output.innerHTML += html;
 
     console_div.appendChild(new_output);
