@@ -56,6 +56,7 @@ An example of deployment for production is available [here](https://github.com/m
 
  - You should never set `stderr_content_type` to `text/html` because it may be used for XSS (HTML and javascript injection).
  - Some script required the `text/html` as `content_type`, i should use [specific function for XSS protection](#XSS).
+ - Don't unescape HTML special characters in *console* scripts (when `content_type` is `text/plain`), the javascript does it for you.
 
 ## Credentials
 

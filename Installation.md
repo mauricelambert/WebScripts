@@ -37,6 +37,30 @@ To centralize logs in Event Viewer.
 python -m pip install pywin32
 ```
 
+## Compatibility
+
+### Python3.8
+
+```bash
+git clone https://github.com/mauricelambert/WebScripts.git  # Get the code
+cd WebScripts                                               # Change the current directory
+python3.8 WebScripts/scripts/to_3.8/to_3.8.py               # Execute the script for python3.8 compatibility
+python3.8 setup38.py install                                # Install it
+python3.8 -m WebScripts38                                   # Use WebScripts38
+```
+
+```python
+# Launch this commands line:
+#   - git clone https://github.com/mauricelambert/WebScripts.git
+#   - cd WebScripts
+#   - python3.8 WebScripts/scripts/to_3.8/to_3.8.py
+#   - python3.8 setup38.py install
+# And use the package:
+
+import WebScripts38
+WebScripts38.main()
+```
+
 ## Start the server
 
 You can now start the server with this simple command:

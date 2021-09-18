@@ -147,6 +147,7 @@ from WebScripts.WebScripts import (
 )
 from typing import List
 import logging
+import atexit
 
 class Paths:
 
@@ -174,6 +175,12 @@ server = Server(configuration)
 
 send_mail(
     configuration, f"Server is up on http://{server.interface}:{server.port}/."
+)
+
+atexit.register(
+    send_mail, 
+    configuration, 
+    f"Server is down on http://{server.interface}:{server.port}/."
 )
 
 application = server.app

@@ -12,7 +12,7 @@
 ![GitHub](https://img.shields.io/github/license/mauricelambert/WebScripts?color=orange)
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
-[![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](#python38)
+[![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://github.com/mauricelambert/WebScripts/wiki/Installation#python38)
 
 ## Description
 This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
@@ -20,8 +20,9 @@ This package implements a web server to run scripts or executables from the comm
 ## Goals
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
  - Secure
-   - [SAST - Static Application Security Testing using bandit and semgrep](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
-   - [Web pentest using Kali Linux Web tools and my little experience in Web Hacking](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
+   - [SAST - Static Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, nuclei, CodeQL and Pycharm Security.
+   - [DAST - Dynamic Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4) and some Kali Linux tools.
+   - [Web pentest](https://github.com/mauricelambert/WebScripts/wiki/Pentest) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatwheb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
    - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
    - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
    - Easy to deploy securely
