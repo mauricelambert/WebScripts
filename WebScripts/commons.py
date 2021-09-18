@@ -640,20 +640,20 @@ class CallableFile(Callable):
         if self.type == "js":
             return (
                 "200 OK",
-                {"Content-Type": "text/javascript"},
+                {"Content-Type": "text/javascript; charset=utf-8"},
                 get_file_content(self.path, "rb"),
             )
         elif self.type == "static":
             if self.is_html():
                 return (
                     "200 OK",
-                    {"Content-Type": "text/html"},
+                    {"Content-Type": "text/html; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".css":
                 return (
                     "200 OK",
-                    {"Content-Type": "text/css"},
+                    {"Content-Type": "text/css; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".ico":
@@ -683,25 +683,25 @@ class CallableFile(Callable):
             elif self.extension == ".json":
                 return (
                     "200 OK",
-                    {"Content-Type": "application/json"},
+                    {"Content-Type": "application/json; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".txt":
                 return (
                     "200 OK",
-                    {"Content-Type": "text/plain"},
+                    {"Content-Type": "text/plain; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".pdf":
                 return (
                     "200 OK",
-                    {"Content-Type": "application/pdf"},
+                    {"Content-Type": "application/pdf; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".csv":
                 return (
                     "200 OK",
-                    {"Content-Type": "text/csv"},
+                    {"Content-Type": "text/csv; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.is_tiff():
@@ -713,7 +713,7 @@ class CallableFile(Callable):
             elif self.is_xml():
                 return (
                     "200 OK",
-                    {"Content-Type": "application/xml"},
+                    {"Content-Type": "application/xml; charset=utf-8"},
                     get_file_content(self.path, "rb"),
                 )
             elif self.extension == ".svg":
@@ -733,7 +733,7 @@ class CallableFile(Callable):
             return (
                 "200 OK",
                 {
-                    "Content-Type": "text/html",
+                    "Content-Type": "text/html; charset=utf-8",
                     "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
                 },
                 CallableFile.template_script

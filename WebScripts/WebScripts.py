@@ -263,7 +263,12 @@ class Server:
             self.headers["Cache-Control"] = "no-store"
             self.headers["Pragma"] = "no-store"
             self.headers["Clear-Site-Data"] = "*"
-            self.headers["Feature-Policy"] = "microphone 'none'; camera 'none'"
+            self.headers[
+                "Feature-Policy"
+            ] = "payment 'none'; geolocation 'none'; microphone 'none'; camera 'none'"
+            self.headers[
+                "Permissions-Policy"
+            ] = "microphone=(),camera=(),payment=(),geolocation=()"
             self.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
             self.headers["Cross-Origin-Opener-Policy"] = "same-origin"
             self.headers["Cross-Origin-Resource-Policy"] = "same-origin"
