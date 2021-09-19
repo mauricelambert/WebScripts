@@ -4,11 +4,11 @@ The server configuration is modified with default configuration files, custom co
 
 Priority:
 
-1. Command line arguments
-2. Custom JSON files
-3. Custom INI files
-4. Default JSON file
-5. Default INI file
+ 1. Command line arguments
+ 2. Custom JSON files
+ 3. Custom INI files
+ 4. Default JSON file
+ 5. Default INI file
 
 The default configuration JSON files:
 ```json

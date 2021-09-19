@@ -29,7 +29,8 @@ An example of deployment for production is available [here](https://github.com/m
     - `Referrer-Policy`: `origin-when-cross-origin`
     - `Cache-Control`: `no-store`
     - `Clear-Site-Data`: `*`
-    - `Feature-Policy`: `microphone 'none'; camera 'none'`
+    - `Feature-Policy`: `payment 'none'; geolocation 'none'; microphone 'none'; camera 'none'`
+    - `Permissions-Policy`: `microphone=(),camera=(),payment=(),geolocation=()`
     - `Cross-Origin-Embedder-Policy`: `require-corp`
     - `Cross-Origin-Opener-Policy`: `same-origin`
     - `Cross-Origin-Resource-Policy`: `same-origin`

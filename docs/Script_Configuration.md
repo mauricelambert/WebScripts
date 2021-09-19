@@ -111,9 +111,9 @@ command_generate_documentation=python "%(dirname)s/../doc/py_doc.py" "%(path)s" 
 All users can access the authentication script, permissions are not used for this script (this is a simple example).
 In this configuration:
 
-1. All users with a group greater than 0 can access this script
-2. All users in group 0 (group named *Not Authenticated*) or 1 (group named *Unknow*)
-3. Users with ID 0 (user named *Not Authenticated*) or ID 1 (user named *Unknow*) or ID 2 (user named *Admin*)
+ 1. All users with a group greater than 0 can access this script
+ 2. All users in group 0 (group named *Not Authenticated*) or 1 (group named *Unknow*)
+ 3. Users with ID 0 (user named *Not Authenticated*) or ID 1 (user named *Unknow*) or ID 2 (user named *Admin*)
 
 This configuration makes no sense because with `minimum_access=0` all user can access it, it's just an example.
 
