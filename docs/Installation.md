@@ -2,10 +2,12 @@
 
 ## Requirements
 This package require:
+
  - python3
  - python3 Standard Library
 
 Optional on Windows:
+
  - pywin32 (to centralize logs in Event Viewer)
 
 ## Linux

@@ -21,18 +21,18 @@ An example of deployment for production is available [here](https://github.com/m
 ### HTTP headers
 
  - To protect your WEB clients (against `XSS`, `CSRF`, `MiM` and other threats) the configuration named `security` of the *WebScripts Server* sends HTTP headers. This configuration should be `true`. The headers are:
-   - `Strict-Transport-Security`: `max-age=63072000; includeSubDomains; preload`
-   - `Content-Security-Policy`: `default-src 'self'; form-action 'none'`
-   - `X-Frame-Options`: `deny`
-   - `X-XSS-Protection`: `1; mode=block`
-   - `X-Content-Type-Options`: `nosniff`
-   - `Referrer-Policy`: `origin-when-cross-origin`
-   - `Cache-Control`: `no-store`
-   - `Clear-Site-Data`: `*`
-   - `Feature-Policy`: `microphone 'none'; camera 'none'`
-   - `Cross-Origin-Embedder-Policy`: `require-corp`
-   - `Cross-Origin-Opener-Policy`: `same-origin`
-   - `Cross-Origin-Resource-Policy`: `same-origin`
+    - `Strict-Transport-Security`: `max-age=63072000; includeSubDomains; preload`
+    - `Content-Security-Policy`: `default-src 'self'; form-action 'none'`
+    - `X-Frame-Options`: `deny`
+    - `X-XSS-Protection`: `1; mode=block`
+    - `X-Content-Type-Options`: `nosniff`
+    - `Referrer-Policy`: `origin-when-cross-origin`
+    - `Cache-Control`: `no-store`
+    - `Clear-Site-Data`: `*`
+    - `Feature-Policy`: `microphone 'none'; camera 'none'`
+    - `Cross-Origin-Embedder-Policy`: `require-corp`
+    - `Cross-Origin-Opener-Policy`: `same-origin`
+    - `Cross-Origin-Resource-Policy`: `same-origin`
 
 ### Debugging
 
@@ -69,6 +69,7 @@ Change the password of the `Admin` user and the API key or use custom authentica
 Some files and directories must be protected by the system, to avoid **privilege escalation** or other attacks. To protect your files, you need to change permissions on *group* and *other* (on Linux run this command: `chmod -R 600 <directory or file>`) and make sure the owner is the user who is launching the *WebScript Server* (on Linux run this command: `chown -R <user>:<user> <directory or file>`).
 
 Files and directories that need protection:
+
  - `data/`: encrypted or hashed passwords are stored here, user permissions are also set here
  - `config/`: contains: server configurations (with security configurations), script configurations (with command to generate documentation) and loggers configurations (`logging.config.fileConfig` use `eval` function)
  - `logs/`: logs contains informations about configurations
@@ -184,4 +185,5 @@ The `CSRF tokens` are generated with `b64encode(secrets.token_bytes(48)).decode(
 Tokens can only be used once, for one session and they expire after 300 seconds (5 minutes).
 
 Cautions:
+
  - **BasicAuth** and **API keys** **should never** be used with a web browser because *CSRF protections* is not enabled with these methods.

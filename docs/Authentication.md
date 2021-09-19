@@ -19,6 +19,7 @@ To authenticate a API client the *WebScripts Server* call the authentication scr
 
 Output must be an user object as JSON syntax.
 Attribute required are:
+
  - `ip`: the IP address of the client
  - `id`: the **unique ID** of the client 
  - `name`: the name of the client

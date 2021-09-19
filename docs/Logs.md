@@ -17,6 +17,7 @@ You can change the logging level in configuration files or by using command line
 **Recommended**: In production (for security reasons) the log level should be `0` or `DEBUG`.
 
 The *WebScripts Server* use six differents levels:
+
  1. Value: `50`, is `CRITICAL`
  2. Value: `40`, is `ERROR`
  3. Value: `30`, is `WARNING`
@@ -42,6 +43,7 @@ If an *exceptions* is catched by the *WebScripts Server*, it will be written in 
 ### Console
 
 In `console` logger i added *terminal colors* to quickly identify logs level:
+
  - `DEBUG` logs are *green*
  - `INFO` logs are *blue*
  - `WARNING` logs are *yellow*

@@ -9,32 +9,32 @@
 ### ZAP
 
 1. Correct by deployment:
-   - **HTTP Only Site** (*configure HTTPS with Apache or NGINX*)
-   - **Web Cache Deception** (*secure by Apache or NGINX*)
-   - **Server Leaks Version Information via "Server" HTTP Response Header Field** (*Server header is set by Apache or NGINX*)
+    - **HTTP Only Site** (*configure HTTPS with Apache or NGINX*)
+    - **Web Cache Deception** (*secure by Apache or NGINX*)
+    - **Server Leaks Version Information via "Server" HTTP Response Header Field** (*Server header is set by Apache or NGINX*)
 2. False positive:
-   - **Application Error Disclosure** (*error message for error 500 on script execution*)
-   - **Base64 Disclosure** (*CSRF token*)
-   - **Information Disclosure - Suspicious Comments** (*copyright*)
+    - **Application Error Disclosure** (*error message for error 500 on script execution*)
+    - **Base64 Disclosure** (*CSRF token*)
+    - **Information Disclosure - Suspicious Comments** (*copyright*)
 3. No correction:
-   - **User Agent Fuzzer** (*this WebServer is for computer only, not for mobile or other device*)
-   - **Modern Web Application** (*pydoc documentation pages*)
-   - **Deprecated Feature Policy Header Set** (*Feature-Policy is set for older web browsers*)
-   - **Non-Storable Content**
+    - **User Agent Fuzzer** (*this WebServer is for computer only, not for mobile or other device*)
+    - **Modern Web Application** (*pydoc documentation pages*)
+    - **Deprecated Feature Policy Header Set** (*Feature-Policy is set for older web browsers*)
+    - **Non-Storable Content**
 
 ### Skipfish
 
 1. Correct by deployment:
-   - **New 'Server' header value seen** (*Server header is set by Apache or NGINX*)
+    - **New 'Server' header value seen** (*Server header is set by Apache or NGINX*)
 2. False positive:
-   - **Hidden files / directories** (*the /auth/ page*)
-   - **Resource not directly accessible** (*are not resources*)
-   - **New 404 signature seen** (*first is a redirection, second is 404*)
-  - **New 'X-\*' header value seen** (*Security headers*)
+    - **Hidden files / directories** (*the /auth/ page*)
+    - **Resource not directly accessible** (*are not resources*)
+    - **New 404 signature seen** (*first is a redirection, second is 404*)
+    - **New 'X-\*' header value seen** (*Security headers*)
 3. No correction:
-   - **Node should be a directory, detection error?** (*WebScripts implementation*)
-   - **Server error triggered** (*WebScripts implementation*)
-   - **New 'X-\*' header value seen** (*Server header*)
+    - **Node should be a directory, detection error?** (*WebScripts implementation*)
+    - **Server error triggered** (*WebScripts implementation*)
+    - **New 'X-\*' header value seen** (*Server header*)
 
 ## Reports
 

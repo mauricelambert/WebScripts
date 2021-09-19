@@ -21,18 +21,18 @@ This package implements a web server to run scripts or executables from the comm
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
 
  - Secure
-   - [SAST - Static Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
-   - [DAST - Dynamic Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
-   - [Web pentest](https://github.com/mauricelambert/WebScripts/wiki/Pentest) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
-   - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
-   - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
-   - Easy to deploy securely
-     - [Apache and mod_wsgi](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod)
-     - [Nginx as HTTPS proxy](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https)
-   - Easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
-     - INI/CFG syntax
-     - JSON syntax
-   - [Unittest](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest)
+    - [SAST - Static Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
+    - [DAST - Dynamic Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
+    - [Web pentest](https://github.com/mauricelambert/WebScripts/wiki/Pentest) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
+    - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
+    - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
+    - Easy to deploy securely
+        - [Apache and mod_wsgi](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod)
+        - [Nginx as HTTPS proxy](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https)
+    - Easy to configure securely [(read the documentation)](https://github.com/mauricelambert/WebScripts/wiki/)
+        - INI/CFG syntax
+        - JSON syntax
+    - [Unittest](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest)
 
 ## Requirements
 This package require:
@@ -153,10 +153,10 @@ WebScripts38.main()
  - Home: [wiki](https://github.com/mauricelambert/WebScripts/wiki/)
  - Installation: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Installation)
  - Configurations:
-   - Usages: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Usages)
-   - Server Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration)
-   - Scripts Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration)
-   - Arguments Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)
+    - Usages: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Usages)
+    - Server Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration)
+    - Scripts Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration)
+    - Arguments Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)
  - Logs: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Logs)
  - Authentication: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)
  - Default Database: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Default-Database)
@@ -164,17 +164,17 @@ WebScripts38.main()
  - API: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API)
  - Development and Administration Tools: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools)
  - Customize:
-   - WEB Interface: [wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
-   - Modules: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)
+    - WEB Interface: [wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
+    - Modules: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)
  - Security:
-   - Security Considerations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
-   - Code analysis for security (SAST and DAST): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
-   - Security checks and tests (pentest): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
+    - Security Considerations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
+    - Code analysis for security (SAST and DAST): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
+    - Security checks and tests (pentest): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
  - Examples:
-   - Deployment: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
-   - Add a bash script (for authentication): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
-   - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
-   - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client)
+    - Deployment: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
+    - Add a bash script (for authentication): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
+    - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
+    - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client)
 
 ### PyDoc
 

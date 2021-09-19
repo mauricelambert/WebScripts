@@ -14,6 +14,7 @@ Delimiter is `,` and quote is `"`.
 ## Users
 
 The users database columns:
+
  1. ID: the unique ID of the user
  2. name: the unique name of the user
  3. password: base64 password hash (SHA512 using `hashlib.pbkdf2_hmac`)
@@ -26,12 +27,14 @@ The users database columns:
 ## Groups
 
 The groups database columns:
+
  1. ID: the unique ID of the group and the permission level
  2. name: the unique name of the group
 
 ## Passwords
 
 The passwords database columns:
+
  1. timestamp: The timestamp (a float) of the max time to view the password.
  2. password: Encrypted password (using XOR, the key and the salt is 60 random bytes using `secrets.token_bytes(60)`)
  3. views: The number of views remaining
@@ -44,6 +47,7 @@ Passwords are automatically deleted when they expire.
 ## Uploads
 
 The uploads database columns:
+
  1. ID: the action ID (an auto-incremented integer)
  2. name: the name of the file
  3. read_permission: permission required to read this file
@@ -59,6 +63,7 @@ The uploads database columns:
 ## Requests
 
 The requests database columns:
+
  1. ID: the request ID (an auto-incremented integer)
  2. Time: timestamp of request creation
  3. UserName: user name used to create the request

@@ -3,6 +3,7 @@
 The server configuration is modified with default configuration files, custom configuration files and command line arguments.
 
 Priority:
+
 1. Command line arguments
 2. Custom JSON files
 3. Custom INI files

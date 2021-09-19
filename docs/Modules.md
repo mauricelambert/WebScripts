@@ -1,6 +1,7 @@
 # Modules
 
 Module is useful to send custom response:
+
  - Custom headers
  - Custom dynamic page
  - Custom URL
@@ -125,7 +126,8 @@ modules=hello
 modules_path=./scripts/py
 ```
 
-Start the *WebScripts Server* and open these URL in your web broswer: 
+Start the *WebScripts Server* and open these URL in your web broswer:
+
  1. [Hello function](http://127.0.0.1:8000/hello/hello/).
  2. [Custom error 500 page](http://127.0.0.1:8000/hello/) (only if the `debug` configuration is `false`).
  3. [Custom error 404 page](http://127.0.0.1:8000/hello/test/) (only if the `debug` configuration is `false`).
