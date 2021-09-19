@@ -49,6 +49,7 @@ __copyright__ = copyright
 __all__ = ["save", "delete", "decrypt", "get_passwords", "main"]
 
 from typing import TypeVar, Tuple, List
+from hmac import compare_digest
 from hashlib import pbkdf2_hmac
 from csv import reader, writer
 from base64 import b64decode
@@ -73,7 +74,9 @@ def decrypt(key: bytes, password: bytes, hash_: str, iteration: int) -> Password
     for i, car in enumerate(password):
         password_ += chr(key[i % key_length] ^ car)
 
-    if pbkdf2_hmac("sha512", password_.encode(), key, int(iteration)).hex() == hash_:
+    if compare_digest(
+        pbkdf2_hmac("sha512", password_.encode(), key, int(iteration)).hex(), hash_
+    ):
         return password_
     else:
         return False

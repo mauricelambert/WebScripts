@@ -66,6 +66,7 @@ from secrets import randbelow, token_bytes
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
 from collections import namedtuple
+from hmac import compare_digest
 from hashlib import pbkdf2_hmac
 from os import environ, path
 from fnmatch import fnmatch
@@ -275,15 +276,15 @@ def auth_username_password(name: str, password: str) -> User:
         if (
             user.password
             and user.name == name
-            and b64encode(
+            and compare_digest(
                 pbkdf2_hmac(
                     "sha512",
                     password.encode(),
                     b64decode(user.salt.encode()),
                     int(user.enumerations),
-                )
-            ).decode()
-            == user.password
+                ),
+                b64decode(user.password),
+            )
         ):
             for glob_ip in user.IPs.split(","):
                 if fnmatch(environ["REMOTE_ADDR"], glob_ip):
