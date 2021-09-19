@@ -1,6 +1,6 @@
 # Script Configuration
 
-The configuration of the script is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration).
+The configuration of the script is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/).
 
 ## Using a specific file
 
@@ -83,8 +83,9 @@ JSON example:
 
 In this configuration:
 
- - *Admin* users can access it only (group ID 1000 is a default group named *Admin*)
- - A user in group ID 1001 and not in group ID 1000 can't access it (group ID is the permission level)
+
+   - *Admin* users can access it only (group ID 1000 is a default group named *Admin*)
+   - A user in group ID 1001 and not in group ID 1000 can't access it (group ID is the permission level)
 
 INI example:
 ```ini
@@ -111,9 +112,9 @@ command_generate_documentation=python "%(dirname)s/../doc/py_doc.py" "%(path)s" 
 All users can access the authentication script, permissions are not used for this script (this is a simple example).
 In this configuration:
 
- 1. All users with a group greater than 0 can access this script
- 2. All users in group 0 (group named *Not Authenticated*) or 1 (group named *Unknow*)
- 3. Users with ID 0 (user named *Not Authenticated*) or ID 1 (user named *Unknow*) or ID 2 (user named *Admin*)
+   1. All users with a group greater than 0 can access this script
+   2. All users in group 0 (group named *Not Authenticated*) or 1 (group named *Unknow*)
+   3. Users with ID 0 (user named *Not Authenticated*) or ID 1 (user named *Unknow*) or ID 2 (user named *Admin*)
 
 This configuration makes no sense because with `minimum_access=0` all user can access it, it's just an example.
 

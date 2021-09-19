@@ -2,9 +2,9 @@
 
 ## Notifications
 
-To configure the email notification read the [documentation for email notification](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration#server-configuration).
+To configure the email notification read the [documentation for email notification](https://webscripts.readthedocs.io/en/latest/Server_Configuration/#server-configuration).
 
-For temp configuration or tests i recommend to use [command line arguments](https://github.com/mauricelambert/WebScripts/wiki/Usages#smtp).
+For temp configuration or tests i recommend to use [command line arguments](https://webscripts.readthedocs.io/en/latest/Usages/#smtp).
 
 ## Debug the Content Security Policy
 
