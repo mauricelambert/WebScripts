@@ -22,7 +22,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
  - Secure
    - [SAST - Static Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
    - [DAST - Dynamic Application Security Testing](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
-   - [Web pentest](https://github.com/mauricelambert/WebScripts/wiki/Pentest) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatwheb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
+   - [Web pentest](https://github.com/mauricelambert/WebScripts/wiki/Pentest) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
    - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
    - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
    - Easy to deploy securely
@@ -147,32 +147,34 @@ WebScripts38.main()
 
 ## Documentation
 
-### Wiki
- - [Installation](https://github.com/mauricelambert/WebScripts/wiki/Installation)
- - [Usages](https://github.com/mauricelambert/WebScripts/wiki/Usages)
- - [Server Configuration](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration)
- - [Script Configuration](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration)
- - [Argument Configuration](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)
- - [Logs](https://github.com/mauricelambert/WebScripts/wiki/Logs)
- - [Authentication](https://github.com/mauricelambert/WebScripts/wiki/Authentication)
- - [Default Database](https://github.com/mauricelambert/WebScripts/wiki/Default-Database)
- - [Access and Permissions](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions)
- - [Security Considerations](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
- - [API](https://github.com/mauricelambert/WebScripts/wiki/API)
- - [Development and Administration Tools](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools)
- - [Custom WEB Interface](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
- - [Modules (Custom responses and code)](https://github.com/mauricelambert/WebScripts/wiki/Modules)
- - [Code analysis for security (SAST)](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
- - [Security checks and tests (pentest tools)](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
-
-### Examples
- - [Deployment](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
- - [Add a bash script (for authentication)](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
- - [Add a module](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
- - [Make a custom API client](https://github.com/mauricelambert/WebScripts/wiki/API-Client)
+ - Home: [wiki](https://github.com/mauricelambert/WebScripts/wiki/)
+ - Installation: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Installation)
+ - Configurations:
+   - Usages: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Usages)
+   - Server Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration)
+   - Scripts Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration)
+   - Arguments Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)
+ - Logs: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Logs)
+ - Authentication: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)
+ - Default Database: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Default-Database)
+ - Access and Permissions: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions)
+ - API: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API)
+ - Development and Administration Tools: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools)
+ - Customize:
+   - WEB Interface: [wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface)
+   - Modules: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)
+ - Security:
+   - Security Considerations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations)
+   - Code analysis for security (SAST and DAST): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)
+   - Security checks and tests (pentest): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest)
+ - Examples:
+   - Deployment: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)
+   - Add a bash script (for authentication): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script)
+   - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module)
+   - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client)
 
 ### PyDoc
- - [Index](https://mauricelambert.github.io/info/python/code/WebScripts/)
+ - [\_\_init\_\_](https://mauricelambert.github.io/info/python/code/WebScripts/)
  - [WebScripts](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.html)
  - [Pages](https://mauricelambert.github.io/info/python/code/WebScripts/Pages.html)
  - [commons](https://mauricelambert.github.io/info/python/code/WebScripts/commons.html)

@@ -1,0 +1,37 @@
+site_name: WebScripts
+site_author: Maurice LAMBERT
+site_url: https://github.com/mauricelambert/WebScripts/wiki
+site_description: This tools run scripts and display the result in a Web Interface.
+
+repo_url: https://github.com/mauricelambert/WebScripts
+
+nav:
+    - Home: Home.md
+    - Installation: Installation.md
+    - Configurations:
+        - Usages: Usages.md
+        - Server Configurations: Server_Configuration.md
+        - Scripts Configurations: Script_Configuration.md
+        - Arguments Configurations: Argument_Configuration.md
+    - Logs: Logs.md
+    - Authentication: Authentication.md
+    - Default Database: Default_Database.md
+    - Access and Permissions: Users_Access_and_Rights.md
+    - API: API.md
+    - Development and Administration Tools: Development_and_Administration_Tools.md
+    - Customize:
+        - WEB Interface: WEB_Interface.md
+        - Modules: Modules.md
+    - Security:
+        - Security Considerations: Security_Considerations.md
+        - Code analysis for security: Code_Analysis_for_Security.md
+        - Security checks and tests (pentest): Pentest.md
+    - Examples:
+        - Deployment: Deployment.md
+        - Add a bash script (for authentication): Add_Script.md
+        - Add a module: Add_Module.md
+        - Make a custom API client: API_Client.md
+
+theme: readthedocs
+
+copyright: "WebScripts  Copyright (C) 2021  Maurice Lambert\nThis program comes with ABSOLUTELY NO WARRANTY.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions."

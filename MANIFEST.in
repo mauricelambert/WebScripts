@@ -1,5 +1,6 @@
 include *.md
 include *.txt
+include docs/*.md
 include test/*.py
 include WebScripts/*.txt
 include WebScripts/data/id
