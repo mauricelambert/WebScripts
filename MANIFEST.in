@@ -1,5 +1,7 @@
 include *.md
 include *.txt
+include *.yml
+include *.yaml
 include docs/*.md
 include test/*.py
 include WebScripts/*.txt

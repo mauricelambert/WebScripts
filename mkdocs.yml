@@ -6,7 +6,7 @@ site_description: This tools run scripts and display the result in a Web Interfa
 repo_url: https://github.com/mauricelambert/WebScripts
 
 nav:
-    - Home: Home.md
+    - Home: index.md
     - Installation: Installation.md
     - Configurations:
         - Usages: Usages.md
