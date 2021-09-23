@@ -20,9 +20,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This package implements a web server to run scripts or 
-executables from the command line and display the result 
-in a web interface.
+"""This tools run scripts and display the result in a Web Interface.
 
 This file change the code for python3.8 compatibility.
 
@@ -41,8 +39,8 @@ __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This package implements a web server to run scripts or 
-executables from the command line and display the result in a web interface.
+__description__ = """
+This tools run scripts and display the result in a Web Interface.
 
 This file change the code for python3.8 compatibility."""
 __license__ = "GPL-3.0 License"

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This package implements a web server to run scripts or executables
-#    from the command line and display the result in a web interface.
+#    This tools run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,9 +19,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This package implements a web server to run scripts or 
-executables from the command line and display the result 
-in a web interface.
+"""This tools run scripts and display the result in a Web Interface.
 
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
@@ -63,8 +60,7 @@ __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This package implements a web server to run scripts or 
-executables from the command line and display the result in a web interface.
+__description__ = """This tools run scripts and display the result in a Web Interface.
 
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
