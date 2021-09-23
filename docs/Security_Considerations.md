@@ -1,6 +1,6 @@
 # Security Considerations
 
-An example of deployment for production is available [here](https://webscripts.readthedocs.io/en/latest/Deployment/) using NGINX and python virtual environment. This example respect all security considerations defined in this page.
+An example of deployment for production is available [here](https://webscripts.readthedocs.io/en/latest/Deployment/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)) using NGINX and python virtual environment. This example respect all security considerations defined in this page.
 
 ## Installations
 
@@ -29,7 +29,8 @@ An example of deployment for production is available [here](https://webscripts.r
     - `Referrer-Policy`: `origin-when-cross-origin`
     - `Cache-Control`: `no-store`
     - `Clear-Site-Data`: `*`
-    - `Feature-Policy`: `microphone 'none'; camera 'none'`
+    - `Feature-Policy`: `payment 'none'; geolocation 'none'; microphone 'none'; camera 'none'`
+    - `Permissions-Policy`: `microphone=(),camera=(),payment=(),geolocation=()`
     - `Cross-Origin-Embedder-Policy`: `require-corp`
     - `Cross-Origin-Opener-Policy`: `same-origin`
     - `Cross-Origin-Resource-Policy`: `same-origin`

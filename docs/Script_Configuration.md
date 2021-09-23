@@ -1,6 +1,6 @@
 # Script Configuration
 
-The configuration of the script is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/).
+The configuration of the script is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)).
 
 ## Using a specific file
 

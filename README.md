@@ -15,7 +15,7 @@
 [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
 
 ## Description
-This package implements a web server to run scripts or executables from the command line and display the result in a web interface.
+This tools run scripts and display the result in a Web Interface.
 
 ## Goals
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
