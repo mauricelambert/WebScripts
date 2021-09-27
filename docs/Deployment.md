@@ -144,6 +144,8 @@ from WebScripts.WebScripts import (
     Server,
     configure_logs_system,
     send_mail,
+    hardening,
+    Logs,
 )
 from typing import List
 import logging
@@ -183,6 +185,7 @@ atexit.register(
     f"Server is down on http://{server.interface}:{server.port}/."
 )
 
+hardening(server, Logs)
 application = server.app
 ```
 

@@ -3,6 +3,7 @@
 LICENSE.txt
 MANIFEST.in
 README.md
+audit.txt
 mkdocs.yml
 setup.py
 WebScripts/Errors.py
@@ -12,6 +13,7 @@ WebScripts/WebScripts.py
 WebScripts/__init__.py
 WebScripts/__main__.py
 WebScripts/commons.py
+WebScripts/hardening.py
 WebScripts/utils.py
 WebScripts.egg-info/PKG-INFO
 WebScripts.egg-info/SOURCES.txt
@@ -93,6 +95,7 @@ WebScripts/static/html/WebScripts.html
 WebScripts/static/html/commons.html
 WebScripts/static/html/csp.html
 WebScripts/static/html/error_pages.html
+WebScripts/static/html/hardening.html
 WebScripts/static/html/index.html
 WebScripts/static/html/manage_defaults_databases.html
 WebScripts/static/html/requests_management.html

@@ -21,18 +21,18 @@ This tools run scripts and display the result in a Web Interface.
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
 
  - Secure
-    - [SAST - Static Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#sast-alerts) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
-    - [DAST - Dynamic Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#dast-alerts) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
-    - [Web pentest](https://webscripts.readthedocs.io/en/latest/Pentest/) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
+    - [SAST - Static Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#sast-alerts) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
+    - [DAST - Dynamic Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#dast-alerts) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
+    - [Web pentest](https://webscripts.readthedocs.io/en/latest/Pentest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest)) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
     - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
     - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
     - Easy to deploy securely
-        - [Apache and mod_wsgi](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod)
-        - [Nginx as HTTPS proxy](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https)
-    - Easy to configure securely [(read the documentation)](https://webscripts.readthedocs.io/en/latest/)
+        - [Apache and mod_wsgi](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
+        - [Nginx as HTTPS proxy](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
+    - Easy to configure securely [(read the documentation)](https://webscripts.readthedocs.io/en/latest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/))
         - INI/CFG syntax
         - JSON syntax
-    - [Unittest](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest)
+    - [Unittest](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest))
 
 ## Requirements
 This package require:
@@ -150,31 +150,31 @@ WebScripts38.main()
 
 ## Documentation
 
- - Home: [wiki](https://webscripts.readthedocs.io/en/latest/)
- - Installation: [wiki](https://webscripts.readthedocs.io/en/latest/Installation/)
+ - Home: [wiki](https://github.com/mauricelambert/WebScripts/wiki/), [readthedocs](https://webscripts.readthedocs.io/en/latest/)
+ - Installation: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Installation), [readthedocs](https://webscripts.readthedocs.io/en/latest/Installation/)
  - Configurations:
-    - Usages: [wiki](https://webscripts.readthedocs.io/en/latest/Usages/)
-    - Server Configurations: [wiki](https://webscripts.readthedocs.io/en/latest/Server_Configuration/)
-    - Scripts Configurations: [wiki](https://webscripts.readthedocs.io/en/latest/Script_Configuration/)
-    - Arguments Configurations: [wiki](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/)
- - Logs: [wiki](https://webscripts.readthedocs.io/en/latest/Logs/)
- - Authentication: [wiki](https://webscripts.readthedocs.io/en/latest/Authentication/)
- - Default Database: [wiki](https://webscripts.readthedocs.io/en/latest/Default_Database/)
- - Access and Permissions: [wiki](https://webscripts.readthedocs.io/en/latest/Users_Access_and_Rights/)
- - API: [wiki](https://webscripts.readthedocs.io/en/latest/API/)
- - Development and Administration Tools: [wiki](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/)
+    - Usages: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Usages), [readthedocs](https://webscripts.readthedocs.io/en/latest/Usages/)
+    - Server Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration), [readthedocs](https://webscripts.readthedocs.io/en/latest/Server_Configuration/)
+    - Scripts Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration), [readthedocs](https://webscripts.readthedocs.io/en/latest/Script_Configuration/)
+    - Arguments Configurations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration), [readthedocs](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/)
+ - Logs: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Logs), [readthedocs](https://webscripts.readthedocs.io/en/latest/Logs/)
+ - Authentication: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication), [readthedocs](https://webscripts.readthedocs.io/en/latest/Authentication/)
+ - Default Database: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Default-Database), [readthedocs](https://webscripts.readthedocs.io/en/latest/Default_Database/)
+ - Access and Permissions: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions), [readthedocs](https://webscripts.readthedocs.io/en/latest/Users_Access_and_Rights/)
+ - API: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API), [readthedocs](https://webscripts.readthedocs.io/en/latest/API/)
+ - Development and Administration Tools: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools), [readthedocs](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/)
  - Customize:
-    - WEB Interface: [wiki](https://webscripts.readthedocs.io/en/latest/WEB_Interface/)
-    - Modules: [wiki](https://webscripts.readthedocs.io/en/latest/Modules/)
+    - WEB Interface: [wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface), [readthedocs](https://webscripts.readthedocs.io/en/latest/WEB_Interface/)
+    - Modules: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules), [readthedocs](https://webscripts.readthedocs.io/en/latest/Modules/)
  - Security:
-    - Security Considerations: [wiki](https://webscripts.readthedocs.io/en/latest/Security_Considerations/)
-    - Code analysis for security (SAST and DAST): [wiki](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/)
-    - Security checks and tests (pentest): [wiki](https://webscripts.readthedocs.io/en/latest/Pentest/)
+    - Security Considerations: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Security-Considerations), [readthedocs](https://webscripts.readthedocs.io/en/latest/Security_Considerations/)
+    - Code analysis for security (SAST and DAST): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security), [readthedocs](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/)
+    - Security checks and tests (pentest): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest), [readthedocs](https://webscripts.readthedocs.io/en/latest/Pentest/)
  - Examples:
-    - Deployment: [wiki](https://webscripts.readthedocs.io/en/latest/Deployment/)
-    - Add a bash script (for authentication): [wiki](https://webscripts.readthedocs.io/en/latest/Add_Script/)
-    - Add a module: [wiki](https://webscripts.readthedocs.io/en/latest/Add_Module/)
-    - Make a custom API client: [wiki](https://webscripts.readthedocs.io/en/latest/API_Client/)
+    - Deployment: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment), [readthedocs](https://webscripts.readthedocs.io/en/latest/Deployment/)
+    - Add a bash script (for authentication): [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script), [readthedocs](https://webscripts.readthedocs.io/en/latest/Add_Script/)
+    - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module), [readthedocs](https://webscripts.readthedocs.io/en/latest/Add_Module/)
+    - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client), [readthedocs](https://webscripts.readthedocs.io/en/latest/API_Client/)
 
 ### PyDoc
 
@@ -194,7 +194,7 @@ WebScripts38.main()
  - [Pypi](https://pypi.org/project/WebScripts)
  - [Github](https://github.com/mauricelambert/WebScripts)
  - [ReadTheDocs](https://webscripts.readthedocs.io/en/latest/)
- - [RSS Feed](https://pypi.org/rss/project/webscripts/releases.xml)
+ - RSS Feed [pypi](https://pypi.org/rss/project/webscripts/releases.xml), [libraries](https://libraries.io/pypi/WebScripts/versions.atom)
 
 ## Pictures
 
