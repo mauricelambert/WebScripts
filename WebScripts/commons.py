@@ -353,9 +353,8 @@ class ScriptConfig(DefaultNamespace):
             )
             script_section["name"] = name
 
-            script_section["path"] = script_path = get_real_path(
-                script_section.get("path")
-            )
+            path_ = script_section.get("path")
+            script_section["path"] = script_path = get_real_path(path_)
             if script_path is None:
                 script_section["path"] = cls.get_script_path(
                     server_configuration, script_section
@@ -374,6 +373,11 @@ class ScriptConfig(DefaultNamespace):
 
             scripts_config[name] = cls.default_build(**script_section)
             scripts_config[name].build_args(configuration)
+
+            if path_ is None:
+                scripts_config[name].path_is_defined = False
+            else:
+                scripts_config[name].path_is_defined = True
 
         return scripts_config
 

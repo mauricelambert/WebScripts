@@ -55,7 +55,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -614,6 +614,8 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
             with open(get_real_path(file_path), *args, **kwargs) as file:
                 content = file.read()
             return content
+
+    raise UnicodeDecodeError("No encoding found to open this file.")
 
 
 @log_trace

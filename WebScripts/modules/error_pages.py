@@ -28,6 +28,7 @@ from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 from os import _Environ, path
+from threading import Thread
 from string import Template
 from html import escape
 from time import time
@@ -318,12 +319,15 @@ class Request:
         if not server_name:
             return
 
-        if starttls:
-            server = SMTP(server_name, getattr(configuration, "smtp_port", 587))
-        elif getattr(configuration, "smtp_ssl", None):
-            server = SMTP_SSL(server_name, getattr(configuration, "smtp_port", 465))
-        else:
-            server = SMTP(server_name, getattr(configuration, "smtp_port", 25))
+        try:
+            if starttls:
+                server = SMTP(server_name, getattr(configuration, "smtp_port", 587))
+            elif getattr(configuration, "smtp_ssl", None):
+                server = SMTP_SSL(server_name, getattr(configuration, "smtp_port", 465))
+            else:
+                server = SMTP(server_name, getattr(configuration, "smtp_port", 25))
+        except TimeoutError:
+            return
 
         if password:
             server.login(configuration.email, password)
@@ -335,6 +339,7 @@ class Request:
         email["Subject"] = "[! WebScripts Notification ]"
 
         server.send_message(email)
+        server.quit()
 
     def save(
         username: str,
@@ -403,7 +408,13 @@ class Request:
         )
 
         Request.save(user.name, code, referer, user_agent, subject, name, reason)
-        Request.send_mail(configuration, notification)
+        Thread(
+            target=Request.send_mail,
+            args=(
+                configuration,
+                notification,
+            ),
+        ).start()
 
         return (
             "200 OK",

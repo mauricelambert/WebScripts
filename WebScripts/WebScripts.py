@@ -30,6 +30,7 @@ from argparse import Namespace, ArgumentParser
 from typing import TypeVar, Tuple, List, Dict
 from os import path, _Environ, getcwd, mkdir
 from wsgiref import simple_server
+from threading import Thread
 from base64 import b64decode
 from glob import iglob
 import traceback
@@ -39,6 +40,7 @@ import json
 import sys
 
 if __package__:
+    from .hardening import main as hardening
     from .Pages import (
         Pages,
         Argument,
@@ -59,6 +61,7 @@ if __package__:
         WebScriptsConfigurationTypeError,
     )
 else:
+    from hardening import main as hardening
     from Pages import (
         Pages,
         Argument,
@@ -1172,7 +1175,13 @@ def send_mail(configuration: Configuration, message: str) -> int:
 
     error_pages = getattr(Pages.packages, "error_pages", None)
     if error_pages:
-        error_pages.Request.send_mail(configuration, message)
+        Thread(
+            target=error_pages.Request.send_mail,
+            args=(
+                configuration,
+                message,
+            ),
+        ).start()
         return 0
 
     return 1
@@ -1216,6 +1225,8 @@ def main() -> None:
     send_mail(
         configuration, f"Server is up on http://{server.interface}:{server.port}/."
     )
+    hardening(server, Logs)
+
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
