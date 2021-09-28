@@ -26,13 +26,13 @@ This file implement the hardening audit of the WebScripts installation and confi
 from email.message import EmailMessage
 from os import getcwd, path, listdir
 from collections.abc import Iterator
+from smtplib import SMTP, SMTP_SSL
 from dataclasses import dataclass
 from socket import gethostbyname
 from typing import TypeVar, List
 from contextlib import suppress
 from threading import Thread
 from getpass import getuser
-from smtplib import SMTP
 from enum import Enum
 import platform
 import ctypes
@@ -75,7 +75,7 @@ class SEVERITY(Enum):
     INFORMATION = "INFORMATION"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
-    HIGHT = "HIGHT"
+    HIGH = "HIGH"
     CRITICAL = "CRITICAL"
 
 
@@ -114,7 +114,7 @@ class Report:
             SEVERITY.INFORMATION.value: [],
             SEVERITY.LOW.value: [],
             SEVERITY.MEDIUM.value: [],
-            SEVERITY.HIGHT.value: [],
+            SEVERITY.HIGH.value: [],
             SEVERITY.CRITICAL.value: [],
             "FAIL": [],
             "ALL": [],
@@ -127,8 +127,8 @@ class Report:
                 f"{SEVERITY.LOW.value} fail": 0,
                 f"{SEVERITY.MEDIUM.value} total": 0,
                 f"{SEVERITY.MEDIUM.value} fail": 0,
-                f"{SEVERITY.HIGHT.value} total": 0,
-                f"{SEVERITY.HIGHT.value} fail": 0,
+                f"{SEVERITY.HIGH.value} total": 0,
+                f"{SEVERITY.HIGH.value} fail": 0,
                 f"{SEVERITY.CRITICAL.value} total": 0,
                 f"{SEVERITY.CRITICAL.value} fail": 0,
             },
@@ -190,12 +190,12 @@ class Report:
             class_HTML = f'class="{rule["severity"].lower()}"'
             table_critical += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
 
-        table_hight = (
+        table_high = (
             f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
         )
-        for rule in self.reports_dict[SEVERITY.HIGHT.value]:
+        for rule in self.reports_dict[SEVERITY.HIGH.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_hight += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_high += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
 
         table_medium = (
             f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
@@ -229,7 +229,7 @@ class Report:
             tr, td {{margin: 0.5%; padding: 1%; padding-left: 0.1%; color: #b16b05; border: 1px solid #b16b05;}}
             table {{width: 99%; background-color: #CCCCCC; color: #b16b05;}}
             .critical {{color: #B13D05; border: 1px solid #B13D05;}}
-            .hight {{color: #dd8a12; border: 1px solid #dd8a12;}}
+            .high {{color: #dd8a12; border: 1px solid #dd8a12;}}
             .medium {{color: #B18905; border: 1px solid #B18905;}}
             .low {{color: #100B60; border: 1px solid #100B60;}}
             .information {{color: #04774E; border: 1px solid #04774E;}}
@@ -243,7 +243,7 @@ class Report:
             <li><a href="#scoring">Scoring</a></li>
             <li><a href="#failed">Failed</a></li>
             <li><a href="#critical">Critical</a></li>
-            <li><a href="#hight">Hight</a></li>
+            <li><a href="#high">High</a></li>
             <li><a href="#medium">Medium</a></li>
             <li><a href="#low">Low</a></li>
             <li><a href="#information">Information</a></li>
@@ -254,7 +254,7 @@ class Report:
             <tr><td>Score</td><td>Fail</td><td>Total</td><td>Compliance (% pourcent)</td></tr>
             <tr><td>All</td><td>{self.reports_dict["SCORING"]["fail"]}</td><td>{self.reports_dict["SCORING"]["total"]}</td><td>{100 - self.reports_dict["SCORING"]["fail"] * 100 / self.reports_dict["SCORING"]["total"]}</td></tr>
             <tr><td class="critical">Critical</td><td class="critical">{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]}</td><td class="critical">{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}</td><td class="critical">{100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}</td></tr>
-            <tr><td class="hight">Hight</td><td class="hight">{self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} fail"]}</td><td class="hight">{self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} total"]}</td><td class="hight">{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} total"]}</td></tr>
+            <tr><td class="high">High</td><td class="high">{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]}</td><td class="high">{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}</td><td class="high">{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}</td></tr>
             <tr><td class="medium">Medium</td><td class="medium">{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]}</td><td class="medium">{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}</td><td class="medium">{100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}</td></tr>
             <tr><td class="low">Low</td><td class="low">{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]}</td><td class="low">{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}</td><td class="low">{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}</td></tr>
             <tr><td class="information">Information</td><td class="information">{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]}</td><td class="information">{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}</td><td class="information">{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}</td></tr>
@@ -270,9 +270,9 @@ class Report:
             {table_critical}
         </table>
 
-        <h2 id="hight">HIGHT</h2>
+        <h2 id="high">HIGH</h2>
         <table>
-            {table_hight}
+            {table_high}
         </table>
 
         <h2 id="medium">MEDIUM</h2>
@@ -317,10 +317,10 @@ class Report:
                 for rule in self.reports_dict[SEVERITY.CRITICAL.value]
             ]
         )
-        hight_text = "    - " + "\n    - ".join(
+        high_text = "    - " + "\n    - ".join(
             [
                 f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
-                for rule in self.reports_dict[SEVERITY.HIGHT.value]
+                for rule in self.reports_dict[SEVERITY.HIGH.value]
             ]
         )
         medium_text = "    - " + "\n    - ".join(
@@ -351,7 +351,7 @@ class Report:
  1. Scoring
     - ALL:         Total:\t{self.reports_dict["SCORING"]["total"]},\t Fail:\t{self.reports_dict["SCORING"]["fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"]["fail"] * 100 / self.reports_dict["SCORING"]["total"]}%
     - CRITICAL:    Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}%
-    - HIGHT:       Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGHT.value} total"]}%
+    - HIGH:       Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}%
     - MEDIUM:      Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}%
     - LOW:         Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}%
     - INFORMATION: Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}%
@@ -362,8 +362,8 @@ class Report:
  3. Critical
 {critical_text}
 
- 4. Hight
-{hight_text}
+ 4. High
+{high_text}
 
  5. Medium
 {medium_text}
@@ -587,7 +587,7 @@ class Audit:
             server.configuration.auth_failures_to_blacklist is not None
             and server.configuration.blacklist_time is not None,
             7,
-            SEVERITY.HIGHT.value,
+            SEVERITY.HIGH.value,
             "Configuration",
             "Blacklist is not configured.",
         )
@@ -602,7 +602,7 @@ class Audit:
             getattr(server.configuration, "smtp_password", None) is None
             or (server.configuration.smtp_starttls or server.configuration.smtp_ssl),
             7,
-            SEVERITY.HIGHT.value,
+            SEVERITY.HIGH.value,
             "Configuration",
             "SMTP password is not protected.",
         )
@@ -616,7 +616,7 @@ class Audit:
             7,
             not server.configuration.log_level,
             8,
-            SEVERITY.HIGHT.value,
+            SEVERITY.HIGH.value,
             "Configuration",
             "Log level is not 0.",
         )
@@ -913,15 +913,13 @@ class Audit:
             f'category: {rule.category}, subject: "{rule.subject}", reason: "{rule.reason}".'
         )
 
-        if SEVERITY.INFORMATION.value == rule.severity:
+        if rule.is_OK or SEVERITY.INFORMATION.value == rule.severity:
             logs.debug(log)
         elif SEVERITY.LOW.value == rule.severity:
             logs.info(log)
         elif SEVERITY.MEDIUM.value == rule.severity:
             logs.warning(log)
-        elif SEVERITY.MEDIUM.value == rule.severity:
-            logs.warning(log)
-        elif SEVERITY.HIGHT.value == rule.severity:
+        elif SEVERITY.HIGH.value == rule.severity:
             logs.error(log)
         elif SEVERITY.CRITICAL.value == rule.severity:
             logs.critical(log)
@@ -944,7 +942,7 @@ class Audit:
         return rules
 
 
-def main(server: Server, logs: Logs) -> None:
+def main(server: Server, logs: Logs) -> Report:
 
     """Main function to execute this file."""
 
@@ -964,3 +962,5 @@ def main(server: Server, logs: Logs) -> None:
         file.write(report.reports_text)
 
     Thread(target=report.notification).start()
+
+    return report
