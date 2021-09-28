@@ -167,6 +167,14 @@ access_groups=1000
 minimum_access=1050
 ```
 
+## Recommendations
+
+ - Use absolute path for launcher.
+ - Use the `path` configuration and use absolute path.
+ - Set the `no_password` configuration to `true` if no password is in the command-line arguments.
+ - Set the `content_type` configuration to `text/plain` as often as possible.
+ - Never use the `stderr_content_type` configuration.
+
 ## Custom configurations
 
 You can add your custom configurations and get it in your script.

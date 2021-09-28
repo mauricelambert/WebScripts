@@ -106,7 +106,7 @@ notification_address=notification@webscripts.local                              
  - *port*: to change the connection port
  - *debug*: active the debug mode (export configuration, print error message and existing URLs in web page)
  - *security*: send security HTTP headers, desactive the Content-Security-Policy-Report-Only header and debug module for Content-Security-Policy
- - *accept_unknow_user* and *accept_unknow_user*: don't force client authentication
+ - *accept_unknow_user* and *accept_unauthenticated_user*: don't force client authentication
  - *active_auth*: active the authentication script
  - *auth_script*: filename for the authentication script
  - *auth_failures_to_blacklist*: Number of authentication failures to blacklist an IP address or user
@@ -149,3 +149,13 @@ Example:
 booleanTrue=true
 booleanFalse=false
 ```
+
+## Recommendation
+
+ - `log_level` should be `0`.
+ - `smtp_password` should only be used if `smtp_ssl` is set to `true` or `smtp_starttls` is set to `true`.
+ - `blacklist_time` and `auth_failures_to_blacklist` configurations should be configured.
+ - `active_auth` configuration should be set to `true`.
+ - `accept_unknow_user` and `accept_unauthenticated_user` configurations should be set to `false`.
+ - `exclude_auth_paths` configuration should be equal to `["/static/", "/js/"]`.
+ - `exclude_auth_pages` configuration should be equal to `["/api/", "/auth/", "/web/auth/"]`.

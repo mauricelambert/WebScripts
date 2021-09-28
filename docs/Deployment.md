@@ -7,11 +7,18 @@
 sudo apt update
 sudo apt upgrade
 sudo apt install python3-venv
+
 python3 -m venv WebScripts
 cd WebScripts
 source bin/activate
 python3 -m pip install WebScripts
+
 mkdir logs
+
+chmod -R 600 /path/to/virtualenv/lib/python3.9/site-packages/WebScripts/
+chmod -R 600 logs
+find /path/to/virtualenv/lib/python3.9/site-packages/WebScripts/ -type d -exec chmod 700 {} +
+chmod 700 logs
 ```
 
 ### Windows
@@ -54,7 +61,7 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-chown -R WebScripts /path/to/virtualenv/
+chown -R WebScripts:WebScripts /path/to/virtualenv/
 sudo systemctl daemon-reload
 sudo systemctl start WebScripts
 sudo systemctl status WebScripts
@@ -121,6 +128,7 @@ sudo apt install libexpat1
 sudo apt install apache2 apache2-utils ssl-cert libapache2-mod-wsgi-py3
 
 sudo mkdir /var/www/WebScripts
+sudo touch /var/www/WebScripts/wsgi.py
 sudo chown -R www-data:www-data /var/www/WebScripts
 sudo nano /var/www/WebScripts/wsgi.py
 ```
@@ -229,12 +237,13 @@ sys.path[:0] = new_sys_path
 
 ```bash
 sudo chown www-data:www-data /path/to/virtualenv/bin/activate_this.py
+sudo chmod 600 /path/to/virtualenv/bin/activate_this.py
 
-sudo mkdir /logs
-sudo touch /logs/apache-errors.logs
-sudo touch /logs/apache-custom.logs
-sudo touch /logs/root.logs
-sudo chown -R www-data:www-data /logs
+sudo mkdir /var/www/WebScripts/logs
+sudo touch /var/www/WebScripts/logs/apache-errors.logs
+sudo touch /var/www/WebScripts/logs/apache-custom.logs
+sudo touch /var/www/WebScripts/logs/root.logs
+sudo chown -R www-data:www-data /var/www/WebScripts/logs
 
 sudo apt install openssl
 openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out WebScripts.crt -keyout WebScripts.pem
@@ -267,8 +276,8 @@ sudo nano /etc/apache2/conf-available/wsgi.conf
     Alias /favicon.ico /var/www/WebScripts/favicon.ico
 
     LogLevel info
-    ErrorLog /logs/apache-errors.logs
-    CustomLog /logs/apache-custom.logs combined
+    ErrorLog /var/www/WebScripts/logs/apache-errors.logs
+    CustomLog /var/www/WebScripts/logs/apache-custom.logs combined
 
     SSLEngine on
     SSLCertificateFile /path/to/certificat/WebScripts.crt

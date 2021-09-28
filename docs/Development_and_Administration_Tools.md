@@ -24,14 +24,14 @@ python -m unittest discover -s test -p Test*.py -v
 
 | File          | Statements | missing | coverage |
 |---------------|------------|---------|----------|
-| WebScripts.py | 498        | 4       | 99%      |
-| utils.py      | 297        | 7       | 98%      |
+| WebScripts.py | 509        | 4       | 99%      |
+| utils.py      | 295        | 7       | 98%      |
 | Errors.py     | 27         | 0       | 100%     |
 
 
 ### Hardening audit
 
-Hardening test is coming.
+The hardening audit is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
 
 ### Functional tests and WebScripts pentest tool
 

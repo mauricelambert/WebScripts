@@ -3,7 +3,6 @@
 LICENSE.txt
 MANIFEST.in
 README.md
-audit.txt
 mkdocs.yml
 setup.py
 WebScripts/Errors.py
