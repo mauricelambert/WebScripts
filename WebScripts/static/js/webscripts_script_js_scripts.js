@@ -351,7 +351,7 @@ function add_INPUT_argument(input, values, counter, arguments_) {
                 script_interface,
                 input.id,
                 input.name,
-                a.target.result,
+                window.btoa(a.target.result),
                 values,
                 counter,
             );

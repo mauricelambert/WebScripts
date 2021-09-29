@@ -23,7 +23,7 @@
 
 This file implement some functions to manage uploads on WebScripts."""
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -61,8 +61,10 @@ from base64 import b64encode, b64decode
 from collections.abc import Iterator
 from os import environ, path
 from html import escape
+from math import ceil
 import json
 import csv
+import sys
 
 Upload = namedtuple(
     "Upload",
@@ -173,12 +175,7 @@ def write_file(
     )
 
     write_action(upload)
-
-    if is_b64:
-        data = b64decode(data.encode())
-    else:
-        data = data.encode("latin-1")
-
+    data = b64decode(data.encode())
     filename = get_real_file_name(name, timestamp)
 
     with open(
@@ -188,6 +185,18 @@ def write_file(
         file.write(data)
 
     return upload
+
+
+def unicode_to_bytes(string: str) -> bytes:
+
+    """This function return bytes from unicode strings."""
+
+    data = b""
+    for char in string:
+        char = ord(char)
+        data += char.to_bytes(ceil(char.bit_length() / 8), "big")
+
+    return data
 
 
 def delete_file(name: str) -> Upload:
