@@ -23,7 +23,7 @@
 
 This file uploads a file on a WebScripts Server."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -92,6 +92,13 @@ def parse_args() -> Namespace:
         "--binary",
         "-b",
         help="Upload a binary file (ZIP, executable...)",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--no-compression",
+        "-c",
+        help="Do not compress the file.",
         action="store_true",
         default=False,
     )

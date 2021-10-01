@@ -31,6 +31,7 @@ from dataclasses import dataclass
 from socket import gethostbyname
 from typing import TypeVar, List
 from contextlib import suppress
+from types import ModuleType
 from threading import Thread
 from getpass import getuser
 from enum import Enum
@@ -501,7 +502,7 @@ class Audit:
 
         return Rule(
             "Force authentication",
-            25,
+            14,
             not server.configuration.accept_unauthenticated_user
             and not server.configuration.accept_unknow_user,
             5,
@@ -516,7 +517,7 @@ class Audit:
 
         return Rule(
             "Active authentication",
-            26,
+            15,
             server.configuration.active_auth
             and server.configuration.auth_script is not None,
             7,
@@ -541,7 +542,7 @@ class Audit:
 
         return Rule(
             "Authentication exclusions",
-            27,
+            16,
             limit_exclusion,
             5,
             SEVERITY.MEDIUM.value,
@@ -621,6 +622,21 @@ class Audit:
             "Log level is not 0.",
         )
 
+    def audits_module_path(server: Server) -> Rule:
+
+        """This function check the modules paths."""
+
+        for module_path in server.configuration.modules_path:
+            yield Rule(
+                "Module path",
+                30,
+                path.isabs(module_path),
+                7,
+                SEVERITY.MEDIUM.value,
+                "Configuration",
+                f"Module path {module_path} is not absolute.",
+            )
+
     def audits_scripts_logs(server: Server) -> Iterator[Rule]:
 
         """This function check the configuration of the script log."""
@@ -673,7 +689,7 @@ class Audit:
         for script in server.pages.scripts.values():
             yield Rule(
                 "Script path",
-                28,
+                17,
                 script.path_is_defined and path.isabs(script.path),
                 7,
                 SEVERITY.MEDIUM.value,
@@ -690,7 +706,7 @@ class Audit:
         for script in server.pages.scripts.values():
             yield Rule(
                 "Script launcher",
-                29,
+                18,
                 path.isabs(script.launcher),
                 7,
                 SEVERITY.MEDIUM.value,
@@ -786,6 +802,10 @@ class Audit:
         for script in server.pages.scripts.values():
             important_filenames.append(script.path)
 
+        for module in server.pages.packages.__dict__.values():
+            if isinstance(module, ModuleType):
+                important_filenames.append(module.__file__)
+
         for filename in important_filenames:
             if path.exists(filename):
                 yield Rule(
@@ -859,7 +879,11 @@ class Audit:
                     rw_filenames.append(file.path)
 
         for script in server.pages.scripts.values():
-            executable_filenames.append(script.path)
+            if isinstance(module, ModuleType):
+                executable_filenames.append(script.path)
+
+        for module in server.pages.packages.__dict__.values():
+            executable_filenames.append(module.__file__)
 
         for filename in rw_filenames:
             if path.exists(filename):
@@ -870,7 +894,7 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {filename} is not 600 (rw- --- ---).",
+                    f"File rights for {path.split(filename)[1]} is not 600 (rw- --- ---).",
                 )
 
         for filename in executable_filenames:
@@ -882,7 +906,7 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {filename} is not 0 for group and 0 for other (xxx --- ---).",
+                    f"File rights for {path.split(filename)[1]} is not 0 for group and 0 for other (xxx --- ---).",
                 )
 
     def audit_export_configuration(server: Server) -> Iterator[Rule]:

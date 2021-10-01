@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>uploads_management</strong></big></big> (version 0.0.4)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>uploads_management</strong></big></big> (version 0.0.5)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="uploads_management.py">uploads_management.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -45,9 +45,9 @@ This&nbsp;file&nbsp;implement&nbsp;some&nbsp;functions&nbsp;to&nbsp;manage&nbsp;
 <font color="#000000" face="helvetica, arial"><a name="Upload">class <strong>Upload</strong></a>(<a href="builtins.html#tuple">builtins.tuple</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;timestamp,&nbsp;user,&nbsp;version)<br>
+<td colspan=2><tt><a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;no_compression,&nbsp;timestamp,&nbsp;user,&nbsp;version)<br>
 &nbsp;<br>
-<a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;timestamp,&nbsp;user,&nbsp;version)<br>&nbsp;</tt></td></tr>
+<a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;no_compression,&nbsp;timestamp,&nbsp;user,&nbsp;version)<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="uploads_management.html#Upload">Upload</a></dd>
@@ -70,7 +70,7 @@ Class methods defined here:<br>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="Upload-__new__"><strong>__new__</strong></a>(_cls, ID, name, read_permission, write_permission, delete_permission, hidden, is_deleted, is_binary, timestamp, user, version)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;timestamp,&nbsp;user,&nbsp;version)</tt></dd></dl>
+<dl><dt><a name="Upload-__new__"><strong>__new__</strong></a>(_cls, ID, name, read_permission, write_permission, delete_permission, hidden, is_deleted, is_binary, no_compression, timestamp, user, version)</dt><dd><tt>Create&nbsp;new&nbsp;instance&nbsp;of&nbsp;<a href="#Upload">Upload</a>(ID,&nbsp;name,&nbsp;read_permission,&nbsp;write_permission,&nbsp;delete_permission,&nbsp;hidden,&nbsp;is_deleted,&nbsp;is_binary,&nbsp;no_compression,&nbsp;timestamp,&nbsp;user,&nbsp;version)</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -98,20 +98,23 @@ Data descriptors defined here:<br>
 <dl><dt><strong>is_binary</strong></dt>
 <dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;7</tt></dd>
 </dl>
-<dl><dt><strong>timestamp</strong></dt>
+<dl><dt><strong>no_compression</strong></dt>
 <dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;8</tt></dd>
 </dl>
-<dl><dt><strong>user</strong></dt>
+<dl><dt><strong>timestamp</strong></dt>
 <dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;9</tt></dd>
 </dl>
-<dl><dt><strong>version</strong></dt>
+<dl><dt><strong>user</strong></dt>
 <dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;10</tt></dd>
+</dl>
+<dl><dt><strong>version</strong></dt>
+<dd><tt>Alias&nbsp;for&nbsp;field&nbsp;number&nbsp;11</tt></dd>
 </dl>
 <hr>
 Data and other attributes defined here:<br>
 <dl><dt><strong>_field_defaults</strong> = {}</dl>
 
-<dl><dt><strong>_fields</strong> = ('ID', 'name', 'read_permission', 'write_permission', 'delete_permission', 'hidden', 'is_deleted', 'is_binary', 'timestamp', 'user', 'version')</dl>
+<dl><dt><strong>_fields</strong> = ('ID', 'name', 'read_permission', 'write_permission', 'delete_permission', 'hidden', 'is_deleted', 'is_binary', 'no_compression', 'timestamp', 'user', 'version')</dl>
 
 <hr>
 Methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<br>
@@ -167,14 +170,14 @@ Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<b
  <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(name: str = None, id_: str = None) -&gt; Tuple[str, str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file<br>
 content&nbsp;and&nbsp;the&nbsp;filename&nbsp;(without&nbsp;check&nbsp;permissions).<br>
 &nbsp;<br>
-If&nbsp;id_&nbsp;and&nbsp;name&nbsp;arguments&nbsp;are&nbsp;None&nbsp;this&nbsp;function&nbsp;return&nbsp;None.<br>
+If&nbsp;id_&nbsp;and&nbsp;name&nbsp;arguments&nbsp;are&nbsp;None&nbsp;this&nbsp;function&nbsp;return&nbsp;(None,&nbsp;None).<br>
 &nbsp;<br>
 Using&nbsp;a&nbsp;name&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;last&nbsp;versions&nbsp;of&nbsp;the&nbsp;file&nbsp;content.<br>
 Using&nbsp;an&nbsp;ID&nbsp;this&nbsp;function&nbsp;return&nbsp;the&nbsp;version&nbsp;of&nbsp;this&nbsp;ID.</tt></dd></dl>
  <dl><dt><a name="-get_visible_files"><strong>get_visible_files</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;upload&nbsp;if&nbsp;not&nbsp;hidden.</tt></dd></dl>
  <dl><dt><a name="-read_file"><strong>read_file</strong></a>(name: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;permission&nbsp;and<br>
 return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
- <dl><dt><a name="-write_file"><strong>write_file</strong></a>(data: str, name: str, read_access: int, write_access: int, delete_access: int, hidden: bool, binary: bool, is_b64: bool, with_access: bool = True) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;upload&nbsp;a&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-write_file"><strong>write_file</strong></a>(data: str, name: str, read_access: int, write_access: int, delete_access: int, hidden: bool, binary: bool, no_compression: bool, is_b64: bool, with_access: bool = True) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;upload&nbsp;a&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">
@@ -189,7 +192,8 @@ return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
+<strong>__warningregistry__</strong> = {'version': 0}</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#9286C2">
 <td colspan=3 valign=bottom>&nbsp;<br>

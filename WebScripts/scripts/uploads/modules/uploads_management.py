@@ -23,7 +23,7 @@
 
 This file implement some functions to manage uploads on WebScripts."""
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -54,6 +54,8 @@ __all__ = [
     "get_visible_files",
 ]
 
+from gzip import compress as gzip, decompress as ungzip
+from lzma import compress as xz, decompress as unxz
 from collections import namedtuple, Counter
 from time import time, strftime, localtime
 from typing import Tuple, List, TypeVar
@@ -77,6 +79,7 @@ Upload = namedtuple(
         "hidden",
         "is_deleted",
         "is_binary",
+        "no_compression",
         "timestamp",
         "user",
         "version",
@@ -93,6 +96,37 @@ DIRECTORY = path.join(
 FILES_DIRECTORY = "uploads"
 User = TypeVar("User")
 Data = TypeVar("Data", str, bytes)
+
+
+def upgrade_uploads() -> None:
+
+    """This function upgrade the database.
+
+    Add default no_compression ("", empty string)
+    """
+
+    uploads = []
+    first = False
+
+    with open(path.join(DIRECTORY, FILE), newline="") as csvfile:
+        csvreader = csv.reader(csvfile, quoting=csv.QUOTE_ALL)
+
+        for row in csvreader:
+            if len(row) == 11:
+
+                if first:
+                    row.insert(8, "")
+                else:
+                    row.insert(8, "no_compression")
+                    first = True
+
+            uploads.append(row)
+
+    with open(path.join(DIRECTORY, FILE), "w", newline="") as csvfile:
+        csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+
+        for upload in uploads:
+            csvwriter.writerow(upload)
 
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
@@ -143,6 +177,7 @@ def write_file(
     delete_access: int,
     hidden: bool,
     binary: bool,
+    no_compression: bool,
     is_b64: bool,
     with_access: bool = True,
 ) -> Upload:
@@ -168,6 +203,7 @@ def write_file(
             "hidden" if hidden else "visible",
             "exist",
             "binary" if binary else "text",
+            "compress" if no_compression else "",
             str(timestamp),
             owner["name"],
             str(counter[name]),
@@ -177,6 +213,11 @@ def write_file(
     write_action(upload)
     data = b64decode(data.encode())
     filename = get_real_file_name(name, timestamp)
+
+    if not no_compression and not binary:
+        data = gzip(data)
+    elif not no_compression and binary:
+        data = xz(data)
 
     with open(
         filename,
@@ -223,6 +264,7 @@ def delete_file(name: str) -> Upload:
             file.hidden,
             "deleted",
             file.is_binary,
+            file.no_compression,
             str(timestamp),
             owner["name"],
             file.version,
@@ -287,10 +329,22 @@ def read_file(name: str) -> str:
     owner = get_user()
     check_permissions(file, owner, "read")
 
-    with open(get_real_file_name(file.name, float(file.timestamp)), "rb") as file:
-        data = b64encode(file.read()).decode()
+    return get_content(file)
 
-    return data
+
+def get_content(file: Upload) -> str:
+
+    """This function read, decompress and encode/decode the file content."""
+
+    with open(get_real_file_name(file.name, float(file.timestamp)), "rb") as file_:
+        data = file_.read()
+
+    if not file.no_compression and file.is_binary == "text":
+        data = ungzip(data)
+    elif not file.no_compression and file.is_binary == "binary":
+        data = unxz(data)
+
+    return b64encode(data).decode()
 
 
 def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
@@ -298,7 +352,7 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
     """This function return a base64 of the file
     content and the filename (without check permissions).
 
-    If id_ and name arguments are None this function return None.
+    If id_ and name arguments are None this function return (None, None).
 
     Using a name this function return the last versions of the file content.
     Using an ID this function return the version of this ID."""
@@ -314,6 +368,8 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
     elif name is not None:
         uploads, counter = get_file(name)
         error_description = f'using "{name}" as name'
+    else:
+        return None, None
 
     if len(uploads) == 0:
         raise FileNotFoundError(f"No such file or directory: {error_description}.")
@@ -325,10 +381,7 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
         raise FileNotFoundError(f"No such file or directory: {error_description}.")
 
     only_filename = path.split(file.name)[1]
-    with open(filename, "rb") as file:
-        data = b64encode(file.read()).decode()
-
-    return data, only_filename
+    return get_content(file), only_filename
 
 
 def get_file(name: str) -> Tuple[List[Upload], Counter]:
@@ -358,3 +411,10 @@ def get_real_file_name(filename: str, timestamp: float) -> str:
         FILES_DIRECTORY,
         f"{filename}_{strftime('%y%m%d_%H%M%S', localtime(timestamp))}{extension}",
     )
+
+
+try:
+    for upload in get_files():
+        break
+except TypeError:
+    upgrade_uploads()

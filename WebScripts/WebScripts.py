@@ -82,7 +82,7 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1219,13 +1219,13 @@ def main() -> None:
 
     httpd = simple_server.make_server(server.interface, server.port, server.app)
 
-    Logs.warning(f"Starting server on http://{server.interface}:{server.port}/ ...")
-    print(copyright)
-
     send_mail(
         configuration, f"Server is up on http://{server.interface}:{server.port}/."
     )
     hardening(server, Logs)
+
+    Logs.warning(f"Starting server on http://{server.interface}:{server.port}/ ...")
+    print(copyright)
 
     try:
         httpd.serve_forever()
