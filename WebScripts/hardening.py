@@ -879,11 +879,11 @@ class Audit:
                     rw_filenames.append(file.path)
 
         for script in server.pages.scripts.values():
-            if isinstance(module, ModuleType):
-                executable_filenames.append(script.path)
+            executable_filenames.append(script.path)
 
         for module in server.pages.packages.__dict__.values():
-            executable_filenames.append(module.__file__)
+            if isinstance(module, ModuleType):
+                executable_filenames.append(module.__file__)
 
         for filename in rw_filenames:
             if path.exists(filename):
