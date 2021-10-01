@@ -29,17 +29,35 @@ The default configuration JSON files:
         "exclude_auth_paths": ["/static/", "/js/"],
         "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
 
-        "scripts_path": ["./scripts/account", "./scripts/passwords"],
-        "json_scripts_config": ["./config/scripts/*.json"],
-        "ini_scripts_config": ["./config/scripts/*.ini"],
-        "documentations_path": ["./doc/*.html"],
-        "modules": null,
-        "modules_path": null,
-        "js_path": ["./static/js/*.js"],
-        "statics_path": ["./static/html/*.html", "./static/css/*.css", "./static/images/*.jpg", "./static/pdf/*.pdf"],
+        "scripts_path": [
+            "./scripts/account", 
+            "./scripts/passwords", 
+            "./scripts/uploads"
+        ],
+        "json_scripts_config": [
+            "./config/scripts/*.json"
+        ],
+        "ini_scripts_config": [
+            "./config/scripts/*.ini"
+        ],
+        "documentations_path": [
+            "./doc/*.html"
+        ],
+        "modules": ["error_pages"],
+        "modules_path": ["./modules"],
+        "js_path": [
+            "./static/js/*.js"
+        ],
+        "statics_path": [
+            "./static/html/*.html", 
+            "./static/css/*.css", 
+            "./static/images/*.png", 
+            "./static/images/*.jpg", 
+            "./static/pdf/*.pdf"
+        ],
 
         "log_level": "0",
-        "log_filename": "./logs/logs.log",
+        "log_filename": "./logs/root.logs",
         "log_format": "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
         "log_date_format": "%d/%m/%Y %H:%M:%S",
         "log_encoding": "utf-8",
@@ -76,19 +94,19 @@ blacklist_time=30                                                               
 exclude_auth_paths=/static/,/js/                                                               # Start of paths where the unauthenticated user gets access
 exclude_auth_pages=/api/,/auth/,/web/auth/                                                     # Specific page where the unauthenticated user has access
 
-scripts_path=./scripts/account,./scripts/passwords                                             # Add scripts from location
+scripts_path=./scripts/account,./scripts/passwords,./scripts/uploads                           # Add scripts from location
 json_scripts_config=./config/scripts/*.json                                                    # Add server configuration (syntax: json)
 ini_scripts_config=./config/scripts/*.ini                                                      # Add server configuration (syntax: cfg, ini)
 documentations_path=./doc/*.html                                                               # Add path to search documentation scripts
-modules                                                                                        # Add custom modules (names) to the server
-modules_path                                                                                   # Add directory to import custom modules
-# modules=hello
-# modules_path=./scripts/py
+# modules                                                                                      # Add custom modules (names) to the server
+# modules_path                                                                                 # Add directory to import custom modules
+modules=error_pages
+modules_path=./modules
 js_path=./static/js/*.js                                                                       # Add glob syntax files to get javascript files
-statics_path=./static/html/*.html,./static/css/*.css,./static/images/*.jpg,./static/pdf/*.pdf  # Add glob syntax files to get static files
+statics_path=./static/html/*.html,./static/css/*.css,./static/images/*.png,./static/images/*.jpg,./static/pdf/*.pdf  # Add glob syntax files to get static files
 
-log_level=0                                                                                    # Set your custom log level {"0", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-log_filename=./logs/logs.log                                                                   # Write your custom logs in this filename
+log_level=DEBUG                                                                                # Set your custom log level {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+log_filename=./logs/root.logs                                                                  # Write your custom logs in this filename
 log_format=%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)     # Format for your custom logs (https://docs.python.org/3/library/logging.html#id2)
 log_date_format=%d/%m/%Y %H:%M:%S                                                              # Format date for your custom logs (https://docs.python.org/3/library/time.html#time.strftime)
 log_encoding=utf-8                                                                             # Encoding for your custom log file
@@ -114,7 +132,12 @@ notification_address=notification@webscripts.local                              
  - *exclude_auth_paths*: Start of paths where the unauthenticated user gets access
  - *exclude_auth_pages*: Specific page where the unauthenticated user has access
  - *scripts_path*: paths to research a script (if not defined in script configuration)
- - *json_scripts_config*: **glob syntax** to get JSON files
+ - *ini_scripts_config*: **glob syntax** to research INI scripts configurations files
+ - *json_scripts_config*: **glob syntax** to research JSON scripts configurations files
+ - *documentations_path*: list of **glob syntax** to research documentation files
+ - *modules*: list of names of custom modules
+ - *js_path*: list of **glob syntax** to research javascripts files
+ - *modules_path*: list of directories to import the modules
  - *statics_path*: **glob syntax** to get static files (HTML files, CSS files, pictures, PDF files, text files...)
  - *log_level*: Log level for *ROOT* logger (impact **all** loggers, recommended value: "0")
  - *log_filename*: log filename for *ROOT* logger (impact *ROOT* logger only)
@@ -159,3 +182,4 @@ booleanFalse=false
  - `accept_unknow_user` and `accept_unauthenticated_user` configurations should be set to `false`.
  - `exclude_auth_paths` configuration should be equal to `["/static/", "/js/"]`.
  - `exclude_auth_pages` configuration should be equal to `["/api/", "/auth/", "/web/auth/"]`.
+ - `modules_path` configuration should be absolute paths

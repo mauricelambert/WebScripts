@@ -32,6 +32,9 @@ python -m unittest discover -s test -p Test*.py -v
 ### Hardening audit
 
 The hardening audit is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
+HTML report examples:
+ - [Windows](https://mauricelambert.github.io/info/python/code/WebScripts/audit_windows.html)
+ - [Linux](https://mauricelambert.github.io/info/python/code/WebScripts/audit_linux.html)
 
 ### Functional tests and WebScripts pentest tool
 
