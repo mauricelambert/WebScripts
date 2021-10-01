@@ -132,6 +132,7 @@ write_file(
     0,                        # Delete access (0 == everyone can delete it)
     False,                    # Hidden (if False, this file will be visible to other authenticated users)
     False,                    # Is binary
+    True,                     # Compress the file
     False,                    # Is encoded as Base64
     with_access = True,       # Check access to write this file (some scripts should write a file with an unauthenticated user)
 )                             # Write a new file named "my_filename.txt"
@@ -154,6 +155,7 @@ write_file(
     1000,                     # Delete access (1000 == Admin can delete it)
     True,                     # Hidden
     True,                     # Is binary
+    True,                     # Compress the file
     True,                     # Is encoded as Base64
     with_access = False,      # Check access to write this file (some scripts should write a file with an unauthenticated user)
 )                             # Write a new version of this file
