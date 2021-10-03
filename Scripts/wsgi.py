@@ -10,7 +10,7 @@ chdir("..")
 
 activator = r"Scripts\activate_this.py" if name == "nt" else "bin/activate_this.py"
 with open(activator) as f:
-    exec(f.read(), {"__file__": activator})
+    exec(f.read(), {"__file__": activator}) # nosec # nosemgrep
 
 from WebScripts.WebScripts import (
     server_path,
