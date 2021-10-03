@@ -286,7 +286,6 @@ class TestDefaultNamespace(TestCase):
 
 
 class TestFunctions(TestCase):
-
     def test_log_trace(self):  # Code coverage, no tests on Logs functions
         test = lambda: None
         static = staticmethod(test)
@@ -294,8 +293,14 @@ class TestFunctions(TestCase):
 
     def test_no_pywin32(self):
         path_ = sys.path.copy()
-        sys.path = [x for x in sys.path if not "c:\\users\\csu1\\documents\\dev\\test" in x.lower()]
-        sys.modules = {x:y for x, y in sys.modules.items() if not x.startswith("win32")}
+        sys.path = [
+            x
+            for x in sys.path
+            if not "c:\\users\\csu1\\documents\\dev\\test" in x.lower()
+        ]
+        sys.modules = {
+            x: y for x, y in sys.modules.items() if not x.startswith("win32")
+        }
 
         reload(WebScripts.utils)
         sys.path = path_

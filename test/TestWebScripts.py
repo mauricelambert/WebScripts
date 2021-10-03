@@ -193,7 +193,10 @@ class TestServer(TestCase):
         )
         self.assertListEqual(self.conf_unsecure.modules, ["csp"])
         self.assertListEqual(self.conf_unsecure.modules_path, ["modules"])
-        self.assertListEqual(self.conf_unsecure.exclude_auth_pages, ["/api/", "/auth/", "/web/auth/", "/csp/debug/"])
+        self.assertListEqual(
+            self.conf_unsecure.exclude_auth_pages,
+            ["/api/", "/auth/", "/web/auth/", "/csp/debug/"],
+        )
 
         self.conf_unsecure.modules = []
         self.conf_unsecure.modules_path = []

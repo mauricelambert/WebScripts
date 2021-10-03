@@ -21,6 +21,18 @@ python3 -m pip install WebScripts
 python3 -m pip install --upgrade WebScripts
 ```
 
+### Recommendations
+
+#### Debian using Apache deployment
+
+[Apache Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
+
+```bash
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data"
+# OR
+python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-owww-data"
+```
+
 ## Windows
 
 ```bash
@@ -32,6 +44,14 @@ python -m pip install WebScripts
 python -m pip install --upgrade WebScripts
 ```
 
+### Recommendations
+
+```bash
+python -m pip install WebScripts --install-option "--admin-password=<your password>"
+# OR
+python -m pip install WebScripts --install-option --install-option "-p <your password>"
+```
+
 ### Optional
 
 To centralize logs in Event Viewer.
@@ -39,16 +59,23 @@ To centralize logs in Event Viewer.
 python -m pip install pywin32
 ```
 
+## Arguments
+
+ - `--admin-password=` or `-p`: The administrator password (password of the default account named *Admin*)
+ - `--owner=` or `-o`: Owner of installation files (used on UNIX systems only), to change the owner and permissions run the command with privileges
+ - `--json-only` or `-j`: Delete INI configuration files (used with the `--no-hardening/-n` argument only)
+ - `--no-hardening` or `-n`: Does not harden the installation of WebScripts **not recommended**
+
 ## Compatibility
 
 ### Python3.8
 
 ```bash
-git clone https://github.com/mauricelambert/WebScripts.git  # Get the code
-cd WebScripts                                               # Change the current directory
-python3.8 WebScripts/scripts/to_3.8/to_3.8.py               # Execute the script for python3.8 compatibility
-python3.8 setup38.py install                                # Install it
-python3.8 -m WebScripts38                                   # Use WebScripts38
+git clone https://github.com/mauricelambert/WebScripts.git   # Get the code
+cd WebScripts                                                # Change the current directory
+python3.8 WebScripts/scripts/to_3.8/to_3.8.py                # Execute the script for python3.8 compatibility
+python3.8 setup38.py install -p "<your password>" -o "owner" # Install it
+python3.8 -m WebScripts38                                    # Use WebScripts38
 ```
 
 ```python

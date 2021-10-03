@@ -11,7 +11,6 @@ sudo apt install python3-venv
 python3 -m venv WebScripts
 cd WebScripts
 source bin/activate
-python3 -m pip install WebScripts
 
 mkdir logs
 
@@ -26,7 +25,7 @@ chmod 700 logs
 python -m venv WebScripts
 cd WebScripts
 Scripts\activate
-python -m pip install WebScripts 
+python -m pip install WebScripts --install-option "--admin-password=<your password>"
 ```
 
 ## Web Server (Using Debian)
@@ -37,6 +36,8 @@ python -m pip install WebScripts
 
 ```bash
 useradd --system --no-create-home --shell /bin/false WebScripts
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"
+
 nano /lib/systemd/system/WebScripts.service
 ```
 
@@ -121,17 +122,93 @@ sudo systemctl restart nginx
 
 ### Apache using WSGI mod
 
-#### Install and WSGI main file
+#### Install
 
 ```bash
 sudo apt install libexpat1
 sudo apt install apache2 apache2-utils ssl-cert libapache2-mod-wsgi-py3
 
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data"
+
 sudo mkdir /var/www/WebScripts
-sudo touch /var/www/WebScripts/wsgi.py
 sudo chown -R www-data:www-data /var/www/WebScripts
-sudo nano /var/www/WebScripts/wsgi.py
 ```
+
+#### Configure Apache
+
+```bash
+sudo chown www-data:www-data /path/to/virtualenv/bin/wsgi.py
+sudo chmod 600 /path/to/virtualenv/bin/wsgi.py
+sudo chown www-data:www-data /path/to/virtualenv/bin/activate_this.py
+sudo chmod 600 /path/to/virtualenv/bin/activate_this.py
+
+sudo mkdir /var/www/WebScripts/logs
+sudo touch /var/www/WebScripts/logs/apache-errors.logs
+sudo touch /var/www/WebScripts/logs/apache-custom.logs
+sudo touch /var/www/WebScripts/logs/root.logs
+sudo chown -R www-data:www-data /var/www/WebScripts/logs
+
+sudo apt install openssl
+openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out WebScripts.crt -keyout WebScripts.pem
+
+sudo nano /etc/apache2/conf-available/wsgi.conf
+```
+
+```
+<VirtualHost *:80>
+    ServerName www.webscripts.com
+    ServerAlias webscripts.com
+    ServerAdmin admin@webscripts.com
+
+    Redirect permanent / https://webscripts.com/
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName www.webscripts.com
+    ServerAlias webscripts.com
+    ServerAdmin admin@webscripts.com
+
+    WSGIScriptAlias / /path/to/virtualenv/bin/wsgi.py
+    WSGIDaemonProcess webscripts.com processes=1 threads=15 display-name=%{GROUP}
+    WSGIProcessGroup webscripts.com
+
+    DocumentRoot /var/www/WebScripts
+    DirectoryIndex index.html
+
+    Alias /robots.txt /var/www/WebScripts/robots.txt
+    Alias /favicon.ico /var/www/WebScripts/favicon.ico
+
+    LogLevel info
+    ErrorLog /var/www/WebScripts/logs/apache-errors.logs
+    CustomLog /var/www/WebScripts/logs/apache-custom.logs combined
+
+    SSLEngine on
+    SSLCertificateFile /path/to/certificat/WebScripts.crt
+    SSLCertificateKeyFile /path/to/certificat/WebScripts.pem
+
+    <Directory /var/www/WebScripts>
+        <IfVersion < 2.4>
+            Order allow,deny
+            Allow from all
+        </IfVersion>
+        <IfVersion >= 2.4>
+            Require all granted
+        </IfVersion>
+    </Directory>
+</VirtualHost>
+```
+
+```bash
+sudo a2enconf wsgi
+sudo a2enmod ssl
+sudo systemctl reload apache2
+sudo systemctl restart apache2
+```
+
+### Python Scripts used for Apache deployment
+
+> The `bin/wsgi.py` script (preinstalled and configured by the WebScripts package):
+>> This script can be customized (examples: to generate WebScripts configurations)
 
 ```python
 #!/path/to/virtualenv/bin/python3
@@ -197,9 +274,8 @@ hardening(server, Logs)
 application = server.app
 ```
 
-```bash
-nano /path/to/virtualenv/bin/activate_this.py
-```
+> The `bin/activate_this.py` script (preinstalled and configured by the WebScripts package):
+>> You should not edit this file.
 
 ```python
 """By using execfile(this_file, dict(__file__=this_file)) you will
@@ -231,73 +307,4 @@ for item in list(sys.path):
         new_sys_path.append(item)
         sys.path.remove(item)
 sys.path[:0] = new_sys_path
-```
-
-#### Configure Apache
-
-```bash
-sudo chown www-data:www-data /path/to/virtualenv/bin/activate_this.py
-sudo chmod 600 /path/to/virtualenv/bin/activate_this.py
-
-sudo mkdir /var/www/WebScripts/logs
-sudo touch /var/www/WebScripts/logs/apache-errors.logs
-sudo touch /var/www/WebScripts/logs/apache-custom.logs
-sudo touch /var/www/WebScripts/logs/root.logs
-sudo chown -R www-data:www-data /var/www/WebScripts/logs
-
-sudo apt install openssl
-openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out WebScripts.crt -keyout WebScripts.pem
-
-sudo nano /etc/apache2/conf-available/wsgi.conf
-```
-
-```
-<VirtualHost *:80>
-    ServerName www.webscripts.com
-    ServerAlias webscripts.com
-    ServerAdmin admin@webscripts.com
-
-    Redirect permanent / https://webscripts.com/
-</VirtualHost>
-
-<VirtualHost *:443>
-    ServerName www.webscripts.com
-    ServerAlias webscripts.com
-    ServerAdmin admin@webscripts.com
-
-    WSGIScriptAlias / /var/www/WebScripts/wsgi.py
-    WSGIDaemonProcess webscripts.com processes=1 threads=15 display-name=%{GROUP}
-    WSGIProcessGroup webscripts.com
-
-    DocumentRoot /var/www/WebScripts
-    DirectoryIndex index.html
-
-    Alias /robots.txt /var/www/WebScripts/robots.txt
-    Alias /favicon.ico /var/www/WebScripts/favicon.ico
-
-    LogLevel info
-    ErrorLog /var/www/WebScripts/logs/apache-errors.logs
-    CustomLog /var/www/WebScripts/logs/apache-custom.logs combined
-
-    SSLEngine on
-    SSLCertificateFile /path/to/certificat/WebScripts.crt
-    SSLCertificateKeyFile /path/to/certificat/WebScripts.pem
-
-    <Directory /var/www/WebScripts>
-        <IfVersion < 2.4>
-            Order allow,deny
-            Allow from all
-        </IfVersion>
-        <IfVersion >= 2.4>
-            Require all granted
-        </IfVersion>
-    </Directory>
-</VirtualHost>
-```
-
-```bash
-sudo a2enconf wsgi
-sudo a2enmod ssl
-sudo systemctl reload apache2
-sudo systemctl restart apache2
 ```

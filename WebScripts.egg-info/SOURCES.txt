@@ -5,6 +5,8 @@ MANIFEST.in
 README.md
 mkdocs.yml
 setup.py
+Scripts/activate_this.py
+Scripts/wsgi.py
 WebScripts/Errors.py
 WebScripts/LICENSE.txt
 WebScripts/Pages.py
@@ -134,6 +136,5 @@ test/TestWebScripts.py
 test/test.ini
 test/test.json
 test/modules/test.py
-test/modules/__pycache__/test.cpython-39.pyc
 test/static/css/test.css
 test/static/js/test.js

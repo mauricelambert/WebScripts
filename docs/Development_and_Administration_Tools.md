@@ -31,7 +31,8 @@ python -m unittest discover -s test -p Test*.py -v
 
 ### Hardening audit
 
-The hardening audit is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
+1. To harden the WebScripts installation: run the installation command with privileges using these arguments: `--admin-password=\-p` and `--owner=\-o`. See the examples on [installation page](https://webscripts.readthedocs.io/en/latest/Installation/) and [deployment page](https://webscripts.readthedocs.io/en/latest/Deployment/).
+2. The hardening audit is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
 HTML report examples:
  - [Windows](https://mauricelambert.github.io/info/python/code/WebScripts/audit_windows.html)
  - [Linux](https://mauricelambert.github.io/info/python/code/WebScripts/audit_linux.html)
