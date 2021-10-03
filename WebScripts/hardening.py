@@ -43,7 +43,7 @@ import stat
 import sys
 import os
 
-__version__ = "0.0.1"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -597,6 +597,8 @@ class Audit:
                 "pkg_resources",
                 "setuptools",
                 "WebScripts",
+                "activate_this",
+                "wsgi",
             ]
 
         for module in iter_modules():
