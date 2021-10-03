@@ -64,6 +64,7 @@ import glob
 import sys
 import re
 
+
 def copy(directory: str, setup_filename: str) -> None:
 
     """This function copy the WebScripts directory and the setup."""
@@ -73,6 +74,7 @@ def copy(directory: str, setup_filename: str) -> None:
     copyfile(path.join(directory, "setup.py"), setup_filename)
     logging.info("Copy the WebScripts directory and the setup filename...")
 
+
 def change_setup(filename: str) -> None:
 
     """This function change the setup.py file."""
@@ -81,15 +83,14 @@ def change_setup(filename: str) -> None:
     logging.warning("Change the new setup content...")
 
     with open(filename, "w") as file:
-        file.write(content.replace(
-            "import WebScripts as package",
-            "import WebScripts38 as package"
-        ).replace(
-            'python_requires=">=3.9",',
-            'python_requires=">=3.8",'
-        ))
+        file.write(
+            content.replace(
+                "import WebScripts as package", "import WebScripts38 as package"
+            ).replace('python_requires=">=3.9",', 'python_requires=">=3.8",')
+        )
 
     logging.info("New setup is changed.")
+
 
 def change_manifest(filename: str) -> None:
 
@@ -99,12 +100,10 @@ def change_manifest(filename: str) -> None:
     logging.warning("Change the new manifest content...")
 
     with open(filename, "w") as file:
-        file.write(content.replace(
-            "WebScripts/",
-            "WebScripts38/"
-        ))
+        file.write(content.replace("WebScripts/", "WebScripts38/"))
 
     logging.info("New manifest is changed.")
+
 
 def change_utils(filename: str):
 
@@ -114,16 +113,20 @@ def change_utils(filename: str):
     content = open(filename).read()
 
     with open(filename, "w") as file:
-        file.write(content.replace(
-            "from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias",
-            "from typing import TypeVar, List, Dict, _GenericAlias"
-        ).replace(
-            """ or isinstance(
+        file.write(
+            content.replace(
+                "from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias",
+                "from typing import TypeVar, List, Dict, _GenericAlias",
+            ).replace(
+                """ or isinstance(
                 type_, _SpecialGenericAlias
-            )""", ""
-        ))
+            )""",
+                "",
+            )
+        )
 
     logging.info("New utils.py is changed.")
+
 
 def change_WebScripts(filename: str):
 
@@ -133,22 +136,23 @@ def change_WebScripts(filename: str):
     content = open(filename).read()
 
     with open(filename, "w") as file:
-        file.write(content.replace(
-            'encoding="utf-8",',
-            ""
-        ).replace(
-            '"log_encoding": "encoding",',
-            ''
-        ))
+        file.write(
+            content.replace('encoding="utf-8",', "").replace(
+                '"log_encoding": "encoding",', ""
+            )
+        )
 
     logging.info("New WebScripts.py is changed.")
+
 
 def change_subscriptable_iterator(directory: str) -> None:
 
     """This function change subscriptable Iterators."""
 
     regex = re.compile(r"Iterator\[\w+\]")
-    for filename in glob.glob(path.join(directory, 'WebScripts38', '**', '*.py'), recursive=True):
+    for filename in glob.glob(
+        path.join(directory, "WebScripts38", "**", "*.py"), recursive=True
+    ):
         content = open(filename).read()
         logging.warning(f"Change the new {filename} content...")
 
@@ -156,8 +160,9 @@ def change_subscriptable_iterator(directory: str) -> None:
 
         with open(filename, "w") as file:
             file.write(new_content)
-        
+
         logging.info(f"New {filename} is changed ({number} times).")
+
 
 def main():
 
@@ -173,6 +178,7 @@ def main():
     change_utils(path.join(webscript_dir, "WebScripts38", "utils.py"))
     change_WebScripts(path.join(webscript_dir, "WebScripts38", "WebScripts.py"))
     change_subscriptable_iterator(webscript_dir)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=0)

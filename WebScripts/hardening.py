@@ -29,6 +29,7 @@ from collections.abc import Iterator
 from smtplib import SMTP, SMTP_SSL
 from dataclasses import dataclass
 from socket import gethostbyname
+from pkgutil import iter_modules
 from typing import TypeVar, List
 from contextlib import suppress
 from types import ModuleType
@@ -449,6 +450,8 @@ class Audit:
 
     """This function implement hardening checks."""
 
+    is_windows = platform.system() == "Windows"
+
     def audit_in_venv(server: Server) -> Rule:
 
         """This function check the virtualenv."""
@@ -463,11 +466,161 @@ class Audit:
             "WebScripts is not install in virtualenv.",
         )
 
+    def audit_config_files(server: Server) -> Rule:
+
+        """This function check the configurations files."""
+
+        files = [
+            path.join("config", "server.ini"),
+            path.join("config", "server.json"),
+            path.join(server_path, "config", "nt", "server.ini")
+            if Audit.is_windows
+            else path.join(server_path, "config", "server.ini"),
+            path.join(server_path, "config", "nt", "server.json")
+            if Audit.is_windows
+            else path.join(server_path, "config", "server.json"),
+        ]
+        compteur = 0
+
+        for file in files:
+            if path.isfile(file):
+                compteur += 1
+
+        return Rule(
+            "Configurations files",
+            31,
+            compteur <= 1,
+            7,
+            SEVERITY.HIGH.value,
+            "Installation",
+            "WebScripts should be configured by only one configuration file.",
+        )
+
+    def audit_venv_modules(server: Server) -> Rule:
+
+        """This function check the virtualenv modules."""
+
+        venv_modules = []
+
+        if Audit.is_windows:
+            preinstall_modules = [
+                "WebScripts-script",
+                "activate_this",
+                "pywin32_postinstall",
+                "pywin32_testall",
+                "wsgi",
+                "WebScripts",
+                "adodbapi",
+                "easy_install",
+                "isapi",
+                "pip",
+                "pkg_resources",
+                "pythoncom",
+                "setuptools",
+                "win32com",
+                "_win32sysloader",
+                "_winxptheme",
+                "mmapfile",
+                "odbc",
+                "perfmon",
+                "servicemanager",
+                "timer",
+                "win2kras",
+                "win32api",
+                "win32clipboard",
+                "win32console",
+                "win32cred",
+                "win32crypt",
+                "win32event",
+                "win32evtlog",
+                "win32file",
+                "win32gui",
+                "win32help",
+                "win32inet",
+                "win32job",
+                "win32lz",
+                "win32net",
+                "win32pdh",
+                "win32pipe",
+                "win32print",
+                "win32process",
+                "win32profile",
+                "win32ras",
+                "win32security",
+                "win32service",
+                "win32trace",
+                "win32transaction",
+                "win32ts",
+                "win32wnet",
+                "winxpgui",
+                "afxres",
+                "commctrl",
+                "dbi",
+                "mmsystem",
+                "netbios",
+                "ntsecuritycon",
+                "pywin32_bootstrap",
+                "pywin32_testutil",
+                "pywintypes",
+                "rasutil",
+                "regcheck",
+                "regutil",
+                "sspi",
+                "sspicon",
+                "win32con",
+                "win32cryptcon",
+                "win32evtlogutil",
+                "win32gui_struct",
+                "win32inetcon",
+                "win32netcon",
+                "win32pdhquery",
+                "win32pdhutil",
+                "win32rcparser",
+                "win32serviceutil",
+                "win32timezone",
+                "win32traceutil",
+                "win32verstamp",
+                "winerror",
+                "winioctlcon",
+                "winnt",
+                "winperf",
+                "winxptheme",
+                "dde",
+                "pywin",
+                "win32ui",
+                "win32uiole",
+            ]
+        else:
+            preinstall_modules = [
+                "easy_install",
+                "pip",
+                "pkg_resources",
+                "setuptools",
+                "WebScripts",
+            ]
+
+        for module in iter_modules():
+            if (
+                module.module_finder.path.startswith(sys.prefix)
+                and module.name not in preinstall_modules
+            ):
+                venv_modules.append(module.name)
+
+        return Rule(
+            "Virtualenv modules",
+            32,
+            len(venv_modules) == 0,
+            3,
+            SEVERITY.LOW.value,
+            "Installation",
+            f"WebScripts should be install in empty virtualenv (except pywin32 on Windows), modules found: {venv_modules}.",
+        )
+
     def audit_system_user(server: Server) -> Rule:
 
         """This function check the user."""
 
-        if platform.system() == "Windows":
+        if Audit.is_windows:
             is_admin = not ctypes.windll.shell32.IsUserAnAdmin()
         else:
             is_admin = os.getuid()
@@ -707,11 +860,11 @@ class Audit:
             yield Rule(
                 "Script launcher",
                 18,
-                path.isabs(script.launcher),
+                script.launcher and path.isabs(script.launcher),
                 7,
                 SEVERITY.MEDIUM.value,
                 "Script Configuration",
-                f"The path of {script.name} launcher is not absolute.",
+                f"The path of {script.name} launcher is not defined in configuration files or is not absolute.",
             )
 
     def audit_admin_account(server: Server) -> Iterator[Rule]:
@@ -746,7 +899,7 @@ class Audit:
 
         """This function return the owner of a file."""
 
-        if platform.system() == "Windows":
+        if Audit.is_windows:
             with suppress(ImportError):
                 import win32security
 
@@ -771,7 +924,7 @@ class Audit:
 
         simple_filenames = []
 
-        if platform.system() == "Windows":
+        if Audit.is_windows:
             important_filenames = [
                 path.join(server_path, "config", "nt", "server.ini"),
                 path.join(server_path, "config", "nt", "server.json"),
@@ -840,7 +993,7 @@ class Audit:
 
         """This function check the files rights."""
 
-        if platform.system() == "Windows":
+        if Audit.is_windows:
             yield Rule(
                 "File permissions",
                 12,

@@ -178,6 +178,9 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
     """This function returns a namedtuple without HTML special characters."""
 
+    if not named_tuple:
+        return named_tuple
+
     new = {}
     for attribut, value in named_tuple._asdict().items():
         new[attribut] = escape(value)

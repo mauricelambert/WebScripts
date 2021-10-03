@@ -65,6 +65,8 @@ This&nbsp;file&nbsp;implement&nbsp;the&nbsp;hardening&nbsp;audit&nbsp;of&nbsp;th
 
 <dl><dt><a name="Audit-audit_blacklist"><strong>audit_blacklist</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;blacklist&nbsp;configuration.</tt></dd></dl>
 
+<dl><dt><a name="Audit-audit_config_files"><strong>audit_config_files</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configurations&nbsp;files.</tt></dd></dl>
+
 <dl><dt><a name="Audit-audit_debug"><strong>audit_debug</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;debug&nbsp;configuration.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
@@ -84,6 +86,8 @@ This&nbsp;file&nbsp;implement&nbsp;the&nbsp;hardening&nbsp;audit&nbsp;of&nbsp;th
 <dl><dt><a name="Audit-audit_smtp_password"><strong>audit_smtp_password</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;SMTP&nbsp;password&nbsp;protection.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audit_system_user"><strong>audit_system_user</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;user.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_venv_modules"><strong>audit_venv_modules</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;virtualenv&nbsp;modules.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_file_owner"><strong>audits_file_owner</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;files&nbsp;owner.</tt></dd></dl>
 
@@ -117,6 +121,10 @@ Data descriptors defined here:<br>
 <dl><dt><strong>__weakref__</strong></dt>
 <dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
 </dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>is_windows</strong> = True</dl>
+
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#EEC477">
