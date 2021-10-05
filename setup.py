@@ -60,6 +60,26 @@ import sys
 import os
 
 
+arguments = [
+    (
+        "json-only",
+        "j",
+        "Delete the file named server.ini, to keep only the JSON configuration.",
+    ),
+    (
+        "admin-password=",
+        "p",
+        'Administrator password for the WebScripts account "Admin" (the default account).',
+    ),
+    (
+        "owner=",
+        "o",
+        "The owner of WebScripts Server (set the owner of files on UNIX systems if you are installing with privileges).",
+    ),
+    ("no-hardening", "n", "Do not harden during installation."),
+]
+
+
 class PostInstallScript(install):
 
     """This class installs and hardens the WebScripts project."""
@@ -75,24 +95,7 @@ class PostInstallScript(install):
     logging.debug("Logging is configured")
 
     logging.debug("Add custom arguments")
-    user_options = install.user_options + [
-        (
-            "json-only",
-            "j",
-            "Delete the file named server.ini, to keep only the JSON configuration.",
-        ),
-        (
-            "admin-password=",
-            "p",
-            'Administrator password for the WebScripts account "Admin" (the default account).',
-        ),
-        (
-            "owner=",
-            "o",
-            "The owner of WebScripts Server (set the owner of files on UNIX systems if you are installing with privileges).",
-        ),
-        ("no-hardening", "n", "Do not harden during installation."),
-    ]
+    user_options = install.user_options + arguments
 
     logging.debug("System detection")
     is_windows = os.name == "nt"
@@ -102,7 +105,7 @@ class PostInstallScript(install):
         logging.warning("Owner can not be change on Windows system.")
 
     def initialize_options(self):
-        install.initialize_options(self)
+        super(self.__class__, self).initialize_options()
 
         logging.debug("Initialize argument variables")
         self.json_only = False
@@ -116,9 +119,6 @@ class PostInstallScript(install):
         self.json_config_files = []
         self.ini_config_files = []
         self.py_scripts_files = []
-
-    def finalize_options(self):
-        install.finalize_options(self)
 
     def linux_files_permissions(self, filename: str) -> None:
 
@@ -189,7 +189,7 @@ class PostInstallScript(install):
                             logging.debug("Add the script absolute path.")
                             script["path"] = py_filename
 
-                self.save_scripts_configurations(filename, configurations)
+                PostInstallScript.save_scripts_configurations(filename, configurations)
                 continue
 
             for name, section_name in scripts.items():
@@ -212,12 +212,12 @@ class PostInstallScript(install):
             if server is not None:
                 path_ = [path.dirname(filename), "..", "modules"]
 
-                if PostInstallScript.is_windows:
+                if self.is_windows:
                     path_.insert(1, "..")
 
                 server["modules_path"] = path.abspath(path.join(*path_))
 
-            self.save_scripts_configurations(filename, configurations)
+            PostInstallScript.save_scripts_configurations(filename, configurations)
 
     @staticmethod
     def save_scripts_configurations(
@@ -300,7 +300,7 @@ class PostInstallScript(install):
 
         for filename in self.get_outputs():
             if not self.no_hardening:
-                self.linux_files_permissions(filename)
+                PostInstallScript.linux_files_permissions(self, filename)
 
             extension = path.splitext(filename)[1]
 
@@ -313,17 +313,22 @@ class PostInstallScript(install):
             elif path.split(filename)[1] == "server.ini":
                 self.ini_config_files.append(filename)
 
-        self.remove_configuration_files()
+        PostInstallScript.remove_configuration_files(self)
         if not self.no_hardening:
-            self.add_absolute_paths_in_configuration()
+            PostInstallScript.add_absolute_paths_in_configuration(self)
 
-        self.change_admin_password()
+        PostInstallScript.change_admin_password(self)
 
     def run(self):
-        return_value = install.run(self)
-        self.run_custom_install()
+        return_value = super(self.__class__, self).run()
+        PostInstallScript.run_custom_install(self)
         return return_value
 
+
+# class PostDevelopScript(develop):
+#    user_options = develop.user_options + arguments
+#    is_windows = PostInstallScript.is_windows
+#    run = PostInstallScript.run
 
 setup(
     name=package.__name__,
