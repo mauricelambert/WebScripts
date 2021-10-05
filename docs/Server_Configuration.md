@@ -173,6 +173,23 @@ booleanTrue=true
 booleanFalse=false
 ```
 
+## Custom configurations
+
+You can had custom server configurations and use it in *modules*.
+
+```json
+{
+    "server": {
+        "interface": "127.0.0.1",
+        "port": 8000,
+
+        "custom_configuration": "My custom configuration !"
+    }
+}
+```
+
+With this configuration, the *server configuration object* will have a `custom_configuration` attribut set to `My custom configuration !`.
+
 ## Recommendation
 
  - `log_level` should be `0`.
