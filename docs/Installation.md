@@ -33,6 +33,16 @@ python3 -m pip install WebScripts --install-option "--admin-password=<your passw
 python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-owww-data"
 ```
 
+#### Debian using NGINX as HTTPS proxy 
+
+[NGINX Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https)) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
+
+```bash
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"
+# OR
+python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-oWebScripts"
+```
+
 ## Windows
 
 ```bash
@@ -99,7 +109,8 @@ WebScripts
 
 ## First connection
 
-To log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `192.168.*`, `172.16.*`,`10.*` and `127.0.*` (private network and localhost) by default.
+1. Install without `--admin-password=` option: to log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `127.0.*,192.168.*,172.16.*,10.*` by default.
+2. Install with `--admin-password=` option: to log in for the first time, use the `Admin` account (username: `Admin`).
 
 ## Logs directory
 
