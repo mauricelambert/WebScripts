@@ -599,6 +599,7 @@ class Audit:
                 "WebScripts",
                 "activate_this",
                 "wsgi",
+                "_distutils_hack",
             ]
 
         for module in iter_modules():
