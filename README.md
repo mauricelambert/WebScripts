@@ -36,7 +36,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
     - [Unittest](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest))
  - Customizable
     - [Authentication](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Script/#build-the-script) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#build-the-script))
-    - Web Interface: HTML, CSS and [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))
+    - Web Interface: HTML, CSS and JS [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))
     - URL, request, response and error pages using [python modules](https://webscripts.readthedocs.io/en/latest/Modules/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Module/#build-the-module) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module))
  - Highly configurable and scalable
     - [Modules](https://webscripts.readthedocs.io/en/latest/Modules/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules))
