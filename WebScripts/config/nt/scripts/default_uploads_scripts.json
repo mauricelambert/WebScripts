@@ -89,6 +89,18 @@
 	"arg_is_b64": {
 		"html_type": "checkbox",
 		"description": "Using base64 to upload the file.",
+		"javascript_section": "javascript_b64",
+		"is_advanced": true
+	},
+
+	"javascript_b64": {
+		"disabled": true,
+		"checked": true
+	},
+
+	"arg_compression": {
+		"html_type": "checkbox",
+		"description": "Do not compress the file (use it for compressed file like ZIP, GZ, BZ2, XZ).",
 		"is_advanced": true
 	},
 
@@ -127,6 +139,7 @@
 		"--delete-permission": "arg_delete_permission",
 		"--hidden": "arg_hidden",
 		"--binary": "arg_binary",
+		"--no-compression": "arg_compression",
 		"--is-b64": "arg_is_b64"
 	},
 

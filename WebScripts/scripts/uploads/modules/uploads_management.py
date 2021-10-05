@@ -211,7 +211,12 @@ def write_file(
     )
 
     write_action(upload)
-    data = b64decode(data.encode())
+
+    if is_b64:
+        data = b64decode(data.encode())
+    else:
+        data = data.encode("utf-8")
+
     filename = get_real_file_name(name, timestamp)
 
     if not no_compression and not binary:
