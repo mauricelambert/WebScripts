@@ -6,7 +6,7 @@ from typing import List
 import logging
 import atexit
 
-chdir("..")
+chdir(path.join(path.dirname(__file__), ".."))
 
 activator = r"Scripts\activate_this.py" if name == "nt" else "bin/activate_this.py"
 with open(activator) as f:
