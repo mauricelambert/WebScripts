@@ -604,18 +604,23 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
 
     """This function return the file content."""
 
-    if "encoding" in kwargs:
+    if "encoding" in kwargs or "rb" in args or "rb" in kwargs.values():
         with open(get_real_path(file_path), *args, **kwargs) as file:
             content = file.read()
         return content
 
+    errors = []
     for encoding in get_encodings():
-        with suppress(UnicodeDecodeError):
-            with open(get_real_path(file_path), *args, **kwargs) as file:
+        try:
+            with open(
+                get_real_path(file_path), *args, encoding=encoding, **kwargs
+            ) as file:
                 content = file.read()
             return content
+        except UnicodeDecodeError as e:
+            errors.append(e)
 
-    raise UnicodeDecodeError("No encoding found to open this file.")
+    raise Exception(errors)
 
 
 @log_trace
