@@ -13,6 +13,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
 [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
+[![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description
 This tools run scripts and display the result in a Web Interface.
@@ -28,6 +29,9 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
     - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
     - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
     - Easy to deploy securely
+        - [Docker, Apache and mod_wsgi](https://github.com/mauricelambert/WebScriptsContainers)
+        - [Docker, Nginx as HTTPS proxy](https://github.com/mauricelambert/WebScriptsContainers)
+        - [Docker](https://github.com/mauricelambert/WebScriptsContainers)
         - [Apache and mod_wsgi](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
         - [Nginx as HTTPS proxy](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
     - Easy to configure securely [(read the documentation)](https://webscripts.readthedocs.io/en/latest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/))
