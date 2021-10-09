@@ -26,7 +26,8 @@ from unittest import TestCase, main
 from os import path
 import sys
 
-sys.path.append(path.join(path.dirname(__file__), ".."))
+sys.path = [path.join(path.dirname(__file__), ".."), *sys.path]
+# sys.path.append(path.join(path.dirname(__file__), ".."))
 
 from WebScripts.Errors import (
     WebScriptsError,

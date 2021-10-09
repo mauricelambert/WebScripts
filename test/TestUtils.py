@@ -32,10 +32,11 @@ from json import load
 import platform
 import locale
 import json
+import gzip
 import sys
+import os
 
 sys.path = [path.join(path.dirname(__file__), ".."), *sys.path]
-sys.path.append(path.join(path.dirname(__file__), ".."))
 
 from WebScripts.utils import (
     DefaultNamespace,
@@ -51,6 +52,8 @@ from WebScripts.utils import (
     Logs,
     log_trace,
     server_path,
+    namer,
+    rotator,
 )
 import WebScripts.utils
 
@@ -291,12 +294,33 @@ class TestFunctions(TestCase):
         static = staticmethod(test)
         log_trace(static)
 
+    def test_namer(self):
+        self.assertEqual("test.gz", namer("test"))
+
+    def test_rotator(self):
+        current = getcwd()
+        src = path.join(current, "test.txt")
+        dest = path.join(current, "test.gz")
+
+        with open(src, 'w') as file:
+            file.write("abc")
+
+        rotator(src, dest)
+
+        self.assertFalse(path.exists(src))
+        self.assertTrue(path.exists(dest))
+
+        with open(dest, 'rb') as file:
+            self.assertEqual(gzip.decompress(file.read()), b'abc')
+
+        os.remove("test.gz")
+
     def test_no_pywin32(self):
         path_ = sys.path.copy()
         sys.path = [
             x
             for x in sys.path
-            if not "c:\\users\\csu1\\documents\\dev\\test" in x.lower()
+            if not sys.prefix.lower() in x.lower()
         ]
         sys.modules = {
             x: y for x, y in sys.modules.items() if not x.startswith("win32")
@@ -326,6 +350,19 @@ class TestFunctions(TestCase):
                 json.loads(get_file_content("test.json", encoding="latin-1")),
                 json.load(file),
             )
+
+        def generator():
+            yield "ascii"
+
+        WebScripts.utils.get_encodings = generator
+
+        with open("test.txt", 'wb') as file:
+            file.write(bytes(range(256)))
+
+        with self.assertRaises(Exception):
+            get_file_content("test.txt")
+
+        os.remove("test.txt")
 
     def test_get_real_path(self):
         self.assertIsNone(get_real_path(None))
