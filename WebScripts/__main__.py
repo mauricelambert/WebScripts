@@ -21,7 +21,7 @@
 
 """This tools run scripts and display the result in a Web Interface."""
 
-__version__ = "2.1.5"
+__version__ = "2.1.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"

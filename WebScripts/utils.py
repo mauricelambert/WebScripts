@@ -26,7 +26,7 @@ and scripts (Logs, Namespace for configuration, ...)."""
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
-from os import path, _Environ, device_encoding
+from os import path, _Environ, device_encoding, remove
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from contextlib import suppress
@@ -37,6 +37,7 @@ import platform
 import logging
 import locale
 import json
+import gzip
 
 if __package__:
     from .Errors import (
@@ -55,7 +56,7 @@ else:
         WebScriptsSecurityError,
     )
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -86,6 +87,8 @@ __all__ = [
     "get_encodings",
     "get_ini_dict",
     "server_path",
+    "rotator",
+    "namer",
 ]
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
@@ -318,6 +321,27 @@ def log_trace(function: FunctionType):
         return values
 
     return wrapper
+
+
+def namer(name: str) -> str:
+
+    """This function returns the new name of the old log files."""
+
+    return f"{name}.gz"
+
+
+def rotator(source: str, destination: str) -> None:
+
+    """This function compresses old log files."""
+
+    with open(source, "rb") as source_file:
+        data = source_file.read()
+        compressed = gzip.compress(data, 9)
+
+        with open(destination, "wb") as destination_file:
+            destination_file.write(compressed)
+
+    remove(source)
 
 
 if platform.system() == "Windows":

@@ -49,6 +49,8 @@ try:
         get_ip,
         Logs,
         get_file_content,
+        rotator,
+        namer,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
@@ -72,13 +74,15 @@ except ImportError:
         get_ip,
         Logs,
         get_file_content,
+        rotator,
+        namer,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"

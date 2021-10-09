@@ -56,6 +56,8 @@ if __package__:
         get_ip,
         Logs,
         get_file_content,
+        rotator,
+        namer,
         #        get_real_path,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -77,12 +79,14 @@ else:
         get_ip,
         Logs,
         get_file_content,
+        rotator,
+        namer,
         #        get_real_path,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.10"
+__version__ = "0.0.11"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1164,6 +1168,21 @@ def configure_logs_system() -> None:
         filename="./logs/root.logs",
         force=True,
     )
+
+    for logger in (
+        "log_trace",
+        "log_debug",
+        "log_info",
+        "log_warning",
+        "log_error",
+        "log_critical",
+        "file",
+    ):
+        logger = getattr(Logs, logger)
+
+        if logger.hasHandlers() and len(logger.handlers):
+            logger.handlers[0].rotator = rotator
+            logger.handlers[0].namer = namer
 
 
 def send_mail(configuration: Configuration, message: str) -> int:
