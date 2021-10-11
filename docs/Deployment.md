@@ -1,5 +1,18 @@
 # Deployment
 
+I propose two complete and secure deployment solutions:
+ - WebScripts with Apache and mod_wsgi
+ - WebScripts with Nginx as HTTPS proxy
+
+## Deploy more easily and faster with docker
+
+[![Deploy WebScripts - Youtube](https://img.youtube.com/vi/NhRpaRCNVVs/0.jpg)](http://www.youtube.com/watch?v=NhRpaRCNVVs)
+
+ - Using [dockerhub](https://hub.docker.com/r/mauricelambert/webscripts)
+ - Using [Dockerfile](https://github.com/mauricelambert/WebScriptsContainers)
+
+Containers contain complete deployment solutions and are hardened.
+
 ## Python virtual environment
 
 ### Linux

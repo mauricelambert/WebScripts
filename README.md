@@ -53,6 +53,10 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
         - [server](https://webscripts.readthedocs.io/en/latest/Server_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration#custom-configurations))
         - [scripts](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#custom-configurations))
 
+## Demo
+
+[![Demo WebScripts - Youtube](https://img.youtube.com/vi/2_hRBTRzl5w/0.jpg)](http://www.youtube.com/watch?v=2_hRBTRzl5w)
+
 ## Requirements
 This package require:
 

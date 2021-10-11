@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.1.6
+Version: 2.2.0
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -64,6 +64,10 @@ Description: # WebScripts
             - Configurations: 
                 - [server](https://webscripts.readthedocs.io/en/latest/Server_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration#custom-configurations))
                 - [scripts](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#custom-configurations))
+        
+        ## Demo
+        
+        [![Demo WebScripts - Youtube](https://img.youtube.com/vi/2_hRBTRzl5w/0.jpg)](http://www.youtube.com/watch?v=2_hRBTRzl5w)
         
         ## Requirements
         This package require:
