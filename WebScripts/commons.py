@@ -37,7 +37,7 @@ from time import time
 import secrets
 import json
 
-__version__ = "0.0.10"
+__version__ = "0.0.11"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -157,6 +157,7 @@ class Argument(DefaultNamespace):
 
         if name.startswith("-"):
             list_ = [{"value": name, "input": False}]
+            argument["input"] = False
         else:
             list_ = []
 
@@ -175,7 +176,7 @@ class Argument(DefaultNamespace):
                 return [{"value": name, "input": False}]
 
         elif isinstance(argument["value"], int):
-            list_.append({"value": str(argument["value"]), "input": False})
+            list_.append({"value": str(argument["value"]), "input": argument["input"]})
 
         elif isinstance(argument["value"], list):
             while "" in argument["value"]:
@@ -294,7 +295,9 @@ class ScriptConfig(DefaultNamespace):
                 config_path = path.join(dirname, path.normcase(config_path))
 
                 for config_filename in iglob(config_path):
-                    configuration = SimpleNamespace(**get_ini_dict(config_filename))
+                    configuration = DefaultNamespace()
+                    configuration.update(**get_ini_dict(config_filename))
+
                     scripts_config.update(
                         cls.get_scripts_from_configuration(
                             configuration, server_configuration
@@ -306,13 +309,15 @@ class ScriptConfig(DefaultNamespace):
 
                 for config_filename in iglob(config_path):
                     configuration = DefaultNamespace()
+
                     with open(config_filename) as file:
                         configuration.update(**json.load(file))
-                        scripts_config.update(
-                            cls.get_scripts_from_configuration(
-                                configuration, server_configuration
-                            )
+
+                    scripts_config.update(
+                        cls.get_scripts_from_configuration(
+                            configuration, server_configuration
                         )
+                    )
 
         return scripts_config
 
@@ -397,7 +402,9 @@ class ScriptConfig(DefaultNamespace):
         Logs.info(f"Research default launcher for script {script_config['name']}")
         extension = path.splitext(script_config["path"])[1]
 
-        if fullmatch(r"[.]\w+", extension) is None:  # possible COMMAND INJECTION
+        if (
+            fullmatch(r"[.]\w+", extension) is None
+        ):  # raise an error against command injection
             Logs.critical(
                 f'Security Error: this extension "{extension}" is a security risk '
                 "(for security reason this extension is blocked)."
@@ -405,10 +412,14 @@ class ScriptConfig(DefaultNamespace):
             raise WebScriptsSecurityError(
                 f"Invalid extension: {extension} (for security reason this extension is blocked)"
             )
-            return
 
         process = Popen(
-            [r"C:\WINDOWS\system32\cmd.exe", "/c", "assoc", extension],
+            [
+                r"C:\WINDOWS\system32\cmd.exe",
+                "/c",
+                "assoc",
+                extension,
+            ],  # protection against command injection
             stdout=PIPE,
             stderr=PIPE,
             text=True,
@@ -475,7 +486,9 @@ class ScriptConfig(DefaultNamespace):
 
         if doc_file is None:
             for path_ in paths:
-                doc_files = path.join(path_, f"{path.basename(name)}.*")
+                doc_files = path.join(
+                    path_, f"{path.splitext(path.basename(name))[0]}.*"
+                )
                 for doc_file in iglob(doc_files):
                     Logs.debug(f"Documentation file found for {name}")
                     break
@@ -537,7 +550,12 @@ class ScriptConfig(DefaultNamespace):
                 config.read(configuration_file)
                 configuration = config._sections
 
-            script_config = configuration["script"]
+            script_config = configuration.get("script")
+
+            if script_config is None:
+                raise WebScriptsConfigurationError(
+                    f'Section "script" is not defined in {configuration_file}'
+                )
 
         return configuration, script_config
 
@@ -589,7 +607,7 @@ class ScriptConfig(DefaultNamespace):
                     doc_dirname, doc_filename = path.split(doc)
                     no_extension, extension = path.splitext(doc_filename)
 
-                    if no_extension in filename:
+                    if no_extension == path.splitext(path.basename(filename))[0]:
                         return doc
 
 
@@ -748,17 +766,17 @@ class CallableFile(Callable):
                     "nonce": nonce,
                 },
             )
-            """return (
-                "200 OK",
-                {"Content-Type": "text/html"},
-                CallableFile.template_script
-                % {
-                    "name": self.filename,
-                    "user": user.name,
-                    "csrf": TokenCSRF.build_token(user),
-                    "nonce": nonce,
-                },
-            )"""
+            # return (
+            #     "200 OK",
+            #     {"Content-Type": "text/html"},
+            #     CallableFile.template_script
+            #     % {
+            #         "name": self.filename,
+            #         "user": user.name,
+            #         "csrf": TokenCSRF.build_token(user),
+            #         "nonce": nonce,
+            #     },
+            # )
 
     def is_xml(self) -> bool:
 
@@ -802,30 +820,38 @@ class Blacklist:
     ):
         self.time = time()
 
-        if last_blacklist is None:
+        blacklist_time = getattr(configuration, "blacklist_time", None)
+
+        if blacklist_time is None:
             self.counter = 1
         else:
-            if last_blacklist.time + configuration.blacklist_time >= self.time:
-                self.counter = last_blacklist.counter + 1
-            else:
+            if last_blacklist is None:
                 self.counter = 1
+            else:
+                if last_blacklist.time + configuration.blacklist_time >= self.time:
+                    self.counter = last_blacklist.counter + 1
+                else:
+                    self.counter = 1
 
     @log_trace
-    def is_blacklist(self, configuration: ServerConfiguration):
+    def is_blacklist(self, configuration: ServerConfiguration) -> bool:
 
         """This function return True if this object is blacklisted."""
 
-        if configuration.auth_failures_to_blacklist is None:
+        blacklist_time = getattr(configuration, "blacklist_time", None)
+        auth_failures_to_blacklist = getattr(
+            configuration, "auth_failures_to_blacklist", None
+        )
+
+        if auth_failures_to_blacklist is None:
             return False
 
-        if self.counter > configuration.auth_failures_to_blacklist:
-            if (
-                configuration.blacklist_time is None
-                or configuration.blacklist_time + self.time > time()
-            ):
-                return True
-            else:
+        if self.counter > auth_failures_to_blacklist:
+            if blacklist_time is None:
                 return False
+            return blacklist_time + self.time >= time()
+        else:
+            return False
 
     def __str__(self) -> str:
 
@@ -850,12 +876,12 @@ class TokenCSRF:
 
     @staticmethod
     @log_trace
-    def check_csrf(user: User, token: str) -> bool:
+    def check_csrf(user: User, token: str, csrf_max_time: float = 300) -> bool:
 
         """This function check the validity of a csrf token."""
 
         timestamp = user.csrf.pop(token, 0)
-        max_time = time() - 300
+        max_time = time() - csrf_max_time
 
         if timestamp >= max_time:
             return True
@@ -873,7 +899,7 @@ class TokenCSRF:
 
         for token, timestamp in user.csrf.items():
 
-            if timestamp < max_time:
+            if timestamp <= max_time:
                 to_delete.append(token)
 
         for key in to_delete:
@@ -911,7 +937,13 @@ class Session:
 
     @staticmethod
     @log_trace
-    def check_session(cookie: str, pages: Pages, ip: str, default_user: User) -> User:
+    def check_session(
+        cookie: str,
+        pages: Pages,
+        ip: str,
+        default_user: User,
+        session_max_time: float = 3600,
+    ) -> User:
 
         """This function check session validity and return user."""
 
@@ -935,7 +967,7 @@ class Session:
 
         if (
             session.ip == ip
-            and session.time + 3600 >= time()
+            and session.time + session_max_time >= time()
             and session.cookie == cookie_session
         ):
             return session.user

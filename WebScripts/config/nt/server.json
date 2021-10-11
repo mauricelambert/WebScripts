@@ -5,10 +5,17 @@
 
 		"debug": false,
 		"security": true,
+		
 		"accept_unknow_user": false,
 		"accept_unauthenticated_user": false,
 		"active_auth": true,
 		"auth_script": "auth.py",
+		"auth_failures_to_blacklist": 3,
+		"blacklist_time": 30,
+		"exclude_auth_paths": ["/static/", "/js/"],
+		"exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
+		"session_max_time": 3600,
+		"csrf_max_time": 300,
 
 		"scripts_path": [
 			"./scripts/account", 
@@ -16,10 +23,10 @@
 			"./scripts/uploads"
 		],
 		"json_scripts_config": [
-			"./config/nt/scripts/*.json"
+			"./config/scripts/*.json"
 		],
 		"ini_scripts_config": [
-			"./config/nt/scripts/*.ini"
+			"./config/scripts/*.ini"
 		],
 		"documentations_path": [
 			"./doc/*.html"
@@ -42,9 +49,6 @@
 		"log_format": "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
 		"log_date_format": "%d/%m/%Y %H:%M:%S",
 		"log_encoding": "utf-8",
-
-		"auth_failures_to_blacklist": 3,
-		"blacklist_time": 30,
 
 		"smtp_server": null,
 		"smtp_starttls": false,
@@ -88,7 +92,7 @@
 	},
 
 	"config_change_my_password": {
-		"configuration_file": "./config/nt/files/change_my_password.json"
+		"configuration_file": "./config/files/change_my_password.json"
 	},
 
 	"config_show_licence": {

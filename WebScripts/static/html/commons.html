@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.0.10)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.0.11)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -178,7 +178,7 @@ This&nbsp;class&nbsp;implement&nbsp;blacklist.<br>&nbsp;</tt></td></tr>
 
 <dl><dt><a name="Blacklist-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;string&nbsp;to&nbsp;represent&nbsp;the&nbsp;<a href="#Blacklist">Blacklist</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="Blacklist-is_blacklist"><strong>is_blacklist</strong></a>(self, configuration: ~ServerConfiguration)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;True&nbsp;if&nbsp;this&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;blacklisted.</tt></dd></dl>
+<dl><dt><a name="Blacklist-is_blacklist"><strong>is_blacklist</strong></a>(self, configuration: ~ServerConfiguration) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;True&nbsp;if&nbsp;this&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;blacklisted.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -409,7 +409,7 @@ Class methods defined here:<br>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="Session-check_session"><strong>check_session</strong></a>(cookie: str, pages: ~Pages, ip: str, default_user: commons.User) -&gt; commons.User</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;session&nbsp;validity&nbsp;and&nbsp;return&nbsp;user.</tt></dd></dl>
+<dl><dt><a name="Session-check_session"><strong>check_session</strong></a>(cookie: str, pages: ~Pages, ip: str, default_user: commons.User, session_max_time: float = 3600) -&gt; commons.User</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;session&nbsp;validity&nbsp;and&nbsp;return&nbsp;user.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -431,7 +431,7 @@ Data descriptors defined here:<br>
 <td width="100%">Static methods defined here:<br>
 <dl><dt><a name="TokenCSRF-build_token"><strong>build_token</strong></a>(user: commons.User) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;a&nbsp;CSRF&nbsp;token&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
 
-<dl><dt><a name="TokenCSRF-check_csrf"><strong>check_csrf</strong></a>(user: commons.User, token: str) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;validity&nbsp;of&nbsp;a&nbsp;csrf&nbsp;token.</tt></dd></dl>
+<dl><dt><a name="TokenCSRF-check_csrf"><strong>check_csrf</strong></a>(user: commons.User, token: str, csrf_max_time: float = 300) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;validity&nbsp;of&nbsp;a&nbsp;csrf&nbsp;token.</tt></dd></dl>
 
 <dl><dt><a name="TokenCSRF-clean"><strong>clean</strong></a>(user: commons.User, max_time: float) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;clean&nbsp;all&nbsp;old&nbsp;CSRF&nbsp;tokens&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
 

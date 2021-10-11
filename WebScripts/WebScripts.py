@@ -321,7 +321,13 @@ class Server:
 
         for cookie in cookies:
             if cookie.startswith("SessionID="):
-                user = Session.check_session(cookie, self.pages, ip, None)
+                user = Session.check_session(
+                    cookie,
+                    self.pages,
+                    ip,
+                    None,
+                    getattr(self.configuration, "session_max_time", 3600),
+                )
 
                 if user is None:
                     continue
@@ -373,7 +379,13 @@ class Server:
 
         if headers is not None:
             cookie = headers.get("Set-Cookie", "").split("; ")[0]
-            user = Session.check_session(cookie, self.pages, ip, None)
+            user = Session.check_session(
+                cookie,
+                self.pages,
+                ip,
+                None,
+                getattr(self.configuration, "session_max_time", 3600),
+            )
 
         not_blacklisted = self.check_blacklist(user, ip)
         if user is not None and not_blacklisted:

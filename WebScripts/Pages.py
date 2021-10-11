@@ -362,7 +362,9 @@ class Api:
             )
             return "404", {}, b""
 
-        if user.check_csrf and not TokenCSRF.check_csrf(user, csrf_token):
+        if user.check_csrf and not TokenCSRF.check_csrf(
+            user, csrf_token, getattr(server_configuration, "csrf_max_time", 300)
+        ):
             Logs.error(
                 f"HTTP 403 for {user.name} on /api/scripts/{filename} (CSRF Token invalid)"
             )
