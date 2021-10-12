@@ -134,8 +134,6 @@ test/TestCommons.py
 test/TestErrors.py
 test/TestUtils.py
 test/TestWebScripts.py
-test/test.ini
-test/test.json
 test/modules/test.py
 test/static/css/test.css
 test/static/js/test.js

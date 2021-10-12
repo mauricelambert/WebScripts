@@ -188,7 +188,9 @@ class TestServer(TestCase):
         self.server_unsecure = Server(self.conf_unsecure)
 
         self.assertEqual(
-            self.server_unsecure.headers["Content-Security-Policy-Report-Only"],
+            self.server_unsecure.headers[
+                "Content-Security-Policy-Report-Only"
+            ],
             "default-src 'self'; form-action 'none'; frame-ancestors 'none'; report-uri /csp/debug/",
         )
         self.assertListEqual(self.conf_unsecure.modules, ["csp"])
@@ -260,7 +262,9 @@ class TestServer(TestCase):
             return_value=user,
         ) as mock_method:
 
-            self.assertEqual(self.server.get_session(["SessionID="], "ip"), user)
+            self.assertEqual(
+                self.server.get_session(["SessionID="], "ip"), user
+            )
             self.assertTrue(user.check_csrf)
 
         with patch.object(
@@ -375,7 +379,9 @@ class TestServer(TestCase):
         if getcwd() == path.dirname(__file__):
             self.conf.modules_path = ["modules"]
         else:
-            self.conf.modules_path = [path.join(path.dirname(__file__), "modules")]
+            self.conf.modules_path = [
+                path.join(path.dirname(__file__), "modules")
+            ]
         self.conf.modules = ["test"]
 
         default_path = sys.path.copy()
@@ -393,7 +399,9 @@ class TestServer(TestCase):
             self.server.configuration.statics_path = [
                 path.join("static", "css", "*.css")
             ]
-            self.server.configuration.js_path = [path.join("static", "js", "*.js")]
+            self.server.configuration.js_path = [
+                path.join("static", "js", "*.js")
+            ]
         else:
             self.server.configuration.statics_path = [
                 path.join(path.dirname(__file__), "static", "css", "*.css")
@@ -413,7 +421,9 @@ class TestServer(TestCase):
             self.server.add_paths()
 
     def test_get_function_page(self):
-        callable_, filename, is_not_package = self.server.get_function_page("/api/")
+        callable_, filename, is_not_package = self.server.get_function_page(
+            "/api/"
+        )
         self.assertEqual("", filename)
         self.assertTrue(is_not_package)
         self.assertEqual(callable_, self.server.pages.api)
@@ -468,7 +478,9 @@ class TestServer(TestCase):
         self.assertIs(callable_, object)
         self.assertEqual(filename, "test")
 
-        callable_, filename, bool_ = self.server.get_attributes("test", ["test"], False)
+        callable_, filename, bool_ = self.server.get_attributes(
+            "test", ["test"], False
+        )
 
         self.assertFalse(bool_)
         self.assertIsNone(callable_)
@@ -507,7 +519,9 @@ class TestServer(TestCase):
             "wsgi.input": data,
         }
 
-        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
         self.assertTrue(is_webscripts_request)
         self.assertEqual(csrf, "azerty")
         self.assertListEqual(
@@ -519,13 +533,17 @@ class TestServer(TestCase):
         )
 
         environ["CONTENT_LENGTH"] = "0"
-        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
         self.assertTrue(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertListEqual(arguments, [])
 
         environ["CONTENT_LENGTH"] = "abc"
-        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
         self.assertTrue(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertListEqual(arguments, [])
@@ -543,7 +561,9 @@ class TestServer(TestCase):
             "wsgi.input": data,
         }
 
-        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
         self.assertFalse(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertDictEqual(
@@ -560,7 +580,9 @@ class TestServer(TestCase):
             "wsgi.input": data,
         }
 
-        arguments, csrf, is_webscripts_request = self.server.parse_body(environ)
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
         self.assertFalse(is_webscripts_request)
         self.assertIsNone(csrf)
         self.assertEqual(arguments, b"abc")
@@ -580,7 +602,9 @@ class TestServer(TestCase):
 
         self.server.parse_body = MagicMock(return_value=([], None, False))
         self.server.get_inputs = MagicMock(return_value=([], []))
-        self.server.get_function_page = MagicMock(return_value=(Mock(), None, True))
+        self.server.get_function_page = MagicMock(
+            return_value=(Mock(), None, True)
+        )
 
         with patch.object(
             self.server,
@@ -593,7 +617,9 @@ class TestServer(TestCase):
 
         self.server.check_auth = MagicMock(
             return_value=(
-                Mock(ip="ip", id=1, name="name", groups=[50], check_csrf=False),
+                Mock(
+                    ip="ip", id=1, name="name", groups=[50], check_csrf=False
+                ),
                 True,
             )
         )
@@ -612,7 +638,9 @@ class TestServer(TestCase):
         self.server.parse_body = MagicMock(return_value=([], None, True))
 
         environ["PATH_INFO"] = "/web/scripts/view_users.py"
-        self.server.get_function_page = MagicMock(return_value=(None, None, True))
+        self.server.get_function_page = MagicMock(
+            return_value=(None, None, True)
+        )
 
         page_2 = self.server.app(environ, Mock())
         self.assertListEqual(page, page_2)
@@ -703,7 +731,9 @@ class TestServer(TestCase):
 
         start_response = Mock()
         self.server.send_headers(
-            start_response, error="500 Internal Server Error", headers={"Test": "Test"}
+            start_response,
+            error="500 Internal Server Error",
+            headers={"Test": "Test"},
         )
         headers = self.server.headers.copy()
         headers.update({"Test": "Test"})
@@ -907,7 +937,11 @@ class TestFunctions(TestCase):
     @patch.object(
         WebScripts.simple_server,
         "make_server",
-        Mock(return_value=Mock(serve_forever=Mock(side_effect=KeyboardInterrupt()))),
+        Mock(
+            return_value=Mock(
+                serve_forever=Mock(side_effect=KeyboardInterrupt())
+            )
+        ),
     )
     def test_main(self):
         global WebScripts
@@ -1018,7 +1052,9 @@ class TestFunctions(TestCase):
     def test_send_mail(self):
         self.assertEqual(send_mail(self.conf, "test"), 1)
 
-        self.server.pages.packages.error_pages = Mock(Request=Mock(send_mail=Mock()))
+        self.server.pages.packages.error_pages = Mock(
+            Request=Mock(send_mail=Mock())
+        )
         self.assertEqual(send_mail(self.conf, "test"), 0)
 
 

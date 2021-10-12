@@ -129,7 +129,9 @@ class TestDefaultNamespace(TestCase):
 
         self.default_namespace.update(test="test1")
 
-        self.assertEqual(getattr(self.default_namespace, "test", None), "test1")
+        self.assertEqual(
+            getattr(self.default_namespace, "test", None), "test1"
+        )
 
     def test_check_required(self):
         self.default_namespace.__required__ = ["test"]
@@ -179,7 +181,9 @@ class TestDefaultNamespace(TestCase):
         )
 
     def test_get_dict(self):
-        self.default_namespace.method = MethodType(print, self.default_namespace)
+        self.default_namespace.method = MethodType(
+            print, self.default_namespace
+        )
         self.default_namespace.__required__ = ["test"]
         self.default_namespace.test = "test"
 
@@ -203,6 +207,9 @@ class TestDefaultNamespace(TestCase):
 
         with open("test.json") as file:
             self.assertDictEqual(load(file), {"test": "test"})
+
+        os.remove("export_DefaultNamespace.json")
+        os.remove("test.json")
 
     def test_build_types(self):
         self.default_namespace.five_ = 5
@@ -302,7 +309,7 @@ class TestFunctions(TestCase):
         src = path.join(current, "test.txt")
         dest = path.join(current, "test.gz")
 
-        with open(src, 'w') as file:
+        with open(src, "w") as file:
             file.write("abc")
 
         rotator(src, dest)
@@ -310,18 +317,14 @@ class TestFunctions(TestCase):
         self.assertFalse(path.exists(src))
         self.assertTrue(path.exists(dest))
 
-        with open(dest, 'rb') as file:
-            self.assertEqual(gzip.decompress(file.read()), b'abc')
+        with open(dest, "rb") as file:
+            self.assertEqual(gzip.decompress(file.read()), b"abc")
 
         os.remove("test.gz")
 
     def test_no_pywin32(self):
         path_ = sys.path.copy()
-        sys.path = [
-            x
-            for x in sys.path
-            if not sys.prefix.lower() in x.lower()
-        ]
+        sys.path = [x for x in sys.path if not sys.prefix.lower() in x.lower()]
         sys.modules = {
             x: y for x, y in sys.modules.items() if not x.startswith("win32")
         }
@@ -345,6 +348,9 @@ class TestFunctions(TestCase):
         )
 
     def test_get_file_content(self):
+        with open("test.json", "w") as file:
+            file.write('{"test": "test"}')
+
         with open("test.json") as file:
             self.assertDictEqual(
                 json.loads(get_file_content("test.json", encoding="latin-1")),
@@ -356,15 +362,19 @@ class TestFunctions(TestCase):
 
         WebScripts.utils.get_encodings = generator
 
-        with open("test.txt", 'wb') as file:
+        with open("test.txt", "wb") as file:
             file.write(bytes(range(256)))
 
         with self.assertRaises(Exception):
             get_file_content("test.txt")
 
         os.remove("test.txt")
+        os.remove("test.json")
 
     def test_get_real_path(self):
+        with open("test.json", "w") as file:
+            file.write('{"test": "test"}')
+
         self.assertIsNone(get_real_path(None))
         self.assertEqual("test.json", get_real_path("test.json"))
         self.assertEqual(
@@ -386,6 +396,8 @@ class TestFunctions(TestCase):
         with self.assertRaises(FileNotFoundError):
             get_real_path("test.test")
 
+        os.remove("test.json")
+
     def test_get_ip(self):
         env = {
             "X_REAL_IP": "ip1",
@@ -403,12 +415,15 @@ class TestFunctions(TestCase):
         self.assertEqual(get_ip(env), "ip4")
 
     def test_get_ini_dict(self):
-        if getcwd().endswith("test"):
-            self.assertDictEqual({"test": {"test": "test"}}, get_ini_dict("test.ini"))
-        else:
-            self.assertDictEqual(
-                {"test": {"test": "test"}}, get_ini_dict(path.normcase("test/test.ini"))
-            )
+
+        with open("test.ini", "w") as file:
+            file.write("[test]\ntest=test")
+
+        self.assertDictEqual(
+            {"test": {"test": "test"}}, get_ini_dict("test.ini")
+        )
+
+        os.remove("test.ini")
 
 
 if __name__ == "__main__":

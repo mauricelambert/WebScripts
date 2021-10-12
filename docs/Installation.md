@@ -1,6 +1,7 @@
 # Installation
 
 [![Install WebScripts - Youtube](https://img.youtube.com/vi/KxyEGPW1IlY/0.jpg)](http://www.youtube.com/watch?v=KxyEGPW1IlY)
+*Install WebScripts - Youtube video*
 
 ## Requirements
 This package require:

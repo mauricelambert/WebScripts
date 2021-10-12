@@ -45,7 +45,8 @@ print(copyright)
 
 from importlib.machinery import SourceFileLoader
 from setuptools.command.install import install
-from setuptools.command.develop import develop
+
+# from setuptools.command.develop import develop
 from setuptools import setup, find_packages
 from getpass import getuser
 from typing import Dict
@@ -55,7 +56,6 @@ import WebScripts as package
 import importlib.util
 import logging
 import json
-import stat
 import sys
 import os
 
@@ -133,7 +133,9 @@ class PostInstallScript(install):
             self.is_admin = os.getuid() == 0
 
             if not self.is_admin:
-                logging.warning("Permissions can not be change without privileges.")
+                logging.warning(
+                    "Permissions can not be change without privileges."
+                )
                 logging.warning("Owner can not be change without privileges.")
 
         if not self.is_admin:
@@ -151,16 +153,22 @@ class PostInstallScript(install):
             logging.info(f"GID will be {self.owner_property.pw_gid}")
 
         logging.debug(f"Change the owner of {filename}")
-        os.chown(filename, self.owner_property.pw_uid, self.owner_property.pw_gid)
+        os.chown(
+            filename, self.owner_property.pw_uid, self.owner_property.pw_gid
+        )
 
         logging.debug(f"Change the permissions of {filename}")
         os.chmod(filename, 0o600)
 
         if path.split(filename)[1] == "wsgi.py":
-            logging.debug(f"Add the execution permission for the owner on {filename}")
+            logging.debug(
+                f"Add the execution permission for the owner on {filename}"
+            )
             os.chmod(filename, 0o700)
         elif path.split(filename)[1] == "WebScripts":
-            logging.debug(f"Add the execution permission for the owner on {filename}")
+            logging.debug(
+                f"Add the execution permission for the owner on {filename}"
+            )
             os.chmod(filename, 0o700)
 
     def add_absolute_paths_in_configuration(self) -> None:
@@ -189,7 +197,9 @@ class PostInstallScript(install):
                             logging.debug("Add the script absolute path.")
                             script["path"] = py_filename
 
-                PostInstallScript.save_scripts_configurations(filename, configurations)
+                PostInstallScript.save_scripts_configurations(
+                    filename, configurations
+                )
                 continue
 
             for name, section_name in scripts.items():
@@ -217,7 +227,9 @@ class PostInstallScript(install):
 
                 server["modules_path"] = path.abspath(path.join(*path_))
 
-            PostInstallScript.save_scripts_configurations(filename, configurations)
+            PostInstallScript.save_scripts_configurations(
+                filename, configurations
+            )
 
     @staticmethod
     def save_scripts_configurations(
@@ -253,7 +265,9 @@ class PostInstallScript(install):
                 f for f in self.json_config_files if sub_path not in f
             ]
         else:
-            unused_configurations = [f for f in self.json_config_files if sub_path in f]
+            unused_configurations = [
+                f for f in self.json_config_files if sub_path in f
+            ]
 
         logging.info("Remove unused configuration files")
         for file in unused_configurations:
@@ -282,7 +296,9 @@ class PostInstallScript(install):
         manage_defaults_databases = importlib.util.module_from_spec(spec)
         loader.exec_module(manage_defaults_databases)
 
-        manage_defaults_databases.change_user_password("2", self.admin_password)
+        manage_defaults_databases.change_user_password(
+            "2", self.admin_password
+        )
         logging.info("Administrator is changed.")
 
     def run_custom_install(self) -> None:
@@ -334,7 +350,10 @@ setup(
     name=package.__name__,
     version=package.__version__,
     packages=find_packages(include=[package.__name__]),
-    scripts=[path.join("Scripts", "wsgi.py"), path.join("Scripts", "activate_this.py")],
+    scripts=[
+        path.join("Scripts", "wsgi.py"),
+        path.join("Scripts", "activate_this.py"),
+    ],
     author=package.__author__,
     author_email=package.__author_email__,
     maintainer=package.__maintainer__,
