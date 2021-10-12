@@ -80,7 +80,9 @@ def main() -> None:
         page = html.page(describe(object), html.document(object, name))
 
         for old_color, new_color in COLORS.items():
-            page = page.replace(f'bgcolor="{old_color}"', f'bgcolor="{new_color}"')
+            page = page.replace(
+                f'bgcolor="{old_color}"', f'bgcolor="{new_color}"'
+            )
 
         filename = path.join(path.dirname(__file__), "..", "..", "doc", name)
 

@@ -170,7 +170,7 @@ page = Template(
             </div>
 
             <div  id="script_outputs">
-                
+
             </div>
         </div>
 
@@ -204,23 +204,23 @@ page = Template(
             document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";
             add_buttons();
             script =  {
-                "content_type": "text/plain", 
-                "name": "/error_pages/request/${code}", 
+                "content_type": "text/plain",
+                "name": "/error_pages/request/${code}",
                 "args": [
-                    { 
-                        "input": false, 
+                    {
+                        "input": false,
                         "name": "title"
                     },
-                    { 
-                        "input": false, 
+                    {
+                        "input": false,
                         "name": "request"
                     },
-                    { 
-                        "input": false, 
+                    {
+                        "input": false,
                         "name": "name"
                     },
-                    { 
-                        "input": false, 
+                    {
+                        "input": false,
                         "name": "code"
                     }
                 ]
@@ -260,7 +260,9 @@ def page_404(error: str) -> Tuple[str, Dict[str, str], List[bytes]]:
     return send_error_page(error, "404")
 
 
-def send_error_page(error: str, code: str) -> Tuple[str, Dict[str, str], List[bytes]]:
+def send_error_page(
+    error: str, code: str
+) -> Tuple[str, Dict[str, str], List[bytes]]:
 
     """This function returns the default error code, headers and formatted pages."""
 
@@ -272,7 +274,11 @@ def send_error_page(error: str, code: str) -> Tuple[str, Dict[str, str], List[by
             "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
             "Content-Type": "text/html; charset=utf-8",
         },
-        [page.substitute(code=code, nonce=nonce, message=error).encode("utf-8")],
+        [
+            page.substitute(code=code, nonce=nonce, message=error).encode(
+                "utf-8"
+            )
+        ],
     )
 
 
@@ -300,7 +306,9 @@ class Report:
                 "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
                 "Content-Type": "text/html; charset=utf-8",
             },
-            page.substitute(code=code, nonce=nonce, message=f"Report an error {code}"),
+            page.substitute(
+                code=code, nonce=nonce, message=f"Report an error {code}"
+            ),
         )
 
 
@@ -308,7 +316,9 @@ class Request:
 
     """This class implements pages for the report feature by default."""
 
-    def send_mail(configuration: ServerConfiguration, notification: str) -> None:
+    def send_mail(
+        configuration: ServerConfiguration, notification: str
+    ) -> None:
 
         """This function send a notification mail."""
 
@@ -321,11 +331,17 @@ class Request:
 
         try:
             if starttls:
-                server = SMTP(server_name, getattr(configuration, "smtp_port", 587))
+                server = SMTP(
+                    server_name, getattr(configuration, "smtp_port", 587)
+                )
             elif getattr(configuration, "smtp_ssl", None):
-                server = SMTP_SSL(server_name, getattr(configuration, "smtp_port", 465))
+                server = SMTP_SSL(
+                    server_name, getattr(configuration, "smtp_port", 465)
+                )
             else:
-                server = SMTP(server_name, getattr(configuration, "smtp_port", 25))
+                server = SMTP(
+                    server_name, getattr(configuration, "smtp_port", 25)
+                )
         except TimeoutError:
             return
 
@@ -353,7 +369,9 @@ class Request:
 
         """This function save the report/request to a CSV file."""
 
-        filename = path.join(path.dirname(__file__), "..", "data", "requests.csv")
+        filename = path.join(
+            path.dirname(__file__), "..", "data", "requests.csv"
+        )
 
         with open(filename) as file:
             id_ = 0
@@ -407,7 +425,9 @@ class Request:
             f'\nRequest or report from "{name}": \n\tSubject: {subject} \n\tReason: {reason}'
         )
 
-        Request.save(user.name, code, referer, user_agent, subject, name, reason)
+        Request.save(
+            user.name, code, referer, user_agent, subject, name, reason
+        )
         Thread(
             target=Request.send_mail,
             args=(

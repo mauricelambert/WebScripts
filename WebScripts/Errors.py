@@ -20,8 +20,8 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This package implements a web server to run scripts or 
-executables from the command line and display the result 
+"""This package implements a web server to run scripts or
+executables from the command line and display the result
 in a web interface.
 
 This file contains all WebScripts errors class."""
@@ -31,7 +31,7 @@ __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This package implements a web server to run scripts or 
+__description__ = """This package implements a web server to run scripts or
 executables from the command line and display the result in a web interface.
 
 This file contains all WebScripts errors class."""

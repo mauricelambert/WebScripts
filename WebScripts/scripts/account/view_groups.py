@@ -82,7 +82,9 @@ def main() -> None:
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.')
+            print(
+                f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.'
+            )
             sys.exit(3)
 
     print("<table>")

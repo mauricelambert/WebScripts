@@ -86,7 +86,9 @@ def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
         encoded_password.append(car)
         cipher.append(key[i % SIZE] ^ car)
 
-    hash_ = pbkdf2_hmac("sha512", bytes(encoded_password), key, iteration).hex()
+    hash_ = pbkdf2_hmac(
+        "sha512", bytes(encoded_password), key, iteration
+    ).hex()
     return bytes(cipher), hash_, iteration, key
 
 

@@ -21,7 +21,32 @@
 
 """This tools run scripts and display the result in a Web Interface.
 
-This file implement Pages (Api and Web system), script execution and right system."""
+This file implement Pages (Api and Web system), script execution and right
+system."""
+
+__version__ = "0.1.1"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = """This tools run scripts and display the result in a Web
+Interface.
+
+This file implement Pages (Api and Web system), script execution and right
+system."""
+license = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+__license__ = license
+__copyright__ = copyright
+
+__all__ = ["Pages"]
 
 from subprocess import Popen, PIPE, TimeoutExpired  # nosec
 from typing import Tuple, List, Dict
@@ -82,28 +107,6 @@ except ImportError:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.1.1"
-__author__ = "Maurice Lambert"
-__author_email__ = "mauricelambert434@gmail.com"
-__maintainer__ = "Maurice Lambert"
-__maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
-
-This file implement Pages (Api and Web system), script execution and right system."""
-__license__ = "GPL-3.0 License"
-__url__ = "https://github.com/mauricelambert/WebScripts"
-
-copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions.
-"""
-license = __license__
-__copyright__ = copyright
-
-__all__ = ["Pages"]
-
 
 @log_trace
 def execute_scripts(
@@ -115,7 +118,10 @@ def execute_scripts(
     is_auth: bool = False,
 ) -> Tuple[bytes, bytes]:
 
-    """This function execute script from script name and return output and errors."""
+    """
+    This function execute script from script name and return output and
+    errors.
+    """
 
     script = Pages.scripts.get(script_name)
     error = "No errors"
@@ -134,7 +140,12 @@ def execute_scripts(
     script_env = get_environ(environ, user, script)
 
     process = Popen(
-        arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env
+        arguments,
+        stdin=PIPE,
+        stdout=PIPE,
+        stderr=PIPE,
+        shell=False,
+        env=script_env,
     )  # nosec
 
     try:
@@ -175,8 +186,8 @@ def anti_XSS(json_value: JsonValue) -> JsonValue:
         return json_value
     else:
         raise NotImplementedError(
-            f"type({type(json_value)}) is not implemented, supported types are: "
-            "\n\t - str\n\t - int\n\t - list\n\t - dict\n\t - NoneType"
+            f"type({type(json_value)}) is not implemented, supported types "
+            "are: \n\t - str\n\t - int\n\t - list\n\t - dict\n\t - NoneType"
         )
 
 
@@ -192,16 +203,20 @@ def execution_logs(
 
     if process.returncode or stderr:
         Logs.error(
-            f"SCRIPT ERROR: script {script.name} user {user.name} code {process.returncode} STDERR {decode_output(stderr)}"
+            f"SCRIPT ERROR: script {script.name} user {user.name} code "
+            f"{process.returncode} STDERR {decode_output(stderr)}"
         )
     else:
         Logs.debug(
-            f'SCRIPT "{script.name}" executed without error for user named "{user.name}".'
+            f'SCRIPT "{script.name}" executed without error for '
+            f'user named "{user.name}".'
         )
 
 
 @log_trace
-def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str, str]:
+def get_environ(
+    environ: _Environ, user: User, script: ScriptConfig
+) -> Dict[str, str]:
 
     """This function builds the environment variables for the new process."""
 
@@ -213,7 +228,8 @@ def get_environ(environ: _Environ, user: User, script: ScriptConfig) -> Dict[str
     to_delete = [
         key
         for key in script_env.keys()
-        if key in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
+        if key
+        in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
     ]
     for key in to_delete:
         del script_env[key]
@@ -252,28 +268,37 @@ def check_right(user: User, configuration: ScriptConfig) -> bool:
     ):
         return check_categories_scripts_access(user, configuration)
     else:
-        Logs.error(f"HTTP 403: Access denied for {user.name} on {configuration.name}")
+        Logs.error(
+            f"HTTP 403: Access denied for {user.name} on {configuration.name}"
+        )
         return False
 
 
 @log_trace
-def check_categories_scripts_access(user: User, configuration: ScriptConfig) -> bool:
+def check_categories_scripts_access(
+    user: User, configuration: ScriptConfig
+) -> bool:
 
     """This function check access on script and categories."""
 
-    if any([fnmatch(configuration.category, access) for access in user.categories]):
+    if any(
+        [fnmatch(configuration.category, access) for access in user.categories]
+    ):
         Logs.info(
-            f"{user.name} get access to category {configuration.category} ({user.categories})"
+            f"{user.name} get access to category {configuration.category}"
+            f" ({user.categories})"
         )
         return True
     elif any([fnmatch(configuration.name, access) for access in user.scripts]):
         Logs.info(
-            f"{user.name} get access to script {configuration.name} ({user.scripts})"
+            f"{user.name} get access to script {configuration.name}"
+            f" ({user.scripts})"
         )
         return True
     else:
         Logs.error(
-            f"HTTP 403: {user.name} doesn't match with category ({configuration.category}) and script ({configuration.name})"
+            f"HTTP 403: {user.name} doesn't match with category "
+            f"({configuration.category}) and script ({configuration.name})"
         )
         return False
 
@@ -306,10 +331,18 @@ class Api:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function return a json string with script informations and arguments."""
+        """
+        This function return a json string with script informations and
+        arguments.
+        """
 
-        if server_configuration.auth_script and server_configuration.active_auth:
-            auth_script = Pages.scripts[server_configuration.auth_script].get_JSON_API()
+        if (
+            server_configuration.auth_script
+            and server_configuration.active_auth
+        ):
+            auth_script = Pages.scripts[
+                server_configuration.auth_script
+            ].get_JSON_API()
             auth_script["name"] = "/auth/"
             auth_script["category"] = "Authentication"
 
@@ -326,9 +359,14 @@ class Api:
 
         if (
             (not server_configuration.accept_unknow_user and user.id == 1)
-            or (not server_configuration.accept_unauthenticated_user and user.id == 0)
+            or (
+                not server_configuration.accept_unauthenticated_user
+                and user.id == 0
+            )
         ) and server_configuration.active_auth:
-            auth_script = Pages.scripts[server_configuration.auth_script].get_JSON_API()
+            auth_script = Pages.scripts[
+                server_configuration.auth_script
+            ].get_JSON_API()
             auth_script["name"] = "/auth/"
             auth_script["category"] = "Authentication"
 
@@ -358,15 +396,19 @@ class Api:
 
         if filename == server_configuration.auth_script:
             Logs.error(
-                f"HTTP 404 for {user.name} on /api/scripts/{filename} (auth script)"
+                f"HTTP 404 for {user.name} on /api/scripts/{filename}"
+                " (auth script)"
             )
             return "404", {}, b""
 
         if user.check_csrf and not TokenCSRF.check_csrf(
-            user, csrf_token, getattr(server_configuration, "csrf_max_time", 300)
+            user,
+            csrf_token,
+            getattr(server_configuration, "csrf_max_time", 300),
         ):
             Logs.error(
-                f"HTTP 403 for {user.name} on /api/scripts/{filename} (CSRF Token invalid)"
+                f"HTTP 403 for {user.name} on /api/scripts/{filename}"
+                " (CSRF Token invalid)"
             )
             return "403", {}, b""
 
@@ -376,7 +418,10 @@ class Api:
 
         if stdout is None:
             error_HTTP = stderr.decode()
-            Logs.error(f"HTTP {error_HTTP} for {user.name} on /api/scripts/{filename}")
+            Logs.error(
+                f"HTTP {error_HTTP} for {user.name} on "
+                f"/api/scripts/{filename}"
+            )
             return error_HTTP, {}, b""
 
         response_object = {
@@ -384,7 +429,9 @@ class Api:
             "stderr": decode_output(stderr),
             "code": code,
             "Content-Type": Pages.scripts[filename].content_type,
-            "Stderr-Content-Type": Pages.scripts[filename].stderr_content_type,
+            "Stderr-Content-Type": (
+                Pages.scripts[filename].stderr_content_type
+            ),
             "error": error,
         }
 
@@ -414,12 +461,19 @@ class Web:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function return the index page (error code, headers, content)."""
+        """
+        This function return the index page (error code, headers, content).
+        """
 
         return (
             "200 OK",
             {
-                "Content-Security-Policy": "default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='"
+                "Content-Security-Policy": (
+                    "default-src 'self'; form-action 'none'; frame-ancestors"
+                    " 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBG"
+                    "ESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHs"
+                    "MYpCdGdSryg=='"
+                )
             },
             CallableFile.template_index,
         )
@@ -446,7 +500,8 @@ class Web:
 
         if not check_right(user, script):
             Logs.error(
-                f"HTTP 403: Access denied for {user.name} on {filename} (/web/doc/ request)"
+                f"HTTP 403: Access denied for {user.name} on {filename} "
+                "(/web/doc/ request)"
             )
             return "403", {}, b""
 
@@ -460,7 +515,10 @@ class Web:
         if script.documentation_file is not None and path.isfile(docfile):
             return (
                 "200 OK",
-                {"Content-Type": f"{script.documentation_content_type}; charset=utf-8"},
+                {
+                    "Content-Type": f"{script.documentation_content_type};"
+                    " charset=utf-8"
+                },
                 get_file_content(script.documentation_file),
             )
         else:
@@ -472,7 +530,8 @@ class Web:
                 return (
                     "200 OK",
                     {
-                        "Content-Type": f"{script.documentation_content_type}; charset=utf-8"
+                        "Content-Type": f"{script.documentation_content_type};"
+                        " charset=utf-8"
                     },
                     get_file_content(doc),
                 )
@@ -492,12 +551,14 @@ class Web:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """ "This function return Web (HTML) response (error code, headers and page)
-        to call script and print script output"""
+        """This function return Web (HTML) response
+        (error code, headers and page) to call script
+        and print script output"""
 
         if filename == server_configuration.auth_script:
             Logs.error(
-                f"HTTP 404 for {user.name} on /web/scripts/{filename} (auth script)"
+                f"HTTP 404 for {user.name} on /web/scripts/{filename}"
+                " (auth script)"
             )
             return "404", {}, b""
 
@@ -509,7 +570,8 @@ class Web:
 
         if not check_right(user, script):
             Logs.error(
-                f"HTTP 403: Access denied for {user.name} on {filename} (/web/scripts/ request)"
+                f"HTTP 403: Access denied for {user.name} on {filename}"
+                " (/web/scripts/ request)"
             )
             return "403", {}, b""
 
@@ -542,7 +604,8 @@ class Web:
             return callable_file(user)
         else:
             Logs.error(
-                f"HTTP 403 for {user.name} on /web/auth/ (active_auth configuration is not True)"
+                f"HTTP 403 for {user.name} on /web/auth/ (active_auth"
+                " configuration is not True)"
             )
             return "403", {}, b""
 
@@ -572,12 +635,17 @@ class Pages:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """A redirect page (Error code 301, javascript redirect and redirect title) to /web/ or /api/."""
+        """
+        A redirect page (Error code 301, javascript redirect and redirect
+        title) to /web/ or /api/.
+        """
 
         return (
             "301 Moved Permanently",
             {"Location": "/web/"},
-            '<!-- To use API go to this URL: /api/ --><html><body><h1>Index page is /web/</h1><a href="/web/">Please click here</a><script>window.location="/web/"</script></html>',
+            "<!-- To use API go to this URL: /api/ --><html><body><h1>"
+            'Index page is /web/</h1><a href="/web/">Please click here'
+            '</a><script>window.location="/web/"</script></html>',
         )
 
     @log_trace
@@ -636,13 +704,16 @@ class Pages:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function return check auth and return headers, error and page."""
+        """
+        This function return check auth and return headers, error and page.
+        """
 
         ip = get_ip(environ)
 
         if not server_configuration.active_auth:
             Logs.error(
-                f"HTTP 403: Access denied for {user.name} on /auth/ (active_auth configuration is not True)"
+                f"HTTP 403: Access denied for {user.name} on /auth/ "
+                "(active_auth configuration is not True)"
             )
             return "403", {}, b""
 
@@ -672,7 +743,8 @@ class Pages:
                 user_index = commande.index("--username") + 1
                 username = commande[user_index]
                 Pages.user_blacklist[username] = Blacklist(
-                    server_configuration, Pages.user_blacklist.pop(username, None)
+                    server_configuration,
+                    Pages.user_blacklist.pop(username, None),
                 )
 
         cookie = Session.build_session(user, get_ip(environ), Pages)
@@ -681,7 +753,8 @@ class Pages:
             "302 Found",
             {
                 # "Location": "/web/",
-                "Set-Cookie": f"SessionID={cookie}; Path=/; SameSite=Strict; Max-Age=3600; Secure; HttpOnly",
+                "Set-Cookie": f"SessionID={cookie}; Path=/; SameSite=Strict;"
+                " Max-Age=3600; Secure; HttpOnly",
             },
             "",
         )

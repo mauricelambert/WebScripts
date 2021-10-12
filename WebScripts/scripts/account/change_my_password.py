@@ -60,7 +60,9 @@ def parse_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("old_password", help="Your current password")
     parser.add_argument("password", help="New password")
-    parser.add_argument("password_confirmation", help="New password configuration")
+    parser.add_argument(
+        "password_confirmation", help="New password configuration"
+    )
     return parser.parse_args()
 
 

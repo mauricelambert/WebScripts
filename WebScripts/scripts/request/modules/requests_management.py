@@ -51,14 +51,10 @@ __all__ = [
     "delete_request",
 ]
 
-from time import time, strftime, localtime
-from base64 import b64encode, b64decode
-from typing import Tuple, List, TypeVar
-from os import environ, path, replace
 from collections.abc import Iterator
 from collections import namedtuple
+from os import path, replace
 from html import escape
-import json
 import csv
 
 Request = namedtuple(
@@ -102,7 +98,8 @@ def get_requests() -> Iterator[Request]:
     yield from map(
         Request._make,
         csv.reader(
-            open(path.join(DIRECTORY, FILE), "r", newline=""), quoting=csv.QUOTE_ALL
+            open(path.join(DIRECTORY, FILE), "r", newline=""),
+            quoting=csv.QUOTE_ALL,
         ),
     )
 

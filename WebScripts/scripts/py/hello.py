@@ -1,4 +1,6 @@
-def hello(environ, user, configuration, filename, arguments, inputs, csrf_token=None):
+def hello(
+    environ, user, configuration, filename, arguments, inputs, csrf_token=None
+):
     return "200 OK", {"Content-Type": "text/plain"}, f"Hello {user.name} !"
 
 

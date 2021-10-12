@@ -24,6 +24,42 @@
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
 
+__version__ = "0.0.8"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = """This tools run scripts and display the result in a Web
+Interface.
+
+This file implement some tools for WebScripts server
+and scripts (Logs, Namespace for configuration, ...)."""
+license = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+__license__ = license
+__copyright__ = copyright
+
+__all__ = [
+    "Logs",
+    "DefaultNamespace",
+    "log_trace",
+    "get_ip",
+    "get_file_content",
+    "get_real_path",
+    "get_encodings",
+    "get_ini_dict",
+    "server_path",
+    "rotator",
+    "namer",
+]
+
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType
 from os import path, _Environ, device_encoding, remove
@@ -55,41 +91,6 @@ else:
         WebScriptsConfigurationTypeError,
         WebScriptsSecurityError,
     )
-
-__version__ = "0.0.8"
-__author__ = "Maurice Lambert"
-__author_email__ = "mauricelambert434@gmail.com"
-__maintainer__ = "Maurice Lambert"
-__maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
-
-This file implement some tools for WebScripts server
-and scripts (Logs, Namespace for configuration, ...)."""
-__license__ = "GPL-3.0 License"
-__url__ = "https://github.com/mauricelambert/WebScripts"
-
-copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions.
-"""
-license = __license__
-__copyright__ = copyright
-
-__all__ = [
-    "Logs",
-    "DefaultNamespace",
-    "log_trace",
-    "get_ip",
-    "get_file_content",
-    "get_real_path",
-    "get_encodings",
-    "get_ini_dict",
-    "server_path",
-    "rotator",
-    "namer",
-]
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
@@ -134,7 +135,9 @@ class _Logs:
 
     def warning(log: str) -> None:
 
-        """This function implement basic python warning logs for WebScripts."""
+        """
+        This function implement basic python warning logs for WebScripts.
+        """
 
         indent_log = f"{' ' * 5}{log}"
 
@@ -145,7 +148,9 @@ class _Logs:
 
     def error(log: str) -> None:
 
-        """This function implement basic python error logs for WebScripts."""
+        """
+        This function implement basic python error logs for WebScripts.
+        """
 
         indent_log = f"{' ' * 7}{log}"
 
@@ -156,7 +161,9 @@ class _Logs:
 
     def critical(log: str) -> None:
 
-        """This function implement basic python critical logs for WebScripts."""
+        """
+        This function implement basic python critical logs for WebScripts.
+        """
 
         indent_log = f"{' ' * 4}{log}"
 
@@ -167,7 +174,10 @@ class _Logs:
 
     def exception(log: str) -> None:
 
-        """This function implement basic python exception (error) logs for WebScripts."""
+        """
+        This function implement basic python exception (error) logs for
+        WebScripts.
+        """
 
         indent_log = f"{' ' * 7}{log}"
 
@@ -310,7 +320,8 @@ def log_trace(function: FunctionType):
 
     @wraps(function)
     def wrapper(*args, **kwds):
-        # if isinstance(function, classmethod) or isinstance(function, staticmethod):
+        # if (isinstance(function, classmethod)
+        # or isinstance(function, staticmethod)):
         #    name = function.__func__.__name__
         # else:
         #    name = function.__name__
@@ -454,7 +465,8 @@ class DefaultNamespace(SimpleNamespace):
 
                 if log:
                     Logs.warning(
-                        f"{attribut} is an unexpected argument in {self.__class__.__name__}"
+                        f"{attribut} is an unexpected argument "
+                        f"in {self.__class__.__name__}"
                     )
 
         return unexpecteds
@@ -482,7 +494,9 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def export_as_json(self, name: str = None) -> None:
 
-        """This function export namespace values (useful for debugging)."""
+        """
+        This function export namespace values (useful for debugging).
+        """
 
         if name is None:
             name = f"export_{self.__class__.__name__}.json"
@@ -519,7 +533,8 @@ class DefaultNamespace(SimpleNamespace):
                     setattr(self, attribut, False)
                 else:
                     raise WebScriptsConfigurationError(
-                        f"{attribut} must be boolean (true or false) but is {value}"
+                        f"{attribut} must be boolean (true or false)"
+                        f" but is {value}"
                     )
 
             if type_ is int:
@@ -540,7 +555,8 @@ class DefaultNamespace(SimpleNamespace):
                         int_list.append(int(digit))
                     else:
                         raise WebScriptsConfigurationError(
-                            f"{attribut} must be a list of integer but contain {digit}"
+                            f"{attribut} must be a list of "
+                            f"integer but contain {digit}"
                         )
                 setattr(self, attribut, int_list)
 
@@ -570,8 +586,8 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def default_build(cls, **kwargs) -> DefaultNamespace:
 
-        """Default build for DefaultNamespace (set defaults, add values, check
-        requirements and unexpected values and build types)."""
+        """Default build for DefaultNamespace (set defaults, add values,
+        check requirements and unexpected values and build types)."""
 
         namespace = cls()
         namespace.set_defaults()
@@ -676,7 +692,9 @@ def get_real_path(file_path: str) -> str:
     ):
         return server_file_path
 
-    raise FileNotFoundError(f"[WebScripts] No such file or directory: '{file_path}'")
+    raise FileNotFoundError(
+        f"[WebScripts] No such file or directory: '{file_path}'"
+    )
 
 
 server_path = path.dirname(__file__)

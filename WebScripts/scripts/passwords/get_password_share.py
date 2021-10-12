@@ -62,7 +62,9 @@ PasswordInfo = TypeVar("PasswordInfo", str, int, bool)
 filename = path.join("data", "passwords.csv")
 
 
-def decrypt(key: bytes, password: bytes, hash_: str, iteration: int) -> PasswordOrFalse:
+def decrypt(
+    key: bytes, password: bytes, hash_: str, iteration: int
+) -> PasswordOrFalse:
 
     """This function checks the integrity of the
     password and returns the decrypted password."""
@@ -73,7 +75,8 @@ def decrypt(key: bytes, password: bytes, hash_: str, iteration: int) -> Password
         password_ += chr(key[i % key_length] ^ car)
 
     if compare_digest(
-        pbkdf2_hmac("sha512", password_.encode(), key, int(iteration)).hex(), hash_
+        pbkdf2_hmac("sha512", password_.encode(), key, int(iteration)).hex(),
+        hash_,
     ):
         return password_
     else:
@@ -143,7 +146,9 @@ def main() -> None:
             b64decode(key), b64decode(password[1]), password[3], password[4]
         )
     else:
-        print("TIME ERROR: The password for this token is no longer available.")
+        print(
+            "TIME ERROR: The password for this token is no longer available."
+        )
         sys.exit(4)
 
     if not password_:

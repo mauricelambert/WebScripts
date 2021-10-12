@@ -52,7 +52,10 @@ import sys
 
 
 def get_line(
-    date: str, dates: List[str], columns: List[str], table: Dict[str, Dict[str, int]]
+    date: str,
+    dates: List[str],
+    columns: List[str],
+    table: Dict[str, Dict[str, int]],
 ) -> str:
 
     """This function creates an HTML table row."""

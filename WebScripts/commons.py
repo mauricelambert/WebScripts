@@ -23,29 +23,16 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-from typing import TypeVar, Tuple, List, Dict
-from configparser import ConfigParser
-from collections.abc import Callable
-from subprocess import Popen, PIPE  # nosec
-from types import SimpleNamespace
-from base64 import b64encode
-from os import path, getcwd
-from platform import system
-from re import fullmatch
-from glob import iglob
-from time import time
-import secrets
-import json
-
 __version__ = "0.0.11"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
+__description__ = """This tools run scripts and display the result in a Web
+Interface.
 
 This file implement commons functions and class for WebScripts package."""
-__license__ = "GPL-3.0 License"
+license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
@@ -54,7 +41,7 @@ This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
 """
-license = __license__
+__license__ = license
 __copyright__ = copyright
 
 __all__ = [
@@ -68,6 +55,21 @@ __all__ = [
     "CallableFile",
     "ServerConfiguration",
 ]
+
+
+from typing import TypeVar, Tuple, List, Dict
+from configparser import ConfigParser
+from collections.abc import Callable
+from subprocess import Popen, PIPE  # nosec
+from types import SimpleNamespace
+from base64 import b64encode
+from os import path, getcwd
+from platform import system
+from re import fullmatch
+from glob import iglob
+from time import time
+import secrets
+import json
 
 if __package__:
     from .utils import (
@@ -176,7 +178,9 @@ class Argument(DefaultNamespace):
                 return [{"value": name, "input": False}]
 
         elif isinstance(argument["value"], int):
-            list_.append({"value": str(argument["value"]), "input": argument["input"]})
+            list_.append(
+                {"value": str(argument["value"]), "input": argument["input"]}
+            )
 
         elif isinstance(argument["value"], list):
             while "" in argument["value"]:
@@ -249,7 +253,9 @@ class ScriptConfig(DefaultNamespace):
     @log_trace
     def build_args(self, configuration: Configuration):
 
-        """This function build Arguments from self.args: List[Dict[str, str]]"""
+        """
+        This function build Arguments from self.args: List[Dict[str, str]]
+        """
 
         args = []
         for arg in self.args:
@@ -257,7 +263,9 @@ class ScriptConfig(DefaultNamespace):
 
             javascript_section = arg.get("javascript_section")
             if javascript_section is not None:
-                javascript_configuration = configuration.get(javascript_section)
+                javascript_configuration = configuration.get(
+                    javascript_section
+                )
 
                 if not isinstance(javascript_configuration, dict):
                     raise WebScriptsConfigurationError(
@@ -286,8 +294,12 @@ class ScriptConfig(DefaultNamespace):
 
         current_directory = getcwd()
 
-        json_scripts_config = getattr(server_configuration, "json_scripts_config", [])
-        ini_scripts_config = getattr(server_configuration, "ini_scripts_config", [])
+        json_scripts_config = getattr(
+            server_configuration, "json_scripts_config", []
+        )
+        ini_scripts_config = getattr(
+            server_configuration, "ini_scripts_config", []
+        )
 
         for dirname in (lib_directory, current_directory):
 
@@ -324,7 +336,9 @@ class ScriptConfig(DefaultNamespace):
     @classmethod
     @log_trace
     def get_scripts_from_configuration(
-        cls, configuration: Configuration, server_configuration: ServerConfiguration
+        cls,
+        configuration: Configuration,
+        server_configuration: ServerConfiguration,
     ) -> Dict[str, ScriptConfig]:
 
         """This function build scripts from ServerConfiguration."""
@@ -338,7 +352,8 @@ class ScriptConfig(DefaultNamespace):
 
             if script_section is None:
                 raise WebScriptsConfigurationError(
-                    f"section {section_config} doesn't exist (to configure script named {name})"
+                    f"section {section_config} doesn't exist (to configure "
+                    f"script named {name})"
                 )
             else:
                 script_section = script_section.copy()
@@ -370,13 +385,14 @@ class ScriptConfig(DefaultNamespace):
                 )
             elif not path.isfile(script_path):
                 raise WebScriptsConfigurationError(
-                    f"Location for script named {script_section['name']} ({script_path}) doesn't exist."
+                    f"Location for script named {script_section['name']} "
+                    f"({script_path}) doesn't exist."
                 )
 
             if script_section.get("launcher") is None:
-                script_section["launcher"] = cls.get_Windows_default_script_launcher(
-                    script_section
-                )
+                script_section[
+                    "launcher"
+                ] = cls.get_Windows_default_script_launcher(script_section)
 
             script_section["dirname"] = path.dirname(script_section["path"])
 
@@ -392,25 +408,32 @@ class ScriptConfig(DefaultNamespace):
 
     @staticmethod
     @log_trace
-    def get_Windows_default_script_launcher(script_config: Dict[str, JsonValue]) -> str:
+    def get_Windows_default_script_launcher(
+        script_config: Dict[str, JsonValue]
+    ) -> str:
 
-        """This function get the Windows default launcher to execute a file."""
+        """
+        This function get the Windows default launcher to execute a file.
+        """
 
         if system() != "Windows":
             return
 
-        Logs.info(f"Research default launcher for script {script_config['name']}")
+        Logs.info(
+            f"Research default launcher for script {script_config['name']}"
+        )
         extension = path.splitext(script_config["path"])[1]
 
         if (
             fullmatch(r"[.]\w+", extension) is None
         ):  # raise an error against command injection
             Logs.critical(
-                f'Security Error: this extension "{extension}" is a security risk '
-                "(for security reason this extension is blocked)."
+                f'Security Error: this extension "{extension}" is a security '
+                "risk (for security reason this extension is blocked)."
             )
             raise WebScriptsSecurityError(
-                f"Invalid extension: {extension} (for security reason this extension is blocked)"
+                f"Invalid extension: {extension} (for security "
+                "reason this extension is blocked)"
             )
 
         process = Popen(
@@ -441,18 +464,23 @@ class ScriptConfig(DefaultNamespace):
         if process.returncode != 0:
             return
         launcher = (
-            stdout.split()[0].split("=")[1].replace('"', "") if "=" in stdout else None
+            stdout.split()[0].split("=")[1].replace('"', "")
+            if "=" in stdout
+            else None
         )
 
         if launcher is not None:
-            Logs.warning(f"Launcher found for {script_config['name']}: {launcher}")
+            Logs.warning(
+                f"Launcher found for {script_config['name']}: {launcher}"
+            )
 
         return launcher
 
     @staticmethod
     @log_trace
     def get_script_path(
-        server_configuration: ServerConfiguration, script_config: Dict[str, JsonValue]
+        server_configuration: ServerConfiguration,
+        script_config: Dict[str, JsonValue],
     ) -> str:
 
         """This function return a script path from configuration."""
@@ -466,7 +494,8 @@ class ScriptConfig(DefaultNamespace):
                 )
                 if path.isfile(script_path):
                     Logs.info(
-                        f"Found script named: {script_config['name']} in location: {script_path}"
+                        f"Found script named: {script_config['name']} in "
+                        f"location: {script_path}"
                     )
                     return script_path
 
@@ -480,7 +509,10 @@ class ScriptConfig(DefaultNamespace):
         script_config: Dict[str, JsonValue], name: str, paths: List[str]
     ) -> str:
 
-        """This function get documentation from script configuration or search it in documentation path."""
+        """
+        This function get documentation from script configuration
+        or search it in documentation path.
+        """
 
         doc_file = script_config.get("documentation_file")
 
@@ -510,7 +542,8 @@ class ScriptConfig(DefaultNamespace):
 
             if args_config is None:
                 raise WebScriptsConfigurationError(
-                    f"{arguments_section} section doesn't exist in configuration"
+                    f"{arguments_section} "
+                    "section doesn't exist in configuration"
                 )
 
             arguments_config = []
@@ -519,7 +552,8 @@ class ScriptConfig(DefaultNamespace):
 
                 if arg_config is None:
                     raise WebScriptsConfigurationError(
-                        f'{arg_section} section doesn\'t exist in configuration (for argument named "{name}")'
+                        f"{arg_section} section doesn't exist "
+                        f'in configuration (for argument named "{name}")'
                     )
 
                 arg_config["name"] = name
@@ -534,7 +568,8 @@ class ScriptConfig(DefaultNamespace):
     @staticmethod
     @log_trace
     def get_script_config_from_specific_file_config(
-        script_config: Dict[str, JsonValue], configuration: Dict[str, JsonValue]
+        script_config: Dict[str, JsonValue],
+        configuration: Dict[str, JsonValue],
     ) -> Tuple[dict, dict]:
 
         """This function return all configuration and
@@ -544,9 +579,13 @@ class ScriptConfig(DefaultNamespace):
 
         if configuration_file is not None:
             if configuration_file.endswith(".json"):
-                configuration = json.loads(get_file_content(configuration_file))
+                configuration = json.loads(
+                    get_file_content(configuration_file)
+                )
             else:
-                config = ConfigParser(allow_no_value=True, inline_comment_prefixes="#")
+                config = ConfigParser(
+                    allow_no_value=True, inline_comment_prefixes="#"
+                )
                 config.read(configuration_file)
                 configuration = config._sections
 
@@ -562,7 +601,10 @@ class ScriptConfig(DefaultNamespace):
     @log_trace
     def get_JSON_API(self) -> Dict:
 
-        """This function return a dict for JSON API (visible configuration for user)."""
+        """
+        This function return a dict for JSON API
+        (visible configuration for user).
+        """
 
         json_api = self.get_dict()
 
@@ -607,7 +649,10 @@ class ScriptConfig(DefaultNamespace):
                     doc_dirname, doc_filename = path.split(doc)
                     no_extension, extension = path.splitext(doc_filename)
 
-                    if no_extension == path.splitext(path.basename(filename))[0]:
+                    if (
+                        no_extension
+                        == path.splitext(path.basename(filename))[0]
+                    ):
                         return doc
 
 
@@ -650,7 +695,9 @@ class CallableFile(Callable):
     template_index: str = get_file_content("static/templates/index.html")
 
     @log_trace
-    def __init__(self, type_: str, path_: str, filename: str, config: dict = None):
+    def __init__(
+        self, type_: str, path_: str, filename: str, config: dict = None
+    ):
         self.path = path_
         self.type = type_
         self.config = config
@@ -756,7 +803,11 @@ class CallableFile(Callable):
                 "200 OK",
                 {
                     "Content-Type": "text/html; charset=utf-8",
-                    "Content-Security-Policy": f"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{nonce}'",
+                    "Content-Security-Policy": (
+                        "default-src 'self'; form-action 'none'; "
+                        "frame-ancestors 'none'; script-src 'self' "
+                        f"'nonce-{nonce}'"
+                    ),
                 },
                 CallableFile.template_script
                 % {
@@ -816,7 +867,9 @@ class Blacklist:
     """This class implement blacklist."""
 
     def __init__(
-        self, configuration: ServerConfiguration, last_blacklist: Blacklist = None
+        self,
+        configuration: ServerConfiguration,
+        last_blacklist: Blacklist = None,
     ):
         self.time = time()
 
@@ -828,7 +881,10 @@ class Blacklist:
             if last_blacklist is None:
                 self.counter = 1
             else:
-                if last_blacklist.time + configuration.blacklist_time >= self.time:
+                if (
+                    last_blacklist.time + configuration.blacklist_time
+                    >= self.time
+                ):
                     self.counter = last_blacklist.counter + 1
                 else:
                     self.counter = 1
@@ -855,9 +911,14 @@ class Blacklist:
 
     def __str__(self) -> str:
 
-        """This function returns a string to represent the Blacklist object."""
+        """
+        This function returns a string to represent the Blacklist object.
+        """
 
-        return f"Blacklist(counter={self.counter}, blacklist_time={time() - self.time})"
+        return (
+            f"Blacklist(counter={self.counter}, "
+            f"blacklist_time={time() - self.time})"
+        )
 
 
 class TokenCSRF:

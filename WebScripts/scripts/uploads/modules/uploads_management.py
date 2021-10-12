@@ -66,7 +66,6 @@ from html import escape
 from math import ceil
 import json
 import csv
-import sys
 
 Upload = namedtuple(
     "Upload",
@@ -146,7 +145,8 @@ def get_files() -> Iterator[Upload]:
     yield from map(
         Upload._make,
         csv.reader(
-            open(path.join(DIRECTORY, FILE), "r", newline=""), quoting=csv.QUOTE_ALL
+            open(path.join(DIRECTORY, FILE), "r", newline=""),
+            quoting=csv.QUOTE_ALL,
         ),
     )
 
@@ -304,7 +304,9 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
         raise PermissionError(
             f"To write on this file ({file.name}) a group ID greater than {permission} is required."
         )
-    elif (attr == "read" or attr == "delete") and permission > max(owner["groups"]):
+    elif (attr == "read" or attr == "delete") and permission > max(
+        owner["groups"]
+    ):
         raise PermissionError(
             f"To read/delete this file ({file.name}) a group ID greater than {permission} is required."
         )
@@ -341,7 +343,9 @@ def get_content(file: Upload) -> str:
 
     """This function read, decompress and encode/decode the file content."""
 
-    with open(get_real_file_name(file.name, float(file.timestamp)), "rb") as file_:
+    with open(
+        get_real_file_name(file.name, float(file.timestamp)), "rb"
+    ) as file_:
         data = file_.read()
 
     if not file.no_compression and file.is_binary == "text":
@@ -377,13 +381,17 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
         return None, None
 
     if len(uploads) == 0:
-        raise FileNotFoundError(f"No such file or directory: {error_description}.")
+        raise FileNotFoundError(
+            f"No such file or directory: {error_description}."
+        )
 
     file = uploads[-1]
     filename = get_real_file_name(file.name, float(file.timestamp))
 
     if not path.exists(filename):
-        raise FileNotFoundError(f"No such file or directory: {error_description}.")
+        raise FileNotFoundError(
+            f"No such file or directory: {error_description}."
+        )
 
     only_filename = path.split(file.name)[1]
     return get_content(file), only_filename

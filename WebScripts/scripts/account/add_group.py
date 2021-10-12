@@ -52,7 +52,9 @@ import sys
 
 def main() -> None:
     if len(sys.argv) != 3 and not sys.argv[2].isdigit():
-        print("USAGE: add_group.py [NAME string required] [ID integer required]")
+        print(
+            "USAGE: add_group.py [NAME string required] [ID integer required]"
+        )
         sys.exit(1)
 
     try:

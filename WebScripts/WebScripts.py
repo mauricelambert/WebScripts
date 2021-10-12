@@ -24,6 +24,30 @@
 This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class)."""
 
+__version__ = "0.0.11"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = """This tools run scripts and display the result in a Web
+Interface.
+
+This file is the "main" file of this package (implement the main function,
+the Server class and the Configuration class)."""
+license = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+__license__ = license
+__copyright__ = copyright
+
+__all__ = ["Configuration", "Server", "main"]
+
 from types import SimpleNamespace, ModuleType, FunctionType
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
@@ -86,32 +110,11 @@ else:
         WebScriptsConfigurationTypeError,
     )
 
-__version__ = "0.0.11"
-__author__ = "Maurice Lambert"
-__author_email__ = "mauricelambert434@gmail.com"
-__maintainer__ = "Maurice Lambert"
-__maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
-
-This file is the "main" file of this package (implement the main function,
-the Server class and the Configuration class)."""
-__license__ = "GPL-3.0 License"
-__url__ = "https://github.com/mauricelambert/WebScripts"
-
-copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions.
-"""
-license = __license__
-__copyright__ = copyright
-
-__all__ = ["Configuration", "Server", "main"]
-
 NameSpace = TypeVar("NameSpace", SimpleNamespace, Namespace)
 FunctionOrNone = TypeVar("FunctionOrNone", FunctionType, None)
-Content = TypeVar("Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes)
+Content = TypeVar(
+    "Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes
+)
 
 
 class Configuration(DefaultNamespace):
@@ -214,7 +217,8 @@ class Configuration(DefaultNamespace):
                                 self.__dict__[key].append(value_)
                     else:
                         raise WebScriptsConfigurationTypeError(
-                            f"Configuration list {key}: {value} can't be add to {default_value}"
+                            f"Configuration list {key}: {value} can't be "
+                            f"add to {default_value}"
                         )
 
                 elif isinstance(default_value, dict):
@@ -243,8 +247,13 @@ class Server:
         self.error: str = "200 OK"
         self.pages = Pages()
 
+        self.version = (
+            sys.modules[__package__].__version__
+            if __package__
+            else __version__
+        )
         self.headers = {
-            "Server": f"WebScripts {sys.modules[__package__].__version__ if __package__ else __version__}",
+            "Server": f"WebScripts {self.version}",
             "Content-Type": "text/html; charset=utf-8",
         }
 
@@ -256,9 +265,10 @@ class Server:
             self.headers[
                 "Strict-Transport-Security"
             ] = "max-age=63072000; includeSubDomains; preload"
-            self.headers[
-                "Content-Security-Policy"
-            ] = "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
+            self.headers["Content-Security-Policy"] = (
+                "default-src 'self'; form-action 'none'; "
+                "frame-ancestors 'none'"
+            )
             self.headers["X-Frame-Options"] = "deny"
             self.headers["X-XSS-Protection"] = "1; mode=block"
             self.headers["X-Content-Type-Options"] = "nosniff"
@@ -266,9 +276,10 @@ class Server:
             self.headers["Cache-Control"] = "no-store"
             self.headers["Pragma"] = "no-store"
             self.headers["Clear-Site-Data"] = "*"
-            self.headers[
-                "Feature-Policy"
-            ] = "payment 'none'; geolocation 'none'; microphone 'none'; camera 'none'"
+            self.headers["Feature-Policy"] = (
+                "payment 'none'; geolocation 'none'; "
+                "microphone 'none'; camera 'none'"
+            )
             self.headers[
                 "Permissions-Policy"
             ] = "microphone=(),camera=(),payment=(),geolocation=()"
@@ -285,8 +296,8 @@ class Server:
                 configuration.exclude_auth_pages.append("/csp/debug/")
 
             self.headers["Content-Security-Policy-Report-Only"] = (
-                "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
-                "; report-uri /csp/debug/"
+                "default-src 'self'; form-action 'none'; "
+                "frame-ancestors 'none'; report-uri /csp/debug/"
             )
 
         self.add_module_or_package()
@@ -303,7 +314,8 @@ class Server:
             user = self.pages.user_blacklist.get(user.id, None)
             if user is not None and user.is_blacklist(self.configuration):
                 Logs.critical(
-                    f"User {name} is blacklisted ({user.counter} attempt using IP {ip})"
+                    f"User {name} is blacklisted "
+                    f"({user.counter} attempt using IP {ip})"
                 )
                 return False
 
@@ -333,7 +345,9 @@ class Server:
                     continue
 
                 if ip != user.ip:
-                    user = User.default_build(ip=ip, check_csrf=True, **self.unknow)
+                    user = User.default_build(
+                        ip=ip, check_csrf=True, **self.unknow
+                    )
                 else:
                     user.check_csrf = True
 
@@ -354,7 +368,9 @@ class Server:
             user = self.get_session(cookies.split("; "), ip)
 
         elif credentials is not None and credentials.startswith("Basic "):
-            credentials = b64decode(credentials.split(" ", maxsplit=1)[1]).decode()
+            credentials = b64decode(
+                credentials.split(" ", maxsplit=1)[1]
+            ).decode()
 
             if ":" in credentials:
                 username, password = credentials.split(":", maxsplit=1)
@@ -392,7 +408,10 @@ class Server:
             return user, not_blacklisted
 
         if user is None:
-            return User.default_build(ip=ip, **self.not_authenticated), not_blacklisted
+            return (
+                User.default_build(ip=ip, **self.not_authenticated),
+                not_blacklisted,
+            )
         else:
             return User.default_build(ip=ip, **self.unknow), not_blacklisted
 
@@ -442,7 +461,9 @@ class Server:
 
                     Logs.info(f"Find a javascript file: {file_path}")
 
-                    Pages.js_paths[filename] = CallableFile("js", file_path, filename)
+                    Pages.js_paths[filename] = CallableFile(
+                        "js", file_path, filename
+                    )
 
             for static_glob in self.configuration.statics_path:
 
@@ -514,7 +535,10 @@ class Server:
 
     @log_trace
     def get_attributes(
-        self, object_: object, attributes: List[str], is_not_package: bool = True
+        self,
+        object_: object,
+        attributes: List[str],
+        is_not_package: bool = True,
     ) -> Tuple[FunctionOrNone, str, bool]:
 
         """This function get recursive attribute from object."""
@@ -585,7 +609,9 @@ class Server:
 
                 return arguments, body.get("csrf_token"), True
 
-            Logs.warning('Section "arguments" is not defined in the JSON content.')
+            Logs.warning(
+                'Section "arguments" is not defined in the JSON content.'
+            )
             Logs.info(
                 "This request is not available for"
                 " the default functions of WebScripts"
@@ -602,7 +628,8 @@ class Server:
         return HTTP errors."""
 
         Logs.debug(
-            f"Request ({environ['REQUEST_METHOD']}) from {get_ip(environ)} on {environ['PATH_INFO']}."
+            f"Request ({environ['REQUEST_METHOD']}) from "
+            f"{get_ip(environ)} on {environ['PATH_INFO']}."
         )
 
         get_response, filename, is_not_package = self.get_function_page(
@@ -613,7 +640,8 @@ class Server:
 
         if not not_blacklisted:
             Logs.critical(
-                f'Blacklist: Error 403 on "{environ["PATH_INFO"]}" for "{user.name}" (ID: {user.id}).'
+                f'Blacklist: Error 403 on "{environ["PATH_INFO"]}" for '
+                f'"{user.name}" (ID: {user.id}).'
             )
             return self.page_403(None, respond)
 
@@ -625,7 +653,9 @@ class Server:
             inputs = []
 
         if is_not_package and not is_webscripts_request:
-            Logs.error(f'HTTP 406: for "{user.name}" on "{environ["PATH_INFO"]}"')
+            Logs.error(
+                f'HTTP 406: for "{user.name}" on "{environ["PATH_INFO"]}"'
+            )
             error = "406"
         else:
             error: str = None
@@ -633,7 +663,10 @@ class Server:
         if (
             (
                 (not self.configuration.accept_unknow_user and user.id == 1)
-                or (not self.configuration.accept_unauthenticated_user and user.id == 0)
+                or (
+                    not self.configuration.accept_unauthenticated_user
+                    and user.id == 0
+                )
             )
             and self.configuration.active_auth
         ) and (
@@ -695,7 +728,10 @@ class Server:
 
     @log_trace
     def send_headers(
-        self, respond: FunctionType, error: str = None, headers: Dict[str, str] = None
+        self,
+        respond: FunctionType,
+        error: str = None,
+        headers: Dict[str, str] = None,
     ) -> None:
 
         """This function send error code, message and headers."""
@@ -725,7 +761,10 @@ class Server:
 
         error_code = "404 Not Found"
         urls = "\n\t - ".join(self.get_URLs())
-        error = f"This URL: {url}, doesn't exist on this server.\nURLs:\n\t - {urls}"
+        error = (
+            f"This URL: {url}, doesn't exist"
+            f" on this server.\nURLs:\n\t - {urls}"
+        )
         Logs.error(f"HTTP 404 on {url}")
         return self.send_error_page(error_code, error.encode(), respond)
 
@@ -753,7 +792,9 @@ class Server:
         """This function return error 406 web page."""
 
         error_code = "406 Not Acceptable"
-        error = b"Not Acceptable, your request is not a valid WebScripts request."
+        error = (
+            b"Not Acceptable, your request is not a valid WebScripts request."
+        )
         return self.send_error_page(error_code, error, respond)
 
     @log_trace
@@ -850,7 +891,8 @@ def parse_args() -> Namespace:
 
     dev = parser.add_argument_group(
         "DEV",
-        "Arguments for development and debugging [do NOT use these arguments in production !]",
+        "Arguments for development and debugging [do NOT use these arguments "
+        "in production !]",
     )
     dev.add_argument(
         "-d",
@@ -873,7 +915,8 @@ def parse_args() -> Namespace:
     auth.add_argument(
         "-a",
         "--active-auth",
-        help="Disable authentication page [Disable auth (force to accept unknow and unauthenticated user)].",
+        help="Disable authentication page [Disable auth (force to accept "
+        "unknow and unauthenticated user)].",
         action="store_false",
         default=None,
     )
@@ -983,7 +1026,9 @@ def parse_args() -> Namespace:
         help="Log level for ROOT logger.",
         choices=["0", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
     )
-    logs.add_argument("-f", "--log-filename", help="Log filename for ROOT logger.")
+    logs.add_argument(
+        "-f", "--log-filename", help="Log filename for ROOT logger."
+    )
     logs.add_argument("--log-format", help="Format for ROOT logger.")
     logs.add_argument("--log-date-format", help="Date format for ROOT logger.")
     logs.add_argument("--log-encoding", help="Encoding for ROOT logger.")
@@ -1024,7 +1069,8 @@ def parse_args() -> Namespace:
     smtp.add_argument(
         "--admin-adresses",
         "--a-adr",
-        help="The admintrators email addresses to receive the email notifications.",
+        help="The admintrators email addresses to receive the email "
+        "notifications.",
         nargs="+",
         action="extend",
     )
@@ -1098,7 +1144,10 @@ def logs_configuration(configuration: NameSpace) -> None:
 
     if isinstance(configuration.log_level, int):
         pass
-    elif isinstance(configuration.log_level, str) and configuration.log_level.isdigit():
+    elif (
+        isinstance(configuration.log_level, str)
+        and configuration.log_level.isdigit()
+    ):
         configuration.log_level = int(configuration.log_level)
     elif isinstance(configuration.log_level, str):
         configuration.log_level = getattr(logging, configuration.log_level, 0)
@@ -1145,7 +1194,8 @@ def add_configuration(
     current_configuration.build_types()
 
     Logs.debug(
-        f"Add configurations in ServerConfiguration: {current_configuration.get_dict()}"
+        "Add configurations in ServerConfiguration: "
+        f"{current_configuration.get_dict()}"
     )
     configuration.add_conf(**current_configuration.get_dict())
     return configuration
@@ -1162,7 +1212,8 @@ def configure_logs_system() -> None:
             mkdir("logs")
         except PermissionError:
             Logs.error(
-                "Get a PermissionError to create " "the non-existent ./logs directory."
+                "Get a PermissionError to create "
+                "the non-existent ./logs directory."
             )
         else:
             Logs.info("./logs directory is created.")
@@ -1173,7 +1224,8 @@ def configure_logs_system() -> None:
     )
 
     logging.basicConfig(
-        format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)",
+        format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> "
+        "%(filename)s:%(lineno)d)",
         datefmt="%d/%m/%Y %H:%M:%S",
         encoding="utf-8",
         level=0,
@@ -1248,14 +1300,19 @@ def main() -> None:
     Logs.debug("Build server from configuration...")
     server = Server(configuration)
 
-    httpd = simple_server.make_server(server.interface, server.port, server.app)
+    httpd = simple_server.make_server(
+        server.interface, server.port, server.app
+    )
 
     send_mail(
-        configuration, f"Server is up on http://{server.interface}:{server.port}/."
+        configuration,
+        f"Server is up on http://{server.interface}:{server.port}/.",
     )
     hardening(server, Logs)
 
-    Logs.warning(f"Starting server on http://{server.interface}:{server.port}/ ...")
+    Logs.warning(
+        f"Starting server on http://{server.interface}:{server.port}/ ..."
+    )
     print(copyright)
 
     try:
@@ -1265,7 +1322,8 @@ def main() -> None:
         httpd.server_close()
 
     send_mail(
-        configuration, f"Server is down on http://{server.interface}:{server.port}/."
+        configuration,
+        f"Server is down on http://{server.interface}:{server.port}/.",
     )
 
 

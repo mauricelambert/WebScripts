@@ -143,7 +143,8 @@ def get_users() -> Iterator[User]:
     yield from map(
         User._make,
         csv.reader(
-            open(path.join(DIRECTORY, FILES[0]), "r", newline=""), quoting=csv.QUOTE_ALL
+            open(path.join(DIRECTORY, FILES[0]), "r", newline=""),
+            quoting=csv.QUOTE_ALL,
         ),
     )
 
@@ -155,7 +156,8 @@ def get_groups() -> Iterator[Group]:
     yield from map(
         Group._make,
         csv.reader(
-            open(path.join(DIRECTORY, FILES[1]), "r", newline=""), quoting=csv.QUOTE_ALL
+            open(path.join(DIRECTORY, FILES[1]), "r", newline=""),
+            quoting=csv.QUOTE_ALL,
         ),
     )
 
@@ -187,7 +189,9 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
     return named_tuple.__class__(**new)
 
 
-def change_user_password(id_: str, new_password: str, old_password: str = None) -> User:
+def change_user_password(
+    id_: str, new_password: str, old_password: str = None
+) -> User:
 
     """This function change a user password."""
 
@@ -205,7 +209,9 @@ def change_user_password(id_: str, new_password: str, old_password: str = None) 
                 enumerations = 90000 + randbelow(20000)
                 salt = token_bytes(32)
                 password = b64encode(
-                    pbkdf2_hmac("sha512", new_password.encode(), salt, enumerations)
+                    pbkdf2_hmac(
+                        "sha512", new_password.encode(), salt, enumerations
+                    )
                 ).decode()
 
                 user = user._replace(
@@ -306,7 +312,9 @@ def auth_apikey(apikey: str) -> User:
     return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
 
 
-def auth(username: str = None, password: str = None, apikey: str = None) -> User:
+def auth(
+    username: str = None, password: str = None, apikey: str = None
+) -> User:
 
     """This function returns a User from credentials
     (username and password) or an api key."""
@@ -323,7 +331,9 @@ def add_group(name: str, id_: int) -> Group:
 
     for group in get_groups():
         if name == group.name:
-            raise GroupError(f'unique constraint failed: name "{name}" is used')
+            raise GroupError(
+                f'unique constraint failed: name "{name}" is used'
+            )
         elif id_ == group.ID:
             raise GroupError(f"unique constraint failed: ID {id_} is used")
 

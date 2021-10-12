@@ -58,9 +58,15 @@ def parse_args() -> Namespace:
     """This function parse command line arguments."""
 
     parser = ArgumentParser()
-    parser.add_argument("--username", "-u", help="Username to authenticate the user.")
-    parser.add_argument("--password", "-p", help="Password to authenticate the user.")
-    parser.add_argument("--api-key", "-a", help="API key to authenticate the user.")
+    parser.add_argument(
+        "--username", "-u", help="Username to authenticate the user."
+    )
+    parser.add_argument(
+        "--password", "-p", help="Password to authenticate the user."
+    )
+    parser.add_argument(
+        "--api-key", "-a", help="API key to authenticate the user."
+    )
     return parser.parse_args()
 
 
@@ -70,7 +76,9 @@ def main() -> None:
 
     parser = parse_args()
 
-    if (parser.username is None or parser.password is None) and parser.api_key is None:
+    if (
+        parser.username is None or parser.password is None
+    ) and parser.api_key is None:
         print(
             "USAGES:\n\t - auth.py --username [USERNAME string required]"
             " --password [PASSWORD string required]\n\t - auth.py --api-key"

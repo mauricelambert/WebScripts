@@ -21,7 +21,32 @@
 
 """This tools run scripts and display the result in a Web Interface.
 
-This file implement the hardening audit of the WebScripts installation and configuration."""
+This file implement the hardening audit of the WebScripts installation and
+configuration."""
+
+__version__ = "0.0.4"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = """This tools run scripts and display the result in a Web
+Interface.
+
+This file implement the hardening audit of the WebScripts installation and
+configuration."""
+license = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+__license__ = license
+__copyright__ = copyright
+
+__all__ = ["Report", "Rule", "Audit", "SEVERITY", "main"]
 
 from email.message import EmailMessage
 from os import getcwd, path, listdir
@@ -42,28 +67,6 @@ import json
 import stat
 import sys
 import os
-
-__version__ = "0.0.4"
-__author__ = "Maurice Lambert"
-__author_email__ = "mauricelambert434@gmail.com"
-__maintainer__ = "Maurice Lambert"
-__maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
-
-This file implement the hardening audit of the WebScripts installation and configuration."""
-__license__ = "GPL-3.0 License"
-__url__ = "https://github.com/mauricelambert/WebScripts"
-
-copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions.
-"""
-license = __license__
-__copyright__ = copyright
-
-__all__ = ["Report", "Rule", "Audit", "SEVERITY", "main"]
 
 Server = TypeVar("Server")
 Logs = TypeVar("Logs")
@@ -142,12 +145,16 @@ class Report:
             self.reports_dict["ALL"].append(audit)
             self.reports_dict[rule.severity].append(audit)
             self.reports_dict["SCORING"]["total"] += rule.level
-            self.reports_dict["SCORING"][f"{rule.severity} total"] += rule.level
+            self.reports_dict["SCORING"][
+                f"{rule.severity} total"
+            ] += rule.level
 
             if not rule.is_OK:
                 self.reports_dict["FAIL"].append(audit)
                 self.reports_dict["SCORING"]["fail"] += rule.level
-                self.reports_dict["SCORING"][f"{rule.severity} fail"] += rule.level
+                self.reports_dict["SCORING"][
+                    f"{rule.severity} fail"
+                ] += rule.level
 
             for attribut in Rule.__dataclass_fields__.keys():
 
@@ -179,44 +186,76 @@ class Report:
             self.as_json()
 
         table_fail = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
         )
         for rule in self.reports_dict["FAIL"]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_fail += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_fail += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
         table_critical = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
         )
         for rule in self.reports_dict[SEVERITY.CRITICAL.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_critical += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_critical += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
         table_high = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
         )
         for rule in self.reports_dict[SEVERITY.HIGH.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_high += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_high += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
         table_medium = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
         )
         for rule in self.reports_dict[SEVERITY.MEDIUM.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_medium += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_medium += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
-        table_low = f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+        table_low = (
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
+        )
         for rule in self.reports_dict[SEVERITY.LOW.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_low += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_low += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
         table_information = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}</td></tr>"
+            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+            "</td></tr>"
         )
         for rule in self.reports_dict[SEVERITY.INFORMATION.value]:
             class_HTML = f'class="{rule["severity"].lower()}"'
-            table_information += f"<tr><td {class_HTML}>{f'</td><td {class_HTML}>'.join(str(x) for x in rule.values())}</td></tr>"
+            table_information += (
+                f"<tr><td {class_HTML}>"
+                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
 
         self.reports_html = f"""
 <!DOCTYPE html>
@@ -227,8 +266,18 @@ class Report:
         <style type="text/css">
             html, body {{width: 100%; background-color: #222222;}}
             h1 {{text-align: center;}}
-            h1, h2, p, table, tr, td, li, ul, a {{color: #ffc26a; font-family : Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}}
-            tr, td {{margin: 0.5%; padding: 1%; padding-left: 0.1%; color: #b16b05; border: 1px solid #b16b05;}}
+            h1, h2, p, table, tr, td, li, ul, a {{
+                color: #ffc26a;
+                font-family : Arial, Helvetica, "Liberation Sans",
+                FreeSans, sans-serif;
+            }}
+            tr, td {{
+                margin: 0.5%;
+                padding: 1%;
+                padding-left: 0.1%;
+                color: #b16b05;
+                border: 1px solid #b16b05;
+            }}
             table {{width: 99%; background-color: #CCCCCC; color: #b16b05;}}
             .critical {{color: #B13D05; border: 1px solid #B13D05;}}
             .high {{color: #dd8a12; border: 1px solid #dd8a12;}}
@@ -253,13 +302,85 @@ class Report:
 
         <h2 id="scoring">SCORING</h2>
         <table>
-            <tr><td>Score</td><td>Fail</td><td>Total</td><td>Compliance (% pourcent)</td></tr>
-            <tr><td>All</td><td>{self.reports_dict["SCORING"]["fail"]}</td><td>{self.reports_dict["SCORING"]["total"]}</td><td>{100 - self.reports_dict["SCORING"]["fail"] * 100 / self.reports_dict["SCORING"]["total"]}</td></tr>
-            <tr><td class="critical">Critical</td><td class="critical">{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]}</td><td class="critical">{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}</td><td class="critical">{100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}</td></tr>
-            <tr><td class="high">High</td><td class="high">{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]}</td><td class="high">{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}</td><td class="high">{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}</td></tr>
-            <tr><td class="medium">Medium</td><td class="medium">{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]}</td><td class="medium">{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}</td><td class="medium">{100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}</td></tr>
-            <tr><td class="low">Low</td><td class="low">{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]}</td><td class="low">{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}</td><td class="low">{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}</td></tr>
-            <tr><td class="information">Information</td><td class="information">{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]}</td><td class="information">{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}</td><td class="information">{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}</td></tr>
+            <tr>
+                <td>Score</td>
+                <td>Fail</td>
+                <td>Total</td>
+                <td>Compliance (% pourcent)</td>
+            </tr>
+            <tr>
+                <td>All</td>
+                <td>{self.reports_dict["SCORING"]["fail"]}</td>
+                <td>{self.reports_dict["SCORING"]["total"]}</td>
+                <td>
+{(100 - self.reports_dict["SCORING"]["fail"] * 100 /
+self.reports_dict["SCORING"]["total"])}
+                </td>
+            </tr>
+            <tr>
+                <td class="critical">Critical</td>
+                <td class="critical">
+{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]}
+                </td>
+                <td class="critical">
+{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}
+                </td><td class="critical">
+{(100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100
+/ self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"])}
+                </td>
+            </tr>
+            <tr>
+                <td class="high">High</td>
+                <td class="high">
+{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]}
+                </td>
+                <td class="high">
+{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}
+                </td>
+                <td class="high">
+{(100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100
+/ self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"])}
+                </td>
+            </tr>
+            <tr>
+                <td class="medium">Medium</td>
+                <td class="medium">
+{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]}
+                </td>
+                <td class="medium">
+{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}
+                </td>
+                <td class="medium">
+{(100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100
+/ self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"])}
+                </td>
+            </tr>
+            <tr>
+                <td class="low">Low</td>
+                <td class="low">
+{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]}
+                </td>
+                <td class="low">
+{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}
+                </td>
+                <td class="low">
+{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100
+/ self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}
+                </td>
+            </tr>
+            <tr>
+                <td class="information">Information</td>
+                <td class="information">
+{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]}
+                </td>
+                <td class="information">
+{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}
+                </td>
+                <td class="information">
+{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100
+/ self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}
+                </td>
+            </tr>
         </table>
 
         <h2 id="failed">FAILED</h2>
@@ -291,7 +412,7 @@ class Report:
         <table>
             {table_information}
         </table>
-        
+
     </body>
 </html>
         """
@@ -309,37 +430,73 @@ class Report:
         end = "..."
         fail_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict["FAIL"]
             ]
         )
         critical_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict[SEVERITY.CRITICAL.value]
             ]
         )
         high_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict[SEVERITY.HIGH.value]
             ]
         )
         medium_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict[SEVERITY.MEDIUM.value]
             ]
         )
         low_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict[SEVERITY.LOW.value]
             ]
         )
         information_text = "    - " + "\n    - ".join(
             [
-                f"{''.join(f'{attribut}:{value if not isinstance(value, str) or len(value) < (10 + len(end)) else value[:10] + end},{tab}' for attribut, value in rule.items())}"
+                "".join(
+                    f"{attribut}:" + str(value)
+                    if not isinstance(value, str)
+                    or len(value) < (10 + len(end))
+                    else value[:10] + end + f",{tab}"
+                    for attribut, value in rule.items()
+                )
                 for rule in self.reports_dict[SEVERITY.INFORMATION.value]
             ]
         )
@@ -349,14 +506,39 @@ class Report:
     |                                           |
     |  ** WebScripts Hardening Audit Report **  |
     |___________________________________________|
- 
+
  1. Scoring
-    - ALL:         Total:\t{self.reports_dict["SCORING"]["total"]},\t Fail:\t{self.reports_dict["SCORING"]["fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"]["fail"] * 100 / self.reports_dict["SCORING"]["total"]}%
-    - CRITICAL:    Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}%
-    - HIGH:       Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}%
-    - MEDIUM:      Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}%
-    - LOW:         Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}%
-    - INFORMATION: Total:\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Fail:\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Pourcent:\t{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100 / self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}%
+    - ALL:         Total:\t{self.reports_dict["SCORING"]["total"]},\
+\t Fail:\t{self.reports_dict["SCORING"]["fail"]},\t Pourcent:\t\
+{(100 - self.reports_dict["SCORING"]["fail"] * 100
+    / self.reports_dict["SCORING"]["total"])}%
+    - CRITICAL:    Total:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Fail:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t \
+Pourcent:\t{(100 - self.reports_dict["SCORING"]
+    [f"{SEVERITY.CRITICAL.value} fail"] * 100 /
+    self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"])}%
+    - HIGH:       Total:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Fail:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t\
+{(100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 /
+    self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"])}%
+    - MEDIUM:      Total:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Fail:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\
+\t{(100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100
+    / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"])}%
+    - LOW:         Total:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Fail:\t\
+{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t\
+{(100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100
+    / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"])}%
+    - INFORMATION: Total:\t{
+self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Fail:\
+\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t
+Pourcent:\t{(100 - self.reports_dict["SCORING"]
+    [f"{SEVERITY.INFORMATION.value} fail"] * 100 /
+    self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"])}%
 
  2. Failed
 {fail_text}
@@ -397,15 +579,18 @@ class Report:
         try:
             if starttls:
                 server = SMTP(
-                    server_name, getattr(self.server.configuration, "smtp_port", 587)
+                    server_name,
+                    getattr(self.server.configuration, "smtp_port", 587),
                 )
             elif getattr(self.server.configuration, "smtp_ssl", None):
                 server = SMTP_SSL(
-                    server_name, getattr(self.server.configuration, "smtp_port", 465)
+                    server_name,
+                    getattr(self.server.configuration, "smtp_port", 465),
                 )
             else:
                 server = SMTP(
-                    server_name, getattr(self.server.configuration, "smtp_port", 25)
+                    server_name,
+                    getattr(self.server.configuration, "smtp_port", 25),
                 )
         except TimeoutError:
             self.logs.error("Connection error with SMTP server")
@@ -616,7 +801,8 @@ class Audit:
             3,
             SEVERITY.LOW.value,
             "Installation",
-            f"WebScripts should be install in empty virtualenv (except pywin32 on Windows), modules found: {venv_modules}.",
+            "WebScripts should be install in empty virtualenv (except "
+            f"pywin32 on Windows), modules found: {venv_modules}.",
         )
 
     def audit_system_user(server: Server) -> Rule:
@@ -757,7 +943,10 @@ class Audit:
             "SMTP password protection",
             6,
             getattr(server.configuration, "smtp_password", None) is None
-            or (server.configuration.smtp_starttls or server.configuration.smtp_ssl),
+            or (
+                server.configuration.smtp_starttls
+                or server.configuration.smtp_ssl
+            ),
             7,
             SEVERITY.HIGH.value,
             "Configuration",
@@ -810,7 +999,10 @@ class Audit:
 
     def audits_scripts_stderr_content_type(server: Server) -> Iterator[Rule]:
 
-        """This function check the configuration of the script stderr content type."""
+        """
+        This function check the configuration of the script stderr content
+        type.
+        """
 
         for script in server.pages.scripts.values():
             yield Rule(
@@ -820,12 +1012,15 @@ class Audit:
                 8,
                 SEVERITY.CRITICAL.value,
                 "Script Configuration",
-                f"The content type of the stderr for {script.name} is not text/plain.",
+                "The content type of the stderr for "
+                f"{script.name} is not text/plain.",
             )
 
     def audits_scripts_content_type(server: Server) -> Iterator[Rule]:
 
-        """This function check the configuration of the script content type."""
+        """
+        This function check the configuration of the script content type.
+        """
 
         for script in server.pages.scripts.values():
             yield Rule(
@@ -835,7 +1030,8 @@ class Audit:
                 1,
                 SEVERITY.INFORMATION.value,
                 "Script Configuration",
-                f"The content type of the script named {script.name} is not text/plain.",
+                "The content type of the script named "
+                f"{script.name} is not text/plain.",
             )
 
     def audits_scripts_path(server: Server) -> Iterator[Rule]:
@@ -850,7 +1046,8 @@ class Audit:
                 7,
                 SEVERITY.MEDIUM.value,
                 "Script Configuration",
-                f"The path of {script.name} is not defined in configuration files or is not absolute.",
+                f"The path of {script.name} is not defined in configuration"
+                " files or is not absolute.",
             )
 
             delattr(script, "path_is_defined")
@@ -867,7 +1064,8 @@ class Audit:
                 7,
                 SEVERITY.MEDIUM.value,
                 "Script Configuration",
-                f"The path of {script.name} launcher is not defined in configuration files or is not absolute.",
+                f"The path of {script.name} launcher is not defined in"
+                " configuration files or is not absolute.",
             )
 
     def audit_admin_account(server: Server) -> Iterator[Rule]:
@@ -881,8 +1079,8 @@ class Audit:
 
             while line:
                 if (
-                    "pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo6OMusFKbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw=="
-                    in line
+                    "pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo6OMusF"
+                    "KbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw==" in line
                 ):
                     default_password = True
                     break
@@ -938,9 +1136,15 @@ class Audit:
                 path.join(server_path, "config", "server.json"),
             ]
 
-        important_filenames.append(path.join(server_path, "config", "loggers.ini"))
-        important_filenames.append(path.join(current_dir, "config", "server.ini"))
-        important_filenames.append(path.join(current_dir, "config", "server.json"))
+        important_filenames.append(
+            path.join(server_path, "config", "loggers.ini")
+        )
+        important_filenames.append(
+            path.join(current_dir, "config", "server.ini")
+        )
+        important_filenames.append(
+            path.join(current_dir, "config", "server.json")
+        )
 
         important_filenames += listdir("logs")
         important_filenames += listdir(path.join(server_path, "data"))
@@ -1050,7 +1254,8 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {path.split(filename)[1]} is not 600 (rw- --- ---).",
+                    f"File rights for {path.split(filename)[1]} is "
+                    "not 600 (rw- --- ---).",
                 )
 
         for filename in executable_filenames:
@@ -1062,7 +1267,8 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {path.split(filename)[1]} is not 0 for group and 0 for other (xxx --- ---).",
+                    f"File rights for {path.split(filename)[1]} is not 0 "
+                    "for group and 0 for other (xxx --- ---).",
                 )
 
     def audit_export_configuration(server: Server) -> Iterator[Rule]:
@@ -1076,7 +1282,8 @@ class Audit:
             3,
             SEVERITY.LOW.value,
             "Files",
-            "The export configuration file exist, should be deleted on production.",
+            "The export configuration file exist, "
+            "should be deleted on production.",
         )
 
     def log_rule(rule: Rule, logs: Logs) -> None:
@@ -1089,8 +1296,9 @@ class Audit:
             state = "FAIL"
 
         log = (
-            f"Audit -> state: {state}, ID: {rule.id_}, severity: {rule.severity}, level: {rule.level}, "
-            f'category: {rule.category}, subject: "{rule.subject}", reason: "{rule.reason}".'
+            f"Audit -> state: {state}, ID: {rule.id_}, severity: "
+            f"{rule.severity}, level: {rule.level}, category: {rule.category}"
+            f', subject: "{rule.subject}", reason: "{rule.reason}".'
         )
 
         if rule.is_OK or SEVERITY.INFORMATION.value == rule.severity:
