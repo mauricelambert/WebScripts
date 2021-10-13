@@ -75,9 +75,10 @@ def main() -> None:
 
     for file in files.values():
         print(
-            f'<tr><td><a href="get_file.py?filename={quote(file.name)}">{html.escape(file.name)}</a></td>'
-            f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(file.timestamp)))}</td>"
-            f"<td>{html.escape(file.read_permission)}</td>"
+            f'<tr><td><a href="get_file.py?filename={quote(file.name)}">'
+            f"{html.escape(file.name)}</a></td><td>"
+            + strftime("%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp)))
+            + f"</td><td>{html.escape(file.read_permission)}</td>"
             f"<td>{html.escape(file.write_permission)}</td>"
             f"<td>{html.escape(file.delete_permission)}</td>"
             f"<td>{html.escape(file.user)}</td></tr>"

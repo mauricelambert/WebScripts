@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file implement some functions to manage requests/reports on WebScripts
+#    This file implement some functions to manage requests/reports on
+#    WebScripts
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -21,7 +22,8 @@
 
 """This tools run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage requests/reports on WebScripts."""
+This file implement some functions to manage requests/reports on WebScripts.
+"""
 
 __version__ = "0.1.0"
 __author__ = "Maurice Lambert"
@@ -31,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tools run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage requests/reports on WebScripts"""
+This file implement some functions to manage requests/reports on WebScripts
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -83,7 +86,9 @@ DIRECTORY = path.join(
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
-    """This function returns a namedtuple without HTML special characters."""
+    """
+    This function returns a namedtuple without HTML special characters.
+    """
 
     new = {}
     for attribut, value in named_tuple._asdict().items():
@@ -117,7 +122,9 @@ def get_request(id_: str) -> Request:
 
 def delete_request(id_: str) -> Request:
 
-    """This function rewrite the request database without the specified request."""
+    """
+    This function rewrite the request database without the specified request.
+    """
 
     deleted_request = None
     filename = path.join(DIRECTORY, f"{FILE}.new")

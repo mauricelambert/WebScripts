@@ -83,7 +83,8 @@ def main() -> None:
 
     print(
         f'<a href="data:application/octet-stream;base64, {data}" '
-        f'download="{quote(filename)}">Click here to download {html.escape(filename)}</a>'
+        f'download="{quote(filename)}">Click here to download '
+        f"{html.escape(filename)}</a>"
     )
 
 

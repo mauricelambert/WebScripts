@@ -76,14 +76,17 @@ def parse_args() -> Namespace:
 
 def main() -> None:
 
-    """Main function to print users using default manager for user database."""
+    """
+    Main function to print users using default manager for user database.
+    """
 
     arguments = parse_args()
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
             print(
-                f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.'
+                f'ERROR: ids must be integer. "{html.escape(value)}" '
+                "is not digits."
             )
             sys.exit(3)
 
@@ -96,8 +99,12 @@ def main() -> None:
             or (arguments.names and user.name in arguments.names)
         ):
             print(
-                f"<tr><td>{html.escape(user.ID)}</td><td>{html.escape(user.name)}</td><td>{html.escape(user.IPs)}</td>"
-                f"<td>{html.escape(user.groups)}</td><td>{html.escape(user.apikey)}</td><td>{html.escape(user.categories)}</td>"
+                f"<tr><td>{html.escape(user.ID)}</td><td>"
+                f"{html.escape(user.name)}</td>"
+                f"<td>{html.escape(user.IPs)}</td>"
+                f"<td>{html.escape(user.groups)}</td>"
+                f"<td>{html.escape(user.apikey)}</td>"
+                f"<td>{html.escape(user.categories)}</td>"
                 f"<td>{html.escape(user.scripts)}</td></tr>"
             )
 

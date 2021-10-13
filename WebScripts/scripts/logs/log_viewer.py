@@ -59,12 +59,15 @@ def main() -> None:
 
     if len(sys.argv) < 2 or not sys.argv[1].isdigit():
         print(
-            "USAGE: log_viewer.py [length required int] [file1 required string] [fileX optional string]..."
-            "\n\tPossible values for files:\n\t\t - all\n\t\t - DEBUG\n\t\t - INFO\n\t\t - WARNING"
+            "USAGE: log_viewer.py [length required int] [file1 required "
+            "string] [fileX optional string]..."
+            "\n\tPossible values for files:\n\t\t - all\n\t\t - DEBUG\n\t\t"
+            " - INFO\n\t\t - WARNING"
             "\n\t\t - ERROR\n\t\t - CRITICAL"
         )
         print(
-            "ERROR: argument length is required and must be an integer, and a minimum file is required"
+            "ERROR: argument length is required and must be an "
+            "integer, and a minimum file is required"
         )
         sys.exit(1)
 

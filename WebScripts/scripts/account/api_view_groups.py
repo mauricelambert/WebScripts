@@ -76,7 +76,9 @@ def parse_args() -> Namespace:
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """
+    Main function to print users using default manager for group database.
+    """
 
     arguments = parse_args()
 

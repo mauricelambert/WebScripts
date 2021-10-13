@@ -67,10 +67,11 @@ def main() -> None:
 
     print(
         f"You delete this user request:\n\t"
-        f'The user "{request.UserName}" get an error code {request.ErrorCode} on "{request.Page}".'
-        f'\n\tThe user agent used for the request creation is "{request.UserAgent}".\n'
-        f"\n\tName: {request.Name}\n\t"
-        f"Time: {strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}"
+        f'The user "{request.UserName}" get an error code {request.ErrorCode}'
+        f' on "{request.Page}".\n\tThe user agent '
+        f'used for the request creation is "{request.UserAgent}".\n'
+        f"\n\tName: {request.Name}\n\tTime: "
+        f"{strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}"
         f"\n\tSubject: {request.Subject}"
         f"\n\tReason: {request.Reason}"
     )

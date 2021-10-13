@@ -86,13 +86,15 @@ def main() -> None:
 
     for file in files:
         file = file._replace(
-            ID=f'<a href="get_any_file.py?type=ID&identifier={quote(file.ID)}">{html.escape(file.ID)}</a>',
+            ID='<a href="get_any_file.py?type=ID&identifier='
+            f'{quote(file.ID)}">{html.escape(file.ID)}</a>',
             timestamp=strftime(
                 "%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp))
             ),
         )
         print(
-            f'<tr><td>{"</td><td>".join([html.escape(x) for x in file])}</td></tr>'
+            f'<tr><td>{"</td><td>".join([html.escape(x) for x in file])}'
+            "</td></tr>"
         )
 
     print("</table>")

@@ -164,7 +164,9 @@ def get_groups() -> Iterator[Group]:
 
 def get_apikey(id_: str, password: str) -> str:
 
-    """This function returns the API key after verification of authentication."""
+    """
+    This function returns the API key after verification of authentication.
+    """
 
     for user in get_users():
         if id_ == user.ID:
@@ -178,7 +180,9 @@ def get_apikey(id_: str, password: str) -> str:
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
-    """This function returns a namedtuple without HTML special characters."""
+    """
+    This function returns a namedtuple without HTML special characters.
+    """
 
     if not named_tuple:
         return named_tuple
@@ -239,7 +243,9 @@ def add_user(
     scripts: List[str] = ["*"],
 ) -> User:
 
-    """This function add user in database or raise a UserError."""
+    """
+    This function add user in database or raise a UserError.
+    """
 
     name = escape(name)
     for i, user in enumerate(get_users()):
@@ -421,7 +427,8 @@ def create_default_databases() -> None:
         User(
             "2",
             "Admin",
-            "pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo6OMusFKbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw==",
+            "pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo"
+            "6OMusFKbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw==",
             "c2FsdA==",
             "1000",
             "192.168.*,172.16.*,10.*,127.0.*",

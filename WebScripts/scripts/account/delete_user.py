@@ -59,7 +59,8 @@ def main() -> None:
             sys.exit(2)
 
         print(
-            f"Deleted user:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t - IPs: {user.IPs}\n\t - Groups: {user.groups}"
+            f"Deleted user:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t -"
+            f" IPs: {user.IPs}\n\t - Groups: {user.groups}"
         )
     else:
         print("USAGE: delete_user.py [ID integer required]")

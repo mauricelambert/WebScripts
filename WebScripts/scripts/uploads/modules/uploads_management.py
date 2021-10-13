@@ -302,13 +302,15 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
         and file.is_deleted != "deleted"
     ):
         raise PermissionError(
-            f"To write on this file ({file.name}) a group ID greater than {permission} is required."
+            f"To write on this file ({file.name}) a group ID greater"
+            f" than {permission} is required."
         )
     elif (attr == "read" or attr == "delete") and permission > max(
         owner["groups"]
     ):
         raise PermissionError(
-            f"To read/delete this file ({file.name}) a group ID greater than {permission} is required."
+            f"To read/delete this file ({file.name}) a group ID "
+            f"greater than {permission} is required."
         )
     elif (attr == "read" or attr == "delete") and file.is_deleted == "deleted":
         raise FileNotFoundError(f"No such file or directory: {file.name}.")
@@ -422,7 +424,8 @@ def get_real_file_name(filename: str, timestamp: float) -> str:
     return path.join(
         DIRECTORY,
         FILES_DIRECTORY,
-        f"{filename}_{strftime('%y%m%d_%H%M%S', localtime(timestamp))}{extension}",
+        f"{filename}_"
+        f"{strftime('%y%m%d_%H%M%S', localtime(timestamp))}{extension}",
     )
 
 

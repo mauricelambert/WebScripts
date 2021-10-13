@@ -176,7 +176,8 @@ def main() -> None:
     ):
         print(
             "USAGE: python3 new_password_share.py [password string required] "
-            "[time_in_hours float required] [maximum_number_of_views integer required]"
+            "[time_in_hours float required] [maximum_number_of_views "
+            "integer required]"
         )
         sys.exit(1)
 
@@ -193,7 +194,8 @@ def main() -> None:
     save(passwords, id_)
 
     print(
-        f'<a href="{get_url(f"{id_}:{key}")}">Click on this link or copy it to access to the password.</a>'
+        f'<a href="{get_url(f"{id_}:{key}")}">Click on this link or '
+        "copy it to access to the password.</a>"
     )
 
 

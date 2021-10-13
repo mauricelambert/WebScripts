@@ -78,7 +78,8 @@ def main() -> None:
         sys.exit(2)
 
     print(
-        f"Password changed for user:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t - IPs: {user.IPs}\n\t - Groups: {user.groups}"
+        f"Password changed for user:\n\t - Name: {user.name}\n\t - ID: "
+        f"{user.ID}\n\t - IPs: {user.IPs}\n\t - Groups: {user.groups}"
     )
 
 

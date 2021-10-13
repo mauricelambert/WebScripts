@@ -78,9 +78,9 @@ def main() -> None:
         if not_first:
             print(
                 f'<tr><td><a href="get_request.py?ID={quote(request.ID)}">'
-                f"{html.escape(request.ID)}</a></td>"
-                f"<td>{strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}</td>"
-                f"<td>{html.escape(request.UserName)}</td>"
+                f"{html.escape(request.ID)}</a></td><td>"
+                + strftime("%Y-%m-%d %H:%M:%S", localtime(float(request.Time)))
+                + f"</td><td>{html.escape(request.UserName)}</td>"
                 f"<td>{html.escape(request.Subject)}</td>"
                 f"<td>{html.escape(request.ErrorCode)}</td>"
                 f"<td>{html.escape(request.Page)}</td></tr>"

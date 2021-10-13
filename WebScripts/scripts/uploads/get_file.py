@@ -70,7 +70,9 @@ def main() -> None:
         sys.exit(127)
 
     print(
-        f'<a href="data:application/octet-stream;base64, {data}" download="{quote(filename)}">Click here to download {html.escape(filename)}</a>'
+        f'<a href="data:application/octet-stream;base64, {data}" download="'
+        f'{quote(filename)}">Click here to download '
+        f"{html.escape(filename)}</a>"
     )
 
 

@@ -97,7 +97,9 @@ def parse_args() -> Namespace:
 
 def main() -> None:
 
-    """Main function to add user using the default manager for user database."""
+    """
+    Main function to add user using the default manager for user database.
+    """
 
     arguments = parse_args()
 
@@ -118,7 +120,8 @@ def main() -> None:
         sys.exit(127)
 
     print(
-        f"User added:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t - IPs: {user.IPs}\n\t - Groups: {user.groups}"
+        f"User added:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t - IPs:"
+        f" {user.IPs}\n\t - Groups: {user.groups}"
     )
 
 

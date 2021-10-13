@@ -76,14 +76,17 @@ def parse_args() -> Namespace:
 
 def main() -> None:
 
-    """Main function to print users using default manager for group database."""
+    """
+    Main function to print users using default manager for group database.
+    """
 
     arguments = parse_args()
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
             print(
-                f'ERROR: ids must be integer. "{html.escape(value)}" is not digits.'
+                f'ERROR: ids must be integer. "{html.escape(value)}"'
+                " is not digits."
             )
             sys.exit(3)
 
@@ -96,7 +99,8 @@ def main() -> None:
             or (arguments.names and group.name in arguments.names)
         ):
             print(
-                f"<tr><td>{html.escape(group.ID)}</td><td>{html.escape(group.name)}</td></tr>"
+                f"<tr><td>{html.escape(group.ID)}</td>"
+                f"<td>{html.escape(group.name)}</td></tr>"
             )
 
     print("</table>")

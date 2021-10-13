@@ -49,7 +49,10 @@ __all__ = []
 from secrets import randbelow, choice
 import sys
 
-characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+characters = (
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP"
+    "QRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+)
 
 print("".join([choice(characters) for i in range(20 + randbelow(15))]))
 

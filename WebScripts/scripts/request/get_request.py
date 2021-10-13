@@ -66,10 +66,11 @@ def main() -> None:
         sys.exit(127)
 
     print(
-        f'The user "{request.UserName}" get an error code {request.ErrorCode} on "{request.Page}".'
-        f'\nThe user agent used for the request creation is "{request.UserAgent}".\n'
-        f"\nName: {request.Name}\n"
-        f"Time: {strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}"
+        f'The user "{request.UserName}" get an error code {request.ErrorCode}'
+        f' on "{request.Page}".\nThe user agent used '
+        f'for the request creation is "{request.UserAgent}".\n'
+        f"\nName: {request.Name}\nTime: "
+        f"{strftime('%Y-%m-%d %H:%M:%S', localtime(float(request.Time)))}"
         f"\nSubject: {request.Subject}"
         f"\nReason: {request.Reason}"
     )

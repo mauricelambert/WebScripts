@@ -161,7 +161,8 @@ def main() -> None:
         password[2] -= 1
     else:
         print(
-            "VIEWS ERROR: This password has been requested too many times, you can no longer access it."
+            "VIEWS ERROR: This password has been requested too many "
+            "times, you can no longer access it."
         )
         sys.exit(6)
 

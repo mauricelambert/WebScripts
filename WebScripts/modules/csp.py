@@ -79,7 +79,10 @@ def debug(
     return (
         "200 OK",
         {
-            "Content-Security-Policy": "default-src 'self'; form-action 'none'; frame-ancestors 'none'",
+            "Content-Security-Policy": (
+                "default-src 'self'; form-action 'none'; "
+                "frame-ancestors 'none'"
+            ),
             "Content-Type": "application/json; charset=utf-8",
         },
         json.dumps(csp_report, indent=4),
