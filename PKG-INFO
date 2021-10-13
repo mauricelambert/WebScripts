@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.2.1
+Version: 2.2.2
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -68,6 +68,7 @@ Description: # WebScripts
         ## Demo
         
         [![Demo WebScripts - Youtube](https://img.youtube.com/vi/2_hRBTRzl5w/0.jpg)](http://www.youtube.com/watch?v=2_hRBTRzl5w)
+        *Demonstration of WebScripts use - Youtube video*
         
         ## Requirements
         This package require:

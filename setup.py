@@ -64,17 +64,20 @@ arguments = [
     (
         "json-only",
         "j",
-        "Delete the file named server.ini, to keep only the JSON configuration.",
+        "Delete the file named server.ini, to keep only the JSON"
+        " configuration.",
     ),
     (
         "admin-password=",
         "p",
-        'Administrator password for the WebScripts account "Admin" (the default account).',
+        'Administrator password for the WebScripts account "Admin"'
+        " (the default account).",
     ),
     (
         "owner=",
         "o",
-        "The owner of WebScripts Server (set the owner of files on UNIX systems if you are installing with privileges).",
+        "The owner of WebScripts Server (set the owner of files on "
+        "UNIX systems if you are installing with privileges).",
     ),
     ("no-hardening", "n", "Do not harden during installation."),
 ]
@@ -277,11 +280,15 @@ class PostInstallScript(install):
 
     def change_admin_password(self) -> None:
 
-        """This function change the administrator password (default account named Admin)."""
+        """
+        This function change the administrator
+        password (default account named Admin).
+        """
 
         if not self.admin_password:
             logging.warning(
-                "The default administrator password is not changed (argument: --admin-password/-p is not used)."
+                "The default administrator password is not changed (argument:"
+                " --admin-password/-p is not used)."
             )
             return
 

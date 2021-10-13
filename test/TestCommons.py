@@ -529,7 +529,8 @@ class TestBlacklist(TestCase):
     def test___str__(self):
         blacklist = Blacklist(None, None)
         self.assertRegex(
-            str(blacklist), r"Blacklist\(counter=1, blacklist_time=\d+\.\d+\)"
+            str(blacklist),
+            r"Blacklist\(counter=1, blacklist_time=\d+\.\d+(e-\d{2})?\)",
         )
 
 
@@ -585,7 +586,7 @@ class TestSession(TestCase):
     def test___str__(self):
         self.assertRegex(
             str(self.session),
-            r"Session\(Time=\d+\.\d+, IP=127.0.0.1, Cookie=%(cookie)s, User=Default"
+            r"Session\(Time=\d+\.\d+(e-\d{2})?, IP=127.0.0.1, Cookie=%(cookie)s, User=Default"
             r"Namespace\(__required__=\[\], __optional__=\[\], __default__=\{\}, __types__=\{\}, id=0\)\)"
             % {"cookie": self.session.cookie},
         )
@@ -599,7 +600,7 @@ class TestSession(TestCase):
         self.assertEqual(f"0:{session.cookie}", token)
 
     def test_check_session(self):
-        token = Session.build_session(self.user, self.ip, self.pages)
+        Session.build_session(self.user, self.ip, self.pages)
 
         for session in self.pages.sessions.values():
             break

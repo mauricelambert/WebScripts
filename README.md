@@ -56,6 +56,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
 ## Demo
 
 [![Demo WebScripts - Youtube](https://img.youtube.com/vi/2_hRBTRzl5w/0.jpg)](http://www.youtube.com/watch?v=2_hRBTRzl5w)
+*Demonstration of WebScripts use - Youtube video*
 
 ## Requirements
 This package require:

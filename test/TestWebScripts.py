@@ -22,19 +22,17 @@
 
 """This file test the WebScripts.py file"""
 
-from os import path, getcwd, chdir, rename, listdir
+from os import path, getcwd, chdir, rename
 from unittest.mock import MagicMock, patch, Mock
-from base64 import b64decode, b64encode
+from base64 import b64decode
 from unittest import TestCase, main
 from types import ModuleType
 from shutil import rmtree
 from io import BytesIO
 
 import logging.config
-import importlib
 import json
 import sys
-import pdb
 
 dir_path = path.dirname(__file__)
 
