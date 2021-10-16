@@ -92,7 +92,7 @@
 	},
 
 	"config_change_my_password": {
-		"configuration_file": "./config/files/change_my_password.json"
+		"configuration_file": "./config/nt/files/change_my_password.json"
 	},
 
 	"config_show_licence": {

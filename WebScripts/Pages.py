@@ -754,7 +754,10 @@ class Pages:
             {
                 # "Location": "/web/",
                 "Set-Cookie": f"SessionID={cookie}; Path=/; SameSite=Strict;"
-                " Max-Age=3600; Secure; HttpOnly",
+                f""" Max-Age={getattr(
+                    server_configuration,
+                    'session_max_time',
+                    3600)}; Secure; HttpOnly""",
             },
             "",
         )
