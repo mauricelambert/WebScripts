@@ -60,6 +60,7 @@ The `SupportX` user with this list of glob syntax for categories `["*Account*", 
 ## Share: upload and download permissions
 
 Three permissions exists on the default file share:
+
  1. *Read* permission: download the file
  2. *Write* permission: write a new version of the file
      - **caution**: with write permission, the user can change all permissions on this file.
