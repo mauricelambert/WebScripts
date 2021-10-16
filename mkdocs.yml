@@ -19,6 +19,7 @@ nav:
     - Access and Permissions: Users_Access_and_Rights.md
     - API: API.md
     - Development and Administration Tools: Development_and_Administration_Tools.md
+    - File Share: File_Share.md
     - Customize:
         - WEB Interface: WEB_Interface.md
         - Modules: Modules.md
