@@ -31,7 +31,7 @@
 		"documentations_path": [
 			"./doc/*.html"
 		],
-		"modules": ["error_pages"],
+		"modules": ["error_pages", "share"],
 		"modules_path": ["./modules"],
 		"js_path": [
 			"./static/js/*.js"

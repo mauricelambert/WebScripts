@@ -165,7 +165,9 @@ Class methods inherited from <a href="builtins.html#tuple">builtins.tuple</a>:<b
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-delete_file"><strong>delete_file</strong></a>(name: str) -&gt; uploads_management.Upload</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;an&nbsp;uploaded&nbsp;file.</tt></dd></dl>
- <dl><dt><a name="-get_file"><strong>get_file</strong></a>(name: str) -&gt; Tuple[List[uploads_management.Upload], collections.Counter]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;history&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-get_file"><strong>get_file</strong></a>(name: str, id_: str = None) -&gt; Tuple[List[uploads_management.Upload], collections.Counter]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;history&nbsp;of&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+If&nbsp;name&nbsp;is&nbsp;None,&nbsp;this&nbsp;function&nbsp;get&nbsp;<a href="#Upload">Upload</a>&nbsp;by&nbsp;ID.</tt></dd></dl>
  <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(name: str = None, id_: str = None) -&gt; Tuple[str, str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;base64&nbsp;of&nbsp;the&nbsp;file<br>
 content&nbsp;and&nbsp;the&nbsp;filename&nbsp;(without&nbsp;check&nbsp;permissions).<br>
 &nbsp;<br>

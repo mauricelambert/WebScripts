@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This package implements a web server to run scripts or executables
-#    from the command line and display the result in a web interface.
+#    This tools run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify

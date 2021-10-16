@@ -203,7 +203,7 @@ def write_file(
             "hidden" if hidden else "visible",
             "exist",
             "binary" if binary else "text",
-            "compress" if no_compression else "",
+            "no_compression" if no_compression else "",
             str(timestamp),
             owner["name"],
             str(counter[name]),
@@ -369,18 +369,15 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
     Using an ID this function return the version of this ID."""
 
     if id_ is not None:
-
-        uploads = []
-        for file in get_files():
-            if file.ID == id_:
-                uploads.append(file)
-
         error_description = f'using "{id_}" as ID'
+
     elif name is not None:
-        uploads, counter = get_file(name)
         error_description = f'using "{name}" as name'
+
     else:
         return None, None
+
+    uploads, counter = get_file(name, id_=id_)
 
     if len(uploads) == 0:
         raise FileNotFoundError(
@@ -399,9 +396,11 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
     return get_content(file), only_filename
 
 
-def get_file(name: str) -> Tuple[List[Upload], Counter]:
+def get_file(name: str, id_: str = None) -> Tuple[List[Upload], Counter]:
 
-    """This function return the history of a file."""
+    """This function return the history of a file.
+
+    If name is None, this function get Upload by ID."""
 
     versions = []
     counter = Counter()
@@ -409,7 +408,7 @@ def get_file(name: str) -> Tuple[List[Upload], Counter]:
     for file in get_files():
         file = anti_XSS(file)
         counter[file.name] += 1
-        if file.name == name:
+        if file.name == name or (name is None and id_ == file.ID):
             versions.append(file)
 
     return versions, counter
