@@ -7,6 +7,7 @@ I propose two complete and secure deployment solutions:
 ## Deploy more easily and faster with docker
 
 [![Deploy WebScripts - Youtube](https://img.youtube.com/vi/NhRpaRCNVVs/0.jpg)](http://www.youtube.com/watch?v=NhRpaRCNVVs)
+
 *Deploy WebScripts - Youtube video*
 
  - Using [dockerhub](https://hub.docker.com/r/mauricelambert/webscripts)

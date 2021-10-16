@@ -56,3 +56,13 @@ The `SupportX` user with this list of glob syntax for categories `["*Account*", 
     - `password_generator.py`: The script name `password_generator.py` match with `*password*`.
     - `get_password_share.py`: The script name `get_password_share.py` match with `*password*`.
     - `new_password_share.py`: The script name `new_password_share.py` match with `*password*`.
+
+## Share: upload and download permissions
+
+Three permissions exists on the default file share:
+ 1. *Read* permission: download the file
+ 2. *Write* permission: write a new version of the file
+     - **caution**: with write permission, the user can change all permissions on this file.
+ 3. *Delete* permission: delete the file (the administrator can see all versions of the file)
+
+Permissions are a number (a group ID), to access a file a user needs a group ID greater than or equal to the permission.

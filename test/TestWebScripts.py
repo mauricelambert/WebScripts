@@ -22,10 +22,10 @@
 
 """This file test the WebScripts.py file"""
 
-from os import path, getcwd, chdir, rename
 from unittest.mock import MagicMock, patch, Mock
-from base64 import b64decode
+from os import path, getcwd, chdir, rename
 from unittest import TestCase, main
+from base64 import b64encode
 from types import ModuleType
 from shutil import rmtree
 from io import BytesIO

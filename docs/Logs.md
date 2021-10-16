@@ -50,6 +50,10 @@ In `console` logger i added *terminal colors* to quickly identify logs level:
  - `ERROR` logs are *purple*
  - `CRITICAL` logs are *red*
 
+### File Rotation and compression
+
+Log files rotate when the logs exceed 10MB and are compressed.
+
 ## Linux
 
 On linux *WebScripts* logs with level `DEBUG`, `INFO`, `WARNING`, `ERROR` and `CRITICAL` are redirected in **syslog**.

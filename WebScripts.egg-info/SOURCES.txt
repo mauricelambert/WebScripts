@@ -49,6 +49,7 @@ WebScripts/data/uploads/LICENSE_210725_181116.txt
 WebScripts/doc/empty.html
 WebScripts/modules/csp.py
 WebScripts/modules/error_pages.py
+WebScripts/modules/share.py
 WebScripts/scripts/account/add_group.py
 WebScripts/scripts/account/add_user.py
 WebScripts/scripts/account/api_view_groups.py
@@ -100,6 +101,7 @@ WebScripts/static/html/hardening.html
 WebScripts/static/html/index.html
 WebScripts/static/html/manage_defaults_databases.html
 WebScripts/static/html/requests_management.html
+WebScripts/static/html/share.html
 WebScripts/static/html/uploads_management.html
 WebScripts/static/html/utils.html
 WebScripts/static/images/webscripts_header.jpg
@@ -119,6 +121,7 @@ docs/Code_Analysis_for_Security.md
 docs/Default_Database.md
 docs/Deployment.md
 docs/Development_and_Administration_Tools.md
+docs/File_Share.md
 docs/Installation.md
 docs/Logs.md
 docs/Modules.md

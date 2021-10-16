@@ -65,26 +65,28 @@ pprint(loads(response.read()))
 
 ## Upload client
 
+For more details and other examples, see the [sharing documentation](https://webscripts.readthedocs.io/en/latest/File_Share/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/File-Share)).
+
 ### Linux
 
 #### Download
 ```bash
-curl -u 'Admin:Admin' -d '{"arguments":{"filename":{"value":"LICENSE.txt","input":false}}}' http://127.0.0.1:8000/api/scripts/get_file.py > download_link.html
+curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.extension --output - | gzip -d > file.extension
 ```
 
 #### Upload
 ```bash
-curl -u 'Admin:Admin' -d '{"arguments":{"name":{"value":"file.txt","input":false},"content":{"value":"data","input":true}}}' http://127.0.0.1:8000/api/scripts/upload_file.py
+curl -u 'Admin:Admin' -d 'data' http://127.0.0.1:8000/share/upload/file.extension
 ```
 
 ### Windows
 
 #### Download
 ```bash
-Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body '{"arguments":{"filename":{"value":"LICENSE.txt","input":false}}}' -Uri http://127.0.0.1:8000/api/scripts/get_file.py
+[System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.extension").Content) | Out-File -FilePath .\file.extension
 ```
 
 #### Upload
 ```bash
-Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body '{"arguments":{"name":{"value":"file.txt","input":false},"content":{"value":"data","input":true}}}' -Uri http://127.0.0.1:8000/api/scripts/upload_file.py
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.extension
 ```

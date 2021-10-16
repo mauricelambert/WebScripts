@@ -52,10 +52,17 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
     - Configurations: 
         - [server](https://webscripts.readthedocs.io/en/latest/Server_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration#custom-configurations))
         - [scripts](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#custom-configurations))
+ - Pre-installed and configured scripts and modules
+    - Account, permissions and [authentication system](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication))
+    - [Share files](https://webscripts.readthedocs.io/en/latest/File_Share/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/File-Share)): upload and download files with permissions (example [here](https://webscripts.readthedocs.io/en/latest/API_Client/#upload-client), [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client#upload-client))
+    - HTTP Error Page Request and Reporting System
+    - Temporary and secure password sharing
+    - Logs viewer and analysis
 
 ## Demo
 
 [![Demo WebScripts - Youtube](https://img.youtube.com/vi/2_hRBTRzl5w/0.jpg)](http://www.youtube.com/watch?v=2_hRBTRzl5w)
+
 *Demonstration of WebScripts use - Youtube video*
 
 ## Requirements
