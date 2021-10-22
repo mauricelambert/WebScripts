@@ -1,3 +1,5 @@
+![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png)
+
 # WebScripts
 
 ![PyPI](https://img.shields.io/pypi/v/WebScripts?color=orange)

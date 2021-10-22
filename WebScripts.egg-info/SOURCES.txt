@@ -104,7 +104,14 @@ WebScripts/static/html/requests_management.html
 WebScripts/static/html/share.html
 WebScripts/static/html/uploads_management.html
 WebScripts/static/html/utils.html
-WebScripts/static/images/webscripts_header.jpg
+WebScripts/static/images/WebScripts1.png
+WebScripts/static/images/WebScripts2.png
+WebScripts/static/images/WebScripts3.png
+WebScripts/static/images/WebScripts4.png
+WebScripts/static/images/WebScripts5.png
+WebScripts/static/images/WebScripts6.png
+WebScripts/static/images/WebScripts7.png
+WebScripts/static/images/webscripts_header.png
 WebScripts/static/images/webscripts_icon.png
 WebScripts/static/js/webscripts_index_js_scripts.js
 WebScripts/static/js/webscripts_js_scripts.js
