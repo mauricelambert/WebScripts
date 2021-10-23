@@ -19,9 +19,11 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""
+This tools run scripts and display the result in a Web Interface.
 
-This file implement error, report and request pages by default."""
+This file implement error, report and request pages by default.
+"""
 
 from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
@@ -38,7 +40,7 @@ import csv
 ServerConfiguration = TypeVar("ServerConfiguration")
 User = TypeVar("User")
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -136,7 +138,7 @@ src="/js/webscripts_script_js_scripts.js">
 
             <div id="webscripts_header_image_position">
                 <img id="webscripts_header_image" \
-src="/static/webscripts_header.jpg">
+src="/static/webscripts_header.png">
             </div>
         </header>
 
@@ -394,6 +396,7 @@ href="https://mauricelambert.github.io/info/python/code/WebScripts/csp.html">
             document.getElementById("webscripts_header_image").style.height = \
 document.getElementById("webscripts_header_text_position").offsetHeight + "px";
             add_buttons();
+            add_button();
             script =  {
                 "content_type": "text/plain",
                 "name": "/error_pages/request/${code}",
