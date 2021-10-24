@@ -23,10 +23,12 @@
 			"./scripts/uploads"
 		],
 		"json_scripts_config": [
-			"./config/scripts/*.json"
+			"./config/scripts/*.json",
+			"./config/nt/scripts/*.json",
 		],
 		"ini_scripts_config": [
-			"./config/scripts/*.ini"
+			"./config/scripts/*.ini",
+			"./config/nt/scripts/*.ini"
 		],
 		"documentations_path": [
 			"./doc/*.html"

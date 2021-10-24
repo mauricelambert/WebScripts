@@ -115,23 +115,19 @@ class _Logs:
 
         """This function implement basic python debug logs for WebScripts."""
 
-        indent_log = f"{' ' * 7}{log}"
-
-        Logs.log_debug.debug(indent_log)
-        Logs.console.debug(f"\x1b[32m{indent_log}\x1b[0m")
-        Logs.file.debug(indent_log)
-        logging.debug(indent_log)
+        Logs.log_debug.debug(log)
+        Logs.console.debug(f"\x1b[32m{log}\x1b[0m")
+        Logs.file.debug(log)
+        logging.debug(log)
 
     def info(log: str) -> None:
 
         """This function implement basic python info logs for WebScripts."""
 
-        indent_log = f"{' ' * 8}{log}"
-
-        Logs.log_info.info(indent_log)
-        Logs.console.info(f"\x1b[34m{indent_log}\x1b[0m")
-        Logs.file.info(indent_log)
-        logging.info(indent_log)
+        Logs.log_info.info(log)
+        Logs.console.info(f"\x1b[34m{log}\x1b[0m")
+        Logs.file.info(log)
+        logging.info(log)
 
     def warning(log: str) -> None:
 
@@ -139,12 +135,10 @@ class _Logs:
         This function implement basic python warning logs for WebScripts.
         """
 
-        indent_log = f"{' ' * 5}{log}"
-
-        Logs.log_warning.warning(indent_log)
-        Logs.console.warning(f"\x1b[33m{indent_log}\x1b[0m")
-        Logs.file.warning(indent_log)
-        logging.warning(indent_log)
+        Logs.log_warning.warning(log)
+        Logs.console.warning(f"\x1b[33m{log}\x1b[0m")
+        Logs.file.warning(log)
+        logging.warning(log)
 
     def error(log: str) -> None:
 
@@ -152,12 +146,10 @@ class _Logs:
         This function implement basic python error logs for WebScripts.
         """
 
-        indent_log = f"{' ' * 7}{log}"
-
-        Logs.log_error.error(indent_log)
-        Logs.console.error(f"\x1b[35m{indent_log}\x1b[0m")
-        Logs.file.error(indent_log)
-        logging.error(indent_log)
+        Logs.log_error.error(log)
+        Logs.console.error(f"\x1b[35m{log}\x1b[0m")
+        Logs.file.error(log)
+        logging.error(log)
 
     def critical(log: str) -> None:
 
@@ -165,12 +157,10 @@ class _Logs:
         This function implement basic python critical logs for WebScripts.
         """
 
-        indent_log = f"{' ' * 4}{log}"
-
-        Logs.log_critical.critical(indent_log)
-        Logs.console.critical(f"\x1b[31m{indent_log}\x1b[0m")
-        Logs.file.critical(indent_log)
-        logging.critical(indent_log)
+        Logs.log_critical.critical(log)
+        Logs.console.critical(f"\x1b[31m{log}\x1b[0m")
+        Logs.file.critical(log)
+        logging.critical(log)
 
     def exception(log: str) -> None:
 
@@ -179,21 +169,17 @@ class _Logs:
         WebScripts.
         """
 
-        indent_log = f"{' ' * 7}{log}"
-
-        Logs.log_error.exception(indent_log)
-        Logs.console.exception(indent_log)
-        Logs.file.exception(indent_log)
-        logging.exception(indent_log)
+        Logs.log_error.exception(log)
+        Logs.console.exception(log)
+        Logs.file.exception(log)
+        logging.exception(log)
 
     def trace(log: str) -> None:
 
         """This function implement trace logs for WebScripts."""
 
-        indent_log = f"{' ' * 4}{log}"
-
-        Logs.log_trace.log(5, indent_log)
-        logging.log(5, indent_log)
+        Logs.log_trace.log(5, log)
+        logging.log(5, log)
 
     def config(*args, **kwargs):
 

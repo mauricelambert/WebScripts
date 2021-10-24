@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.0.4"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,9 +49,12 @@ __copyright__ = copyright
 __all__ = ["Report", "Rule", "Audit", "SEVERITY", "main"]
 
 from email.message import EmailMessage
+from collections.abc import Callable
 from os import getcwd, path, listdir
 from collections.abc import Iterator
 from smtplib import SMTP, SMTP_SSL
+from urllib.request import urlopen
+from urllib.error import URLError
 from dataclasses import dataclass
 from socket import gethostbyname
 from pkgutil import iter_modules
@@ -60,6 +63,7 @@ from contextlib import suppress
 from types import ModuleType
 from threading import Thread
 from getpass import getuser
+from time import sleep
 from enum import Enum
 import platform
 import ctypes
@@ -68,6 +72,7 @@ import stat
 import sys
 import os
 
+ServerConfiguration = TypeVar("ServerConfiguration")
 Server = TypeVar("Server")
 Logs = TypeVar("Logs")
 server_path = path.dirname(__file__)
@@ -575,6 +580,10 @@ Pourcent:\t{(100 - self.reports_dict["SCORING"]
 
         if not server_name:
             return
+
+        sleep(
+            60
+        )  # Wait 1 minutes (else "SmtpError: to many connections" is raised)
 
         try:
             if starttls:
@@ -1196,6 +1205,46 @@ class Audit:
 
         return stat.filemode(os.stat(filename).st_mode)
 
+    def audits_scripts_directory(server: Server) -> Iterator[Rule]:
+
+        """
+        This function check owner and permissions on bin directory.
+        """
+
+        if Audit.is_windows:
+            yield Rule(
+                "Directory permissions",
+                33,
+                False,
+                1,
+                SEVERITY.INFORMATION.value,
+                "Files",
+                "Directory permissions is not check on Windows.",
+            )
+            return
+
+        scripts_path = path.join(sys.prefix, "bin")
+
+        yield Rule(
+            "Directory owner",
+            33,
+            get_owner(scripts_path) == "root",
+            10,
+            SEVERITY.CRITICAL.value,
+            "Files",
+            "Directory owner for bin is not root.",
+        )
+
+        yield Rule(
+            "Directory permissions",
+            34,
+            get_permissions(scripts_path) == "drwxr-xr-x",
+            10,
+            SEVERITY.CRITICAL.value,
+            "Files",
+            "Directory permissions for bin is not 755 (drwxr-xr-x).",
+        )
+
     def audits_file_rights(server: Server) -> Iterator[Rule]:
 
         """This function check the files rights."""
@@ -1329,8 +1378,70 @@ class Audit:
 
         return rules
 
+    def check_for_updates(
+        configuration: ServerConfiguration, logs: Logs, send_mail: Callable
+    ) -> None:
 
-def main(server: Server, logs: Logs) -> Report:
+        """This function runs in a thread indefinitely, it checks the version
+        and the latest published version of WebScripts every hour.
+        If the version and the latest published version are different,
+        this function sends an email notification."""
+
+        latest = None
+        latest_ = ""
+
+        if __package__:
+            version = sys.modules[__package__].__version__
+        else:
+            return None
+
+        def get_latest() -> str:
+
+            """
+            This function request github api and return the latest version.
+            """
+
+            logs.debug(
+                "Request github API to get latest version of WebScripts..."
+            )
+            response = urlopen(
+                "https://api.github.com/repos/mauricelambert/WebScripts/tags"
+            )
+
+            data = json.load(response)
+            return data[0]["name"][1:]
+
+        sleep(
+            120
+        )  # Wait 2 minutes (else "SmtpError: to many connections" is raised)
+
+        while True:
+
+            try:
+                latest = get_latest()
+            except URLError:
+                logs.critical(
+                    "Network error: the version of WebScripts is not checked."
+                )
+                break
+
+            if version != latest and latest != latest_:
+                logs.critical(
+                    "WebScripts is not up-to-date, current:"
+                    f" {version} latest: {latest}"
+                )
+                send_mail(
+                    configuration,
+                    f"Current WebScripts version: {version}\n"
+                    f"Latest WebScripts version:  {latest}\n"
+                    "It is recommended that you upgrade your WebScripts server.",
+                )
+
+            latest_ = latest
+            sleep(3600)
+
+
+def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
 
     """Main function to execute this file."""
 
@@ -1349,6 +1460,19 @@ def main(server: Server, logs: Logs) -> Report:
     with open("audit.txt", "w") as file:
         file.write(report.reports_text)
 
+    logs.debug("Start a thread to send hardening report...")
     Thread(target=report.notification).start()
+
+    logs.debug("Start a thread to check WebScripts version...")
+    version = Thread(
+        target=Audit.check_for_updates,
+        args=(
+            server.configuration,
+            logs,
+            send_mail,
+        ),
+        daemon=True,
+    )
+    version.start()
 
     return report

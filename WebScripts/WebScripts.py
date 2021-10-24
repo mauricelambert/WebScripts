@@ -1308,7 +1308,7 @@ def main() -> None:
         configuration,
         f"Server is up on http://{server.interface}:{server.port}/.",
     )
-    hardening(server, Logs)
+    hardening(server, Logs, send_mail)
 
     Logs.warning(
         f"Starting server on http://{server.interface}:{server.port}/ ..."
