@@ -46,6 +46,12 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
         - INI/CFG syntax
         - JSON syntax
     - [Unittest](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest))
+        - ubuntu && python 3.10
+        - ubuntu && python 3.9
+        - windows && python 3.10
+        - windows && python 3.9
+        - MacOS && python 3.10
+        - MacOS && python 3.9
  - Customizable
     - [Authentication](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Script/#build-the-script) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#build-the-script))
     - Web Interface: HTML, CSS and JS [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))

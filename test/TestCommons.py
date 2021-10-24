@@ -587,7 +587,7 @@ class TestSession(TestCase):
         self.assertRegex(
             str(self.session),
             r"Session\(Time=\d+\.\d+(e-\d{2})?, IP=127.0.0.1, Cookie=%(cookie)s, User=Default"
-            r"Namespace\(__required__=\[\], __optional__=\[\], __default__=\{\}, __types__=\{\}, id=0\)\)"
+            r"Namespace\((__\w+__=(\[\]||\{\}), )+id=0\)\)"
             % {"cookie": self.session.cookie},
         )
 
