@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.0.4)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.1.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -100,12 +100,19 @@ configuration.</tt></p>
 
 <dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
 
+<dl><dt><a name="Audit-audits_scripts_directory"><strong>audits_scripts_directory</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;owner&nbsp;and&nbsp;permissions&nbsp;on&nbsp;bin&nbsp;directory.</tt></dd></dl>
+
 <dl><dt><a name="Audit-audits_scripts_logs"><strong>audits_scripts_logs</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;log.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_scripts_path"><strong>audits_scripts_path</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;path.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_scripts_stderr_content_type"><strong>audits_scripts_stderr_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;stderr&nbsp;content<br>
 type.</tt></dd></dl>
+
+<dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(configuration: ~ServerConfiguration, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
+and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;of&nbsp;WebScripts&nbsp;every&nbsp;hour.<br>
+If&nbsp;the&nbsp;version&nbsp;and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;are&nbsp;different,<br>
+this&nbsp;function&nbsp;sends&nbsp;an&nbsp;email&nbsp;notification.</tt></dd></dl>
 
 <dl><dt><a name="Audit-get_owner"><strong>get_owner</strong></a>(filename: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;owner&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
 
@@ -245,7 +252,7 @@ is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.<
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs) -&gt; hardening.Report</dt><dd><tt>Main&nbsp;function&nbsp;to&nbsp;execute&nbsp;this&nbsp;file.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; hardening.Report</dt><dd><tt>Main&nbsp;function&nbsp;to&nbsp;execute&nbsp;this&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">
