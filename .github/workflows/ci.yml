@@ -11,12 +11,20 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10]
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    
+    name: "Run test on ${{ matrix.os }} with ${{ matrix.python-version }}"
+    runs-on: "${{ matrix.os }}"
+    
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: ${{ matrix.python-version }}
       - name: Test WebScripts with unittest
-        run: python3.9 -m unittest discover -s test -p Test*.py -v
+        run: python -m unittest discover -s test -p Test*.py -v
