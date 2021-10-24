@@ -27,7 +27,6 @@ jobs:
           python-version: 3.8
       - name: Test WebScripts with unittest
         run: |
-          cd WebScripts
-          python WebScripts/scripts/to_3.8/to_3.8.py
-          python -c "from os import rename;from shutil import rmtree;rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
+          python WebScripts/WebScripts/scripts/to_3.8/to_3.8.py
+          python -c "from os import rename,chdir;from shutil import rmtree;chdir('WebScripts');rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
           python -m unittest discover -s test -p Test*.py -v
