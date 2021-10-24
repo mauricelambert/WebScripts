@@ -1433,8 +1433,8 @@ class Audit:
                 send_mail(
                     configuration,
                     f"Current WebScripts version: {version}\n"
-                    f"Latest WebScripts version:  {latest}\n"
-                    "It is recommended that you upgrade your WebScripts server.",
+                    f"Latest WebScripts version:  {latest}\nIt is "
+                    "recommended that you upgrade your WebScripts server.",
                 )
 
             latest_ = latest
