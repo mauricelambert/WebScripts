@@ -167,7 +167,12 @@ class PostInstallScript(install):
             logging.debug(
                 f"Add the execution permission for the owner on {filename}"
             )
-            os.chmod(filename, 0o700)
+            os.chmod(filename, 0o500)
+
+            dir_ = path.dirname(filename)
+            logging.debug(f'Change permission and owner on directory "{dir_}"')
+            os.chmod(dir_, 0o755)
+            os.chown(dir_, 0, 0)
         elif path.split(filename)[1] == "WebScripts":
             logging.debug(
                 f"Add the execution permission for the owner on {filename}"
@@ -384,6 +389,7 @@ setup(
         "Operating System :: POSIX",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     keywords=[
         "Server",

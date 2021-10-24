@@ -15,6 +15,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
 [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
+![Compatibility](https://img.shields.io/badge/compatibility-python3.10-orange)
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description

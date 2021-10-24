@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.3.2
+Version: 2.3.3
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -27,6 +27,7 @@ Description: ![WebScripts Logo](https://mauricelambert.github.io/info/python/cod
         ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
         ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
         [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
+        ![Compatibility](https://img.shields.io/badge/compatibility-python3.10-orange)
         [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
         
         ## Description
@@ -266,5 +267,6 @@ Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: POSIX
 Classifier: Natural Language :: English
 Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
