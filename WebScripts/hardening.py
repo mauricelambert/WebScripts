@@ -1404,9 +1404,9 @@ class Audit:
             logs.debug(
                 "Request github API to get latest version of WebScripts..."
             )
-            response = urlopen(
+            response = urlopen(  # nosec
                 "https://api.github.com/repos/mauricelambert/WebScripts/tags"
-            )  # nosec
+            )
 
             data = json.load(response)
             return data[0]["name"][1:]

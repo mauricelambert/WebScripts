@@ -24,7 +24,7 @@
 		],
 		"json_scripts_config": [
 			"./config/scripts/*.json",
-			"./config/nt/scripts/*.json",
+			"./config/nt/scripts/*.json"
 		],
 		"ini_scripts_config": [
 			"./config/scripts/*.ini",
