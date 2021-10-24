@@ -171,7 +171,7 @@ class PostInstallScript(install):
 
             dir_ = path.dirname(filename)
             logging.debug(f'Change permission and owner on directory "{dir_}"')
-            os.chmod(dir_, 0o755)
+            os.chmod(dir_, 0o755)  # nosec
             os.chown(dir_, 0, 0)
         elif path.split(filename)[1] == "WebScripts":
             logging.debug(
