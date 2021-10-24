@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1228,7 +1228,7 @@ class Audit:
         yield Rule(
             "Directory owner",
             33,
-            get_owner(scripts_path) == "root",
+            Audit.get_owner(scripts_path) == "root",
             10,
             SEVERITY.CRITICAL.value,
             "Files",
@@ -1238,7 +1238,7 @@ class Audit:
         yield Rule(
             "Directory permissions",
             34,
-            get_permissions(scripts_path) == "drwxr-xr-x",
+            Audit.get_permissions(scripts_path) == "drwxr-xr-x",
             10,
             SEVERITY.CRITICAL.value,
             "Files",
@@ -1406,7 +1406,7 @@ class Audit:
             )
             response = urlopen(
                 "https://api.github.com/repos/mauricelambert/WebScripts/tags"
-            )
+            )  # nosec
 
             data = json.load(response)
             return data[0]["name"][1:]
