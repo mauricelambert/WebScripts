@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["ubuntu-latest"] #["ubuntu-latest", "windows-latest", "macos-latest"]
     
     name: "Run test on ${{ matrix.os }} with 3.8"
     runs-on: "${{ matrix.os }}"
@@ -27,8 +27,7 @@ jobs:
           python-version: 3.8
       - name: Test WebScripts with unittest
         run: |
-          ls -la
-          find / to_3.8.py | grep to_3.8.py
-          python WebScripts/WebScripts/scripts/to_3.8/to_3.8.py
-          python -c "from os import rename,chdir;from shutil import rmtree;chdir('WebScripts');rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
+          ls -la WebScripts/scripts/to_3.8/
+          python WebScripts/scripts/to_3.8/to_3.8.py
+          python -c "from os import rename;from shutil import rmtree;rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
           python -m unittest discover -s test -p Test*.py -v
