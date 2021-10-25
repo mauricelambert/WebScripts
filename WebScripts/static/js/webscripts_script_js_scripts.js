@@ -403,6 +403,12 @@ function send_request(json) {
 
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
+        let class_link = "";
+
+        if (localStorage.getItem('theme') === "light" || window.matchMedia("(prefers-color-scheme: light)").matches) {
+            class_link='class="light" ';
+        }
+
         if (xhttp.readyState === 4 && xhttp.status === 200) {
             end = Date.now();
             let response_object = JSON.parse(xhttp.responseText);
@@ -438,13 +444,13 @@ function send_request(json) {
             
         } else if (xhttp.readyState === 4 && xhttp.status === 500) {
             document.getElementById("bar").innerHTML =
-                `ERROR 500: Internal Server Error. \nYou can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `ERROR 500: Internal Server Error. \nYou can report a bug <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
             document.getElementById("bar").innerHTML =
-                `ERROR 403: Forbidden. (Refresh the page or re-authenticate please). \nYou can <a href="/error_pages/Report/new/${xhttp.status}">request access to the administrator</a>.`;
+                `ERROR 403: Forbidden. (Refresh the page or re-authenticate please). \nYou can <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">request access to the administrator</a>.`;
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
-                `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
         }
 
         is_running = false;
@@ -494,7 +500,7 @@ function build_output_interface(output, add_history_ = true, time = null) {
         return new_output;
     }
 
-    const unescape = str => str.replace(/&amp;/g , '&').replace(/&lt;/g  , '<').replace(/&gt;/g  , '>').replace(/&#0*39;/g , "'").replace(/&quot;/g, '"');
+    const unescape = str => str.replace(/&amp;/g , '&').replace(/&lt;/g  , '<').replace(/&gt;/g  , '>').replace(/&#x27;/g , "'").replace(/&quot;/g, '"');
     let console_div = document.getElementById("script_outputs");
     let content_type = output["Content-Type"];
     let stderr_content_type;
@@ -546,10 +552,10 @@ function build_output_interface(output, add_history_ = true, time = null) {
     download_text += `${output.stdout}${output.stderr}${download_separator}`;
 
     if (localStorage.getItem('theme') === "light") {
-        light_mode(class_name = 'light', element = new_output);
-    } else if (localStorage.getItem('theme') === null) {
-        light_mode(class_name = 'default_theme', element = new_output);
-    }
+        change_theme(class_name = 'light', element = new_output);
+    }/* else if (localStorage.getItem('theme') === null) {
+        change_theme(class_name = 'default_theme', element = new_output);
+    }*/
 }
 
 function add_history(stdout, stderr, code, error, content_type, stderr_content_type) {

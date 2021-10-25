@@ -19,6 +19,7 @@
 */
 let scripts;
 let theme_button = document.createElement("button");
+let darkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 function get_scripts(func = undefined) {
     let xhttp = new XMLHttpRequest();
@@ -38,7 +39,7 @@ function get_scripts(func = undefined) {
     xhttp.send();
 }
 
-function light_mode(class_name = 'light', element = null) {
+function change_theme(class_name = 'light', element = null) {
     let elements = null;
 
     if (element === null) {
@@ -81,7 +82,7 @@ function light_mode(class_name = 'light', element = null) {
 function theme() {
     let theme = localStorage.getItem('theme');
 
-    if (theme === null) {
+    /*if (theme === null) {
         if (window.matchMedia('(prefers-color-scheme: dark)').matches ===
             true) {
             theme = "light";
@@ -98,26 +99,28 @@ function theme() {
             }
 
             defaults = document.getElementsByClassName("default_theme");
-            console.log(defaults);
         }
-    }
+    }*/
 
     if (theme === "light") {
+        darkTheme=true;
         localStorage.setItem('theme', 'dark');
-        theme_button.innerText = "Light mode";
+        theme_button.innerText = "Light theme";
     } else if (theme === "dark") {
+        darkTheme=false;
         localStorage.setItem('theme', 'light');
-        theme_button.innerText = "Dark mode";
+        theme_button.innerText = "Dark theme";
     }
 
-    light_mode();
+    change_theme();
 }
 
 function load_theme() {
-    if (localStorage.getItem('theme') === null) {
-        light_mode('default_theme');
-    } else if (localStorage.getItem('theme') === "light") {
-        light_mode();
+    if (localStorage.getItem('theme') === null || darkTheme) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+        change_theme();
         theme_button.innerText = "Dark mode";
     }
 }
