@@ -783,6 +783,7 @@ class Audit:
                 "pywin",
                 "win32ui",
                 "win32uiole",
+                "uploads_management",
             ]
         else:
             preinstall_modules = [
@@ -794,6 +795,7 @@ class Audit:
                 "activate_this",
                 "wsgi",
                 "_distutils_hack",
+                "uploads_management",
             ]
 
         for module in iter_modules():
