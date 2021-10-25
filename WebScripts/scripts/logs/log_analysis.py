@@ -105,18 +105,19 @@ def main() -> None:
         line = logfile.readline()
 
         while last_char != logfile.tell():
-            line = line.split(maxsplit=3)
+            line = line.split(maxsplit=4)
 
-            if len(line) == 4 and line[2] in (
-                "DEBUG(10)",
-                "WARNING(30)",
-                "INFO(20)",
-                "ERROR(40)",
-                "CRITICAL(50)",
+            if len(line) == 5 and line[2] in (
+                "DEBUG",
+                "WARNING",
+                "INFO",
+                "ERROR",
+                "CRITICAL",
             ):
-                date, time, level, log = line
+                date, time, level, level_no, log = line
             else:
                 line = logfile.readline()
+                last_char = logfile.tell()
                 continue
 
             table.setdefault(level, {})
