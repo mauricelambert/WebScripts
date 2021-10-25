@@ -15,7 +15,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
 [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
-![Compatibility](https://img.shields.io/badge/compatibility-python3.10-orange)
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description
@@ -238,11 +237,11 @@ WebScripts38.main()
 
 ## Pictures
 
-![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.JPG "Index page (dark)")
+![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.PNG "Index page (dark)")
 *Index page (dark)*
-![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.JPG "Text script (dark)")
+![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.PNG "Text script (dark)")
 *Text script (dark)*
-![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.JPG "HTML script (light)")
+![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.PNG "HTML script (light)")
 *HTML script (light)*
 
 ## License

@@ -63,7 +63,7 @@ python -m pip install --upgrade WebScripts
 ```bash
 python -m pip install WebScripts --install-option "--admin-password=<your password>"
 # OR
-python -m pip install WebScripts --install-option --install-option "-p <your password>"
+python -m pip install WebScripts --install-option "-p<your password>"
 ```
 
 ### Optional

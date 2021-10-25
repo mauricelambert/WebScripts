@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.3.6
+Version: 2.3.7
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -27,7 +27,6 @@ Description: ![WebScripts Logo](https://mauricelambert.github.io/info/python/cod
         ![GitHub repo size](https://img.shields.io/github/repo-size/mauricelambert/WebScripts?color=orange)
         ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
         [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
-        ![Compatibility](https://img.shields.io/badge/compatibility-python3.10-orange)
         [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
         
         ## Description
@@ -250,11 +249,11 @@ Description: ![WebScripts Logo](https://mauricelambert.github.io/info/python/cod
         
         ## Pictures
         
-        ![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.JPG "Index page (dark)")
+        ![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.PNG "Index page (dark)")
         *Index page (dark)*
-        ![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.JPG "Text script (dark)")
+        ![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.PNG "Text script (dark)")
         *Text script (dark)*
-        ![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.JPG "HTML script (light)")
+        ![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.PNG "HTML script (light)")
         *HTML script (light)*
         
         ## License
@@ -268,11 +267,17 @@ Classifier: Programming Language :: Python
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Web Environment
 Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Server
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Communications :: File Sharing
+Classifier: Topic :: Utilities
+Classifier: Topic :: Security
 Classifier: Operating System :: MacOS :: MacOS X
 Classifier: Operating System :: Microsoft :: Windows
-Classifier: Operating System :: POSIX
+Classifier: Operating System :: POSIX :: Linux
 Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown

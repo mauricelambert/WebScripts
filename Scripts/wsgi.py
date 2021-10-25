@@ -59,5 +59,5 @@ atexit.register(
     f"Server is down on http://{server.interface}:{server.port}/.",
 )
 
-hardening(server, Logs)
+hardening(server, Logs, send_mail)
 application = server.app

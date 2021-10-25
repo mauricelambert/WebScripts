@@ -21,7 +21,7 @@
 
 """This tools run scripts and display the result in a Web Interface."""
 
-__version__ = "2.0.0"
+__version__ = "2.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -384,12 +384,18 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Server",
+        "Topic :: System :: Systems Administration",
+        "Topic :: Communications :: File Sharing",
+        "Topic :: Utilities",
+        "Topic :: Security",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
-        "Operating System :: POSIX",
+        "Operating System :: POSIX :: Linux",
         "Natural Language :: English",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     keywords=[
         "Server",
