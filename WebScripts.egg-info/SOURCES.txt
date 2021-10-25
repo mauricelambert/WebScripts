@@ -3,7 +3,6 @@
 LICENSE.txt
 MANIFEST.in
 README.md
-audit.txt
 mkdocs.yml
 setup.py
 Scripts/activate_this.py
