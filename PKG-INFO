@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.3.8
+Version: 2.3.9
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -57,12 +57,9 @@ Description: ![WebScripts Logo](https://mauricelambert.github.io/info/python/cod
                 - INI/CFG syntax
                 - JSON syntax
             - [Unittest](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest))
-                - ubuntu && python 3.10
-                - ubuntu && python 3.9
-                - windows && python 3.10
-                - windows && python 3.9
-                - MacOS && python 3.10
-                - MacOS && python 3.9
+                - ubuntu && python [3.8, 3.9, 3.10]
+                - windows && python [3.8, 3.9, 3.10]
+                - MacOS && python [3.8, 3.9, 3.10]
          - Customizable
             - [Authentication](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Script/#build-the-script) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#build-the-script))
             - Web Interface: HTML, CSS and JS [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))
