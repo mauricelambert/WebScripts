@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big> (version 0.0.8)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big> (version 0.1.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="utils.py">utils.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -217,7 +217,8 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_encodings"><strong>get_encodings</strong></a>()</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;probable&nbsp;encodings.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-get_arguments_count"><strong>get_arguments_count</strong></a>(object_: collections.abc.Callable)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;argument&nbsp;to&nbsp;call&nbsp;this&nbsp;Callable&nbsp;object.</tt></dd></dl>
+ <dl><dt><a name="-get_encodings"><strong>get_encodings</strong></a>()</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;probable&nbsp;encodings.</tt></dd></dl>
  <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(file_path, *args, **kwargs) -&gt; ~StrOrBytes</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
  <dl><dt><a name="-get_ini_dict"><strong>get_ini_dict</strong></a>(filename: str) -&gt; Dict[str, Dict[str, str]]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;from&nbsp;ini&nbsp;filename.</tt></dd></dl>
  <dl><dt><a name="-get_ip"><strong>get_ip</strong></a>(environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;IP.</tt></dd></dl>
@@ -232,7 +233,7 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__all__</strong> = ['Logs', 'DefaultNamespace', 'log_trace', 'get_ip', 'get_file_content', 'get_real_path', 'get_encodings', 'get_ini_dict', 'server_path', 'rotator', 'namer']<br>
+<td width="100%"><strong>__all__</strong> = ['Logs', 'DefaultNamespace', 'log_trace', 'get_ip', 'get_arguments_count', 'get_file_content', 'get_real_path', 'get_encodings', 'get_ini_dict', 'server_path', 'rotator', 'namer']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021  Maurice Lambert...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
 <strong>__description__</strong> = 'This tools run scripts and display the result in...scripts (Logs, Namespace for configuration, ...).'<br>
