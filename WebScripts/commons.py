@@ -23,7 +23,7 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -80,6 +80,7 @@ if __package__:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         get_real_path,
@@ -98,6 +99,7 @@ else:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         get_real_path,

@@ -24,7 +24,7 @@
 This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class)."""
 
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -80,6 +80,7 @@ if __package__:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         #        get_real_path,
@@ -103,6 +104,7 @@ else:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         #        get_real_path,
@@ -544,13 +546,16 @@ class Server:
         """This function get recursive attribute from object."""
 
         for attribute in attributes[:-1]:
-            # attribute = capwords(attribute)
             object_ = getattr(object_, attribute, None)
 
             if object_ is None:
                 return None, None, is_not_package
 
-        if isinstance(object_, Callable):
+        arg_count = get_arguments_count(object_)
+
+        if isinstance(object_, Callable) and (
+            arg_count == 7 or arg_count == 8
+        ):
             return object_, attributes[-1], is_not_package
         else:
             return None, None, is_not_package

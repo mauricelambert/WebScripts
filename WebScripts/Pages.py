@@ -24,7 +24,7 @@
 This file implement Pages (Api and Web system), script execution and right
 system."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -74,6 +74,7 @@ try:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         get_real_path,
@@ -99,6 +100,7 @@ except ImportError:
         get_ip,
         Logs,
         get_file_content,
+        get_arguments_count,
         rotator,
         namer,
         get_real_path,

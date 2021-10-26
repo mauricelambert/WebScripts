@@ -24,7 +24,7 @@
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
 
-__version__ = "0.0.8"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -51,6 +51,7 @@ __all__ = [
     "DefaultNamespace",
     "log_trace",
     "get_ip",
+    "get_arguments_count",
     "get_file_content",
     "get_real_path",
     "get_encodings",
@@ -61,10 +62,11 @@ __all__ = [
 ]
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
-from types import SimpleNamespace, FunctionType, MethodType
+from types import SimpleNamespace, FunctionType, MethodType, CodeType
 from os import path, _Environ, device_encoding, remove
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
+from collections.abc import Callable
 from contextlib import suppress
 from functools import wraps
 from logging import Logger
@@ -647,6 +649,37 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
             errors.append(e)
 
     raise Exception(errors)
+
+
+@log_trace
+def get_arguments_count(object_: Callable):
+
+    """
+    This function return the number of argument to call this Callable object.
+    """
+
+    obj__get_attr = object_
+
+    for attrs in [
+        ["__wrapped__", "__code__"],
+        ["__class__", "__call__", "__wrapped__", "__code__"],
+        ["__class__", "__call__", "__code__"],
+        ["__code__"],
+        ["__func__", "__code__"],
+    ]:
+        for attr in attrs:
+            obj__get_attr = getattr(obj__get_attr, attr, None)
+            if obj__get_attr is None:
+                break
+
+        if isinstance(obj__get_attr, CodeType):
+            if not obj__get_attr.co_argcount + obj__get_attr.co_kwonlyargcount:
+                breakpoint()
+            return obj__get_attr.co_argcount + obj__get_attr.co_kwonlyargcount
+
+        obj__get_attr = object_
+
+    return 7
 
 
 @log_trace
