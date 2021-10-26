@@ -68,6 +68,15 @@ td {
 	padding: 2%;
 }
 
+input.submit.light {
+	color: #DDDDDD;
+	background-color: #615CB9;
+}
+
+input.submit.light:hover {
+	background-color: #27219a;
+}
+
 .submit_position {
 	margin: 0 auto;
 	width: 30%;
@@ -106,6 +115,10 @@ td {
 	color: #ffc26a;
 }
 
+#bar > a.light {
+	color: #CCCCCC;
+}
+
 #advanced_button_arguments {
 	width: 10%;
 	float: right;
@@ -118,5 +131,20 @@ td {
 #print_advanced {
 	background-color: #895100;
 	border-radius: 5px;
+	border: 2px solid #dd8a12;
 	color: #222222;
+}
+
+#print_advanced:hover {
+	background-color: #b16b05;
+}
+
+.light#print_advanced {
+	color: #433DA7;
+	background-color: #CCCCCC;
+	border: 2px solid #433DA7;
+}
+
+.light#print_advanced:hover {
+	background-color: #AAAAAA;
 }

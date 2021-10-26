@@ -17,7 +17,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
-
 function build_categories(scripts) {
     let content = document.getElementById("webscripts_content");
     let categories = {};
@@ -29,28 +28,35 @@ function build_categories(scripts) {
 
         if (script.name !== "/auth/") {
             script_string = `
-					<li class="category script_bullet_point"><a class="category script_link inline" href="/web/scripts/${script.name}">${script.name}</a> <p class="description inline">(${script.description})</p></li>
-			`
+                    <li class="category script_bullet_point">` +
+                `<a class="category script_link inline" href="` +
+                `/web/scripts/${script.name}">${script.name}</a> ` +
+                `<p class="description inline">(` +
+                `${script.description})</p></li>
+            `
         } else {
             script_string = `
-					<li class="category script_bullet_point"><a class="category script_link inline" href="/web/auth/">${script.name}</a> <p class="description inline">(${script.description})</p></li>
-			`
+                    <li class="category script_bullet_point">` +
+                `<a class="category script_link inline" href="` +
+                `/web/auth/">${script.name}</a> <p class="description ` +
+                `inline">(${script.description})</p></li>
+            `
         }
 
         if (script.category !== undefined && categories[script.category] ===
             undefined) {
             categories[script.category] = `
-			<div class="category category_content">
-				<h3 class="category category_title">${script.category}</h3>
+            <div class="category category_content">
+                <h3 class="category category_title">${script.category}</h3>
 
-				<ul class="category scripts_list">
-					${script_string}
-					<!---->
-				</ul>
-			</div>
-			`;
+                <ul class="category scripts_list">
+                    ${script_string}
+                    <!---->
+                </ul>
+            </div>
+            `;
         } else if (script.category !== undefined && categories[script
-            .category] !== undefined) {
+                .category] !== undefined) {
             categories[script.category] = categories[script.category].replace(
                 "<!---->", script_string + "<!---->");
         }

@@ -1,23 +1,22 @@
 /*
 
-		Scripts for script.html
-		Copyright (C) 2021	Maurice Lambert
+        Scripts for script.html
+        Copyright (C) 2021  Maurice Lambert
 
-		This program is free software: you can redistribute it and/or modify
-		it under the terms of the GNU General Public License as published by
-		the Free Software Foundation, either version 3 of the License, or
-		(at your option) any later version.
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-		GNU General Public License for more details.
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
+        GNU General Public License for more details.
 
-		You should have received a copy of the GNU General Public License
-		along with this program.	If not, see <https://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU General Public License
+        along with this program.    If not, see <https://www.gnu.org/licenses/>.
 
 */
-
 let script_name;
 let script;
 let download_extension = ".txt";
@@ -52,12 +51,13 @@ function build_script_interface(scripts) {
             } else {
                 let button = document.getElementById("print_advanced");
                 button.onclick = () => {
-                    if (advanced_arguments.style.display === "none") {
-                        advanced_arguments.style.display = "block";
-                        button.innerText = "Hide advanced arguments";
-                    } else {
+                    if (advanced_arguments.style.display &&
+                        advanced_arguments.style.display !== "none") {
                         advanced_arguments.style.display = "none";
                         button.innerText = "Show advanced arguments";
+                    } else {
+                        advanced_arguments.style.display = "block";
+                        button.innerText = "Hide advanced arguments";
                     }
                 };
             }
@@ -405,8 +405,9 @@ function send_request(json) {
     xhttp.onreadystatechange = () => {
         let class_link = "";
 
-        if (localStorage.getItem('theme') === "light" || window.matchMedia("(prefers-color-scheme: light)").matches) {
-            class_link='class="light" ';
+        if (localStorage.getItem('theme') === "light" || window.matchMedia(
+                "(prefers-color-scheme: light)").matches) {
+            class_link = 'class="light" ';
         }
 
         if (xhttp.readyState === 4 && xhttp.status === 200) {
@@ -436,21 +437,29 @@ function send_request(json) {
         } else if (xhttp.readyState === 4 && xhttp.status === 302 &&
             script_name === "/auth/") {
 
-            if (document.referrer && document.referrer.startsWith(window.location.origin) && !document.referrer.endsWith("/web/auth/")) {
+            if (document.referrer && document.referrer.startsWith(window
+                    .location.origin) && !document.referrer.endsWith(
+                    "/web/auth/")) {
                 window.location = document.referrer;
             } else {
                 window.location = new URL("/web/", window.location);
             }
-            
+
         } else if (xhttp.readyState === 4 && xhttp.status === 500) {
             document.getElementById("bar").innerHTML =
-                `ERROR 500: Internal Server Error. \nYou can report a bug <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `ERROR 500: Internal Server Error. \nYou can report a bug` +
+                ` <a ${class_link}href="/error_pages/Report/new/` +
+                `${xhttp.status}">on the local report page</a>.`;
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
             document.getElementById("bar").innerHTML =
-                `ERROR 403: Forbidden. (Refresh the page or re-authenticate please). \nYou can <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">request access to the administrator</a>.`;
+                `ERROR 403: Forbidden. (Refresh the page or re-authenticate ` +
+                `please). \nYou can <a ${class_link}href="/error_pages/Report/new` +
+                `/${xhttp.status}">request access to the administrator</a>.`;
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
-                `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a ${class_link}href="/error_pages/Report/new/${xhttp.status}">on the local report page</a>.`;
+                `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a ` +
+                `${class_link}href="/error_pages/Report/new/${xhttp.status}"` +
+                `>on the local report page</a>.`;
         }
 
         is_running = false;
@@ -500,7 +509,8 @@ function build_output_interface(output, add_history_ = true, time = null) {
         return new_output;
     }
 
-    const unescape = str => str.replace(/&amp;/g , '&').replace(/&lt;/g  , '<').replace(/&gt;/g  , '>').replace(/&#x27;/g , "'").replace(/&quot;/g, '"');
+    const unescape = str => str.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
     let console_div = document.getElementById("script_outputs");
     let content_type = output["Content-Type"];
     let stderr_content_type;
@@ -553,12 +563,14 @@ function build_output_interface(output, add_history_ = true, time = null) {
 
     if (localStorage.getItem('theme') === "light") {
         change_theme(class_name = 'light', element = new_output);
-    }/* else if (localStorage.getItem('theme') === null) {
-        change_theme(class_name = 'default_theme', element = new_output);
-    }*/
+    }
+    /* else if (localStorage.getItem('theme') === null) {
+            change_theme(class_name = 'default_theme', element = new_output);
+        }*/
 }
 
-function add_history(stdout, stderr, code, error, content_type, stderr_content_type) {
+function add_history(stdout, stderr, code, error, content_type,
+    stderr_content_type) {
     let button = document.createElement("button");
     button.onclick = build_output_interface.bind(
         button, {
@@ -650,7 +662,7 @@ function progress_bar() {
         progress = false;
 
         function running() {
-            if (width >= 100) {
+            if (width >= 97) {
                 clearInterval(interval);
                 progress = true;
 

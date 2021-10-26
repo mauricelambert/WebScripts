@@ -103,11 +103,11 @@ function theme() {
     }*/
 
     if (theme === "light") {
-        darkTheme=true;
+        darkTheme = true;
         localStorage.setItem('theme', 'dark');
         theme_button.innerText = "Light theme";
     } else if (theme === "dark") {
-        darkTheme=false;
+        darkTheme = false;
         localStorage.setItem('theme', 'light');
         theme_button.innerText = "Dark theme";
     }
@@ -116,9 +116,10 @@ function theme() {
 }
 
 function load_theme() {
-    if (localStorage.getItem('theme') === null || darkTheme) {
+    if (localStorage.getItem('theme') === null && darkTheme) {
         localStorage.setItem('theme', 'dark');
-    } else {
+    } else if (localStorage.getItem('theme') === "light" || localStorage
+        .getItem('theme') === null) {
         localStorage.setItem('theme', 'light');
         change_theme();
         theme_button.innerText = "Dark mode";
