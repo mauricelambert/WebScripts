@@ -24,7 +24,7 @@
 This file download and upload functions for scripts,
 tools and command line client."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -54,8 +54,15 @@ import json
 import sys
 import os
 
+if "WebScripts" in sys.modules:
+    base_path = [path.dirname(sys.modules["WebScripts"].__file__)]
+elif "WebScripts38" in sys.modules:
+    base_path = [path.dirname(sys.modules["WebScripts38"].__file__)]
+else:
+    base_path = [path.dirname(__file__), ".."]
+
 sys.path = [
-    path.join(path.dirname(__file__), "..", "scripts", "uploads", "modules"),
+    path.join(*base_path, "scripts", "uploads", "modules"),
 ] + sys.path
 
 from uploads_management import (

@@ -163,14 +163,18 @@ function build_script_interface(scripts) {
             query = query.substr(1);
             query.split("&").forEach(function(part) {
                 let item = part.split("=");
+                element = decodeURIComponent(item[0]);
 
-                element = document.getElementById(decodeURIComponent(
-                    item[0]));
+                if (element) {
+                    element = document.getElementById(element);
+                }
+
                 if (element) {
                     element.value = decodeURIComponent(item[1]);
                     event = new Event('change');
                     element.dispatchEvent(event);
                 }
+                
             });
         }
 
