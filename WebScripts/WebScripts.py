@@ -277,7 +277,7 @@ class Server:
             self.headers["Referrer-Policy"] = "origin-when-cross-origin"
             self.headers["Cache-Control"] = "no-store"
             self.headers["Pragma"] = "no-store"
-            self.headers["Clear-Site-Data"] = "*"
+            self.headers["Clear-Site-Data"] = '"cache", "executionContexts"'
             self.headers["Feature-Policy"] = (
                 "payment 'none'; geolocation 'none'; "
                 "microphone 'none'; camera 'none'"

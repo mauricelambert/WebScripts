@@ -673,8 +673,6 @@ def get_arguments_count(object_: Callable):
                 break
 
         if isinstance(obj__get_attr, CodeType):
-            if not obj__get_attr.co_argcount + obj__get_attr.co_kwonlyargcount:
-                breakpoint()
             return obj__get_attr.co_argcount + obj__get_attr.co_kwonlyargcount
 
         obj__get_attr = object_
