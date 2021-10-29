@@ -24,9 +24,9 @@ python -m unittest discover -s test -p Test*.py -v
 
 | File          | Statements | missing | coverage |
 |---------------|------------|---------|----------|
-| WebScripts.py | 514        | 4       | 99%      |
+| WebScripts.py | 516        | 6       | 99%      |
 | commons.py    | 378        | 1       | 99%      |
-| utils.py      | 308        | 6       | 98%      |
+| utils.py      | 314        | 6       | 98%      |
 | Errors.py     | 27         | 0       | 100%     |
 
 

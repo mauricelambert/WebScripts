@@ -467,6 +467,20 @@ class TestServer(TestCase):
         self.assertIn("/test/...", urls)
 
     def test_get_attributes(self):
+        class CodeTest:
+            def __init__(self):
+                pass
+
+            def methodTest1(self):
+                pass
+
+            def methodTest2(self, a, b, c, d, e, f, g):
+                pass
+
+            @staticmethod
+            def methodTest3(a, b, c, d, e, f, g):
+                pass
+
         object_ = Mock(a=Mock(b=object))
         callable_, filename, bool_ = self.server.get_attributes(
             object_, ["a", "b", "test"], True
@@ -475,6 +489,31 @@ class TestServer(TestCase):
         self.assertTrue(bool_)
         self.assertIs(callable_, object)
         self.assertEqual(filename, "test")
+
+        object_ = CodeTest()
+        callable_, filename, bool_ = self.server.get_attributes(
+            object_, ["methodTest2", "test"], False
+        )
+
+        self.assertFalse(bool_)
+        self.assertEqual(callable_.__name__, object_.methodTest2.__name__)
+        self.assertEqual(filename, "test")
+
+        callable_, filename, bool_ = self.server.get_attributes(
+            object_, ["methodTest3", "test"], False
+        )
+
+        self.assertFalse(bool_)
+        self.assertEqual(callable_.__name__, object_.methodTest3.__name__)
+        self.assertEqual(filename, "test")
+
+        callable_, filename, bool_ = self.server.get_attributes(
+            object_, ["methodTest1", "test"], True
+        )
+
+        self.assertTrue(bool_)
+        self.assertIsNone(callable_)
+        self.assertIsNone(filename)
 
         callable_, filename, bool_ = self.server.get_attributes(
             "test", ["test"], False

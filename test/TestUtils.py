@@ -41,6 +41,7 @@ sys.path = [path.join(path.dirname(__file__), ".."), *sys.path]
 from WebScripts.utils import (
     DefaultNamespace,
     get_ip,
+    get_arguments_count,
     get_file_content,
     get_real_path,
     get_encodings,
@@ -424,6 +425,31 @@ class TestFunctions(TestCase):
         )
 
         os.remove("test.ini")
+
+    def test_get_arguments_count(self):
+        test = os.mkdir
+        self.assertEqual(7, get_arguments_count(test))
+
+        def methodTest0():
+            pass
+
+        def methodTest2(a, b):
+            pass
+
+        def methodTest3(a, b, c, *args, **kwargs):
+            pass
+
+        def methodTest5(a, b, c, *args, d=3, e="", **kwargs):
+            pass
+
+        def methodTest6(a, b, c, *, d=0, e="", f=None):
+            pass
+
+        self.assertEqual(0, get_arguments_count(methodTest0))
+        self.assertEqual(2, get_arguments_count(methodTest2))
+        self.assertEqual(6, get_arguments_count(methodTest6))
+        self.assertEqual(3, get_arguments_count(methodTest3))
+        self.assertEqual(5, get_arguments_count(methodTest5))
 
 
 if __name__ == "__main__":
