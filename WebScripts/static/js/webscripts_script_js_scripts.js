@@ -232,7 +232,6 @@ function build_script_interface(scripts) {
 }
 
 function start_script_execution(event) {
-
     function get_arguments() {
 
         let counter = 0;
@@ -310,7 +309,7 @@ function add_arguments(values, counter, arguments_) {
 
     function make_json_request(arguments_) {
         let csrf = document.getElementById("csrf_token");
-        send_request(JSON.stringify({
+        send_requests(JSON.stringify({
             "csrf_token": csrf.value,
             "arguments": arguments_,
         }));
@@ -324,9 +323,12 @@ function add_arguments(values, counter, arguments_) {
     } else {
         arguments_ = sort_arguments(arguments_);
         make_json_request(arguments_);
+        document.getElementById("submit_button").disabled=true;
         return;
     }
 }
+
+function add_NULL_argument(){}
 
 
 function add_INPUT_argument(input, values, counter, arguments_) {
@@ -380,32 +382,123 @@ function add_INPUT_argument(input, values, counter, arguments_) {
 }
 
 function add_SELECT_argument(select, values, counter, arguments_) {
+    let selected = [];
+    let first = true;
 
     for (let l = 0; l < select.options.length; ++l) {
         option = select.options[l];
 
         if (option.selected) {
-            add_value_for_request(
-                arguments_,
-                script_interface,
-                select.id,
-                select.name,
-                option.value,
-                values,
-                counter,
-            );
+            selected.push(option.value);
+            if (first) {
+                first = false;
+            } else {
+                values.push({"tagName": "NULL"});
+            }
         }
     }
+
+    selected.forEach((item) => {
+        add_value_for_request(
+            arguments_,
+            script_interface,
+            select.id,
+            select.name,
+            item,
+            values,
+            counter++,
+        );
+    });
 
     return arguments_;
 }
 
 
-function send_request(json) {
-    let start;
-    let end;
-
+function send_requests(json, first=true) {
     let xhttp = new XMLHttpRequest();
+    let start;
+
+    function post_execute_script () {
+        let url;
+        if (script_name[0] === "/") {
+            url = script_name;
+        } else {
+            url = "/api/scripts/" + script_name;
+        }
+
+        xhttp.open("POST", url, true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(json);
+        start = Date.now();
+
+        is_running = true;
+        progress_bar();
+    }
+
+    function get_new_line (response) {
+        xhttp.open('GET', `/api/script/get/${response.key}`, true);
+        xhttp.send()
+    }
+
+    function prepare_output() {
+        let end = Date.now();
+        let response_object = JSON.parse(xhttp.responseText);
+
+        if (response_object.csrf) {
+            document.getElementById("csrf_token").value = response_object
+                .csrf;
+        }
+
+        if (response_object.key) {
+            if (!response_object.code) {
+                response_object.code="Running...";
+            }
+            if (!response_object.error) {
+                response_object.error="Running...";
+            }
+            
+            if (build_output_interface(
+                response_object,
+                add_history_=false,
+                time="Running...",
+                make_new_output=first,
+            )) {
+                first=false;
+            };
+
+            get_new_line(response_object);
+
+            return;
+        }
+
+        diff_seconds = Math.round((end.valueOf() - start.valueOf()) /
+            1000);
+        minutes = Math.round(diff_seconds / 60);
+        seconds = diff_seconds - minutes * 60;
+
+        if (minutes < 10) {
+            minutes = `0${minutes}`;
+        }
+        if (seconds < 10) {
+            seconds = `0${seconds}`;
+        }
+
+        build_output_interface(
+            response_object,
+            add_history_=true,
+            time=`${minutes}:${seconds}`,
+            build_new_output=false,
+            update=true,
+        );
+
+        document.getElementById("submit_button").disabled=false;
+        is_running = false;
+        first = true;
+        document.getElementById('code').id = `last_code_${execution_number}`;
+        document.getElementById('last_output').id = `last_output_${execution_number}`;
+        document.getElementById('console').id = `console_${execution_number}`;
+    }
+    
     xhttp.onreadystatechange = () => {
         let class_link = "";
 
@@ -415,29 +508,7 @@ function send_request(json) {
         }
 
         if (xhttp.readyState === 4 && xhttp.status === 200) {
-            end = Date.now();
-            let response_object = JSON.parse(xhttp.responseText);
-
-            document.getElementById("csrf_token").value = response_object
-                .csrf;
-
-            diff_seconds = Math.round((end.valueOf() - start.valueOf()) /
-                1000);
-            minutes = Math.round(diff_seconds / 60);
-            seconds = diff_seconds - minutes * 60;
-
-            if (minutes < 10) {
-                minutes = `0${minutes}`;
-            }
-            if (seconds < 10) {
-                seconds = `0${seconds}`;
-            }
-
-            build_output_interface(
-                response_object,
-                true,
-                `${minutes}:${seconds}`
-            );
+            prepare_output(xhttp);
         } else if (xhttp.readyState === 4 && xhttp.status === 302 &&
             script_name === "/auth/") {
 
@@ -454,49 +525,49 @@ function send_request(json) {
                 `ERROR 500: Internal Server Error. \nYou can report a bug` +
                 ` <a ${class_link}href="/error_pages/Report/new/` +
                 `${xhttp.status}">on the local report page</a>.`;
+            
+            document.getElementById("submit_button").disabled=false;
+            is_running = false;
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
             document.getElementById("bar").innerHTML =
                 `ERROR 403: Forbidden. (Refresh the page or re-authenticate ` +
                 `please). \nYou can <a ${class_link}href="/error_pages/Report/new` +
                 `/${xhttp.status}">request access to the administrator</a>.`;
+            
+            document.getElementById("submit_button").disabled=false;
+            is_running = false;
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
                 `HTTP ERROR ${xhttp.status}. \nYou can report a bug <a ` +
                 `${class_link}href="/error_pages/Report/new/${xhttp.status}"` +
                 `>on the local report page</a>.`;
+
+            document.getElementById("submit_button").disabled=false;
+            is_running = false;
         }
-
-        is_running = false;
     }
 
-    let url;
-    if (script_name[0] === "/") {
-        url = script_name;
-    } else {
-        url = "/api/scripts/" + script_name;
-    }
-
-    xhttp.open("POST", url, true);
-    xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.send(json);
-    start = Date.now();
-
-    is_running = true;
-    progress_bar();
+    post_execute_script();
 }
 
-function build_output_interface(output, add_history_ = true, time = null) {
+function build_output_interface(output, add_history_ = true, time = null, make_new_output = true, update = false) {
+
+    function clean_string(string) {
+        return string.replace(/^\s+|\s+$/g, '');
+    };
 
     function build_code(output, time) {
         let code = document.createElement("code");
         code.id = "code";
         code.classList.add("code");
+
         code.innerText =
-            `>>> ${script_name}\tExitCode: ${output.code}\tError: ${output.error}`;
+            `>>> ${script_name}    ExitCode: ${output.code}    Error: ${output.error}`;
 
         if (time) {
-            code.innerText += `\tExecutionTime: ${time}`;
+            code.innerText += `    ExecutionTime: ${time}`;
         }
+
         return code;
     }
 
@@ -504,31 +575,55 @@ function build_output_interface(output, add_history_ = true, time = null) {
         let new_output = document.createElement("div");
         let console_ = document.createElement("pre");
 
+        new_output.id="last_output";
+
         console_.id = "console";
         console_.classList.add("console");
 
         console_.appendChild(code);
         new_output.appendChild(console_);
 
+        make_new_output=true;
+
         return new_output;
     }
 
     const unescape = str => str.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
         .replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+    const universal_new_line = str => str.replace(/\r\n/g, "\n");
+
     let console_div = document.getElementById("script_outputs");
     let content_type = output["Content-Type"];
     let stderr_content_type;
-    let text = "\n";
+    let text = "";
     let html = "";
+    let code;
+    let new_output;
+
+    let error_string = clean_string(output.stderr);
+    let output_string = clean_string(output.stdout);
+
+    if (make_new_output) {
+        code = build_code(output, time);
+        new_output = build_new_output(code);
+    } else {
+        code = document.getElementById("code") || build_code(output, time);
+        new_output = document.getElementById("last_output") || build_new_output(code);
+    }
+
+    if (update) {
+        code.innerText = code.innerText.replace('Running...', output.code).replace('Running...', output.error).replace('Running...', time);
+    }
+
+    if ((output_string + error_string).length === 0) {
+        return false;
+    }
 
     if (output.hasOwnProperty("Stderr-Content-Type")) {
         stderr_content_type = output["Stderr-Content-Type"];
     } else {
         stderr_content_type = "text/plain";
     }
-
-    let code = build_code(output, time);
-    let new_output = build_new_output(code);
 
     if (add_history_) {
         add_history(
@@ -541,10 +636,12 @@ function build_output_interface(output, add_history_ = true, time = null) {
         );
     }
 
-    if (stderr_content_type.includes("text/html")) {
-        html += output.stderr;
-    } else {
-        text += output.stderr;
+    if (error_string.length !== 0) {
+        if (stderr_content_type.includes("text/html")) {
+            html += output.stderr;
+        } else {
+            text += `\n${output.stderr}`;
+        }
     }
 
     if (content_type.includes("text/html")) {
@@ -556,14 +653,19 @@ function build_output_interface(output, add_history_ = true, time = null) {
         download_extension = ".txt";
         download_separator = "\n";
         download_type = "plain";
-        text = `\n${output.stdout}${text}`;
+
+        if (make_new_output) {
+            text = `\n${output.stdout}${text}`;
+        } else {
+            text = `${output.stdout}${text}`;
+        }
     }
 
-    code.innerText += unescape(text);
+    code.innerText += universal_new_line(unescape(text));
     new_output.innerHTML += html;
 
     console_div.appendChild(new_output);
-    download_text += `${output.stdout}${output.stderr}${download_separator}`;
+    download_text += `${text}\n${html}${download_separator}`;
 
     if (localStorage.getItem('theme') === "light") {
         change_theme(class_name = 'light', element = new_output);
@@ -571,6 +673,7 @@ function build_output_interface(output, add_history_ = true, time = null) {
     /* else if (localStorage.getItem('theme') === null) {
             change_theme(class_name = 'default_theme', element = new_output);
         }*/
+    return true;
 }
 
 function add_history(stdout, stderr, code, error, content_type,
@@ -597,7 +700,6 @@ function add_history(stdout, stderr, code, error, content_type,
         button.classList.toggle("default_theme");
     }
 }
-
 
 
 function clear_console() {
@@ -690,6 +792,6 @@ function progress_bar() {
         bar.innerText = "Script is running...";
         bar.style.textAlign = "left";
         bar.style.padding = "1%";
-        let interval = setInterval(running, 10);
+        let interval = setInterval(running, 20);
     }
 }

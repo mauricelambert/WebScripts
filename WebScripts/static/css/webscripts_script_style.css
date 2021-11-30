@@ -55,6 +55,51 @@ td {
 	border: 1px solid #dd8a12;
 }
 
+select option:checked {
+    background: #895100 -webkit-linear-gradient(bottom, #895100 0%, #895100 100%);
+    color: #FFFFFF;
+}
+
+select option:hover {
+    background: #895100 -webkit-linear-gradient(bottom, #895100 0%, #895100 100%);
+    color: #FFFFFF;
+}
+
+select.light option.light:checked {
+    background: #615CB9 -webkit-linear-gradient(bottom, #615CB9 0%, #615CB9 100%);
+    color: #CCCCCC;
+}
+
+select.light option.light:hover {
+    background: #615CB9 -webkit-linear-gradient(bottom, #615CB9 0%, #615CB9 100%);
+    color: #CCCCCC;
+}
+
+select.light {
+	color: #27219a;
+	border-color: #100B60;
+}
+
+option.light {
+	color: #27219a;
+}
+
+/*input[type=checkbox]:before {
+	background: #895100;
+	color: #000000;
+}
+
+input[type=checkbox]:checked:after {
+	background: #000000;
+	color: #895100;
+}*/
+
+/* ::-ms-check {
+    color: red;
+    background: black;
+    padding: 1em;
+} */
+
 .input_wrapper {
 	width: 60%;
 	margin: 1%;

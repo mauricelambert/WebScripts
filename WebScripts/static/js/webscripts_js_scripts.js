@@ -55,6 +55,7 @@ function change_theme(class_name = 'light', element = null) {
             document.getElementsByTagName('select'),
             document.getElementsByTagName('a'),
             document.getElementsByTagName('td'),
+            document.getElementsByTagName('option'),
         ];
 
         let bar = document.getElementById("bar");

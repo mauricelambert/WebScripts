@@ -43,7 +43,7 @@ function build_categories(scripts) {
             `
         }
 
-        if (script.category !== undefined && categories[script.category] ===
+        if (script.category && categories[script.category] ===
             undefined) {
             categories[script.category] = `
             <div class="category category_content">
@@ -55,7 +55,7 @@ function build_categories(scripts) {
                 </ul>
             </div>
             `;
-        } else if (script.category !== undefined && categories[script
+        } else if (script.category && categories[script
                 .category] !== undefined) {
             categories[script.category] = categories[script.category].replace(
                 "<!---->", script_string + "<!---->");
