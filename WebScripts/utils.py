@@ -57,8 +57,10 @@ __all__ = [
     "get_encodings",
     "get_ini_dict",
     "server_path",
-    "rotator",
-    "namer",
+    "CustomLogHandler",
+    # "doRollover",
+    # "rotator",
+    # "namer",
 ]
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
@@ -70,6 +72,7 @@ from collections.abc import Callable
 from contextlib import suppress
 from functools import wraps
 from logging import Logger
+import logging.handlers
 import logging.config
 import platform
 import logging
@@ -322,25 +325,60 @@ def log_trace(function: FunctionType):
     return wrapper
 
 
-def namer(name: str) -> str:
+class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
-    """This function returns the new name of the old log files."""
+    """
+    This class is a custom logging handler.
+    """
 
-    return f"{name}.gz"
+    def doRollover(self):
+
+        """
+        Do a rollover, as described in __init__().
+        """
+
+        if self.stream:
+            self.stream.close()
+            self.stream = None
+        if self.backupCount > 0:
+
+            filename = self.baseFilename
+            i = 0
+            while path.exists(filename):
+                i += 1
+                filename = self.rotation_filename(
+                    "%s.%d" % (self.baseFilename, i)
+                )
+
+            self.rotate(self.baseFilename, filename)
+        if not self.delay:
+            self.stream = self._open()
+
+    def namer(self, name: str) -> str:
+
+        """
+        This function returns the new name of the old log files.
+        """
+
+        return f"{name}.gz"
+
+    def rotator(self, source: str, destination: str) -> None:
+
+        """
+        This function compresses old log files.
+        """
+
+        with open(source, "rb") as source_file:
+            data = source_file.read()
+            compressed = gzip.compress(data, 9)
+
+            with open(destination, "wb") as destination_file:
+                destination_file.write(compressed)
+
+        remove(source)
 
 
-def rotator(source: str, destination: str) -> None:
-
-    """This function compresses old log files."""
-
-    with open(source, "rb") as source_file:
-        data = source_file.read()
-        compressed = gzip.compress(data, 9)
-
-        with open(destination, "wb") as destination_file:
-            destination_file.write(compressed)
-
-    remove(source)
+logging.handlers.CustomLogHandler = CustomLogHandler
 
 
 if platform.system() == "Windows":

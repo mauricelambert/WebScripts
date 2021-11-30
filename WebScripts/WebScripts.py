@@ -81,8 +81,10 @@ if __package__:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         #        get_real_path,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -105,8 +107,10 @@ else:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         #        get_real_path,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -1238,20 +1242,21 @@ def configure_logs_system() -> None:
         force=True,
     )
 
-    for logger in (
-        "log_trace",
-        "log_debug",
-        "log_info",
-        "log_warning",
-        "log_error",
-        "log_critical",
-        "file",
-    ):
-        logger = getattr(Logs, logger)
+    # for logger in (
+    #     "log_trace",
+    #     "log_debug",
+    #     "log_info",
+    #     "log_warning",
+    #     "log_error",
+    #     "log_critical",
+    #     "file",
+    # ):
+    #     logger = getattr(Logs, logger)
 
-        if logger.hasHandlers() and len(logger.handlers):
-            logger.handlers[0].rotator = rotator
-            logger.handlers[0].namer = namer
+    #     if logger.hasHandlers() and len(logger.handlers):
+    #         logger.handlers[0].doRollover = Handler.doRollover
+    #         logger.handlers[0].rotator = Handler.rotator
+    #         logger.handlers[0].namer = Handler.namer
 
 
 def send_mail(configuration: Configuration, message: str) -> int:

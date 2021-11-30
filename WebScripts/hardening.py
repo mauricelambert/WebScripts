@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -71,6 +71,13 @@ import json
 import stat
 import sys
 import os
+
+try:
+    import pip._internal.operations.freeze
+except ImportError:
+    PIP = False
+else:
+    PIP = True
 
 ServerConfiguration = TypeVar("ServerConfiguration")
 Server = TypeVar("Server")
@@ -695,6 +702,44 @@ class Audit:
         """This function check the virtualenv modules."""
 
         venv_modules = []
+
+        if PIP and Audit.is_windows:
+            modules = [
+                package
+                for package in pip._internal.operations.freeze.freeze()
+                if not package.startswith("pip==")
+                and not package.startswith("setuptools==")
+                and not package.startswith("pywin32==")
+                and not package.startswith("WebScripts==")
+            ]
+            return Rule(
+                "Virtualenv modules",
+                32,
+                len(modules) == 0,
+                3,
+                SEVERITY.LOW.value,
+                "Installation",
+                "WebScripts should be install in empty virtualenv (except "
+                f"pywin32 on Windows), modules found: {modules}.",
+            )
+        elif PIP and not Audit.is_windows:
+            modules = [
+                package
+                for package in pip._internal.operations.freeze.freeze()
+                if not package.startswith("pip==")
+                and not package.startswith("setuptools==")
+                and not package.startswith("WebScripts==")
+            ]
+            return Rule(
+                "Virtualenv modules",
+                32,
+                len(modules) == 0,
+                3,
+                SEVERITY.LOW.value,
+                "Installation",
+                "WebScripts should be install in empty virtualenv (except "
+                f"pywin32 on Windows), modules found: {modules}.",
+            )
 
         if Audit.is_windows:
             preinstall_modules = [
@@ -1441,6 +1486,26 @@ class Audit:
 
             latest_ = latest
             sleep(3600)
+
+
+'''class FilesIntegity:
+
+    """This class check the files integrity."""
+
+    def __init__(self):
+        self.
+
+    def check_files_integrity(self):
+
+        """"""
+
+        with open("default_files.json") as file:
+            files = json.load(file)
+
+        for directory in ():
+            for file, data in files:
+                ...
+'''
 
 
 def main(server: Server, logs: Logs, send_mail: Callable) -> Report:

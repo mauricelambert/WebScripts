@@ -19,21 +19,24 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""
+This tools run scripts and display the result in a Web Interface.
 
 This file implement Pages (Api and Web system), script execution and right
-system."""
+system.
+"""
 
-__version__ = "0.1.2"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web
-Interface.
+__description__ = """
+This tools run scripts and display the result in a Web Interface.
 
 This file implement Pages (Api and Web system), script execution and right
-system."""
+system.
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -50,10 +53,14 @@ __all__ = ["Pages"]
 
 from subprocess import Popen, PIPE, TimeoutExpired  # nosec
 from typing import Tuple, List, Dict
+from base64 import urlsafe_b64encode
 from contextlib import suppress
+from secrets import token_bytes
 from os import _Environ, path
 from fnmatch import fnmatch
+from threading import Timer
 from html import escape
+from time import time
 import json
 
 try:
@@ -75,8 +82,10 @@ try:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
@@ -101,8 +110,10 @@ except ImportError:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
@@ -118,7 +129,7 @@ def execute_scripts(
     arguments: List[str],
     inputs: List[str],
     is_auth: bool = False,
-) -> Tuple[bytes, bytes]:
+) -> Tuple[bytes, bytes, str, int, str]:
 
     """
     This function execute script from script name and return output and
@@ -126,13 +137,12 @@ def execute_scripts(
     """
 
     script = Pages.scripts.get(script_name)
-    error = "No errors"
 
     if script is None:
-        return None, b"404", -1, error
+        return None, b"404", -1, "Not Found"
 
     if not is_auth and not check_right(user, script):
-        return None, b"403", -1, error
+        return None, b"403", -1, "Not Found"
 
     arguments.insert(0, script.path)
 
@@ -150,6 +160,34 @@ def execute_scripts(
         env=script_env,
     )  # nosec
 
+    stdout, stderr, key, error, code = start_process(
+        script, process, user, inputs
+    )
+
+    execution_logs(script, user, process, stderr)
+    return stdout, stderr, key, code, error
+
+
+@log_trace
+def start_process(
+    script: ScriptConfig, process: Popen, user: User, inputs: List[str]
+) -> Tuple[bytes, bytes, str, str, int]:
+
+    """
+    This function starts a process.
+    """
+
+    error = "No errors"
+
+    if getattr(script, "print_real_time", None):
+        key = urlsafe_b64encode(token_bytes(40)).decode()
+        process_ = Pages.processes[key] = Process(process, script, user)
+        process_.send_inputs(inputs)
+        Logs.debug(
+            "Create key and process, sent inputs and get the first line."
+        )
+        return b"", b"", key, None, None
+
     try:
         stdout, stderr = process.communicate(
             input="\n".join(inputs).encode("latin-1"),
@@ -162,9 +200,7 @@ def execute_scripts(
         stdout, stderr = process.communicate()
         error = "TimeoutError"
 
-    execution_logs(script, user, process, stderr)
-
-    return stdout, stderr, process.returncode, error
+    return stdout, stderr, None, error, process.returncode
 
 
 @log_trace
@@ -226,6 +262,7 @@ def get_environ(
 
     script_env["USER"] = json.dumps(user.get_dict())
     script_env["SCRIPT_CONFIG"] = json.dumps(script.get_JSON_API())
+    script_env["PYTHONSTARTUP"] = path.join(lib_directory, "pre_scripts.py")
 
     to_delete = [
         key
@@ -317,9 +354,149 @@ def decode_output(data: bytes) -> str:
             return output
 
 
+class Process:
+
+    """
+    This class implements a running processus.
+    """
+
+    def __init__(self, process: Popen, script: ScriptConfig, user: User):
+        Logs.debug("Process creation...")
+        self.process = process
+        self.script = script
+        self.user = user
+        self.start_time = time()
+        self.timeout = script.timeout
+
+        if script.timeout is not None:
+            Logs.info("Timeout detected, make timer and start it.")
+            self.timer = Timer(script.timeout, self.get_line, args=(False,))
+            self.stop_max_time = self.start_time + self.timeout
+            self.timer.start()
+
+    def get_line(self, read: bool = True) -> Tuple[bytes, bytes, str]:
+
+        """
+        This function gets a new line from the script execution.
+        """
+
+        self.process.stdout.flush()
+        if self.process.poll() == 0:
+            return (
+                self.process.stdout.read(),
+                self.process.stderr.read(),
+                "No errors",
+            )
+        elif self.timeout is None or time() <= self.stop_max_time:
+            data = self.process.stdout.readline()
+            Logs.debug(
+                f"Get new line on {self.script.name} for {self.user.name}"
+            )
+            return data, b"", ""
+        else:
+            Logs.error(
+                f"TimeoutExpired on {self.script.name} for {self.user.name}"
+            )
+            self.process.kill()
+
+            if read:
+                stdout = self.process.stdout.read()
+                stderr = self.process.stderr.read()
+            else:
+                stdout = b""
+                stderr = b""
+
+            error = "TimeoutError"
+            Logs.debug("Get the stdout and the stderr of the killed process")
+
+            return stdout, stderr, error
+
+    def send_inputs(self, inputs: List[str]) -> None:
+
+        """
+        This function send inputs to the child process.
+        """
+
+        self.process.stdin.flush()
+        for input_ in inputs:
+            self.process.stdin.write(f"{input_}\n".encode("latin-1"))
+            self.process.stdin.flush()
+
+        self.process.stdin.close()
+        Logs.debug(
+            "Inputs are sent to the child process and the stdin is closed."
+        )
+
+
+class Script:
+
+    """
+    This class groups script functions.
+    """
+
+    @log_trace
+    def get(
+        self,
+        environ: _Environ,
+        user: User,
+        server_configuration: ServerConfiguration,
+        filename: str,
+        commande: List[str],
+        inputs: List[str],
+        csrf_token: str = None,
+    ) -> Tuple[str, Dict[str, str], str]:
+
+        """
+        This method send a new line of script execution in API response.
+        """
+
+        process = Pages.processes.get(filename)
+
+        if process is None:
+            Logs.error(
+                f"HTTP 404 for {user.name} on "
+                f"/api/script/get/{process.script.name}"
+            )
+            return "404", {}, b""
+
+        if process.user.id != user.id:
+            Logs.error(
+                f"HTTP 403 for {user.name} on "
+                f"/api/script/get/{process.script.name}"
+            )
+            return "403", {}, b""
+
+        stdout, stderr, error = process.get_line()
+
+        if error:
+            del Pages.processes[filename]
+
+        response_object = {
+            "stdout": decode_output(stdout) if stdout else "",
+            "stderr": decode_output(stderr) if stderr else "",
+            "code": process.process.returncode,
+            "Content-Type": process.script.content_type,
+            "Stderr-Content-Type": (process.script.stderr_content_type),
+            "error": error,
+        }
+
+        if stdout or not error:
+            response_object["key"] = filename
+
+        return (
+            "200 OK",
+            {"Content-Type": "application/json; charset=utf-8"},
+            json.dumps(response_object),
+        )
+
+
 class Api:
 
-    """This class regroup api functions."""
+    """
+    This class groups API functions.
+    """
+
+    script: Script = Script()
 
     @log_trace
     def __call__(
@@ -392,9 +569,11 @@ class Api:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function execute scripts with command line,
+        """
+        This function execute scripts with command line,
         get output, build the response error, headers and body
-        and return it as json."""
+        and return it as json.
+        """
 
         if filename == server_configuration.auth_script:
             Logs.error(
@@ -414,7 +593,7 @@ class Api:
             )
             return "403", {}, b""
 
-        stdout, stderr, code, error = execute_scripts(
+        stdout, stderr, key, code, error = execute_scripts(
             filename, user, environ, commande, inputs
         )
 
@@ -427,8 +606,8 @@ class Api:
             return error_HTTP, {}, b""
 
         response_object = {
-            "stdout": decode_output(stdout),
-            "stderr": decode_output(stderr),
+            "stdout": decode_output(stdout) if stdout else "",
+            "stderr": decode_output(stderr) if stderr else "",
             "code": code,
             "Content-Type": Pages.scripts[filename].content_type,
             "Stderr-Content-Type": (
@@ -436,6 +615,9 @@ class Api:
             ),
             "error": error,
         }
+
+        if key:
+            response_object["key"] = key
 
         if user.check_csrf:
             response_object["csrf"] = TokenCSRF.build_token(user)
@@ -449,7 +631,9 @@ class Api:
 
 class Web:
 
-    """This class regroup Web Pages functions."""
+    """
+    This class groups Web Pages functions.
+    """
 
     @log_trace
     def __call__(
@@ -623,6 +807,7 @@ class Pages:
     sessions: Dict[int, Session] = {}
     ip_blacklist: Dict[str, Blacklist] = {}
     user_blacklist: Dict[str, Blacklist] = {}
+    processes: Dict[str, Process] = {}
     api = Api()
     web = Web()
 
@@ -720,7 +905,7 @@ class Pages:
             return "403", {}, b""
 
         Logs.info("Run authentication script.")
-        stdout, stderr, code, error = execute_scripts(
+        stdout, stderr, key, code, error = execute_scripts(
             server_configuration.auth_script,
             user,
             environ,

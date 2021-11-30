@@ -95,6 +95,10 @@
 		"configuration_file": "./config/files/change_my_password.json"
 	},
 
+	"config_test_config": {
+		"configuration_file": "./config/files/test_config.json"
+	},
+
 	"config_show_licence": {
 		"no_password": true,
 		"launcher": "python3",

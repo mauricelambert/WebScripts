@@ -81,8 +81,10 @@ if __package__:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
@@ -100,8 +102,10 @@ else:
         Logs,
         get_file_content,
         get_arguments_count,
-        rotator,
-        namer,
+        # doRollover,
+        # rotator,
+        # namer,
+        # Handler,
         get_real_path,
         get_encodings,
         WebScriptsConfigurationError,
@@ -399,7 +403,7 @@ class ScriptConfig(DefaultNamespace):
             script_section["dirname"] = path.dirname(script_section["path"])
 
             scripts_config[name] = cls.default_build(**script_section)
-            scripts_config[name].build_args(configuration)
+            scripts_config[name].build_args(script_configuration)
 
             if path_ is None:
                 scripts_config[name].path_is_defined = False

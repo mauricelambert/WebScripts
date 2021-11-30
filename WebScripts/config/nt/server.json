@@ -67,7 +67,8 @@
 	"scripts": {
 		"auth.py": "config_auth",
 		"show_license.py": "config_show_licence",
-		"change_my_password.py": "config_change_my_password"
+		"change_my_password.py": "config_change_my_password",
+		"test_config.py": "config_test_config"
 	},
 
 	"config_auth": {
@@ -75,6 +76,10 @@
 		"launcher": "python",
 		"category": "My Account",
 		"description": "This script authenticates users."
+	},
+
+	"config_test_config": {
+		"configuration_file": "./config/files/test_config.json"
 	},
 
 	"auth_args": {
