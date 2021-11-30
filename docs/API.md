@@ -2,8 +2,9 @@
 
 ## URLs
 
- - `/api/`: JSON response with scripts and arguments
- - `/api/scripts/<script name>`: JSON response with script *stdout* (outputs), *stderr* (errors) and *exitcode*. A *csrf token* is added if you use the WEB interface.
+ - `/api/` (**HTTP GET METHOD**): JSON response with scripts details/informations
+ - `/api/scripts/<script name>` (**HTTP POST METHOD**): JSON response with script *stdout* (outputs), *stderr* (errors) and *exitcode*. A *csrf token* is added if you use the WEB interface.
+ - `/api/script/get/<key>` (**HTTP GET METHOD**): JSON response 
 
 ## Structures
 
@@ -37,7 +38,6 @@
 
 #### Script execution
 
-For web broswer:
 ```json
 {
 	"stdout": "<script outputs>", 
@@ -45,24 +45,23 @@ For web broswer:
 	"code": 0, 
 	"Content-Type": "text/<plain or html>", 
 	"csrf": "<token>", 
-	"error": "<server timeout error>"
+	"error": "<server timeout error>",
+	"key": "<key>"
 }
 ```
 
-For client API:
-```json
-{
-	"stdout": "<script outputs>", 
-	"stderr": "<script  errors>", 
-	"code": 0, 
-	"Content-Type": "text/<plain or html>", 
-	"error": "<server timeout error>"
-}
-```
+ - *stdout*: the output of the script. *Required*, type *string*.
+ - *stderr*: script errors. *Required*, type *string*.
+ - *code*: the exit code of the script. *Required*, type *integer* or *null*.
+ - *Content-Type*: script output content-type. *Required*, type *string*, value: `text/plain` or `text/html`.
+ - *Stderr-Content-Type*: script errors content-type. *Required*, type *string*, value: `text/plain` (**recommended for security reason**) or `text/html`.
+ - *error*: WebScripts error (reason to kill the child process). *Required*, type *string*.
+ - *key*: for *real time output* **only**, while *key* is defined the process is not terminated.
+ - *csrf*: for *web browser* **only**, in the response of the *POST request* **only**.
 
 ### Request
 
-For web broswer:
+For web browser:
 ```json
 {
 	"csrf_token": "<token>",

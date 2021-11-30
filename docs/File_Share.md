@@ -14,7 +14,7 @@ from WebScripts.scripts.uploads.modules.uploads_management import (
 from typing import List
 
 write_file(
-    "\x00string content\xff", # if is binary you can use base64 ou decode it with latin-1
+    "\x00string content\xff", # if is binary you can use base64 or decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     0,                        # Write access (0 == everyone can write it)

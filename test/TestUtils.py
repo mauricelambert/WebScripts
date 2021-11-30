@@ -53,8 +53,9 @@ from WebScripts.utils import (
     Logs,
     log_trace,
     server_path,
-    namer,
-    rotator,
+    CustomLogHandler,
+    # namer,
+    # rotator,
 )
 import WebScripts.utils
 
@@ -296,14 +297,9 @@ class TestDefaultNamespace(TestCase):
         )
 
 
-class TestFunctions(TestCase):
-    def test_log_trace(self):  # Code coverage, no tests on Logs functions
-        test = lambda: None
-        static = staticmethod(test)
-        log_trace(static)
-
+class TestCustomLogHandler(TestCase):
     def test_namer(self):
-        self.assertEqual("test.gz", namer("test"))
+        self.assertEqual("test.gz", CustomLogHandler.namer(None, "test"))
 
     def test_rotator(self):
         current = getcwd()
@@ -313,7 +309,7 @@ class TestFunctions(TestCase):
         with open(src, "w") as file:
             file.write("abc")
 
-        rotator(src, dest)
+        CustomLogHandler.rotator(None, src, dest)
 
         self.assertFalse(path.exists(src))
         self.assertTrue(path.exists(dest))
@@ -322,6 +318,13 @@ class TestFunctions(TestCase):
             self.assertEqual(gzip.decompress(file.read()), b"abc")
 
         os.remove("test.gz")
+
+
+class TestFunctions(TestCase):
+    def test_log_trace(self):  # Code coverage, no tests on Logs functions
+        test = lambda: None
+        static = staticmethod(test)
+        log_trace(static)
 
     def test_no_pywin32(self):
         path_ = sys.path.copy()

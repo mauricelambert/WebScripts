@@ -1,6 +1,6 @@
-# Add Script
+# Example - Add Script
 
-## Build the script
+## Build the script (bash script for WebScripts authentication)
 
 Write in `auth.sh`:
 
@@ -25,9 +25,12 @@ exit 0
 
 ## Add configuration
 
+Two methods can be used to configure a script, using a *specific configuration file* or tha *main configuration file*.
+
 ### Specific configuration file
 
-In a *main configuration file*:
+In the *main configuration file*:
+
 ```json
 {
     "scripts": {
@@ -41,6 +44,7 @@ In a *main configuration file*:
 ```
 
 In the *specific configuration file* (named `/path/to/configuration/file.json`):
+
 ```json
 {
 	"script": {
@@ -72,6 +76,7 @@ In the *specific configuration file* (named `/path/to/configuration/file.json`):
 ### Main configuration file
 
 In a *main configuration file*:
+
 ```json
 {
     "scripts": {

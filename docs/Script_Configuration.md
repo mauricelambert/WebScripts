@@ -33,6 +33,7 @@ configuration_file=./config/files/change_my_password.json                       
 4. Define the name of the specific file (`configuration_file=./config/files/change_my_password.json`)
 
 The specific file content (with JSON syntax):
+
 ```json
 {
     "script": {
@@ -57,6 +58,7 @@ The specific file content (with JSON syntax):
 4. Add your configurations
 
 JSON example:
+
 ```json
 {
     "scripts": {
@@ -88,6 +90,7 @@ In this configuration:
    - A user in group ID 1001 and not in group ID 1000 can't access it (group ID is the permission level)
 
 INI example:
+
 ```ini
 [scripts]
 auth.py=config_auth                                                                            # Define the configuration section ("config_auth") for script named "auth.py"
@@ -135,6 +138,7 @@ This configuration makes no sense because with `minimum_access=0` all user can a
  - `command_generate_documentation`: A command to build the documentation file (not required)
  - `no_password`: If `no_password` is `true` the command line will be written to the logs (not required, default is `false`)
  - `stderr_content_type`: The content type of *stderr* (script erreurs) should be `text/plain` (not required, default is `text/plain`). Possible values: `text/plain` and `text/html`, for security reason you should never set the `stderr_content_type` to `text/html`.
+ - `print_real_time`: the *stdout* (script output) is sent line after line (useful for long scripts and long output). Adding a few lines is **necessary** to use this configuration (flush the *stdout*, [examples](https://webscripts.readthedocs.io/en/latest/API_Client/#real-time-output) [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client#using-python))
 
 ### Command to generate the documentation file
 

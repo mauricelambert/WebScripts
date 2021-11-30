@@ -59,55 +59,65 @@ def import_without_package():
     # CHANGE CONTEXT AND SYS
     ########################
 
-    for i in [0, 0, -1, -1]:
-        sys.path.pop(i)
+    error = None
 
-    rename(dst1, dst2)
-    chdir(path.join(dir_path, "..", "WebScripts"))
-    sys.path.insert(0, "")
+    try:
+        for i in [0, 0, -1, -1]:
+            sys.path.pop(i)
 
-    for name in [
-        "WebScripts",
-        "Configuration",
-        "Server",
-        "WebScriptsConfigurationTypeError",
-        "commons",
-        "Blacklist",
-        "Session",
-    ]:
-        if name in locals().keys():
-            del locals()[name]
-        if name in globals().keys():
-            del globals()[name]
+        rename(dst1, dst2)
+        chdir(path.join(dir_path, "..", "WebScripts"))
+        sys.path.insert(0, "")
 
-    remove_names = []
-    for name in sys.modules.keys():
-        if "WebScripts." in name or name == "WebScripts":
-            remove_names.append(name)
+        for name in [
+            "WebScripts",
+            "Configuration",
+            "Server",
+            "WebScriptsConfigurationTypeError",
+            "commons",
+            "Blacklist",
+            "Session",
+        ]:
+            if name in locals().keys():
+                del locals()[name]
+            if name in globals().keys():
+                del globals()[name]
 
-    for name in remove_names:
-        del sys.modules[name]
+        remove_names = []
+        for name in sys.modules.keys():
+            if "WebScripts." in name or name == "WebScripts":
+                remove_names.append(name)
 
-    from WebScripts import (
-        Configuration,
-        Server,
-        WebScriptsConfigurationTypeError,
-    )
-    from commons import Blacklist, Session
+        for name in remove_names:
+            del sys.modules[name]
+
+        from WebScripts import (
+            Configuration,
+            Server,
+            WebScriptsConfigurationTypeError,
+        )
+        from commons import Blacklist, Session
+
+    except Exception as e:
+        error = e
 
     #########################
     # REBUILD CONTEXT AND SYS
     #########################
-    sys.path = path_
-    sys.modules = modules
-    rename(dst2, dst1)
-    chdir(current_path)
+    finally:
+        sys.path = path_
+        sys.modules = modules
+        rename(dst2, dst1)
+        chdir(current_path)
 
-    for name, value in locals_.items():
-        locals()[name] = value
+        for name, value in locals_.items():
+            locals()[name] = value
 
-    for name, value in globals_.items():
-        globals()[name] = value
+        for name, value in globals_.items():
+            globals()[name] = value
+
+    if error:
+        raise error
 
 
 disable_logs()

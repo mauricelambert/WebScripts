@@ -41,3 +41,7 @@ HTML report examples:
 ### Functional tests and WebScripts pentest tool
 
 Functional tests and WebScripts pentest tool.
+
+### Test configurations and interface
+
+To test the interface and configurations, I added a python script, invisible in the web index page, but you can use it to try, test or discover new features. The script is called `test_config.py`, you can get it from this URL (on `localhost:8000`) [http://127.0.0.1:8000/web/scripts/test_config.py](http://127.0.0.1:8000/web/scripts/test_config.py).
