@@ -3,7 +3,7 @@
 		"timeout": 25,
 		"args": "arguments",
 		"no_password": true,
-		"launcher": "python3",
+		"launcher": "python",
 		"path": "./scripts/py/test_config.py",
 		"description": "This script test interrface, arguments and script configurations.",
 		"print_real_time": true

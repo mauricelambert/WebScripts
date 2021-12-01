@@ -23,7 +23,7 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-__version__ = "0.0.12"
+__version__ = "0.0.13"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -220,6 +220,7 @@ class ScriptConfig(DefaultNamespace):
         "stderr_content_type": "text/plain",
         "content_type": "text/plain",
         "documentation_file": None,
+        "print_real_time": False,
         "minimum_access": None,
         "access_groups": None,
         "access_users": None,
@@ -617,6 +618,7 @@ class ScriptConfig(DefaultNamespace):
         for key in (
             "command_generate_documentation",
             "documentation_file",
+            "print_real_time",
             "minimum_access",
             "access_groups",
             "access_users",

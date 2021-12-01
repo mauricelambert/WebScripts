@@ -454,8 +454,7 @@ class Script:
 
         if process is None:
             Logs.error(
-                f"HTTP 404 for {user.name} on "
-                f"/api/script/get/{process.script.name}"
+                f"HTTP 404 for {user.name} on " f"/api/script/get/{filename}"
             )
             return "404", {}, b""
 
