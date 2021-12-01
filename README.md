@@ -224,6 +224,7 @@ WebScripts38.main()
  - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
  - [Default Request Manager](https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html)
  - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html)
+ - [Default module share](https://mauricelambert.github.io/info/python/code/WebScripts/share.html)
 
 ## Links
 
@@ -242,4 +243,5 @@ WebScripts38.main()
 *HTML script (light)*
 
 ## License
+
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

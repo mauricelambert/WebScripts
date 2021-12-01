@@ -354,6 +354,7 @@ class TestScriptConfig(TestCase):
             **{
                 "command_generate_documentation": 1,
                 "documentation_file": 1,
+                "print_real_time": 1,
                 "minimum_access": 1,
                 "access_groups": 1,
                 "access_users": 1,

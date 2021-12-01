@@ -29,6 +29,7 @@ WebScripts/config/files/test_config.json
 WebScripts/config/nt/server.ini
 WebScripts/config/nt/server.json
 WebScripts/config/nt/files/change_my_password.json
+WebScripts/config/nt/files/test_config.json
 WebScripts/config/nt/scripts/default_admin_scripts.json
 WebScripts/config/nt/scripts/default_log_scripts.json
 WebScripts/config/nt/scripts/default_password_scripts.json
