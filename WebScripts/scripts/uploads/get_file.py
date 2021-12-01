@@ -23,7 +23,7 @@
 
 This file prints a HTML link to download a file."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -46,7 +46,12 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.uploads_management import read_file
+from modules.uploads_management import (
+    read_file,
+    get_file,
+    check_permissions,
+    get_user,
+)
 from urllib.parse import quote
 import html
 import sys
@@ -63,17 +68,39 @@ def main() -> None:
 
     filename = sys.argv[1]
 
+    uploads, counter = get_file(filename)
+
+    if len(uploads) == 0:
+        print(
+            f"FileNotFoundError: No such file or directory: {filename}",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
+    file = uploads[-1]
+    owner = get_user()
     try:
-        data = read_file(filename)
+        check_permissions(file, owner, "read")
     except Exception as e:
-        print(html.escape(f"{e.__class__.__name__}: {e}"))
+        print(f"{e.__class__.__name__}: {e}", file=sys.stderr)
         sys.exit(127)
 
     print(
-        f'<a href="data:application/octet-stream;base64, {data}" download="'
-        f'{quote(filename)}">Click here to download '
-        f"{html.escape(filename)}</a>"
+        f'<a href="/share/Download/filename/{quote(filename)}">'
+        f"Click here to download {html.escape(filename)}</a>"
     )
+
+    # try:
+    #     data = read_file(filename)
+    # except Exception as e:
+    #     print(html.escape(f"{e.__class__.__name__}: {e}"))
+    #     sys.exit(127)
+
+    # print(
+    #     f'<a href="data:application/octet-stream;base64, {data}" download="'
+    #     f'{quote(filename)}">Click here to download '
+    #     f"{html.escape(filename)}</a>"
+    # )
 
 
 if __name__ == "__main__":

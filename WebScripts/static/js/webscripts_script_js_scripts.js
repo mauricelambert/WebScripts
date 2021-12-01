@@ -21,7 +21,7 @@ let script_name;
 let script;
 let download_extension = ".txt";
 let download_text = "";
-let download_type = "plain"
+let download_type = "plain";
 let download_separator = "\n";
 let execution_number = 0;
 let progress = true;
@@ -39,7 +39,7 @@ function build_script_interface(scripts) {
         function set_custom_attributes(argument, config) {
             attributes = config.javascript_attributs;
 
-            for (attribute in attributes) {
+            for (let attribute in attributes) {
                 argument.setAttribute(attribute, attributes[attribute]);
             }
         }
@@ -122,7 +122,7 @@ function build_script_interface(scripts) {
             input.type = arg.html_type;
 
             if (arg.default_value !== undefined && arg.default_value !== null) {
-                input.value = arg.default_value
+                input.value = arg.default_value;
             }
             if (arg.example !== undefined && arg.example !== null) {
                 input.placeholder = arg.example;
@@ -147,7 +147,7 @@ function build_script_interface(scripts) {
             if (source.value === "" && (next !== null || next.value === "")) {
                 next.remove();
             } else if (source.value !== "" && next === null) {
-                new_element = source.cloneNode()
+                new_element = source.cloneNode();
                 new_element.id = source.name + document.getElementsByName(source
                     .name).length;
                 source.parentNode.appendChild(new_element);
@@ -174,7 +174,7 @@ function build_script_interface(scripts) {
                     event = new Event('change');
                     element.dispatchEvent(event);
                 }
-                
+
             });
         }
 
@@ -323,12 +323,12 @@ function add_arguments(values, counter, arguments_) {
     } else {
         arguments_ = sort_arguments(arguments_);
         make_json_request(arguments_);
-        document.getElementById("submit_button").disabled=true;
+        document.getElementById("submit_button").disabled = true;
         return;
     }
 }
 
-function add_NULL_argument(){}
+function add_NULL_argument() {}
 
 
 function add_INPUT_argument(input, values, counter, arguments_) {
@@ -393,7 +393,9 @@ function add_SELECT_argument(select, values, counter, arguments_) {
             if (first) {
                 first = false;
             } else {
-                values.push({"tagName": "NULL"});
+                values.push({
+                    "tagName": "NULL"
+                });
             }
         }
     }
@@ -414,11 +416,13 @@ function add_SELECT_argument(select, values, counter, arguments_) {
 }
 
 
-function send_requests(json, first=true) {
+function send_requests(json, first = true) {
     let xhttp = new XMLHttpRequest();
     let start;
+    let full_output = "";
+    let full_error = "";
 
-    function post_execute_script () {
+    function post_execute_script() {
         let url;
         if (script_name[0] === "/") {
             url = script_name;
@@ -435,7 +439,7 @@ function send_requests(json, first=true) {
         progress_bar();
     }
 
-    function get_new_line (response) {
+    function get_new_line(response) {
         xhttp.open('GET', `/api/script/get/${response.key}`, true);
         xhttp.send()
     }
@@ -451,21 +455,23 @@ function send_requests(json, first=true) {
 
         if (response_object.key) {
             if (!response_object.code) {
-                response_object.code="Running...";
+                response_object.code = "Running...";
             }
             if (!response_object.error) {
-                response_object.error="Running...";
+                response_object.error = "Running...";
             }
-            
+
             if (build_output_interface(
-                response_object,
-                add_history_=false,
-                time="Running...",
-                make_new_output=first,
-            )) {
-                first=false;
+                    response_object,
+                    add_history_ = false,
+                    time = "Running...",
+                    make_new_output = first,
+                )) {
+                first = false;
             };
 
+            full_output += response_object.stdout;
+            full_error += response_object.stderr;
             get_new_line(response_object);
 
             return;
@@ -485,20 +491,22 @@ function send_requests(json, first=true) {
 
         build_output_interface(
             response_object,
-            add_history_=true,
-            time=`${minutes}:${seconds}`,
-            build_new_output=false,
-            update=true,
+            add_history_ = true,
+            time = `${minutes}:${seconds}`,
+            make_new_output = false,
+            update = true,
+            full_output = full_output,
+            full_error = full_error,
         );
 
-        document.getElementById("submit_button").disabled=false;
+        document.getElementById("submit_button").disabled = false;
         is_running = false;
         first = true;
         document.getElementById('code').id = `last_code_${execution_number}`;
         document.getElementById('last_output').id = `last_output_${execution_number}`;
         document.getElementById('console').id = `console_${execution_number}`;
     }
-    
+
     xhttp.onreadystatechange = () => {
         let class_link = "";
 
@@ -525,16 +533,16 @@ function send_requests(json, first=true) {
                 `ERROR 500: Internal Server Error. \nYou can report a bug` +
                 ` <a ${class_link}href="/error_pages/Report/new/` +
                 `${xhttp.status}">on the local report page</a>.`;
-            
-            document.getElementById("submit_button").disabled=false;
+
+            document.getElementById("submit_button").disabled = false;
             is_running = false;
         } else if (xhttp.readyState === 4 && xhttp.status === 403) {
             document.getElementById("bar").innerHTML =
                 `ERROR 403: Forbidden. (Refresh the page or re-authenticate ` +
                 `please). \nYou can <a ${class_link}href="/error_pages/Report/new` +
                 `/${xhttp.status}">request access to the administrator</a>.`;
-            
-            document.getElementById("submit_button").disabled=false;
+
+            document.getElementById("submit_button").disabled = false;
             is_running = false;
         } else if (xhttp.readyState === 4) {
             document.getElementById("bar").innerHTML =
@@ -542,7 +550,7 @@ function send_requests(json, first=true) {
                 `${class_link}href="/error_pages/Report/new/${xhttp.status}"` +
                 `>on the local report page</a>.`;
 
-            document.getElementById("submit_button").disabled=false;
+            document.getElementById("submit_button").disabled = false;
             is_running = false;
         }
     }
@@ -550,7 +558,7 @@ function send_requests(json, first=true) {
     post_execute_script();
 }
 
-function build_output_interface(output, add_history_ = true, time = null, make_new_output = true, update = false) {
+function build_output_interface(output, add_history_ = true, time = null, make_new_output = true, update = false, full_output = null, full_error = null) {
 
     function clean_string(string) {
         return string.replace(/^\s+|\s+$/g, '');
@@ -575,7 +583,7 @@ function build_output_interface(output, add_history_ = true, time = null, make_n
         let new_output = document.createElement("div");
         let console_ = document.createElement("pre");
 
-        new_output.id="last_output";
+        new_output.id = "last_output";
 
         console_.id = "console";
         console_.classList.add("console");
@@ -583,7 +591,7 @@ function build_output_interface(output, add_history_ = true, time = null, make_n
         console_.appendChild(code);
         new_output.appendChild(console_);
 
-        make_new_output=true;
+        make_new_output = true;
 
         return new_output;
     }
@@ -615,6 +623,18 @@ function build_output_interface(output, add_history_ = true, time = null, make_n
         code.innerText = code.innerText.replace('Running...', output.code).replace('Running...', output.error).replace('Running...', time);
     }
 
+    if (add_history_) {
+        add_history(
+            full_output || output.stdout,
+            full_error || output.stderr,
+            output.code,
+            output.error,
+            content_type,
+            stderr_content_type,
+            time,
+        );
+    }
+
     if ((output_string + error_string).length === 0) {
         return false;
     }
@@ -623,17 +643,6 @@ function build_output_interface(output, add_history_ = true, time = null, make_n
         stderr_content_type = output["Stderr-Content-Type"];
     } else {
         stderr_content_type = "text/plain";
-    }
-
-    if (add_history_) {
-        add_history(
-            output.stdout,
-            output.stderr,
-            output.code,
-            output.error,
-            content_type,
-            stderr_content_type
-        );
     }
 
     if (error_string.length !== 0) {
@@ -677,7 +686,7 @@ function build_output_interface(output, add_history_ = true, time = null, make_n
 }
 
 function add_history(stdout, stderr, code, error, content_type,
-    stderr_content_type) {
+    stderr_content_type, time) {
     let button = document.createElement("button");
     button.onclick = build_output_interface.bind(
         button, {
@@ -688,7 +697,8 @@ function add_history(stdout, stderr, code, error, content_type,
             'Content-Type': content_type,
             'Stderr-Content-Type': stderr_content_type,
         },
-        add_history_ = false
+        add_history_=false,
+        time=time,
     );
     button.innerText = execution_number;
     execution_number++;

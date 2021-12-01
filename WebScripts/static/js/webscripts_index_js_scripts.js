@@ -33,14 +33,14 @@ function build_categories(scripts) {
                 `/web/scripts/${script.name}">${script.name}</a> ` +
                 `<p class="description inline">(` +
                 `${script.description})</p></li>
-            `
+            `;
         } else {
             script_string = `
                     <li class="category script_bullet_point">` +
                 `<a class="category script_link inline" href="` +
                 `/web/auth/">${script.name}</a> <p class="description ` +
                 `inline">(${script.description})</p></li>
-            `
+            `;
         }
 
         if (script.category && categories[script.category] ===

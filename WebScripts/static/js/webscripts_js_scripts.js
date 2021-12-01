@@ -33,7 +33,7 @@ function get_scripts(func = undefined) {
                     .display = 'none';
             }
         }
-    }
+    };
 
     xhttp.open("GET", "/api/", true);
     xhttp.send();

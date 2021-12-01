@@ -23,7 +23,7 @@
 
 This file implement some functions to manage uploads on WebScripts."""
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -309,7 +309,7 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
         owner["groups"]
     ):
         raise PermissionError(
-            f"To read/delete this file ({file.name}) a group ID "
+            f"To {attr} this file ({file.name}) a group ID "
             f"greater than {permission} is required."
         )
     elif (attr == "read" or attr == "delete") and file.is_deleted == "deleted":

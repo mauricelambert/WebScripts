@@ -385,6 +385,17 @@ href="https://mauricelambert.github.io/info/python/code/WebScripts/csp.html">
                         online
                     </a>.
                 </li>
+                <li id="webscripts_footer_list_source" \
+class="bullet_point footer border">
+                    Pydoc documentation for module share.py:
+                    <a id="webscripts_link_source" href="/static/share.html">
+                        local
+                    </a>,
+                    <a id="webscripts_link_documentation" \
+href="https://mauricelambert.github.io/info/python/code/WebScripts/share.html">
+                        online
+                    </a>.
+                </li>
         </footer>
 
         <script type="text/javascript" nonce="${nonce}">
