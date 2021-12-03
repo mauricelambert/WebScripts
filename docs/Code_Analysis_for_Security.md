@@ -56,7 +56,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
 ```json
 {
   "errors": [],
-  "generated_at": "2021-09-07T08:19:04Z",
+  "generated_at": "2021-12-02T18:36:59Z",
   "metrics": {
     "WebScripts\\Errors.py": {
       "CONFIDENCE.HIGH": 0.0,
@@ -79,7 +79,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 2.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 525,
+      "loc": 773,
       "nosec": 0
     },
     "WebScripts\\WebScripts.py": {
@@ -91,7 +91,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 799,
+      "loc": 1076,
       "nosec": 0
     },
     "WebScripts\\__init__.py": {
@@ -103,7 +103,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 26,
+      "loc": 25,
       "nosec": 0
     },
     "WebScripts\\__main__.py": {
@@ -115,7 +115,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 26,
+      "loc": 25,
       "nosec": 0
     },
     "WebScripts\\commons.py": {
@@ -127,7 +127,31 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 3.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 732,
+      "loc": 819,
+      "nosec": 0
+    },
+    "WebScripts\\hardening.py": {
+      "CONFIDENCE.HIGH": 1.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 1.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 1228,
+      "nosec": 0
+    },
+    "WebScripts\\modules\\csp.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 53,
       "nosec": 0
     },
     "WebScripts\\modules\\error_pages.py": {
@@ -139,7 +163,19 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 273,
+      "loc": 574,
+      "nosec": 0
+    },
+    "WebScripts\\modules\\share.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 176,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\add_group.py": {
@@ -163,7 +199,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 89,
+      "loc": 91,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\api_view_groups.py": {
@@ -187,7 +223,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 64,
+      "loc": 62,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\auth.py": {
@@ -199,7 +235,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 75,
+      "loc": 81,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\change_my_password.py": {
@@ -211,7 +247,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 61,
+      "loc": 62,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\change_user_password.py": {
@@ -223,7 +259,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 49,
+      "loc": 48,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\delete_group.py": {
@@ -235,7 +271,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 42,
+      "loc": 40,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\delete_user.py": {
@@ -247,7 +283,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 40,
+      "loc": 39,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\get_apikey.py": {
@@ -259,7 +295,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 41,
+      "loc": 39,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\modules\\manage_defaults_databases.py": {
@@ -271,7 +307,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 304,
+      "loc": 339,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\view_groups.py": {
@@ -283,7 +319,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 63,
+      "loc": 70,
       "nosec": 0
     },
     "WebScripts\\scripts\\account\\view_users.py": {
@@ -295,7 +331,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 67,
+      "loc": 75,
       "nosec": 0
     },
     "WebScripts\\scripts\\doc\\py_doc.py": {
@@ -307,7 +343,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 54,
+      "loc": 57,
       "nosec": 0
     },
     "WebScripts\\scripts\\logs\\log_analysis.py": {
@@ -319,7 +355,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 81,
+      "loc": 82,
       "nosec": 0
     },
     "WebScripts\\scripts\\logs\\log_viewer.py": {
@@ -343,7 +379,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 1.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 121,
+      "loc": 129,
       "nosec": 0
     },
     "WebScripts\\scripts\\passwords\\new_password_share.py": {
@@ -355,7 +391,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 122,
+      "loc": 130,
       "nosec": 0
     },
     "WebScripts\\scripts\\passwords\\password_generator.py": {
@@ -367,7 +403,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 32,
+      "loc": 29,
       "nosec": 0
     },
     "WebScripts\\scripts\\py\\hello.py": {
@@ -379,7 +415,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 26,
+      "loc": 28,
       "nosec": 0
     },
     "WebScripts\\scripts\\py\\show_license.py": {
@@ -391,7 +427,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 58,
+      "loc": 55,
       "nosec": 0
     },
     "WebScripts\\scripts\\py\\test_config.py": {
@@ -403,22 +439,10 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 11,
+      "loc": 20,
       "nosec": 0
     },
-    "WebScripts\\scripts\\request\\modules\\requests_management.py": {
-      "CONFIDENCE.HIGH": 0.0,
-      "CONFIDENCE.LOW": 0.0,
-      "CONFIDENCE.MEDIUM": 0.0,
-      "CONFIDENCE.UNDEFINED": 0.0,
-      "SEVERITY.HIGH": 0.0,
-      "SEVERITY.LOW": 0.0,
-      "SEVERITY.MEDIUM": 0.0,
-      "SEVERITY.UNDEFINED": 0.0,
-      "loc": 61,
-      "nosec": 0
-    },
-    "WebScripts\\scripts\\uploads\\api_get_all_files.py": {
+    "WebScripts\\scripts\\request\\delete_request.py": {
       "CONFIDENCE.HIGH": 0.0,
       "CONFIDENCE.LOW": 0.0,
       "CONFIDENCE.MEDIUM": 0.0,
@@ -430,6 +454,66 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "loc": 47,
       "nosec": 0
     },
+    "WebScripts\\scripts\\request\\get_request.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 46,
+      "nosec": 0
+    },
+    "WebScripts\\scripts\\request\\get_requests.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 60,
+      "nosec": 0
+    },
+    "WebScripts\\scripts\\request\\modules\\requests_management.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 95,
+      "nosec": 0
+    },
+    "WebScripts\\scripts\\to_3.8\\to_3.8.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 113,
+      "nosec": 0
+    },
+    "WebScripts\\scripts\\uploads\\api_get_all_files.py": {
+      "CONFIDENCE.HIGH": 0.0,
+      "CONFIDENCE.LOW": 0.0,
+      "CONFIDENCE.MEDIUM": 0.0,
+      "CONFIDENCE.UNDEFINED": 0.0,
+      "SEVERITY.HIGH": 0.0,
+      "SEVERITY.LOW": 0.0,
+      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.UNDEFINED": 0.0,
+      "loc": 45,
+      "nosec": 0
+    },
     "WebScripts\\scripts\\uploads\\api_get_files.py": {
       "CONFIDENCE.HIGH": 0.0,
       "CONFIDENCE.LOW": 0.0,
@@ -439,7 +523,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 50,
+      "loc": 48,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\api_get_history.py": {
@@ -451,7 +535,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 42,
+      "loc": 40,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\delete_file.py": {
@@ -463,7 +547,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 40,
+      "loc": 38,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\get_all_files.py": {
@@ -475,7 +559,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 55,
+      "loc": 61,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\get_any_file.py": {
@@ -487,7 +571,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 55,
+      "loc": 56,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\get_file.py": {
@@ -499,7 +583,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 43,
+      "loc": 57,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\get_files.py": {
@@ -511,7 +595,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 52,
+      "loc": 56,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\get_history.py": {
@@ -523,7 +607,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 56,
+      "loc": 67,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\modules\\uploads_management.py": {
@@ -535,7 +619,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 230,
+      "loc": 303,
       "nosec": 0
     },
     "WebScripts\\scripts\\uploads\\upload_file.py": {
@@ -547,7 +631,7 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 0.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 92,
+      "loc": 97,
       "nosec": 0
     },
     "WebScripts\\utils.py": {
@@ -559,147 +643,192 @@ bandit -i -l -r -v -f json -o "vulns.json" --ignore-nosec WebScripts
       "SEVERITY.LOW": 2.0,
       "SEVERITY.MEDIUM": 0.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 442,
+      "loc": 530,
       "nosec": 0
     },
     "_totals": {
-      "CONFIDENCE.HIGH": 8.0,
+      "CONFIDENCE.HIGH": 9.0,
       "CONFIDENCE.LOW": 0.0,
       "CONFIDENCE.MEDIUM": 1.0,
       "CONFIDENCE.UNDEFINED": 0.0,
       "SEVERITY.HIGH": 1.0,
       "SEVERITY.LOW": 8.0,
-      "SEVERITY.MEDIUM": 0.0,
+      "SEVERITY.MEDIUM": 1.0,
       "SEVERITY.UNDEFINED": 0.0,
-      "loc": 5273,
+      "loc": 8211,
       "nosec": 0
     }
   },
   "results": [
     {
-      "code": "28 \n29 from subprocess import Popen, PIPE, TimeoutExpired\n30 from typing import Tuple, List, Dict\n",
+      "code": "53 \n54 from subprocess import Popen, PIPE, TimeoutExpired  # nosec\n55 from typing import Tuple, List, Dict\n",
       "filename": "WebScripts\\Pages.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "Consider possible security implications associated with Popen module.",
-      "line_number": 29,
+      "line_number": 54,
       "line_range": [
-        29
+        54
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess",
       "test_id": "B404",
       "test_name": "blacklist"
     },
     {
-      "code": "135     process = Popen(\n136         arguments, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=False, env=script_env\n137     )\n138 \n",
+      "code": "158         stderr=PIPE,\n159         shell=False,\n160         env=script_env,\n161     )  # nosec\n162 \n163     stdout, stderr, key, error, code = start_process(\n164         script, process, user, inputs\n165     )\n166 \n",
       "filename": "WebScripts\\Pages.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "subprocess call - check for execution of untrusted input.",
-      "line_number": 136,
+      "line_number": 159,
       "line_range": [
-        135,
-        136
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html",
       "test_id": "B603",
       "test_name": "subprocess_without_shell_equals_true"
     },
     {
-      "code": "425             Logs.info(f\"Command for documentation: {command}\")\n426             process = Popen(command, shell=True)\n427             process.communicate()\n",
+      "code": "698             Logs.info(f\"Command for documentation: {command}\")\n699             process = Popen(command, shell=True)  # nosec # nosemgrep\n700             process.communicate()\n",
       "filename": "WebScripts\\Pages.py",
       "issue_confidence": "HIGH",
       "issue_severity": "HIGH",
       "issue_text": "subprocess call with shell=True identified, security issue.",
-      "line_number": 426,
+      "line_number": 699,
       "line_range": [
-        426
+        699
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html",
       "test_id": "B602",
       "test_name": "subprocess_popen_with_shell_equals_true"
     },
     {
-      "code": "31 from collections.abc import Callable\n32 from subprocess import Popen, PIPE\n33 from types import SimpleNamespace\n",
+      "code": "62 from collections.abc import Callable\n63 from subprocess import Popen, PIPE  # nosec\n64 from types import SimpleNamespace\n",
       "filename": "WebScripts\\commons.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "Consider possible security implications associated with Popen module.",
-      "line_number": 32,
+      "line_number": 63,
       "line_range": [
-        32
+        63
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess",
       "test_id": "B404",
       "test_name": "blacklist"
     },
     {
-      "code": "403 \n404         process = Popen(\n405             [r\"C:\\WINDOWS\\system32\\cmd.exe\", \"/c\", \"assoc\", extension], stdout=PIPE, stderr=PIPE, text=True\n406         )\n",
+      "code": "445 \n446         process = Popen(\n447             [\n448                 r\"C:\\WINDOWS\\system32\\cmd.exe\",\n449                 \"/c\",\n450                 \"assoc\",\n451                 extension,\n452             ],  # protection against command injection\n453             stdout=PIPE,\n454             stderr=PIPE,\n455             text=True,\n456         )  # nosec\n",
       "filename": "WebScripts\\commons.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "subprocess call - check for execution of untrusted input.",
-      "line_number": 404,
+      "line_number": 446,
       "line_range": [
-        404,
-        405
+        446,
+        447,
+        448,
+        449,
+        450,
+        451,
+        452,
+        453,
+        454,
+        455
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html",
       "test_id": "B603",
       "test_name": "subprocess_without_shell_equals_true"
     },
     {
-      "code": "412 \n413         process = Popen(\n414             [r\"C:\\WINDOWS\\system32\\cmd\", \"/c\", \"ftype\", filetype], stdout=PIPE, stderr=PIPE, text=True\n415         )\n",
+      "code": "462 \n463         process = Popen(\n464             [r\"C:\\WINDOWS\\system32\\cmd\", \"/c\", \"ftype\", filetype],\n465             stdout=PIPE,\n466             stderr=PIPE,\n467             text=True,\n468         )  # nosec\n",
       "filename": "WebScripts\\commons.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "subprocess call - check for execution of untrusted input.",
-      "line_number": 413,
+      "line_number": 463,
       "line_range": [
-        413,
-        414
+        463,
+        464,
+        465,
+        466,
+        467
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html",
       "test_id": "B603",
       "test_name": "subprocess_without_shell_equals_true"
     },
     {
-      "code": "69 \n70     password_ = \"\"\n71     key_length = len(key)\n",
+      "code": "1423             )\n1424             response = urlopen(  # nosec\n1425                 \"https://api.github.com/repos/mauricelambert/WebScripts/tags\"\n1426             )\n",
+      "filename": "WebScripts\\hardening.py",
+      "issue_confidence": "HIGH",
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 1424,
+      "line_range": [
+        1424,
+        1425
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "71 \n72     password_ = \"\"  # nosec\n73     key_length = len(key)\n",
       "filename": "WebScripts\\scripts\\passwords\\get_password_share.py",
       "issue_confidence": "MEDIUM",
       "issue_severity": "LOW",
       "issue_text": "Possible hardcoded password: ''",
-      "line_number": 70,
+      "line_number": 72,
       "line_range": [
-        70
+        72
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b105_hardcoded_password_string.html",
       "test_id": "B105",
       "test_name": "hardcoded_password_string"
     },
     {
-      "code": "32 from os import path, _Environ, device_encoding\n33 from subprocess import check_call, DEVNULL\n34 from configparser import ConfigParser\n",
+      "code": "68 from os import path, _Environ, device_encoding, remove\n69 from subprocess import check_call, DEVNULL  # nosec\n70 from configparser import ConfigParser\n",
       "filename": "WebScripts\\utils.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "Consider possible security implications associated with check_call module.",
-      "line_number": 33,
+      "line_number": 69,
       "line_range": [
-        33
+        69
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/blacklists/blacklist_imports.html#b404-import-subprocess",
       "test_id": "B404",
       "test_name": "blacklist"
     },
     {
-      "code": "335 \n336     check_call([r\"C:\\WINDOWS\\system32\\reg.exe\", \"add\", r\"HKEY_CURRENT_USER\\Console\", \"/v\", \"VirtualTerminalLevel\", \"/t\", \"REG_DWORD\", \"/d\", \"0x00000001\", \"/f\"], stdout=DEVNULL, stderr=DEVNULL) # Active colors in console (for logs)\n337 \n",
+      "code": "392 \n393     check_call(\n394         [\n395             r\"C:\\WINDOWS\\system32\\reg.exe\",\n396             \"add\",\n397             r\"HKEY_CURRENT_USER\\Console\",\n398             \"/v\",\n399             \"VirtualTerminalLevel\",\n400             \"/t\",\n401             \"REG_DWORD\",\n402             \"/d\",\n403             \"0x00000001\",\n404             \"/f\",\n405         ],\n406         stdout=DEVNULL,\n407         stderr=DEVNULL,\n408     )  # Active colors in console (for logs) # nosec\n",
       "filename": "WebScripts\\utils.py",
       "issue_confidence": "HIGH",
       "issue_severity": "LOW",
       "issue_text": "subprocess call - check for execution of untrusted input.",
-      "line_number": 336,
+      "line_number": 393,
       "line_range": [
-        336
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407
       ],
       "more_info": "https://bandit.readthedocs.io/en/latest/plugins/b603_subprocess_without_shell_equals_true.html",
       "test_id": "B603",
