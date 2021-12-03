@@ -13,6 +13,7 @@
 	},
 
 	"config_get_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -28,6 +29,7 @@
 	},
 
 	"config_get_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -43,6 +45,7 @@
 	},
 
 	"config_delete_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -111,6 +114,7 @@
 	},
 
 	"config_get_history": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -122,10 +126,11 @@
 	},
 
 	"config_upload_file": {
+		"timeout": 300,
 		"no_password": true,
+		"minimum_access": 50,
 		"launcher": "python3",
 		"category": "Upload",
-		"minimum_access": 50,
 		"args": "args_upload_file",
 		"description": "This script uploads a file on the WebScripts Server.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -144,10 +149,11 @@
 	},
 
 	"config_api_get_files": {
+		"timeout": 15,
 		"no_password": true,
+		"minimum_access": 50,
 		"launcher": "python3",
 		"category": "Upload",
-		"minimum_access": 50,
 		"description": "This script returns a JSON object of uploaded files.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
@@ -163,6 +169,7 @@
 	},
 
 	"config_api_get_history": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -173,6 +180,7 @@
 	},
 
 	"config_api_get_all_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",
@@ -182,6 +190,7 @@
 	},
 
 	"config_get_any_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",

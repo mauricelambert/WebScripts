@@ -5,6 +5,7 @@
 	},
 
 	"config_log_analysis": {
+		"timeout": 120,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Security",
@@ -16,6 +17,7 @@
 	},
 
 	"config_log_viewer": {
+		"timeout": 30,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Security",

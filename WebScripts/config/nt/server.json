@@ -72,6 +72,7 @@
 	},
 
 	"config_auth": {
+		"timeout": 15,
 		"args": "auth_args",
 		"launcher": "python",
 		"category": "My Account",
@@ -79,7 +80,7 @@
 	},
 
 	"config_test_config": {
-		"configuration_file": "./config/files/test_config.json"
+		"configuration_file": "./config/nt/files/test_config.json"
 	},
 
 	"auth_args": {
@@ -103,6 +104,7 @@
 	},
 
 	"config_show_licence": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "License",

@@ -6,6 +6,7 @@
 	},
 
 	"config_get_request": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
@@ -17,6 +18,7 @@
 	},
 
 	"config_get_requests": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],
@@ -38,6 +40,7 @@
 	},
 
 	"config_delete_request": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"access_groups": [1000],

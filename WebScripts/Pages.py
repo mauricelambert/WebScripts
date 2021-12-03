@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -360,11 +360,14 @@ class Process:
     This class implements a running processus.
     """
 
-    def __init__(self, process: Popen, script: ScriptConfig, user: User):
+    def __init__(
+        self, process: Popen, script: ScriptConfig, user: User, key: str
+    ):
         Logs.debug("Process creation...")
         self.process = process
         self.script = script
         self.user = user
+        self.key = key
         self.start_time = time()
         self.timeout = script.timeout
 
@@ -382,6 +385,7 @@ class Process:
 
         self.process.stdout.flush()
         if self.process.poll() == 0:
+            del Pages.processes[self.key]
             return (
                 self.process.stdout.read(),
                 self.process.stderr.read(),
@@ -402,7 +406,11 @@ class Process:
             if read:
                 stdout = self.process.stdout.read()
                 stderr = self.process.stderr.read()
+                del Pages.processes[self.key]
             else:
+                self.timer = Timer(300, self.get_line)
+                # delete the process 5 minutes after the timeout
+                self.timer.start()
                 stdout = b""
                 stderr = b""
 
@@ -466,9 +474,6 @@ class Script:
             return "403", {}, b""
 
         stdout, stderr, error = process.get_line()
-
-        if error:
-            del Pages.processes[filename]
 
         response_object = {
             "stdout": decode_output(stdout) if stdout else "",

@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -60,6 +60,7 @@ from socket import gethostbyname
 from pkgutil import iter_modules
 from typing import TypeVar, List
 from contextlib import suppress
+from operator import itemgetter
 from types import ModuleType
 from threading import Thread
 from getpass import getuser
@@ -96,6 +97,24 @@ class SEVERITY(Enum):
     CRITICAL = "CRITICAL"
 
 
+class GETTER:
+
+    """
+    This class groups getters.
+    """
+
+    sever = itemgetter("severity")
+    score = itemgetter("SCORING")
+    field = itemgetter("fields")
+    total = itemgetter("total")
+    fail = itemgetter("FAIL")
+    info = itemgetter(SEVERITY.INFORMATION.value)
+    crit = itemgetter(SEVERITY.CRITICAL.value)
+    med = itemgetter(SEVERITY.MEDIUM.value)
+    high = itemgetter(SEVERITY.HIGH.value)
+    low = itemgetter(SEVERITY.LOW.value)
+
+
 @dataclass
 class Rule:
 
@@ -123,9 +142,38 @@ class Report:
         self.reports_text: str = None
         self.reports_html: str = None
 
+    @staticmethod
+    def truncate_string(
+        string: str, length: int = 13, end: str = "...", separator: str = ","
+    ) -> str:
+
+        """
+        This function truncate a string.
+        """
+
+        if not isinstance(string, str):
+            string = str(string)
+
+        length_string = len(string)
+
+        if length_string > 13:
+            string = f"{string[:length - len(end)]}...{separator}"
+        else:
+            string = f"{string}{separator}{' ' * (length - length_string)}"
+
+        return string
+
     def as_json(self) -> str:
 
         """This function returns a JSON string of audit results."""
+
+        G = GETTER
+
+        scoring = {f"{s.value} total": 0 for s in SEVERITY}
+        scoring.update({f"{s.value} fail": 0 for s in SEVERITY})
+
+        scoring["total"] = 0
+        scoring["FAIL"] = 0
 
         self.reports_dict = {
             SEVERITY.INFORMATION.value: [],
@@ -135,38 +183,22 @@ class Report:
             SEVERITY.CRITICAL.value: [],
             "FAIL": [],
             "ALL": [],
-            "SCORING": {
-                "total": 0,
-                "fail": 0,
-                f"{SEVERITY.INFORMATION.value} total": 0,
-                f"{SEVERITY.INFORMATION.value} fail": 0,
-                f"{SEVERITY.LOW.value} total": 0,
-                f"{SEVERITY.LOW.value} fail": 0,
-                f"{SEVERITY.MEDIUM.value} total": 0,
-                f"{SEVERITY.MEDIUM.value} fail": 0,
-                f"{SEVERITY.HIGH.value} total": 0,
-                f"{SEVERITY.HIGH.value} fail": 0,
-                f"{SEVERITY.CRITICAL.value} total": 0,
-                f"{SEVERITY.CRITICAL.value} fail": 0,
-            },
+            "SCORING": scoring,
             "fields": [],
         }
+
         for rule in self.rules:
 
             audit = {}
             self.reports_dict["ALL"].append(audit)
             self.reports_dict[rule.severity].append(audit)
-            self.reports_dict["SCORING"]["total"] += rule.level
-            self.reports_dict["SCORING"][
-                f"{rule.severity} total"
-            ] += rule.level
+            scoring["total"] += rule.level
+            scoring[f"{rule.severity} total"] += rule.level
 
             if not rule.is_OK:
-                self.reports_dict["FAIL"].append(audit)
-                self.reports_dict["SCORING"]["fail"] += rule.level
-                self.reports_dict["SCORING"][
-                    f"{rule.severity} fail"
-                ] += rule.level
+                G.fail(self.reports_dict).append(audit)
+                scoring["FAIL"] += rule.level
+                scoring[f"{rule.severity} fail"] += rule.level
 
             for attribut in Rule.__dataclass_fields__.keys():
 
@@ -180,94 +212,82 @@ class Report:
                     new_attribut = attribut
                     new_value = getattr(rule, attribut)
 
-                if new_attribut not in self.reports_dict["fields"]:
-                    self.reports_dict["fields"].append(new_attribut)
+                if new_attribut not in G.field(self.reports_dict):
+                    G.field(self.reports_dict).append(new_attribut)
 
                 audit[new_attribut] = new_value
+
+        sort = lambda x: x["level"]
+        self.reports_dict["ALL"] = sorted(
+            self.reports_dict["ALL"], key=sort, reverse=True
+        )
+        self.reports_dict["FAIL"] = sorted(
+            G.fail(self.reports_dict), key=sort, reverse=True
+        )
 
         fields = self.reports_dict.pop("fields")
         self.reports_json = json.dumps(self.reports_dict, indent=4)
         self.reports_dict["fields"] = fields
+
         return self.reports_json
+
+    def get_pourcent(self) -> None:
+
+        """
+        This function calcul pourcent.
+        """
+
+        scoring = GETTER.score(self.reports_dict)
+
+        self.pourcent = {
+            s.value: 100
+            - scoring[f"{s.value} fail"] * 100 / scoring[f"{s.value} total"]
+            for s in SEVERITY
+        }
+        self.pourcent["ALL"] = 100 - GETTER.fail(scoring) * 100 / GETTER.total(
+            scoring
+        )
+
+    @staticmethod
+    def get_HTML_table(headers: str, rules: List[Rule]) -> str:
+
+        """
+        This function returns a HTML table with rule attributes as columns.
+        """
+
+        table = headers
+        for rule in rules:
+            class_ = f'class="{GETTER.sever(rule).lower()}"'
+            table += (
+                f"<tr><td {class_}>"
+                + f"</td><td {class_}>".join(str(x) for x in rule.values())
+                + "</td></tr>"
+            )
+        return table
 
     def as_html(self) -> str:
 
         """This function return a HTML string of audit results."""
 
+        G = GETTER
+        scoring = G.score(self.reports_dict)
+
         if self.reports_dict is None:
             self.as_json()
 
-        table_fail = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
+        table = (
+            f"<tr><td>{'</td><td>'.join(G.field(self.reports_dict))}"
             "</td></tr>"
         )
-        for rule in self.reports_dict["FAIL"]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_fail += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
 
-        table_critical = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
-            "</td></tr>"
+        table_fail = self.get_HTML_table(table, G.fail(self.reports_dict))
+        table_critical = self.get_HTML_table(table, G.crit(self.reports_dict))
+        table_high = self.get_HTML_table(table, G.high(self.reports_dict))
+        table_medium = self.get_HTML_table(table, G.med(self.reports_dict))
+        table_low = self.get_HTML_table(table, G.low(self.reports_dict))
+        table_information = self.get_HTML_table(
+            table, G.info(self.reports_dict)
         )
-        for rule in self.reports_dict[SEVERITY.CRITICAL.value]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_critical += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
-
-        table_high = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
-            "</td></tr>"
-        )
-        for rule in self.reports_dict[SEVERITY.HIGH.value]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_high += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
-
-        table_medium = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
-            "</td></tr>"
-        )
-        for rule in self.reports_dict[SEVERITY.MEDIUM.value]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_medium += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
-
-        table_low = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
-            "</td></tr>"
-        )
-        for rule in self.reports_dict[SEVERITY.LOW.value]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_low += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
-
-        table_information = (
-            f"<tr><td>{'</td><td>'.join(self.reports_dict['fields'])}"
-            "</td></tr>"
-        )
-        for rule in self.reports_dict[SEVERITY.INFORMATION.value]:
-            class_HTML = f'class="{rule["severity"].lower()}"'
-            table_information += (
-                f"<tr><td {class_HTML}>"
-                + f"</td><td {class_HTML}>".join(str(x) for x in rule.values())
-                + "</td></tr>"
-            )
 
         self.reports_html = f"""
 <!DOCTYPE html>
@@ -322,75 +342,69 @@ class Report:
             </tr>
             <tr>
                 <td>All</td>
-                <td>{self.reports_dict["SCORING"]["fail"]}</td>
-                <td>{self.reports_dict["SCORING"]["total"]}</td>
+                <td>{G.fail(scoring)}</td>
+                <td>{G.total(scoring)}</td>
                 <td>
-{(100 - self.reports_dict["SCORING"]["fail"] * 100 /
-self.reports_dict["SCORING"]["total"])}
+{self.pourcent['ALL']}
                 </td>
             </tr>
             <tr>
                 <td class="critical">Critical</td>
                 <td class="critical">
-{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]}
+{scoring[f"{SEVERITY.CRITICAL.value} fail"]}
                 </td>
                 <td class="critical">
-{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"]}
+{scoring[f"{SEVERITY.CRITICAL.value} total"]}
                 </td><td class="critical">
-{(100 - self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"] * 100
-/ self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"])}
+{G.crit(self.pourcent)}
                 </td>
             </tr>
             <tr>
                 <td class="high">High</td>
                 <td class="high">
-{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]}
+{scoring[f"{SEVERITY.HIGH.value} fail"]}
                 </td>
                 <td class="high">
-{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"]}
+{scoring[f"{SEVERITY.HIGH.value} total"]}
                 </td>
                 <td class="high">
-{(100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100
-/ self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"])}
+{G.high(self.pourcent)}
                 </td>
             </tr>
             <tr>
                 <td class="medium">Medium</td>
                 <td class="medium">
-{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]}
+{scoring[f"{SEVERITY.MEDIUM.value} fail"]}
                 </td>
                 <td class="medium">
-{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"]}
+{scoring[f"{SEVERITY.MEDIUM.value} total"]}
                 </td>
                 <td class="medium">
-{(100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100
-/ self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"])}
+{G.med(self.pourcent)}
                 </td>
             </tr>
             <tr>
                 <td class="low">Low</td>
                 <td class="low">
-{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]}
+{scoring[f"{SEVERITY.LOW.value} fail"]}
                 </td>
                 <td class="low">
-{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}
+{scoring[f"{SEVERITY.LOW.value} total"]}
                 </td>
                 <td class="low">
-{100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100
-/ self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"]}
+{G.low(self.pourcent)}
                 </td>
             </tr>
             <tr>
                 <td class="information">Information</td>
                 <td class="information">
-{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]}
+{scoring[f"{SEVERITY.INFORMATION.value} fail"]}
                 </td>
                 <td class="information">
-{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}
+{scoring[f"{SEVERITY.INFORMATION.value} total"]}
                 </td>
                 <td class="information">
-{100 - self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"] * 100
-/ self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"]}
+{G.info(self.pourcent)}
                 </td>
             </tr>
         </table>
@@ -431,6 +445,25 @@ self.reports_dict["SCORING"]["total"])}
 
         return self.reports_html
 
+    @staticmethod
+    def get_text_table(
+        headers: str, rules: List[Rule], joiner: str = "    "
+    ) -> str:
+
+        """
+        This function return a text table with rule attributes as columns.
+        """
+
+        return headers + "\n    - ".join(
+            [
+                joiner.join(
+                    f"{Report.truncate_string(value)}"
+                    for value in rule.values()
+                )
+                for rule in rules
+            ]
+        )
+
     def as_text(self) -> str:
 
         """This function return a HTML string of audit results."""
@@ -438,79 +471,31 @@ self.reports_dict["SCORING"]["total"])}
         if self.reports_dict is None:
             self.as_json()
 
-        tab = "\t"
+        G = GETTER
+        scoring = G.score(self.reports_dict)
+        tab = "  "
         end = "..."
-        fail_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict["FAIL"]
-            ]
+
+        headers = tab.join(
+            self.truncate_string(f) for f in Rule.__dataclass_fields__.keys()
         )
-        critical_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict[SEVERITY.CRITICAL.value]
-            ]
+        headers = f"    ~ {headers}\n    - "
+
+        fail_text = self.get_text_table(
+            headers, G.fail(self.reports_dict), tab
         )
-        high_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict[SEVERITY.HIGH.value]
-            ]
+        critical_text = self.get_text_table(
+            headers, G.crit(self.reports_dict), tab
         )
-        medium_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict[SEVERITY.MEDIUM.value]
-            ]
+        high_text = self.get_text_table(
+            headers, G.high(self.reports_dict), tab
         )
-        low_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict[SEVERITY.LOW.value]
-            ]
+        medium_text = self.get_text_table(
+            headers, G.med(self.reports_dict), tab
         )
-        information_text = "    - " + "\n    - ".join(
-            [
-                "".join(
-                    f"{attribut}:" + str(value)
-                    if not isinstance(value, str)
-                    or len(value) < (10 + len(end))
-                    else value[:10] + end + f",{tab}"
-                    for attribut, value in rule.items()
-                )
-                for rule in self.reports_dict[SEVERITY.INFORMATION.value]
-            ]
+        low_text = self.get_text_table(headers, G.med(self.reports_dict), tab)
+        information_text = self.get_text_table(
+            headers, G.info(self.reports_dict), tab
         )
 
         self.reports_text = f"""
@@ -520,37 +505,29 @@ self.reports_dict["SCORING"]["total"])}
     |___________________________________________|
 
  1. Scoring
-    - ALL:         Total:\t{self.reports_dict["SCORING"]["total"]},\
-\t Fail:\t{self.reports_dict["SCORING"]["fail"]},\t Pourcent:\t\
-{(100 - self.reports_dict["SCORING"]["fail"] * 100
-    / self.reports_dict["SCORING"]["total"])}%
+    - ALL:         Total:\t{G.total(scoring)},\
+\t Fail:\t{G.fail(scoring)},\t Pourcent:\t\
+{self.pourcent['ALL']}%
     - CRITICAL:    Total:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t Fail:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} fail"]},\t \
-Pourcent:\t{(100 - self.reports_dict["SCORING"]
-    [f"{SEVERITY.CRITICAL.value} fail"] * 100 /
-    self.reports_dict["SCORING"][f"{SEVERITY.CRITICAL.value} total"])}%
-    - HIGH:       Total:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Fail:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t\
-{(100 - self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} fail"] * 100 /
-    self.reports_dict["SCORING"][f"{SEVERITY.HIGH.value} total"])}%
+{scoring[f"{SEVERITY.CRITICAL.value} total"]},\t Fail:\t\
+{scoring[f"{SEVERITY.CRITICAL.value} fail"]},\t \
+Pourcent:\t{G.crit(self.pourcent)}%
+    - HIGH:        Total:\t\
+{scoring[f"{SEVERITY.HIGH.value} total"]},\t Fail:\t\
+{scoring[f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t\
+{G.high(self.pourcent)}%
     - MEDIUM:      Total:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Fail:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\
-\t{(100 - self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} fail"] * 100
-    / self.reports_dict["SCORING"][f"{SEVERITY.MEDIUM.value} total"])}%
+{scoring[f"{SEVERITY.MEDIUM.value} total"]},\t Fail:\t\
+{scoring[f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\
+\t{G.med(self.pourcent)}%
     - LOW:         Total:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Fail:\t\
-{self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t\
-{(100 - self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} fail"] * 100
-    / self.reports_dict["SCORING"][f"{SEVERITY.LOW.value} total"])}%
+{scoring[f"{SEVERITY.LOW.value} total"]},\t Fail:\t\
+{scoring[f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t\
+{G.low(self.pourcent)}%
     - INFORMATION: Total:\t{
-self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t Fail:\
-\t{self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} fail"]},\t
-Pourcent:\t{(100 - self.reports_dict["SCORING"]
-    [f"{SEVERITY.INFORMATION.value} fail"] * 100 /
-    self.reports_dict["SCORING"][f"{SEVERITY.INFORMATION.value} total"])}%
+scoring[f"{SEVERITY.INFORMATION.value} total"]},\t Fail:\
+\t{scoring[f"{SEVERITY.INFORMATION.value} fail"]},\t\
+ Pourcent:\t{G.info(self.pourcent)}%
 
  2. Failed
 {fail_text}
@@ -919,7 +896,7 @@ class Audit:
             server.configuration.active_auth
             and server.configuration.auth_script is not None,
             7,
-            SEVERITY.MEDIUM.value,
+            SEVERITY.HIGH.value,
             "Configuration",
             "Authentication is disabled.",
         )
@@ -1032,7 +1009,7 @@ class Audit:
                 "Module path",
                 30,
                 path.isabs(module_path),
-                7,
+                5,
                 SEVERITY.MEDIUM.value,
                 "Configuration",
                 f"Module path {module_path} is not absolute.",
@@ -1099,7 +1076,7 @@ class Audit:
                 "Script path",
                 17,
                 script.path_is_defined and path.isabs(script.path),
-                7,
+                5,
                 SEVERITY.MEDIUM.value,
                 "Script Configuration",
                 f"The path of {script.name} is not defined in configuration"
@@ -1118,7 +1095,7 @@ class Audit:
                 18,
                 script.launcher and path.isabs(script.launcher),
                 7,
-                SEVERITY.MEDIUM.value,
+                SEVERITY.HIGH.value,
                 "Script Configuration",
                 f"The path of {script.name} launcher is not defined in"
                 " configuration files or is not absolute.",
@@ -1291,6 +1268,23 @@ class Audit:
             "Files",
             "Directory permissions for bin is not 755 (drwxr-xr-x).",
         )
+
+    def audits_timeout(server: Server) -> Iterator[Rule]:
+
+        """
+        This function check scripts timeout.
+        """
+
+        for script in server.pages.scripts.values():
+            yield Rule(
+                "Script timeout",
+                35,
+                script.timeout,
+                7,
+                SEVERITY.HIGH.value,
+                "Script Configuration",
+                f"The {script.name} timeout is not defined.",
+            )
 
     def audits_file_rights(server: Server) -> Iterator[Rule]:
 
@@ -1515,6 +1509,7 @@ def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
     rules = Audit.run(server, logs)
     report = Report(rules, server, logs)
     report.as_json()
+    report.get_pourcent()
     report.as_html()
     report.as_text()
 

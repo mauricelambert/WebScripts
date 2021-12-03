@@ -13,6 +13,7 @@
 	},
 
 	"config_get_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -28,6 +29,7 @@
 	},
 
 	"config_get_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -43,6 +45,7 @@
 	},
 
 	"config_delete_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -111,6 +114,7 @@
 	},
 
 	"config_get_history": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -122,6 +126,7 @@
 	},
 
 	"config_upload_file": {
+		"timeout": 300,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -144,6 +149,7 @@
 	},
 
 	"config_api_get_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -153,6 +159,7 @@
 	},
 
 	"config_get_all_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -163,6 +170,7 @@
 	},
 
 	"config_api_get_history": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -173,6 +181,7 @@
 	},
 
 	"config_api_get_all_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",
@@ -182,6 +191,7 @@
 	},
 
 	"config_get_any_file": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python",
 		"category": "Upload",

@@ -721,6 +721,10 @@ class Server:
             return self.page_403(None, respond)
         elif error == "500":
             return self.page_500(page, respond)
+        else:
+            response = self.send_custom_error("", error)
+            if response is not None:
+                error, headers, page = response
 
         if not error:
             error = "200 OK"
@@ -734,6 +738,8 @@ class Server:
             return [page]
         elif isinstance(page, str):
             return [page.encode()]
+        elif isinstance(page, list):
+            return page
 
     @log_trace
     def send_headers(

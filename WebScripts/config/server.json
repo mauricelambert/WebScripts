@@ -69,6 +69,7 @@
 	},
 
 	"config_auth": {
+		"timeout": 15,
 		"args": "auth_args",
 		"launcher": "python3",
 		"category": "My Account",
@@ -100,6 +101,7 @@
 	},
 
 	"config_show_licence": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "License",
