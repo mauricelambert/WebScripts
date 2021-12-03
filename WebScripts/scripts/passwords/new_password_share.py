@@ -23,7 +23,7 @@
 
 This file can share a password securely."""
 
-__version__ = "0.0.4"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -190,7 +190,13 @@ def main() -> None:
     password, hash_, iteration, key = encrypt(password)
     password, key = get_printable(password, key)
 
-    passwords.append([timestamp, password, views, hash_, iteration, id_])
+    password = [timestamp, password, views, hash_, iteration, id_]
+
+    for string in passwords:
+        if isinstance(string, str) and not string.isprintable():
+            raise ValueError(f"Strings must be printable: '{string}' is not.")
+
+    passwords.append()
     save(passwords, id_)
 
     print(

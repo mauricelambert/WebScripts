@@ -27,7 +27,9 @@ This file implement error, report and request pages by default.
 
 from typing import Tuple, Dict, List, TypeVar
 from email.message import EmailMessage
+from collections.abc import Iterator
 from smtplib import SMTP, SMTP_SSL
+from collections import namedtuple
 from os import _Environ, path
 from threading import Thread
 from string import Template
@@ -39,6 +41,21 @@ import csv
 
 ServerConfiguration = TypeVar("ServerConfiguration")
 User = TypeVar("User")
+
+_Request = namedtuple(
+    "_Request",
+    [
+        "ID",
+        "Time",
+        "UserName",
+        "ErrorCode",
+        "Page",
+        "UserAgent",
+        "Subject",
+        "Reason",
+        "Name",
+    ],
+)
 
 __version__ = "0.0.4"
 __author__ = "Maurice Lambert"
@@ -198,7 +215,8 @@ placeholder="Firstname LASTNAME" class="default_theme">
                 </div>
 
                 <div id="submit_row" class="row">
-                    <input type="hidden" id="code" name="code" value="${code}">
+                    <input type="hidden" id="error" name="error" \
+value="${code}">
                     <input type="hidden" name="csrf_token" id="csrf_token" \
 value="{csrf}">
                     <div class="submit_position">
@@ -426,7 +444,7 @@ document.getElementById("webscripts_header_text_position").offsetHeight + "px";
                     },
                     {
                         "input": false,
-                        "name": "code"
+                        "name": "error"
                     }
                 ]
             };
@@ -541,7 +559,9 @@ class Request:
         configuration: ServerConfiguration, notification: str
     ) -> None:
 
-        """This function send a notification mail."""
+        """
+        This function send a notification mail.
+        """
 
         server_name = getattr(configuration, "smtp_server", None)
         starttls = getattr(configuration, "smtp_starttls", None)
@@ -588,19 +608,35 @@ class Request:
         reason: str,
     ) -> None:
 
-        """This function save the report/request to a CSV file."""
+        """
+        This function save the report/request to a CSV file.
+        """
 
         filename = path.join(
             path.dirname(__file__), "..", "data", "requests.csv"
         )
 
-        with open(filename) as file:
-            id_ = 0
-            line = file.readline()  # First line is columns
-            line = file.readline()
-            while line:
-                id_ = int(line.split(",")[0][1:-1]) + 1
-                line = file.readline()
+        def get_requests() -> Iterator[_Request]:
+
+            """
+            This function build Request from database.
+            """
+
+            yield from map(
+                _Request._make,
+                csv.reader(
+                    open(filename, "r", newline=""),
+                    quoting=csv.QUOTE_ALL,
+                ),
+            )
+
+        id_ = 0
+        first = True
+        for request in get_requests():
+            if first:  # columns
+                first = False
+                continue
+            id_ = int(request.ID) + 1
 
         with open(filename, "a", newline="") as file:
             csvfile = csv.writer(file, quoting=csv.QUOTE_ALL)
@@ -628,7 +664,9 @@ class Request:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function save and send request or report."""
+        """
+        This function save and send request or report.
+        """
 
         referer = escape(environ.get("HTTP_REFERER"))
         user_agent = escape(environ.get("HTTP_USER_AGENT"))
@@ -638,8 +676,19 @@ class Request:
         code = escape(code)
         user.name = escape(user.name)
 
-        while len(arguments) < 4:
-            arguments.append(None)
+        for string in (
+            referer,
+            user_agent,
+            code,
+            user.name,
+            subject,
+            name,
+            reason,
+        ):
+            if not string.isprintable():
+                raise ValueError(
+                    f"Strings must be printable: '{string}' is not."
+                )
 
         notification = (
             f'The user named: "{user.name}" get a HTTP error '

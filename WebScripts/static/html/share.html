@@ -51,7 +51,11 @@ tools&nbsp;and&nbsp;command&nbsp;line&nbsp;client.</tt></p>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Download-filename"><strong>filename</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, filename: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;download&nbsp;file&nbsp;by&nbsp;filename.</tt></dd></dl>
 
-<dl><dt><a name="Download-id"><strong>id</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, filename: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;download&nbsp;file&nbsp;by&nbsp;ID.</tt></dd></dl>
+<dl><dt><a name="Download-id"><strong>id</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, id_: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;download&nbsp;file&nbsp;by&nbsp;ID.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Download-get_data"><strong>get_data</strong></a>(file: uploads_management.Upload) -&gt; bytes</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;file&nbsp;and&nbsp;manage&nbsp;the&nbsp;compression.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>

@@ -23,7 +23,7 @@
 
 This file implement some functions to manage WebScript default databases."""
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -272,6 +272,10 @@ def add_user(
         )
     )
 
+    for string in user:
+        if not string.isprintable():
+            raise ValueError(f"Strings must be printable: '{string}' is not.")
+
     with open(path.join(DIRECTORY, FILES[0]), "a", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         csv_writer.writerow(user)
@@ -344,6 +348,10 @@ def add_group(name: str, id_: int) -> Group:
             raise GroupError(f"unique constraint failed: ID {id_} is used")
 
     group = anti_XSS(Group(id_, name))
+
+    for string in group:
+        if not string.isprintable():
+            raise ValueError(f"Strings must be printable: '{string}' is not.")
 
     with open(path.join(DIRECTORY, FILES[1]), "a", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)

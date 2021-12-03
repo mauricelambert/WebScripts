@@ -47,7 +47,7 @@ __copyright__ = copyright
 __all__ = []
 
 from modules.uploads_management import (
-    read_file,
+    #     read_file,
     get_file,
     check_permissions,
     get_user,

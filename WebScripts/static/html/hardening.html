@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.2.0)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.2.1)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -110,6 +110,8 @@ configuration.</tt></p>
 <dl><dt><a name="Audit-audits_scripts_stderr_content_type"><strong>audits_scripts_stderr_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;stderr&nbsp;content<br>
 type.</tt></dd></dl>
 
+<dl><dt><a name="Audit-audits_timeout"><strong>audits_timeout</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;scripts&nbsp;timeout.</tt></dd></dl>
+
 <dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(configuration: ~ServerConfiguration, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
 and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;of&nbsp;WebScripts&nbsp;every&nbsp;hour.<br>
 If&nbsp;the&nbsp;version&nbsp;and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;are&nbsp;different,<br>
@@ -155,8 +157,18 @@ This&nbsp;class&nbsp;implement&nbsp;the&nbsp;report&nbsp;<a href="builtins.html#
 
 <dl><dt><a name="Report-as_text"><strong>as_text</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;HTML&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
 
+<dl><dt><a name="Report-get_pourcent"><strong>get_pourcent</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;calcul&nbsp;pourcent.</tt></dd></dl>
+
 <dl><dt><a name="Report-notification"><strong>notification</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;an&nbsp;email&nbsp;notification<br>
 to&nbsp;administrator&nbsp;with&nbsp;the&nbsp;audit&nbsp;report.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Report-get_HTML_table"><strong>get_HTML_table</strong></a>(headers: str, rules: List[hardening.Rule]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;HTML&nbsp;table&nbsp;with&nbsp;rule&nbsp;attributes&nbsp;as&nbsp;columns.</tt></dd></dl>
+
+<dl><dt><a name="Report-get_text_table"><strong>get_text_table</strong></a>(headers: str, rules: List[hardening.Rule], joiner: str = '    ') -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;text&nbsp;table&nbsp;with&nbsp;rule&nbsp;attributes&nbsp;as&nbsp;columns.</tt></dd></dl>
+
+<dl><dt><a name="Report-truncate_string"><strong>truncate_string</strong></a>(string: str, length: int = 13, end: str = '...', separator: str = ',') -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;truncate&nbsp;a&nbsp;string.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>

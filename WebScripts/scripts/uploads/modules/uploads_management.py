@@ -282,7 +282,13 @@ def delete_file(name: str) -> Upload:
 
 def write_action(upload: Upload) -> None:
 
-    """This function write a new line in CSV database."""
+    """
+    This function write a new line in CSV database.
+    """
+
+    for string in upload:
+        if not string.isprintable():
+            raise ValueError(f"Strings must be printable: '{string}' is not.")
 
     with open(path.join(DIRECTORY, FILE), "a", newline="") as csvfile:
         csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)

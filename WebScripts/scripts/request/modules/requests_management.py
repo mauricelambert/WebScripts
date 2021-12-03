@@ -98,7 +98,7 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
 def get_requests() -> Iterator[Request]:
 
-    """This function build Uploads from database."""
+    """This function build Request from database."""
 
     yield from map(
         Request._make,

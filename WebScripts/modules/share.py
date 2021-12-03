@@ -63,6 +63,7 @@ else:
 
 sys.path = [
     path.join(*base_path, "scripts", "uploads", "modules"),
+    path.join(*base_path),
 ] + sys.path
 
 from uploads_management import (
@@ -71,8 +72,13 @@ from uploads_management import (
     check_permissions,
     get_real_file_name,
     get_file,
+    get_files,
+    Upload,
 )
+from Pages import Pages, check_right
 
+sys.path.pop(0)
+sys.path.pop(0)
 ServerConfiguration = TypeVar("ServerConfiguration")
 
 
@@ -117,6 +123,19 @@ class Download:
         if not file.no_compression:
             headers["Content-Encoding"] = "gzip"
 
+        return (
+            "200 OK",
+            headers,
+            Download.get_data(file),
+        )
+
+    @staticmethod
+    def get_data(file: Upload) -> bytes:
+
+        """
+        This function get file and manage the compression.
+        """
+
         with open(
             get_real_file_name(file.name, float(file.timestamp)), "rb"
         ) as file_:
@@ -126,17 +145,13 @@ class Download:
             else:
                 data = file_.read()
 
-            return (
-                "200 OK",
-                headers,
-                data,
-            )
+        return data
 
     def id(
         environ: _Environ,
         user: User,
         server_configuration: ServerConfiguration,
-        filename: str,
+        id_: str,
         arguments: List[str],
         inputs: List[str],
         csrf_token: str = None,
@@ -146,8 +161,35 @@ class Download:
         This funtion download file by ID.
         """
 
-        raise NotImplementedError(
-            "This function is not yet implemented for permission reasons."
+        script = Pages.scripts.get("get_any_file.py")
+
+        if script is None:
+            return "404", {}, b""
+
+        if not check_right(user, script):
+            return "403", {}, b""
+
+        headers = {
+            "Content-Type": "application/octet-stream",
+        }
+
+        ask_file = None
+
+        for file in get_files():
+            if file.ID == id_:
+                ask_file = file
+                break
+
+        if ask_file is None:
+            return "404", {}, b""
+
+        if not ask_file.no_compression:
+            headers["Content-Encoding"] = "gzip"
+
+        return (
+            "200 OK",
+            headers,
+            Download.get_data(ask_file),
         )
 
 
