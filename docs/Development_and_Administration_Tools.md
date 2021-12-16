@@ -37,6 +37,9 @@ python -m unittest discover -s test -p Test*.py -v
 HTML report examples:
     - [Windows](https://mauricelambert.github.io/info/python/code/WebScripts/audit_windows.html)
     - [Linux](https://mauricelambert.github.io/info/python/code/WebScripts/audit_linux.html)
+    - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html)
+    - [docker with Nginx as HTTPS proxy HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_nginx_audit.html)
+    - [docker HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_audit.html)
 
 ### Functional tests and WebScripts pentest tool
 

@@ -178,6 +178,7 @@ minimum_access=1050
  - Set the `no_password` configuration to `true` if no password is in the command-line arguments.
  - Set the `content_type` configuration to `text/plain` as often as possible.
  - Never use the `stderr_content_type` configuration.
+ - Scripts should have the `timeout` configuration defined
 
 ## Custom configurations
 

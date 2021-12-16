@@ -59,6 +59,10 @@ An example of deployment for production is available [here](https://webscripts.r
  - Some script required the `text/html` as `content_type`, i should use [specific function for XSS protection](#XSS).
  - Don't unescape HTML special characters in *console* scripts (when `content_type` is `text/plain`), the javascript does it for you.
 
+### Timeout
+
+ - You should set the `timeout` configuration.
+
 ## Credentials
 
 Change the password of the `Admin` user and the API key or use custom authentication script, database and system.

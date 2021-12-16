@@ -1,5 +1,7 @@
 # File share
 
+[Code documentation](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
+
 ## In Server scripts
 
 ### Add file
@@ -14,7 +16,7 @@ from WebScripts.scripts.uploads.modules.uploads_management import (
 from typing import List
 
 write_file(
-    "\x00string content\xff", # if is binary you can use base64 or decode it with latin-1
+    "\x00string content\xff", # file content, if is binary you can use base64 or decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     0,                        # Write access (0 == everyone can write it)
@@ -47,7 +49,7 @@ from typing import List
 content2 = b64encode(b'\x00version 2\xff').decode()
 
 write_file(
-    content2,                 # if is binary you can use base64 ou decode it with latin-1
+    content2,                 # file content, if is binary you can use base64 ou decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     1000,                     # Write access (1000 == Admin can write it)
@@ -119,11 +121,11 @@ assert b64decode(data.encode()) == b"\x00string content\xff"
 
 ### Recommendation
 
-The `get_file.py` script and the `get_any_file.py` script work for small files, but I don't recommend using it for large files as these scripts take a lot of time and require a lot of memory.
+The `get_any_file.py` script work for small files, but I don't recommend using it for large files as these scripts take a lot of time and require a lot of memory.
 
-I wrote a new module (in version: `2.3.0`) to upload and download the files more easily from the script or command line. This module sends compressed content from the file (using GZIP), the file name is at the end of the URL, and options must be sent as *HTTP headers*.
+I wrote a new module (in WebScripts version: `2.3.0`) to upload and download the files more easily from the script or command line. This module sends compressed content from the file (using GZIP), the file name is at the end of the URL, and options must be sent as *HTTP headers*.
 
-You can easily use the download function in a web browser, for uploading, use the `upload_file.py` script.
+You can easily use the download function in a web browser using `get_file.py`, for uploading, use the `upload_file.py` script.
 
 #### Download
 

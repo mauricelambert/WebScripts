@@ -79,30 +79,30 @@ def example(
  6. `inputs` (no default value): list of inputs (for *stdin* of the script) or empty list (if the content is a non WebScripts request: non-JSON content or JSON without "arguments" attribute)
  7. `csrf_token` (optional: default value is `None`)
 
-The `arguments` and `inputs` lists are built from the JSON body with the *WebScripts Server* body parser, you must respect the default JSON syntax.
+The `arguments` and `inputs` lists are built if you respect the default JSON body of *WebScripts Server*. If the body of the request is JSON without `arguments` *key*/*attribute*, `arguments` will be a *dict* or *list*. If the body of the request is not JSON, `arguments` will be *bytes*.
 
 ### Return
 
- 1. `Response code`: the HTTP status of the response, the first three digits are required (example: `200 OK`)
- 2. `Headers`: dictionary of HTTP headers (pairs of names and header values)
- 3. `Response body`: the HTTP body of the response
+ 1. Response `HTTP code` (`str`): the HTTP status of the response, the first three digits are required (example: `200 OK`)
+ 2. `Headers` (`dict`): dictionary of HTTP headers (pairs of names and header values)
+ 3. Response body (`bytes`): the HTTP body of the response
 
 ## URLs
 
-In the `PATH_INFO` the character `/` is like `.` (object attribute) in python code, the last `/` is a *call* (`()`).
+In the `PATH_INFO` the character `/` is like `.` (object attribute) in python code, the last `/` is a *call* (`function()`).
 
 ### Examples
 
 URLs to call a function named `hello` in a `hello` module:
 ```
-/hello/hello/                   # python code equivalent: hello.hello(), filename argument: ''
-/hello/hello/abc                # python code equivalent: hello.hello(), filename argument: 'abc'
+/hello/hello/                   # python code equivalent: hello.hello(..., filename='', ...)
+/hello/hello/abc                # python code equivalent: hello.hello(..., filename='abc', ...)
 ```
 
 URLs to call a function named `test` in a class named `Test` in a module named `Tests` in a package named `Example`:
 ```
-/Example/Tests/Test/test/       # python code equivalent: Example.Tests.Test.test(), filename argument: ''
-/Example/Tests/Test/test/abc    # python code equivalent: Example.Tests.Test.test(), filename argument: 'abc'
+/Example/Tests/Test/test/       # python code equivalent: Example.Tests.Test.test(..., filename='', ...)
+/Example/Tests/Test/test/abc    # python code equivalent: Example.Tests.Test.test(..., filename='abc', ...)
 ```
 
 ## Headers

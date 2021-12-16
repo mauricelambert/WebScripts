@@ -7,7 +7,7 @@
 
 ## Static and JS paths
 
-The static and JS paths is configured, you can change the configurations. Be careful with informations in static files because there is no authentication for these files.
+The static and JS paths are configured, you can change the configurations. Be careful with informations in static files because there is no authentication for these files.
 
  - `js_path`: a list of glob syntax to get javascript files.
  - `statics_path`: a list of glob syntax to get files (HTML, JPG, PDF, CSS, or other).
@@ -35,6 +35,7 @@ With the default install on *localhost:8000*, you can request sixteen files:
  - http://127.0.0.1:8000/static/requests_management.html
  - http://127.0.0.1:8000/static/error_pages.html
  - http://127.0.0.1:8000/static/csp.html
+ - http://127.0.0.1:8000/static/share.html
  - http://127.0.0.1:8000/static/webscripts_index_style.css
  - http://127.0.0.1:8000/static/webscripts_script_style.css
  - http://127.0.0.1:8000/static/webscripts_style.css
