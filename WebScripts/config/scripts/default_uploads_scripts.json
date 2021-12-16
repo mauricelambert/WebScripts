@@ -159,6 +159,7 @@
 	},
 
 	"config_get_all_files": {
+		"timeout": 15,
 		"no_password": true,
 		"launcher": "python3",
 		"category": "Upload",

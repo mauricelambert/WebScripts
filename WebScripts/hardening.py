@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -75,7 +75,7 @@ import os
 
 try:
     import pip._internal.operations.freeze
-except ImportError:
+except (ImportError, AttributeError):
     PIP = False
 else:
     PIP = True

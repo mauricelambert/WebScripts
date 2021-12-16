@@ -181,7 +181,7 @@ def start_process(
 
     if getattr(script, "print_real_time", None):
         key = urlsafe_b64encode(token_bytes(40)).decode()
-        process_ = Pages.processes[key] = Process(process, script, user)
+        process_ = Pages.processes[key] = Process(process, script, user, key)
         process_.send_inputs(inputs)
         Logs.debug(
             "Create key and process, sent inputs and get the first line."
