@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.4.3
+Version: 2.4.4
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -261,6 +261,7 @@ WebScripts38.main()
  - [Default Request Manager](https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html)
  - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html)
  - [Default module share](https://mauricelambert.github.io/info/python/code/WebScripts/share.html)
+ - [Default module csp](https://mauricelambert.github.io/info/python/code/WebScripts/csp.html)
 
 ## Links
 

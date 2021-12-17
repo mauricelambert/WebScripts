@@ -21,7 +21,7 @@
 
 """This tools run scripts and display the result in a Web Interface."""
 
-__version__ = "2.0.2"
+__version__ = "2.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -192,16 +192,18 @@ class PostInstallScript(install):
 
             scripts = configurations.get("scripts")
 
-            if scripts is None:  # change_my_password.py
-                logging.info("Configure change_my_password.py")
+            if scripts is None:
+                logging.info("Configure specific configuration file")
                 script = configurations.get("script")
 
                 if script is not None:
                     logging.debug("Add the launcher")
                     script["launcher"] = launcher
 
+                    script_name, _ = path.splitext(path.basename(filename))
+                    logging.info(f"Configure script named: {script_name}")
                     for py_filename in self.py_scripts_files:
-                        if py_filename.endswith("change_my_password.py"):
+                        if py_filename.endswith(f"{script_name}.py"):
                             logging.debug("Add the script absolute path.")
                             script["path"] = py_filename
 
@@ -211,11 +213,16 @@ class PostInstallScript(install):
                 continue
 
             for name, section_name in scripts.items():
-                if name == "change_my_password.py":
-                    continue
-
                 logging.info(f"Configure {name}")
                 section = configurations.get(section_name)
+                specific_config_file = section.get("configuration_file")
+
+                if specific_config_file:
+                    specific_config_file = path.basename(specific_config_file)
+                    for config_file in self.json_config_files:
+                        if config_file.endswith(specific_config_file):
+                            section["configuration_file"] = config_file
+                    continue
 
                 logging.debug("Add launcher")
                 section["launcher"] = launcher
