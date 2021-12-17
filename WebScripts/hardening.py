@@ -217,7 +217,9 @@ class Report:
 
                 audit[new_attribut] = new_value
 
-        sort = lambda x: x["level"]
+        def sort(rule: dict) -> int:
+            return rule["level"]
+
         self.reports_dict["ALL"] = sorted(
             self.reports_dict["ALL"], key=sort, reverse=True
         )
@@ -474,7 +476,7 @@ class Report:
         G = GETTER
         scoring = G.score(self.reports_dict)
         tab = "  "
-        end = "..."
+        # end = "..."
 
         headers = tab.join(
             self.truncate_string(f) for f in Rule.__dataclass_fields__.keys()

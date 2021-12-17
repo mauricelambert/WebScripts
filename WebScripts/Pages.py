@@ -371,6 +371,8 @@ class Process:
         self.start_time = time()
         self.timeout = script.timeout
 
+        self.error = "No errors"
+
         if script.timeout is not None:
             Logs.info("Timeout detected, make timer and start it.")
             self.timer = Timer(script.timeout, self.get_line, args=(False,))
@@ -384,13 +386,18 @@ class Process:
         """
 
         self.process.stdout.flush()
-        if self.process.poll() == 0:
-            del Pages.processes[self.key]
+        if self.process.poll() is not None:
+            if self.key in Pages.processes:
+                del Pages.processes[self.key]
+
+            self.timer.cancel()
+
             return (
                 self.process.stdout.read(),
                 self.process.stderr.read(),
-                "No errors",
+                self.error,
             )
+
         elif self.timeout is None or time() <= self.stop_max_time:
             data = self.process.stdout.readline()
             Logs.debug(
@@ -414,10 +421,10 @@ class Process:
                 stdout = b""
                 stderr = b""
 
-            error = "TimeoutError"
+            self.error = "TimeoutError"
             Logs.debug("Get the stdout and the stderr of the killed process")
 
-            return stdout, stderr, error
+            return stdout, stderr, self.error
 
     def send_inputs(self, inputs: List[str]) -> None:
 
