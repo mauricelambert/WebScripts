@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.2.2)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.3.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -22,13 +22,14 @@ configuration.</tt></p>
 <tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
 <a href="json.html">json</a><br>
-</td><td width="25%" valign=top><a href="os.html">os</a><br>
-<a href="ntpath.html">ntpath</a><br>
-</td><td width="25%" valign=top><a href="pip.html">pip</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+<a href="pip.html">pip</a><br>
 <a href="platform.html">platform</a><br>
-</td><td width="25%" valign=top><a href="stat.html">stat</a><br>
+</td><td width="25%" valign=top><a href="re.html">re</a><br>
+<a href="stat.html">stat</a><br>
 <a href="sys.html">sys</a><br>
-</td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#C89B48">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -91,6 +92,8 @@ configuration.</tt></p>
 
 <dl><dt><a name="Audit-audit_venv_modules"><strong>audit_venv_modules</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;virtualenv&nbsp;modules.</tt></dd></dl>
 
+<dl><dt><a name="Audit-audits_directory_permissions"><strong>audits_directory_permissions</strong></a>(server: ~Server, secure_paths: List[str] = None) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;owner&nbsp;and&nbsp;permissions&nbsp;on&nbsp;bin&nbsp;directory.</tt></dd></dl>
+
 <dl><dt><a name="Audit-audits_file_owner"><strong>audits_file_owner</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;files&nbsp;owner.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_file_rights"><strong>audits_file_rights</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;files&nbsp;rights.</tt></dd></dl>
@@ -100,8 +103,6 @@ configuration.</tt></p>
 <dl><dt><a name="Audit-audits_module_path"><strong>audits_module_path</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;modules&nbsp;paths.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
-
-<dl><dt><a name="Audit-audits_scripts_directory"><strong>audits_scripts_directory</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;owner&nbsp;and&nbsp;permissions&nbsp;on&nbsp;bin&nbsp;directory.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_scripts_logs"><strong>audits_scripts_logs</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;log.</tt></dd></dl>
 
