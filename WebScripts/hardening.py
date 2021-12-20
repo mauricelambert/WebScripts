@@ -24,7 +24,7 @@
 This file implement the hardening audit of the WebScripts installation and
 configuration."""
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -71,6 +71,7 @@ import ctypes
 import json
 import stat
 import sys
+import re
 import os
 
 try:
@@ -690,6 +691,7 @@ class Audit:
                 and not package.startswith("setuptools==")
                 and not package.startswith("pywin32==")
                 and not package.startswith("WebScripts==")
+                and not package.startswith("pkg-resources==")
             ]
             return Rule(
                 "Virtualenv modules",
@@ -708,6 +710,7 @@ class Audit:
                 if not package.startswith("pip==")
                 and not package.startswith("setuptools==")
                 and not package.startswith("WebScripts==")
+                and not package.startswith("pkg-resources==")
             ]
             return Rule(
                 "Virtualenv modules",
@@ -1231,7 +1234,9 @@ class Audit:
 
         return stat.filemode(os.stat(filename).st_mode)
 
-    def audits_scripts_directory(server: Server) -> Iterator[Rule]:
+    def audits_directory_permissions(
+        server: Server, secure_paths: List[str] = None
+    ) -> Iterator[Rule]:
 
         """
         This function check owner and permissions on bin directory.
@@ -1249,27 +1254,35 @@ class Audit:
             )
             return
 
-        scripts_path = path.join(sys.prefix, "bin")
+        if secure_paths is None:
+            config_path = path.join(server_path, "config")
+            secure_paths = [
+                path.join(sys.prefix, "bin"),
+                config_path,
+                path.join(config_path, "files"),
+                path.join(config_path, "scripts"),
+            ]
 
-        yield Rule(
-            "Directory owner",
-            33,
-            Audit.get_owner(scripts_path) == "root",
-            10,
-            SEVERITY.CRITICAL.value,
-            "Files",
-            "Directory owner for bin is not root.",
-        )
+        for path_ in secure_paths:
+            yield Rule(
+                "Directory owner",
+                33,
+                Audit.get_owner(path_) == "root",
+                10,
+                SEVERITY.CRITICAL.value,
+                "Files",
+                f"Directory owner for {path_} is not root.",
+            )
 
-        yield Rule(
-            "Directory permissions",
-            34,
-            Audit.get_permissions(scripts_path) == "drwxr-xr-x",
-            10,
-            SEVERITY.CRITICAL.value,
-            "Files",
-            "Directory permissions for bin is not 755 (drwxr-xr-x).",
-        )
+            yield Rule(
+                "Directory permissions",
+                34,
+                Audit.get_permissions(path_) == "drwxr-xr-x",
+                10,
+                SEVERITY.CRITICAL.value,
+                "Files",
+                f"Directory permissions for {path_} is not 755 (drwxr-xr-x).",
+            )
 
     def audits_timeout(server: Server) -> Iterator[Rule]:
 
@@ -1306,56 +1319,91 @@ class Audit:
 
         current_dir = getcwd()
 
-        executable_filenames = []
+        rw_filenames = listdir(path.join(server_path, "data")) + listdir(
+            "logs"
+        )
 
-        rw_filenames = [
+        r_filenames = [
             path.join(server_path, "config", "server.ini"),
             path.join(server_path, "config", "server.json"),
         ]
 
-        rw_filenames.append(path.join(server_path, "config", "loggers.ini"))
-        rw_filenames.append(path.join(current_dir, "config", "server.ini"))
-        rw_filenames.append(path.join(current_dir, "config", "server.json"))
-
-        rw_filenames += listdir("logs")
-        rw_filenames += listdir(path.join(server_path, "data"))
+        r_filenames.append(path.join(server_path, "config", "loggers.ini"))
+        r_filenames.append(path.join(current_dir, "config", "server.ini"))
+        r_filenames.append(path.join(current_dir, "config", "server.json"))
 
         for dirname in (server_path, current_dir):
 
-            for file in server.pages.js_paths.values():
-                if path.exists(file.path):
-                    rw_filenames.append(file.path)
+            r_filenames += [
+                file.path
+                for file in server.pages.js_paths.values()
+                if path.exists(file.path)
+            ]
 
-            for file in server.pages.statics_paths.values():
-                if path.exists(file.path):
-                    rw_filenames.append(file.path)
+            r_filenames += [
+                file.path
+                for file in server.pages.statics_paths.values()
+                if path.exists(file.path)
+            ]
 
-        for script in server.pages.scripts.values():
-            executable_filenames.append(script.path)
+            executable_filenames = [
+                script.path for script in server.pages.scripts.values()
+            ]
 
-        for module in server.pages.packages.__dict__.values():
-            if isinstance(module, ModuleType):
-                executable_filenames.append(module.__file__)
+        executable_filenames += [
+            module.__file__
+            for module in server.pages.packages.__dict__.values()
+            if isinstance(module, ModuleType)
+        ]
 
-        for filename in rw_filenames:
-            if path.exists(filename):
-                yield Rule(
-                    "File permissions",
-                    12,
-                    "-rw-------" == Audit.get_permissions(filename),
-                    10,
-                    SEVERITY.CRITICAL.value,
-                    "Files",
-                    f"File rights for {path.split(filename)[1]} is "
-                    "not 600 (rw- --- ---).",
-                )
+        yield from Audit.audits_directory_permissions(
+            server,
+            [
+                path.dirname(path_)
+                for path_ in executable_filenames + rw_filenames + r_filenames
+                if path.exists(path_)
+            ],
+        )
+
+        yield from [
+            Rule(
+                "File permissions (rw-)",
+                12,
+                Audit.get_permissions(filename)
+                in ("-rw-------", "-r--------"),
+                10,
+                SEVERITY.CRITICAL.value,
+                "Files",
+                f"File rights for {path.split(filename)[1]} is "
+                "not 600 (rw- --- ---).",
+            )
+            for filename in rw_filenames
+            if path.exists(filename)
+        ]
+
+        yield from [
+            Rule(
+                "File permissions (r--)",
+                12,
+                Audit.get_permissions(filename) == "-r--------",
+                10,
+                SEVERITY.CRITICAL.value,
+                "Files",
+                f"File rights for {path.split(filename)[1]} is "
+                "not 400 (r-- --- ---).",
+            )
+            for filename in r_filenames
+            if path.exists(filename)
+        ]
 
         for filename in executable_filenames:
             if path.exists(filename):
+                permissions = Audit.get_permissions(filename)
+
                 yield Rule(
-                    "File permissions",
+                    "File permissions (r-x)",
                     12,
-                    Audit.get_permissions(filename).endswith("------"),
+                    permissions.endswith("------") and "w" not in permissions,
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",

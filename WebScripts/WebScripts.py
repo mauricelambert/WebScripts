@@ -603,7 +603,7 @@ class Server:
         if content_length:
             try:
                 body = json.loads(body)
-            except json.decoder.JSONDecodeError:
+            except (json.decoder.JSONDecodeError, UnicodeDecodeError):
                 Logs.warning("Non-JSON content detected")
                 Logs.info(
                     "This request is not available for"
@@ -1286,10 +1286,18 @@ def send_mail(configuration: Configuration, message: str) -> int:
     return 1
 
 
-def main() -> None:
+def main() -> int:
 
-    """Main function to build the
-    configurations and launch the server."""
+    """
+    Main function to build the
+    configurations and launch the server.
+    """
+
+    if "--test-running" in sys.argv:
+        NO_START = True
+        sys.argv.remove("--test-running")
+    else:
+        NO_START = False
 
     configure_logs_system()
     args = parse_args()
@@ -1331,6 +1339,9 @@ def main() -> None:
     )
     print(copyright)
 
+    if NO_START:
+        return 0
+
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -1341,8 +1352,8 @@ def main() -> None:
         configuration,
         f"Server is down on http://{server.interface}:{server.port}/.",
     )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    sys.exit(main())
