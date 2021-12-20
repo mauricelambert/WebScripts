@@ -77,6 +77,12 @@ curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.extensi
 #### Upload
 ```bash
 curl -u 'Admin:Admin' -d 'data' http://127.0.0.1:8000/share/upload/file.extension
+
+curl -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "@file.tar.gz" "http://127.0.0.1:8000/share/upload/file.tar.gz" >&1
+
+## Deployed WebScripts (with HTTPS and self signed certificate)
+
+curl --insecure -H 'Is-Base64: yes' -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "$(cat file.txt | base64)" "https://webscripts.local/share/upload/file.txt" >&1
 ```
 
 ### Windows

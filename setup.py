@@ -21,7 +21,7 @@
 
 """This tools run scripts and display the result in a Web Interface."""
 
-__version__ = "2.1.0"
+__version__ = "2.2.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -135,14 +135,13 @@ class PostInstallScript(install):
         if self.is_admin is None:
             self.is_admin = os.getuid() == 0
 
-            if not self.is_admin:
-                logging.warning(
-                    "Permissions can not be change without privileges."
-                )
-                logging.warning("Owner can not be change without privileges.")
-
         if not self.is_admin:
-            return
+            logging.warning(
+                "Permissions can not be change without privileges."
+            )
+            logging.warning("Owner can not be change without privileges.")
+
+            return None
 
         if self.owner_property is None:
             from pwd import getpwnam
@@ -161,23 +160,40 @@ class PostInstallScript(install):
         )
 
         logging.debug(f"Change the permissions of {filename}")
-        os.chmod(filename, 0o600)
 
-        if path.split(filename)[1] == "wsgi.py":
-            logging.debug(
-                f"Add the execution permission for the owner on {filename}"
-            )
-            os.chmod(filename, 0o500)
+        file = path.split(filename)[1]
+        extension = path.splitext(filename)[1]
+        directory = path.dirname(filename)
+
+        if file == "id" or extension == ".csv":
+            os.chmod(filename, 0o600)
+        else:
+            os.chmod(filename, 0o400)
+
+        if file == "wsgi.py" or extension in (".json", ".ini"):
+            # logging.debug(
+            #     f"Add the execution permission for the owner on {filename}"
+            # )
+            # os.chmod(filename, 0o400)
 
             dir_ = path.dirname(filename)
-            logging.debug(f'Change permission and owner on directory "{dir_}"')
+            logging.debug(
+                f'Change permissions and owner on directory "{dir_}"'
+            )
             os.chmod(dir_, 0o755)  # nosec
             os.chown(dir_, 0, 0)
-        elif path.split(filename)[1] == "WebScripts":
+        elif file == "WebScripts":
             logging.debug(
-                f"Add the execution permission for the owner on {filename}"
+                f"Add the execution permissions for the owner on {filename}"
             )
             os.chmod(filename, 0o700)
+        elif directory.endswith("data/uploads"):
+            logging.debug("Change owner for uploads directory")
+            os.chown(
+                directory,
+                self.owner_property.pw_uid,
+                self.owner_property.pw_gid,
+            )
 
     def add_absolute_paths_in_configuration(self) -> None:
 

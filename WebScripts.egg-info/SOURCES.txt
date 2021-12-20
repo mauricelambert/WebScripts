@@ -5,6 +5,17 @@ MANIFEST.in
 README.md
 mkdocs.yml
 setup.py
+.github/workflows/WebScripts38_test.yml
+.github/workflows/ZAP.yml
+.github/workflows/ZAP2.yml
+.github/workflows/bandit.yml
+.github/workflows/ci.yml
+.github/workflows/codeql-analysis.yml
+.github/workflows/kali_tools_scans.yml
+.github/workflows/nuclei.yml
+.github/workflows/pycharm.yml
+.github/workflows/safety_check.yml
+.github/workflows/semgrep.yml
 Scripts/activate_this.py
 Scripts/wsgi.py
 WebScripts/Errors.py
