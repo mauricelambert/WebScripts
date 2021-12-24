@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>__init__</strong></big></big> (version 2.4.5)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>__init__</strong></big></big> (version 2.4.6)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="__init__.py">__init__.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.</tt></p>
@@ -171,16 +171,14 @@ username&nbsp;are&nbsp;not&nbsp;in&nbsp;the&nbsp;blacklist.</tt></dd></dl>
 <dl><dt><a name="Server-get_URLs"><strong>get_URLs</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;urls&nbsp;(scripts,&nbsp;documentation...)<br>
 and&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;URL&nbsp;of&nbsp;custom&nbsp;packages.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(self, object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
-
 <dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.<br>
 If&nbsp;the&nbsp;function&nbsp;is&nbsp;a&nbsp;WebScripts&nbsp;built-in&nbsp;function,<br>
 return&nbsp;the&nbsp;function,&nbsp;filename&nbsp;and&nbsp;True.&nbsp;Else&nbsp;return&nbsp;the<br>
 function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
-
 <dl><dt><a name="Server-get_session"><strong>get_session</strong></a>(self, cookies: List[str], ip: str) -&gt; WebScripts.commons.User</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;User&nbsp;from&nbsp;cookies.</tt></dd></dl>
+
+<dl><dt><a name="Server-page_400"><strong>page_400</strong></a>(self, method: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
 
 <dl><dt><a name="Server-page_401"><strong>page_401</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;401&nbsp;web&nbsp;page.</tt></dd></dl>
 
@@ -194,11 +192,26 @@ function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[~Content, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
 
+<dl><dt><a name="Server-return_inputs"><strong>return_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]], is_webscripts_request: bool) -&gt; Tuple[List[~JsonValue], List[~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;(using&nbsp;<a href="#Server">Server</a>.get_inputs).</tt></dd></dl>
+
 <dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
 
 <dl><dt><a name="Server-send_error_page"><strong>send_error_page</strong></a>(self, error: str, data: bytes, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
 
 <dl><dt><a name="Server-send_headers"><strong>send_headers</strong></a>(self, respond: function, error: str = None, headers: Dict[str, str] = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;error&nbsp;code,&nbsp;message&nbsp;and&nbsp;headers.</tt></dd></dl>
+
+<dl><dt><a name="Server-set_default_values_for_response"><strong>set_default_values_for_response</strong></a>(self, error: str, headers: Dict[str, str]) -&gt; Tuple[str, Dict[str, str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;default&nbsp;error&nbsp;if&nbsp;not&nbsp;defined&nbsp;and<br>
+default&nbsp;headers&nbsp;updated&nbsp;with&nbsp;custom&nbsp;headers.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_content_length"><strong>get_content_length</strong></a>(environ: os._Environ) -&gt; int</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;content&nbsp;length.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="Server-return_page"><strong>return_page</strong></a>(page: Union[bytes, str, list]) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;response&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;bytes.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
