@@ -24,7 +24,7 @@
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -65,7 +65,7 @@ __all__ = [
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove
+from os import path, _Environ, device_encoding, remove, environ
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from collections.abc import Callable
@@ -305,7 +305,7 @@ class LinuxLogs(_Logs):
         ReportEvent(syslog.LOG_CRIT, log)
 
 
-def log_trace(function: FunctionType):
+def log_trace(function: FunctionType) -> FunctionType:
 
     """This decorator trace functions (start and end)"""
 
@@ -754,5 +754,6 @@ def get_real_path(file_path: str) -> str:
 
 server_path = path.dirname(__file__)
 
+environ["LOG_PATH"] = path.join(server_path, "logs")
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")

@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -481,17 +481,18 @@ class Script:
             return "403", {}, b""
 
         stdout, stderr, error = process.get_line()
+        code = process.process.returncode
 
         response_object = {
             "stdout": decode_output(stdout) if stdout else "",
             "stderr": decode_output(stderr) if stderr else "",
-            "code": process.process.returncode,
+            "code": code,
             "Content-Type": process.script.content_type,
             "Stderr-Content-Type": (process.script.stderr_content_type),
             "error": error,
         }
 
-        if stdout or not error:
+        if code is None:
             response_object["key"] = filename
 
         return (
@@ -933,7 +934,7 @@ class Pages:
 
         user = User.default_build(**anti_XSS(json.loads(stdout)))
 
-        if user.id == 0:
+        if user.id != 0:
             Pages.ip_blacklist[ip] = Blacklist(
                 server_configuration, Pages.ip_blacklist.pop(ip, None)
             )

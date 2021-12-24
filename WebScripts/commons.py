@@ -23,7 +23,7 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-__version__ = "0.0.13"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -122,6 +122,12 @@ Pages = TypeVar("Pages")
 
 Configuration = TypeVar("Configuration", ServerConfiguration, SimpleNamespace)
 
+logger_debug: Callable = Logs.debug
+logger_info: Callable = Logs.info
+logger_warning: Callable = Logs.warning
+logger_error: Callable = Logs.error
+logger_critical: Callable = Logs.critical
+
 
 class Argument(DefaultNamespace):
 
@@ -169,33 +175,33 @@ class Argument(DefaultNamespace):
         else:
             list_ = []
 
-        if argument["value"] is None:
+        value = argument["value"]
+
+        if value is None:
             return []
-        elif isinstance(argument["value"], str):
-            if argument["value"] == "":
+        elif isinstance(value, str):
+            if value == "":
                 return []
 
             list_.append(argument)
 
-        elif isinstance(argument["value"], bool):
-            if argument["value"] is False:
+        elif isinstance(value, bool):
+            if value is False:
                 return []
             else:
                 return [{"value": name, "input": False}]
 
-        elif isinstance(argument["value"], int):
-            list_.append(
-                {"value": str(argument["value"]), "input": argument["input"]}
-            )
+        elif isinstance(value, (int, float)):
+            list_.append({"value": str(value), "input": argument["input"]})
 
-        elif isinstance(argument["value"], list):
-            while "" in argument["value"]:
-                argument["value"].remove("")
+        elif isinstance(value, list):
+            while "" in value:
+                value.remove("")
 
-            if len(argument["value"]) == 0:
+            if len(value) == 0:
                 return []
 
-            for arg in argument["value"]:
+            for arg in value:
 
                 if isinstance(arg, int):
                     arg = str(arg)
@@ -203,7 +209,8 @@ class Argument(DefaultNamespace):
                 list_.append({"value": arg, "input": argument["input"]})
         else:
             raise WebScriptsArgumentError(
-                "Argument type must be: str, int, bool, list_ or None"
+                "Argument type must be: list, str, float, int, bool or None."
+                f" Not {type(value)} ({value})"
             )
 
         return list_
@@ -355,7 +362,7 @@ class ScriptConfig(DefaultNamespace):
 
         for name, section_config in scripts.items():
             script_section = getattr(configuration, section_config, None)
-            Logs.warning(f"Script found: {name} (section: {section_config})")
+            logger_warning(f"Script found: {name} (section: {section_config})")
 
             if script_section is None:
                 raise WebScriptsConfigurationError(
@@ -426,7 +433,7 @@ class ScriptConfig(DefaultNamespace):
         if system() != "Windows":
             return
 
-        Logs.info(
+        logger_info(
             f"Research default launcher for script {script_config['name']}"
         )
         extension = path.splitext(script_config["path"])[1]
@@ -434,7 +441,7 @@ class ScriptConfig(DefaultNamespace):
         if (
             fullmatch(r"[.]\w+", extension) is None
         ):  # raise an error against command injection
-            Logs.critical(
+            logger_critical(
                 f'Security Error: this extension "{extension}" is a security '
                 "risk (for security reason this extension is blocked)."
             )
@@ -477,7 +484,7 @@ class ScriptConfig(DefaultNamespace):
         )
 
         if launcher is not None:
-            Logs.warning(
+            logger_warning(
                 f"Launcher found for {script_config['name']}: {launcher}"
             )
 
@@ -500,7 +507,7 @@ class ScriptConfig(DefaultNamespace):
                     dirname, path.normcase(directory), script_config["name"]
                 )
                 if path.isfile(script_path):
-                    Logs.info(
+                    logger_info(
                         f"Found script named: {script_config['name']} in "
                         f"location: {script_path}"
                     )
@@ -529,10 +536,10 @@ class ScriptConfig(DefaultNamespace):
                     path_, f"{path.splitext(path.basename(name))[0]}.*"
                 )
                 for doc_file in iglob(doc_files):
-                    Logs.debug(f"Documentation file found for {name}")
+                    logger_debug(f"Documentation file found for {name}")
                     break
         else:
-            Logs.debug(f"Documentation file found for {name}")
+            logger_debug(f"Documentation file found for {name}")
 
         return doc_file
 
@@ -566,7 +573,7 @@ class ScriptConfig(DefaultNamespace):
                 arg_config["name"] = name
                 arguments_config.append(arg_config)
 
-                Logs.info(f"Argument named {name} found and configured.")
+                logger_info(f"Argument named {name} found and configured.")
         else:
             arguments_config = []
 
@@ -879,23 +886,30 @@ class Blacklist:
         configuration: ServerConfiguration,
         last_blacklist: Blacklist = None,
     ):
+        logger_debug("New blacklist object...")
         self.time = time()
 
         blacklist_time = getattr(configuration, "blacklist_time", None)
 
         if blacklist_time is None:
             self.counter = 1
+            logger_debug("Counter initialized, cause: no blacklist time.")
         else:
             if last_blacklist is None:
                 self.counter = 1
+                logger_debug("Counter initialized, cause: no blacklist.")
             else:
                 if (
                     last_blacklist.time + configuration.blacklist_time
                     >= self.time
                 ):
-                    self.counter = last_blacklist.counter + 1
+                    counter = self.counter = last_blacklist.counter + 1
+                    logger_info(f"Counter increment: {counter}.")
                 else:
                     self.counter = 1
+                    logger_debug(
+                        "Counter initialized, cause: blacklist time exceeded."
+                    )
 
     @log_trace
     def is_blacklist(self, configuration: ServerConfiguration) -> bool:
@@ -908,13 +922,25 @@ class Blacklist:
         )
 
         if auth_failures_to_blacklist is None:
+            logger_debug(
+                "Not blacklisted, cause: configuration "
+                '"auth_failures_to_blacklist" is None.'
+            )
             return False
 
         if self.counter > auth_failures_to_blacklist:
             if blacklist_time is None:
+                logger_debug("Not blacklisted, cause: blacklist time is None")
                 return False
-            return blacklist_time + self.time >= time()
+
+            is_blacklisted = blacklist_time + self.time >= time()
+            logger_info(f"Blacklist state: {is_blacklisted}")
+            return is_blacklisted
         else:
+            logger_debug(
+                "Not blacklisted, cause: counter less than "
+                'configuration "auth_failures_to_blacklist".'
+            )
             return False
 
     def __str__(self) -> str:

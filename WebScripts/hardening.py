@@ -49,6 +49,7 @@ __copyright__ = copyright
 __all__ = ["Report", "Rule", "Audit", "SEVERITY", "main"]
 
 from email.message import EmailMessage
+from typing import TypeVar, List, Set
 from collections.abc import Callable
 from os import getcwd, path, listdir
 from collections.abc import Iterator
@@ -58,7 +59,6 @@ from urllib.error import URLError
 from dataclasses import dataclass
 from socket import gethostbyname
 from pkgutil import iter_modules
-from typing import TypeVar, List
 from contextlib import suppress
 from operator import itemgetter
 from types import ModuleType
@@ -1213,7 +1213,7 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File owner is not {user}.",
+                    f"File owner is not {user} for {filename}.",
                 )
 
         for filename in simple_filenames:
@@ -1225,7 +1225,7 @@ class Audit:
                     4,
                     SEVERITY.MEDIUM.value,
                     "Files",
-                    f"File owner is not {user}.",
+                    f"File owner is not {user} for {filename}.",
                 )
 
     def get_permissions(filename: str) -> str:
@@ -1234,8 +1234,8 @@ class Audit:
 
         return stat.filemode(os.stat(filename).st_mode)
 
-    def audits_directory_permissions(
-        server: Server, secure_paths: List[str] = None
+    def _audits_directory_permissions(
+        server: Server, secure_paths: Set[str]
     ) -> Iterator[Rule]:
 
         """
@@ -1254,14 +1254,14 @@ class Audit:
             )
             return
 
-        if secure_paths is None:
-            config_path = path.join(server_path, "config")
-            secure_paths = [
-                path.join(sys.prefix, "bin"),
-                config_path,
-                path.join(config_path, "files"),
-                path.join(config_path, "scripts"),
-            ]
+        config_path = path.join(server_path, "config")
+        secure_paths = {
+            path.join(sys.prefix, "bin"),
+            config_path,
+            path.join(config_path, "files"),
+            path.join(config_path, "scripts"),
+        }
+        secure_paths.update(secure_paths)
 
         for path_ in secure_paths:
             yield Rule(
@@ -1356,13 +1356,13 @@ class Audit:
             if isinstance(module, ModuleType)
         ]
 
-        yield from Audit.audits_directory_permissions(
+        yield from Audit._audits_directory_permissions(
             server,
-            [
+            {
                 path.dirname(path_)
                 for path_ in executable_filenames + rw_filenames + r_filenames
                 if path.exists(path_)
-            ],
+            },
         )
 
         yield from [

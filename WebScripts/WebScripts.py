@@ -24,7 +24,7 @@
 This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class)."""
 
-__version__ = "0.0.12"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -48,12 +48,16 @@ __copyright__ = copyright
 
 __all__ = ["Configuration", "Server", "main"]
 
+from os.path import basename, abspath, join, dirname, normcase, exists, isdir
 from types import SimpleNamespace, ModuleType, FunctionType
+from typing import TypeVar, Tuple, List, Dict, Union
+from sys import exit, modules as sys_modules, argv
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
-from typing import TypeVar, Tuple, List, Dict
-from os import path, _Environ, getcwd, mkdir
+from os import _Environ, getcwd, mkdir
+from logging.config import fileConfig
 from wsgiref import simple_server
+from logging import basicConfig
 from threading import Thread
 from base64 import b64decode
 from glob import iglob
@@ -121,6 +125,14 @@ FunctionOrNone = TypeVar("FunctionOrNone", FunctionType, None)
 Content = TypeVar(
     "Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes
 )
+
+logger_debug: Callable = Logs.debug
+logger_info: Callable = Logs.info
+logger_warning: Callable = Logs.warning
+logger_error: Callable = Logs.error
+logger_critical: Callable = Logs.critical
+current_directory: str = getcwd()
+log_path: str = join(server_path, "logs")
 
 
 class Configuration(DefaultNamespace):
@@ -204,33 +216,53 @@ class Configuration(DefaultNamespace):
     @log_trace
     def add_conf(self, **kwargs):
 
-        """Add configurations from other configuration files found."""
+        """
+        Add configurations from other configuration files found.
+        """
+
+        logger_info("Add configurations...")
 
         for key, value in kwargs.items():
 
             if value is not None:
+                dict_ = self.__dict__
 
-                Logs.info(f"Add configuration {key}: {value}")
-                default_value = self.__dict__.get(key)
+                logger_info(f"Add configuration {key}: {value}")
+                default_value = dict_.get(key)
 
                 if isinstance(default_value, list):
+
                     if isinstance(value, str):
+                        logger_debug(
+                            "Add configuration list " "using INI/CFG syntax."
+                        )
                         value = value.split(",")
 
                     if isinstance(value, list):
+                        logger_debug(
+                            "Add configuration list " "using JSON syntax."
+                        )
                         for value_ in value:
-                            if value_ not in self.__dict__[key]:
-                                self.__dict__[key].append(value_)
+                            if value_ not in dict_[key]:
+                                dict_[key].append(value_)
                     else:
+                        logger_error(
+                            "Error in configuration: "
+                            "list should be a JSON list"
+                            " or INI/CFG comma separated string."
+                            f" (not: {value})"
+                        )
                         raise WebScriptsConfigurationTypeError(
                             f"Configuration list {key}: {value} can't be "
                             f"add to {default_value}"
                         )
 
                 elif isinstance(default_value, dict):
-                    self.__dict__[key].update(value)
+                    logger_debug(f"Add configuration dict... {key}={value}")
+                    dict_[key].update(value)
                 else:
-                    self.__dict__[key] = value
+                    logger_debug(f'Add "basic" configuration {key}={value}.')
+                    dict_[key] = value
 
 
 class Server:
@@ -243,7 +275,8 @@ class Server:
         self.interface: str = configuration.interface
         self.port: int = configuration.port
 
-        self.user: Dict[str, User] = {}
+        logger_debug("Create default value for WebScripts server...")
+        # self.user: Dict[str, User] = {}
         self.unknow: Dict = {"id": 1, "name": "Unknow", "groups": [0, 1]}
         self.not_authenticated: Dict = {
             "id": 0,
@@ -252,48 +285,55 @@ class Server:
         }
         self.error: str = "200 OK"
         self.pages = Pages()
+        self.logs = Logs
 
-        self.version = (
-            sys.modules[__package__].__version__
+        version = self.version = (
+            sys_modules[__package__].__version__
             if __package__
             else __version__
         )
-        self.headers = {
-            "Server": f"WebScripts {self.version}",
+
+        logger_debug("Create default HTTP headers...")
+        headers = self.headers = {
+            "Server": f"WebScripts {version}",
             "Content-Type": "text/html; charset=utf-8",
         }
 
+        logger_debug("Get security configuration...")
         self.debug = getattr(configuration, "debug", False)
-        self.security = getattr(configuration, "security", True)
+        security = self.security = getattr(configuration, "security", True)
         self.loglevel = getattr(configuration, "log_level", "DEBUG")
 
-        if self.security:
-            self.headers[
+        if security:
+            headers[
                 "Strict-Transport-Security"
             ] = "max-age=63072000; includeSubDomains; preload"
-            self.headers["Content-Security-Policy"] = (
+            headers["Content-Security-Policy"] = (
                 "default-src 'self'; form-action 'none'; "
                 "frame-ancestors 'none'"
             )
-            self.headers["X-Frame-Options"] = "deny"
-            self.headers["X-XSS-Protection"] = "1; mode=block"
-            self.headers["X-Content-Type-Options"] = "nosniff"
-            self.headers["Referrer-Policy"] = "origin-when-cross-origin"
-            self.headers["Cache-Control"] = "no-store"
-            self.headers["Pragma"] = "no-store"
-            self.headers["Clear-Site-Data"] = '"cache", "executionContexts"'
-            self.headers["Feature-Policy"] = (
+            headers["X-Frame-Options"] = "deny"
+            headers["X-XSS-Protection"] = "1; mode=block"
+            headers["X-Content-Type-Options"] = "nosniff"
+            headers["Referrer-Policy"] = "origin-when-cross-origin"
+            headers["Cache-Control"] = "no-store"
+            headers["Pragma"] = "no-store"
+            headers["Clear-Site-Data"] = '"cache", "executionContexts"'
+            headers["Feature-Policy"] = (
                 "payment 'none'; geolocation 'none'; "
                 "microphone 'none'; camera 'none'"
             )
-            self.headers[
+            headers[
                 "Permissions-Policy"
             ] = "microphone=(),camera=(),payment=(),geolocation=()"
-            self.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
-            self.headers["Cross-Origin-Opener-Policy"] = "same-origin"
-            self.headers["Cross-Origin-Resource-Policy"] = "same-origin"
-            self.headers["X-Server"] = "WebScripts"
+            headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+            headers["Cross-Origin-Opener-Policy"] = "same-origin"
+            headers["Cross-Origin-Resource-Policy"] = "same-origin"
+            headers["X-Server"] = "WebScripts"
         else:
+            logger_warning(
+                "Load insecure HTTP headers for development environment..."
+            )
             if "csp" not in configuration.modules:
                 configuration.modules.append("csp")
             if "modules" not in configuration.modules_path:
@@ -301,10 +341,12 @@ class Server:
             if "/csp/debug/" not in configuration.exclude_auth_pages:
                 configuration.exclude_auth_pages.append("/csp/debug/")
 
-            self.headers["Content-Security-Policy-Report-Only"] = (
+            headers["Content-Security-Policy-Report-Only"] = (
                 "default-src 'self'; form-action 'none'; "
                 "frame-ancestors 'none'; report-uri /csp/debug/"
             )
+
+        logger_info("Default HTTP headers are set.")
 
         self.add_module_or_package()
         self.add_paths()
@@ -312,24 +354,34 @@ class Server:
     @log_trace
     def check_blacklist(self, user: User, ip: str) -> bool:
 
-        """This function checks that the IP and the
-        username are not in the blacklist."""
+        """
+        This function checks that the IP and the
+        username are not in the blacklist.
+        """
 
+        logger_debug("Check blacklist...")
+
+        pages = self.pages
+        configuration = self.configuration
+
+        logger_debug("Check user blacklist...")
         if user is not None:
             name = user.name
-            user = self.pages.user_blacklist.get(user.id, None)
-            if user is not None and user.is_blacklist(self.configuration):
-                Logs.critical(
+            user = pages.user_blacklist.get(user.id, None)
+            if user is not None and user.is_blacklist(configuration):
+                logger_critical(
                     f"User {name} is blacklisted "
                     f"({user.counter} attempt using IP {ip})"
                 )
                 return False
 
-        ip_ = self.pages.ip_blacklist.get(ip, None)
-        if ip_ is not None and ip_.is_blacklist(self.configuration):
-            Logs.critical(f"IP {ip} is blacklisted ({ip_.counter} attempt).")
+        logger_debug("Check ip blacklist...")
+        ip_ = pages.ip_blacklist.get(ip, None)
+        if ip_ is not None and ip_.is_blacklist(configuration):
+            logger_critical(f"IP {ip} is blacklisted ({ip_.counter} attempt).")
             return False
 
+        logger_info("IP and user not blacklisted.")
         return True
 
     @log_trace
@@ -338,7 +390,10 @@ class Server:
         """This function return User from cookies."""
 
         for cookie in cookies:
+            logger_debug("Analyze a new cookie...")
+
             if cookie.startswith("SessionID="):
+                logger_debug("Session cookie is detected...")
                 user = Session.check_session(
                     cookie,
                     self.pages,
@@ -348,78 +403,114 @@ class Server:
                 )
 
                 if user is None:
+                    logger_warning("Session cookie is not valid.")
                     continue
 
                 if ip != user.ip:
+                    logger_warning("Session IP is not valid.")
                     user = User.default_build(
                         ip=ip, check_csrf=True, **self.unknow
                     )
                 else:
+                    logger_info("Valid session detected.")
                     user.check_csrf = True
 
                 return user
 
+    @log_trace
     def check_auth(self, environ: _Environ) -> Tuple[User, bool]:
 
-        """This function check if user is authenticated and blacklisted."""
+        """
+        This function check if user is authenticated and blacklisted.
+        """
 
+        logger_debug("Check auth...")
         credentials = environ.get("HTTP_AUTHORIZATION")
         api_key = environ.get("HTTP_API_KEY")
         cookies = environ.get("HTTP_COOKIE")
+        token = environ.get("HTTP_API_TOKEN")
         ip = get_ip(environ)
+
+        pages = self.pages
+        configuration = self.configuration
+        not_authenticated = self.not_authenticated
+        check_session = Session.check_session
+        default_build = User.default_build
+
         user = None
         headers = None
 
         if cookies is not None:
+            logger_debug("Cookie detected, try to get session...")
             user = self.get_session(cookies.split("; "), ip)
 
-        elif credentials is not None and credentials.startswith("Basic "):
+        if token is not None:
+            logger_debug("API token detected, try to get session...")
+            user = check_session(
+                token,
+                pages,
+                ip,
+                None,
+                getattr(configuration, "session_max_time", 3600),
+            )
+
+        if (
+            user is None
+            and credentials is not None
+            and credentials.startswith("Basic ")
+        ):
+            logger_debug("Basic Auth detected, decode credentials...")
             credentials = b64decode(
                 credentials.split(" ", maxsplit=1)[1]
             ).decode()
 
             if ":" in credentials:
                 username, password = credentials.split(":", maxsplit=1)
-                code, headers, content = self.pages.auth(
+
+                logger_info("Use authentication script...")
+                code, headers, content = pages.auth(
                     environ,
-                    User.default_build(ip=ip, **self.not_authenticated),
-                    self.configuration,
-                    self.configuration.auth_script,
+                    default_build(ip=ip, **not_authenticated),
+                    configuration,
+                    configuration.auth_script,
                     ["--username", username, "--password", password],
                     [],
                 )
 
         elif api_key is not None:
-            code, headers, content = self.pages.auth(
+            logger_info("API key detected. Use authentication script...")
+            code, headers, content = pages.auth(
                 environ,
-                User.default_build(ip=ip, **self.not_authenticated),
-                self.configuration,
-                self.configuration.auth_script,
+                default_build(ip=ip, **not_authenticated),
+                configuration,
+                configuration.auth_script,
                 ["--api-key", api_key],
                 [],
             )
 
         if headers is not None:
+            logger_debug("Get user using new cookie...")
             cookie = headers.get("Set-Cookie", "").split("; ")[0]
-            user = Session.check_session(
+            user = check_session(
                 cookie,
-                self.pages,
+                pages,
                 ip,
                 None,
-                getattr(self.configuration, "session_max_time", 3600),
+                getattr(configuration, "session_max_time", 3600),
             )
 
+        logger_debug("Blacklist check...")
         not_blacklisted = self.check_blacklist(user, ip)
-        if user is not None and not_blacklisted:
-            return user, not_blacklisted
 
         if user is None:
+            logger_info("No user [valid authentication] detected.")
             return (
-                User.default_build(ip=ip, **self.not_authenticated),
+                default_build(ip=ip, **not_authenticated),
                 not_blacklisted,
             )
         else:
-            return User.default_build(ip=ip, **self.unknow), not_blacklisted
+            logger_info("Authenticated user detected.")
+            return user, not_blacklisted
 
     @log_trace
     def add_module_or_package(self) -> None:
@@ -427,67 +518,89 @@ class Server:
         """This function add packages and modules to build custom page."""
 
         modules_path = []
-        for module_path in self.configuration.modules_path[::-1]:
-            modules_path.append(module_path)
-            modules_path.append(path.join(server_path, module_path))
+        configuration = self.configuration
+        append = modules_path.append
+        logger_info("Load modules and packages...")
+
+        for module_path in configuration.modules_path[::-1]:
+            path2 = join(server_path, module_path)
+
+            append(module_path)
+            append(path2)
+            logger_debug(
+                f'Add "{module_path}" and "{path2}" in python path...'
+            )
 
         sys.path = modules_path + sys.path
 
-        Pages.packages = DefaultNamespace()
-        for package in self.configuration.modules:
-            Logs.warning(f"Add package/module named: {package}")
+        packages = Pages.packages = DefaultNamespace()
+        for package in configuration.modules:
+            logger_warning(f"Add package/module named: {package}")
 
             package = __import__(package)
-            setattr(Pages.packages, package.__name__, package)
+            setattr(packages, package.__name__, package)
 
+        logger_info("Remove new paths...")
         for path_ in modules_path:
+            logger_debug(f"Remove {path_}")
             sys.path.remove(path_)
 
     @log_trace
     def add_paths(self) -> None:
 
-        """This function add js, static and scripts paths."""
+        """
+        This function add js, static and scripts paths.
+        """
 
-        Pages.scripts = ScriptConfig.build_scripts_from_configuration(
-            self.configuration
+        configuration = self.configuration
+        statics_paths = Pages.statics_paths = {}
+        js_paths = Pages.js_paths = {}
+
+        logger_debug("Add scripts in Web pages...")
+        scripts = (
+            Pages.scripts
+        ) = ScriptConfig.build_scripts_from_configuration(
+            configuration,
         )
+        logger_info("Scripts are in Web pages.")
 
-        current_directory = getcwd()
+        for dirname_ in (server_path, current_directory):
+            logger_debug(f"Trying to find JS and static path in {dirname_}...")
+            for js_glob in configuration.js_path:
 
-        Pages.statics_paths = {}
-        Pages.js_paths = {}
-
-        for dirname in (server_path, current_directory):
-            for js_glob in self.configuration.js_path:
-
-                js_glob = path.join(dirname, path.normcase(js_glob))
+                js_glob = join(dirname_, normcase(js_glob))
+                logger_debug(f"Trying to find file matching with {js_glob}...")
                 for js_file in iglob(js_glob):
-                    filename = path.basename(js_file)
-                    file_path = path.abspath(js_file)
+                    filename = basename(js_file)
+                    file_path = abspath(js_file)
 
                     Logs.info(f"Find a javascript file: {file_path}")
 
-                    Pages.js_paths[filename] = CallableFile(
+                    js_paths[filename] = CallableFile(
                         "js", file_path, filename
                     )
 
-            for static_glob in self.configuration.statics_path:
+            for static_glob in configuration.statics_path:
 
-                static_glob = path.join(dirname, path.normcase(static_glob))
+                static_glob = join(dirname_, normcase(static_glob))
+                logger_debug(
+                    f"Trying to find file matching with {static_glob}..."
+                )
                 for static_file in iglob(static_glob):
-                    filename = path.basename(static_file)
-                    file_path = path.abspath(static_file)
+                    filename = basename(static_file)
+                    file_path = abspath(static_file)
 
                     Logs.info(f"Find a static file: {file_path}")
 
-                    Pages.statics_paths[filename] = CallableFile(
+                    statics_paths[filename] = CallableFile(
                         "static", file_path, filename
                     )
 
         if (
-            self.configuration.active_auth
-            and self.configuration.auth_script not in Pages.scripts.keys()
+            configuration.active_auth
+            and configuration.auth_script not in scripts.keys()
         ):
+            logger_error("Auth script not found in configurations.")
             raise WebScriptsConfigurationError(
                 "Auth script not found in configurations."
             )
@@ -502,126 +615,172 @@ class Server:
 
         path = path.split("/")
         del path[0]
+        get_attributes = self.get_attributes
+        pages = self.pages
 
-        default, filename, _ = self.get_attributes(self.pages, path)
+        logger_debug(
+            "Trying to get function page from default WebScripts function..."
+        )
+        default, filename, _ = get_attributes(pages, path)
 
         if default is not None:
+            logger_info("Use default function page.")
             return default, filename, True
         else:
-            return self.get_attributes(self.pages.packages, path, False)
+            logger_debug("Trying to get function page from packages.")
+            return get_attributes(pages.packages, path, False)
 
     @log_trace
     def get_URLs(self) -> List[str]:
 
-        """This function return a list of urls (scripts, documentation...)
-        and the start of the URL of custom packages."""
+        """
+        This function return a list of urls (scripts, documentation...)
+        and the start of the URL of custom packages.
+        """
 
         urls = ["/api/", "/web/"]
+        append = urls.append
+        pages = self.pages
 
         if getattr(self.configuration, "active_auth", None):
-            urls.append("/auth/")
-            urls.append("/web/auth/")
+            append("/auth/")
+            append("/web/auth/")
 
-        for script_name in self.pages.scripts.keys():
-            urls.append(f"/web/scripts/{script_name}")
-            urls.append(f"/api/scripts/{script_name}")
-            urls.append(f"/web/doc/{script_name}")
+        for script_name in pages.scripts.keys():
+            append(f"/web/scripts/{script_name}")
+            append(f"/api/scripts/{script_name}")
+            append(f"/web/doc/{script_name}")
 
-        for js_name in self.pages.js_paths.keys():
-            urls.append(f"/js/{js_name}")
+        for js_name in pages.js_paths.keys():
+            append(f"/js/{js_name}")
 
-        for static_name in self.pages.statics_paths.keys():
-            urls.append(f"/static/{static_name}")
+        for static_name in pages.statics_paths.keys():
+            append(f"/static/{static_name}")
 
-        for package in dir(self.pages.packages):
-            if isinstance(getattr(self.pages.packages, package), ModuleType):
-                urls.append(f"/{package}/...")
+        for package in dir(pages.packages):
+            if isinstance(getattr(pages.packages, package), ModuleType):
+                append(f"/{package}/...")
 
         return urls
 
+    @staticmethod
     @log_trace
     def get_attributes(
-        self,
         object_: object,
         attributes: List[str],
         is_not_package: bool = True,
     ) -> Tuple[FunctionOrNone, str, bool]:
 
-        """This function get recursive attribute from object."""
+        """
+        This function get recursive attribute from object.
+        """
 
         for attribute in attributes[:-1]:
+            logger_debug(f"Trying to get {attribute} from {object_}")
             object_ = getattr(object_, attribute, None)
 
             if object_ is None:
                 return None, None, is_not_package
 
+        logger_debug("Get arguments length and check it...")
         arg_count = get_arguments_count(object_)
 
         if isinstance(object_, Callable) and (
             arg_count == 7 or arg_count == 8
         ):
+            logger_info(f"Function page found {object_}.")
             return object_, attributes[-1], is_not_package
         else:
+            logger_info("Function page not found.")
             return None, None, is_not_package
 
+    @staticmethod
     @log_trace
     def get_inputs(
-        self, arguments: List[Dict[str, JsonValue]]
+        arguments: List[Dict[str, JsonValue]]
     ) -> Tuple[List[str], Dict[str, JsonValue]]:
 
-        """This function returns inputs and arguments from arguments."""
+        """
+        This function returns inputs and arguments from arguments.
+        """
 
         inputs = []
+        append = inputs.append
+        remove = arguments.remove
 
+        logger_debug("Extract inputs from WebScripts arguments...")
         for i, argument in enumerate(arguments):
             if argument["input"]:
-                inputs.append(argument)
+                # logger_debug(f"Input found: {argument}")
+                # To protect secrets, do not log arguments !
+                append(argument)
 
+        logger_debug("Remove inputs from arguments...")
         for i, input_ in enumerate(inputs):
-            arguments.remove(input_)
+            # logger_debug(f"Remove {input_}")
+            # To protect secrets, do not log arguments !
+            remove(input_)
             inputs[i] = str(input_["value"])
 
+        logger_debug("Extract value from WebScripts arguments...")
         for i, argument in enumerate(arguments):
             arguments[i] = argument["value"]
 
         return inputs, arguments
 
+    @staticmethod
     @log_trace
-    def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
+    def get_content_length(environ: _Environ) -> int:
 
-        """This function return arguments from body."""
+        """
+        This function returns the content length.
+        """
 
         content_length = environ.get("CONTENT_LENGTH", "0")
 
         if content_length.isdigit():
-            content_length = int(content_length)
+            logger_debug(f"Content-Length is valid ({content_length}).")
+            return int(content_length)
         else:
-            content_length = 0
+            logger_warning(f"Content-Length is not valid ({content_length}).")
+            return 0
 
+    @log_trace
+    def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
+
+        """
+        This function return arguments from body.
+        """
+
+        content_length = self.get_content_length(environ)
         body = environ["wsgi.input"].read(content_length)
 
         if content_length:
             try:
                 body = json.loads(body)
             except (json.decoder.JSONDecodeError, UnicodeDecodeError):
-                Logs.warning("Non-JSON content detected")
-                Logs.info(
+                logger_warning("Non-JSON content detected")
+                logger_info(
                     "This request is not available for"
-                    " the default functions of WebScripts"
+                    " the default functions of WebScripts."
                 )
                 return body, None, False
 
-            if "arguments" in body.keys():
+            body_get = body.get
+            arguments_ = body_get("arguments")
+            get_command = Argument.get_command
+
+            if arguments_ is not None:
                 arguments = []
-                for name, argument in body["arguments"].items():
-                    arguments += Argument.get_command(name, argument)
+                for name, argument in arguments_.items():
+                    arguments += get_command(name, argument)
 
-                return arguments, body.get("csrf_token"), True
+                return arguments, body_get("csrf_token"), True
 
-            Logs.warning(
+            logger_warning(
                 'Section "arguments" is not defined in the JSON content.'
             )
-            Logs.info(
+            logger_info(
                 "This request is not available for"
                 " the default functions of WebScripts"
             )
@@ -632,59 +791,77 @@ class Server:
     @log_trace
     def app(self, environ: _Environ, respond: FunctionType) -> List[bytes]:
 
-        """This function get function page,
+        """
+        This function get function page,
         return content page, catch errors and
-        return HTTP errors."""
+        return HTTP errors.
+        """
 
-        Logs.debug(
-            f"Request ({environ['REQUEST_METHOD']}) from "
-            f"{get_ip(environ)} on {environ['PATH_INFO']}."
+        path_info = environ["PATH_INFO"]
+        method = environ["REQUEST_METHOD"]
+        logger_debug(
+            f"Request ({method}) from " f"{get_ip(environ)} on {path_info}."
         )
+        path_info_startswith = path_info.startswith
+        configuration = self.configuration
+        environ["LOG_PATH"] = log_path
+        is_head_method = method == "HEAD"
 
+        logger_debug("Trying to get function page...")
         get_response, filename, is_not_package = self.get_function_page(
-            environ["PATH_INFO"]
+            path_info
         )
 
+        logger_debug("Check authentication...")
         user, not_blacklisted = self.check_auth(environ)
 
         if not not_blacklisted:
-            Logs.critical(
-                f'Blacklist: Error 403 on "{environ["PATH_INFO"]}" for '
+            logger_critical(
+                f'Blacklist: Error 403 on "{path_info}" for '
                 f'"{user.name}" (ID: {user.id}).'
             )
             return self.page_403(None, respond)
 
-        arguments, csrf_token, is_webscripts_request = self.parse_body(environ)
+        logger_info("User is not blacklisted.")
+        logger_debug("Trying to get and parse body...")
 
-        if is_webscripts_request:
-            inputs, arguments = self.get_inputs(arguments)
+        if method == "POST":
+            arguments, csrf_token, is_webscripts_request = self.parse_body(
+                environ
+            )
+        elif method == "GET" or is_head_method:
+            arguments, csrf_token, is_webscripts_request = [], None, True
         else:
-            inputs = []
+            return self.page_400(method, respond)
+
+        arguments, inputs = self.return_inputs(
+            arguments, is_webscripts_request
+        )
 
         if is_not_package and not is_webscripts_request:
-            Logs.error(
-                f'HTTP 406: for "{user.name}" on "{environ["PATH_INFO"]}"'
-            )
+            logger_error(f'HTTP 406: for "{user.name}" on "{path_info}"')
             error = "406"
         else:
+            logger_info("Request is not rejected as HTTP error 406.")
             error: str = None
 
         if (
             (
-                (not self.configuration.accept_unknow_user and user.id == 1)
+                (not configuration.accept_unknow_user and user.id == 1)
                 or (
-                    not self.configuration.accept_unauthenticated_user
+                    not configuration.accept_unauthenticated_user
                     and user.id == 0
                 )
             )
-            and self.configuration.active_auth
+            and configuration.active_auth
         ) and (
-            environ["PATH_INFO"] not in self.configuration.exclude_auth_pages
+            path_info not in configuration.exclude_auth_pages
             and not any(
-                environ["PATH_INFO"].startswith(x)
-                for x in self.configuration.exclude_auth_paths
+                path_info_startswith(x)
+                for x in configuration.exclude_auth_paths
             )
         ):
+            logger_warning(f"Unauthenticated try to get access to {path_info}")
             self.send_headers(respond, "302 Found", {"Location": "/web/auth/"})
             return [
                 b"Authentication required:\n\t",
@@ -694,16 +871,19 @@ class Server:
             ]
 
         if get_response is None:
-            return self.page_404(environ["PATH_INFO"], respond)
+            logger_info("Page 404, cause: no function page.")
+            return self.page_404(path_info, respond)
 
         if error == "406":
+            logger_debug("Send response (code 406).")
             return self.page_406(None, respond)
 
+        logger_debug("Trying to execute function page...")
         try:
             error, headers, page = get_response(
                 environ,
                 user,
-                self.configuration,
+                configuration,
                 filename,
                 arguments,
                 inputs,
@@ -716,30 +896,91 @@ class Server:
             return self.page_500(traceback.format_exc(), respond)
 
         if error == "404":
-            return self.page_404(environ["PATH_INFO"], respond)
+            logger_debug("Send response 404, cause: function page return 404.")
+            return self.page_404(path_info, respond)
         elif error == "403":
+            logger_debug("Send response 403, cause: function page return 403.")
             return self.page_403(None, respond)
         elif error == "500":
+            logger_debug("Send response 500, cause: function page return 500.")
             return self.page_500(page, respond)
         else:
+            logger_debug(f"Get custom response for code {error}")
             response = self.send_custom_error("", error)
             if response is not None:
+                logger_info(f"Get a response for code {error}")
                 error, headers, page = response
 
-        if not error:
-            error = "200 OK"
+        error, headers = self.set_default_values_for_response(error, headers)
 
+        logger_debug("Send headers...")
+        self.send_headers(respond, error, headers)
+        if is_head_method:
+            logger_debug("Is HEAD method, return an empty response body...")
+            return []
+
+        return self.return_page(page)
+
+    @log_trace
+    def set_default_values_for_response(
+        self, error: str, headers: Dict[str, str]
+    ) -> Tuple[str, Dict[str, str]]:
+
+        """
+        This function returns default error if not defined and
+        default headers updated with custom headers.
+        """
+
+        if not error:
+            logger_debug("Set error code as default error code (200).")
+            error = self.error
+
+        logger_debug("Add default and custom headers to the response...")
         default_headers = self.headers.copy()
         default_headers.update(headers)
 
-        self.send_headers(respond, error, default_headers)
+        return error, headers
+
+    @staticmethod
+    @log_trace
+    def return_page(page: Union[bytes, str, list]) -> List[bytes]:
+
+        """
+        This function returns response as a list of bytes.
+        """
 
         if isinstance(page, bytes):
+            logger_debug("Send bytes response...")
             return [page]
         elif isinstance(page, str):
+            logger_debug("Send str response (encode using utf-8)...")
             return [page.encode()]
         elif isinstance(page, list):
+            logger_debug("Send list response...")
             return page
+
+    @log_trace
+    def return_inputs(
+        self,
+        arguments: List[Dict[str, JsonValue]],
+        is_webscripts_request: bool,
+    ) -> Tuple[List[JsonValue], List[JsonValue]]:
+
+        """
+        This function returns inputs (using Server.get_inputs).
+        """
+
+        if is_webscripts_request:
+            logger_debug("Trying to get inputs...")
+            inputs, arguments = self.get_inputs(arguments)
+        else:
+            logger_info(
+                "Is not a WebScripts request, inputs are "
+                "defined as empty list."
+            )
+            inputs = []
+
+        return arguments, inputs
 
     @log_trace
     def send_headers(
@@ -749,39 +990,65 @@ class Server:
         headers: Dict[str, str] = None,
     ) -> None:
 
-        """This function send error code, message and headers."""
+        """
+        This function send error code, message and headers.
+        """
 
         if error is None:
+            logger_debug("Defined error as default error.")
             error = self.error
         if headers is None:
+            logger_debug("Defined headers as default headers.")
             _headers = self.headers
         else:
+            logger_debug("Update headers with custom headers...")
             _headers = self.headers.copy()
             _headers.update(headers)
 
+        logger_debug("Call respond WSGI function...")
         respond(error, [(k, v) for k, v in _headers.items()])
 
     @log_trace
     def page_500(self, error: str, respond: FunctionType) -> List[bytes]:
 
-        """This function return error 500 web page."""
+        """
+        This function return error 500 web page.
+        """
 
         error_code = "500 Internal Error"
+        logger_debug("Send 500 Internal Error...")
         return self.send_error_page(error_code, error.encode(), respond)
 
     @log_trace
     def page_404(self, url: str, respond: FunctionType):
 
-        """This function return error 404 web page."""
+        """
+        This function return error 404 web page.
+        """
 
         error_code = "404 Not Found"
+
+        logger_debug("Get URLs for 404 debug page...")
         urls = "\n\t - ".join(self.get_URLs())
         error = (
             f"This URL: {url}, doesn't exist"
             f" on this server.\nURLs:\n\t - {urls}"
         )
-        Logs.error(f"HTTP 404 on {url}")
+        logger_error(f"HTTP 404 on {url}")
         return self.send_error_page(error_code, error.encode(), respond)
+
+    @log_trace
+    def page_400(self, method: str, respond: FunctionType):
+
+        """This function return error 403 web page."""
+
+        error_code = "400 Bad Request"
+        error = (
+            "Bad method, method should be GET, "
+            f"POST or HEAD not {method}".encode()
+        )
+        logger_debug("Send 400 Bad Request...")
+        return self.send_error_page(error_code, error, respond)
 
     @log_trace
     def page_401(self, error_description: str, respond: FunctionType):
@@ -790,6 +1057,7 @@ class Server:
 
         error_code = "401 Unauthorized"
         error = b"Unauthorized (You don't have permissions)"
+        logger_debug("Send 401 Unauthorized...")
         return self.send_error_page(error_code, error, respond)
 
     @log_trace
@@ -799,6 +1067,7 @@ class Server:
 
         error_code = "403 Forbidden"
         error = b"Forbidden (You don't have permissions)"
+        logger_debug("Send 403 Forbidden...")
         return self.send_error_page(error_code, error, respond)
 
     @log_trace
@@ -810,6 +1079,7 @@ class Server:
         error = (
             b"Not Acceptable, your request is not a valid WebScripts request."
         )
+        logger_debug("Send 406 Not Acceptable...")
         return self.send_error_page(error_code, error, respond)
 
     @log_trace
@@ -823,6 +1093,7 @@ class Server:
         headers = {"Content-Type": "text/plain; charset=utf-8"}
         error_ = ""
 
+        logger_debug("Trying to get custom error response...")
         try:
             custom_error, custom_headers, custom_data = self.send_custom_error(
                 error, code
@@ -830,10 +1101,11 @@ class Server:
         except Exception as exception:
             traceback.print_exc()
             error_ = f"{exception}\n{traceback.format_exc()}"
-            Logs.error(error_)
+            logger_error(error_)
             custom_data = None
 
         if self.debug:
+            logger_warning("Send debug error page...")
             self.send_headers(respond, error, headers)
             return [
                 b"---------------\n",
@@ -845,9 +1117,11 @@ class Server:
             ]
 
         if custom_data is not None:
+            logger_debug("Send custom error page...")
             self.send_headers(respond, custom_error, custom_headers)
             return custom_data
 
+        logger_debug("Send default error page...")
         self.send_headers(respond, error, headers)
         return [
             b"---------------\n",
@@ -859,12 +1133,24 @@ class Server:
         self, error: str, code: str
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function call custom errors pages."""
+        """
+        This function call custom errors pages.
+        """
 
-        for package in self.pages.packages.__dict__.values():
+        logger_debug("Search custom error in packages...")
+        packages = self.pages.packages
+        # for package in self.pages.packages.__dict__.values():
+        for package in dir(packages):
+            package = getattr(packages, package)
+
             if isinstance(package, ModuleType):
+                logger_debug(f"Check in {package}...")
                 page = package.__dict__.get("page_" + code)
+
                 if page is not None:
+                    logger_info(
+                        f"Found the custom error page: {package}.page_{code}"
+                    )
                     return page(
                         error,
                     )
@@ -1100,47 +1386,65 @@ def parse_args() -> Namespace:
 @log_trace
 def get_server_config(arguments: Namespace) -> Iterator[dict]:
 
-    """This generator return configurations dict."""
+    """
+    This generator return configurations dict.
+    """
 
-    current_directory = getcwd()
-
+    logger_debug("Get paths for server configuration...")
     paths = [
-        path.join(current_directory, "config", "server.ini"),
-        path.join(current_directory, "config", "server.json"),
+        join(current_directory, "config", "server.ini"),
+        join(current_directory, "config", "server.json"),
     ]
+    insert = paths.insert
+
     if platform.system() == "Windows":
-        paths.insert(0, path.join(server_path, "config", "nt", "server.json"))
-        paths.insert(0, path.join(server_path, "config", "nt", "server.ini"))
+        logger_debug("Add default server configuration for Windows...")
+        insert(0, join(server_path, "config", "nt", "server.json"))
+        insert(0, join(server_path, "config", "nt", "server.ini"))
     else:
-        paths.insert(0, path.join(server_path, "config", "server.json"))
-        paths.insert(0, path.join(server_path, "config", "server.ini"))
+        logger_debug("Add default server configuration for Unix...")
+        insert(0, join(server_path, "config", "server.json"))
+        insert(0, join(server_path, "config", "server.ini"))
 
     for filename in paths:
-        Logs.warning(f"Configuration file detection: {filename}")
+        logger_debug(f"Check {filename}...")
 
-        if path.exists(filename):
+        if exists(filename):
+            logger_warning(f"Configuration file detected: {filename}")
             if filename.endswith(".json"):
                 yield json.loads(get_file_content(filename))
             elif filename.endswith(".ini"):
                 yield get_ini_dict(filename)
         else:
-            Logs.error(f"Configuration named {filename} doesn't exists.")
+            logger_info(f"Configuration named {filename} doesn't exists.")
 
     for filename in arguments.config_cfg:
-        Logs.warning(f"Configuration file detection (type cfg): {filename}")
+        logger_debug("Check configuration file (cfg) added in arguments...")
 
-        if path.exists(filename):
+        if exists(filename):
+            logger_warning(
+                f"Configuration file detected (type cfg): {filename}"
+            )
             yield get_ini_dict(filename)
         else:
-            Logs.error(f"Configuration named {filename} doesn't exists.")
+            logger_error(
+                f"Configuration file {filename} doesn't exists "
+                "(defined in arguments)."
+            )
 
     for filename in arguments.config_json:
-        Logs.warning(f"Configuration file detection (type json): {filename}")
+        logger_debug("Check configuration file (json) added in arguments...")
 
-        if path.exists(filename):
+        if exists(filename):
+            logger_warning(
+                f"Configuration file detected (type json): {filename}"
+            )
             yield json.loads(get_file_content(filename))
         else:
-            Logs.error(f"Configuration named {filename} doesn't exists.")
+            logger_error(
+                f"Configuration file {filename} doesn't exists "
+                "(defined in arguments)."
+            )
 
     args = arguments.__dict__
     del args["config_cfg"]
@@ -1152,21 +1456,21 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
 @log_trace
 def logs_configuration(configuration: NameSpace) -> None:
 
-    """This function configure ROOT logger from
-    configuration files and command line arguments."""
+    """
+    This function configure ROOT logger from
+    configuration files and command line arguments.
+    """
 
     log_config = {}
 
-    if isinstance(configuration.log_level, int):
-        pass
-    elif (
+    if (
         isinstance(configuration.log_level, str)
         and configuration.log_level.isdigit()
     ):
         configuration.log_level = int(configuration.log_level)
     elif isinstance(configuration.log_level, str):
         configuration.log_level = getattr(logging, configuration.log_level, 0)
-    else:
+    elif not isinstance(configuration.log_level, int):
         raise WebScriptsConfigurationError(
             "log_level configuration must be an integer or a "
             'string in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]'
@@ -1193,26 +1497,33 @@ def add_configuration(
     configuration: Configuration, config: Dict[str, JsonValue]
 ) -> Configuration:
 
-    """This function add configuration in ServerConfiguration."""
+    """
+    This function add configuration in ServerConfiguration.
+    """
 
     current_configuration = Configuration()
+    add_conf = current_configuration.add_conf
     have_server_conf = "server" in config.keys()
 
     if have_server_conf:
+        logger_debug('"server" section detected in configuration.')
         server = config.pop("server")
 
-    current_configuration.add_conf(**config)
+    logger_debug("Adding other configuration in Configuration object...")
+    add_conf(**config)
 
     if have_server_conf:
-        current_configuration.add_conf(**server)
+        logger_debug("Add server section in Configuration object...")
+        add_conf(**server)
 
+    logger_debug("Build type of configurations...")
     current_configuration.build_types()
 
-    Logs.debug(
-        "Add configurations in ServerConfiguration: "
-        f"{current_configuration.get_dict()}"
+    config_dict = current_configuration.get_dict()
+    logger_debug(
+        "Add configurations in ServerConfiguration: " f"{config_dict}"
     )
-    configuration.add_conf(**current_configuration.get_dict())
+    configuration.add_conf(**config_dict)
     return configuration
 
 
@@ -1221,24 +1532,24 @@ def configure_logs_system() -> None:
     """This function try to create the logs directory
     if not found and configure logs."""
 
-    if not path.isdir("logs"):
-        Logs.info("./logs directory not found.")
+    if not isdir("logs"):
+        logger_info("./logs directory not found.")
         try:
             mkdir("logs")
         except PermissionError:
-            Logs.error(
+            logger_error(
                 "Get a PermissionError to create "
                 "the non-existent ./logs directory."
             )
         else:
-            Logs.info("./logs directory is created.")
+            logger_info("./logs directory is created.")
 
-    logging.config.fileConfig(
-        path.join(server_path, "config", "loggers.ini"),
+    fileConfig(
+        join(server_path, "config", "loggers.ini"),
         disable_existing_loggers=False,
     )
 
-    logging.basicConfig(
+    basicConfig(
         format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> "
         "%(filename)s:%(lineno)d)",
         datefmt="%d/%m/%Y %H:%M:%S",
@@ -1272,8 +1583,10 @@ def send_mail(configuration: Configuration, message: str) -> int:
 
     Return 0 if message is sent else 1."""
 
+    logger_debug("Get module error_pages...")
     error_pages = getattr(Pages.packages, "error_pages", None)
     if error_pages:
+        logger_debug("Start a Thread to send email...")
         Thread(
             target=error_pages.Request.send_mail,
             args=(
@@ -1283,6 +1596,7 @@ def send_mail(configuration: Configuration, message: str) -> int:
         ).start()
         return 0
 
+    logger_error("Module error_pages is not detected, can not send email.")
     return 1
 
 
@@ -1293,16 +1607,16 @@ def main() -> int:
     configurations and launch the server.
     """
 
-    if "--test-running" in sys.argv:
+    if "--test-running" in argv:
         NO_START = True
-        sys.argv.remove("--test-running")
+        argv.remove("--test-running")
     else:
         NO_START = False
 
     configure_logs_system()
     args = parse_args()
 
-    Logs.debug("Load configuration...")
+    logger_debug("Load configurations...")
 
     configuration = Configuration()
     for config in get_server_config(args):
@@ -1312,48 +1626,61 @@ def main() -> int:
 
     logs_configuration(configuration)
 
-    Logs.debug("Check configuration...")
+    logger_debug("Check and type configurations...")
     configuration.set_defaults()
     configuration.check_required()
     configuration.get_unexpecteds()
     configuration.build_types()
 
+    logger_info("Configurations are loaded.")
+
     if getattr(configuration, "debug", None):
+        logger_debug("Debug mode detected: export configuration...")
         configuration.export_as_json()
 
-    Logs.debug("Build server from configuration...")
+    logger_debug("Build server with configurations...")
     server = Server(configuration)
 
     httpd = simple_server.make_server(
         server.interface, server.port, server.app
     )
+    logger_info("Server is built.")
 
+    logger_debug("Trying to send email notification...")
     send_mail(
         configuration,
         f"Server is up on http://{server.interface}:{server.port}/.",
     )
+
+    logger_info("Check hardening of the WebScripts server...")
     hardening(server, Logs, send_mail)
 
-    Logs.warning(
+    logger_warning(
         f"Starting server on http://{server.interface}:{server.port}/ ..."
     )
     print(copyright)
 
     if NO_START:
+        logger_warning(
+            "Detected as test only. Do not start"
+            " the server. Exit with code 0."
+        )
         return 0
 
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        Logs.critical("Server is down.")
+        logger_critical("Server is down.")
         httpd.server_close()
 
+    logger_debug("Trying to send email notification...")
     send_mail(
         configuration,
         f"Server is down on http://{server.interface}:{server.port}/.",
     )
+    logger_debug("Exit with code 0.")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    exit(main())
