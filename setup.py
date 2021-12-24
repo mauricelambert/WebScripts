@@ -187,8 +187,10 @@ class PostInstallScript(install):
                 f"Add the execution permissions for the owner on {filename}"
             )
             os.chmod(filename, 0o700)
-        elif directory.endswith("data/uploads"):
-            logging.debug("Change owner for uploads directory")
+        elif directory.endswith("data/uploads") or directory.endswith(
+            "WebScripts/doc"
+        ):
+            logging.debug(f"Change owner for {directory} directory")
             os.chown(
                 directory,
                 self.owner_property.pw_uid,

@@ -289,8 +289,8 @@ class TestServer(TestCase):
 
     def test_check_auth(self):
         environ = {
-            "HTTP_AUTHORIZATION": "Basic ",
-            "HTTP_API_KEY": "",
+            # "HTTP_AUTHORIZATION": "Basic ",
+            # "HTTP_API_KEY": "",
             "HTTP_COOKIE": ";",
             "REMOTE_ADDR": "ip",
         }
@@ -317,20 +317,22 @@ class TestServer(TestCase):
             self.assertTrue(not_blacklisted)
             self.assertEqual(user_2, user)
 
-            with patch.object(
-                self.server,
-                "check_blacklist",
-                return_value=False,
-            ) as mock_method:
+            # with patch.object(
+            #     self.server,
+            #     "check_blacklist",
+            #     return_value=False,
+            # ) as mock_method:
 
-                user_2, not_blacklisted = self.server.check_auth(environ)
+            #     user_2, not_blacklisted = self.server.check_auth(environ)
 
-                self.assertEqual(user_2.id, 1)
-                self.assertEqual(user_2.name, "Unknow")
-                self.assertListEqual(user_2.groups, [0, 1])
-                self.assertFalse(not_blacklisted)
+            #     self.assertEqual(user_2.id, 1)
+            #     self.assertEqual(user_2.name, "Unknow")
+            #     self.assertListEqual(user_2.groups, [0, 1])
+            #     self.assertFalse(not_blacklisted)
 
         del environ["HTTP_COOKIE"]
+        environ["HTTP_AUTHORIZATION"] = "Basic "
+        environ["HTTP_API_KEY"] = ""
 
         user_2, not_blacklisted = self.server.check_auth(environ)
 
@@ -639,8 +641,11 @@ class TestServer(TestCase):
             "PATH_INFO": "/static/test.css",
             "REQUEST_METHOD": "",
             "REMOTE_ADDR": "",
+            "CONTENT_LENGTH": "4",
+            "wsgi.input": BytesIO(b"test"),
         }
 
+        self.server.page_400 = MagicMock(return_value="400")
         self.server.page_401 = MagicMock(return_value="401")
         self.server.page_403 = MagicMock(return_value="403")
         self.server.page_404 = MagicMock(return_value="404")
@@ -680,6 +685,10 @@ class TestServer(TestCase):
         self.server.configuration.accept_unknow_user = False
         self.server.configuration.accept_unauthenticated_user = False
         self.server.configuration.active_auth = True
+
+        self.assertEqual(self.server.app(environ, Mock()), "400")
+
+        environ["REQUEST_METHOD"] = "POST"
 
         self.assertEqual(self.server.app(environ, Mock()), "406")
         self.server.parse_body = MagicMock(return_value=([], None, True))
