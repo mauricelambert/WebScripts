@@ -23,7 +23,7 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -971,12 +971,25 @@ class TokenCSRF:
 
     @staticmethod
     @log_trace
-    def check_csrf(user: User, token: str, csrf_max_time: float = 300) -> bool:
+    def check_csrf(
+        user: User,
+        token: str,
+        csrf_max_time: float = 300,
+        referer: str = None,
+        baseurl: str = None,
+    ) -> bool:
 
-        """This function check the validity of a csrf token."""
+        """
+        This function check the validity of a csrf token.
+        """
+
+        max_time = time() - csrf_max_time
+
+        if referer and baseurl and not referer.startswith(baseurl):
+            TokenCSRF.clean(user, max_time)
+            return False
 
         timestamp = user.csrf.pop(token, 0)
-        max_time = time() - csrf_max_time
 
         if timestamp >= max_time:
             return True
@@ -1003,7 +1016,9 @@ class TokenCSRF:
 
 class Session:
 
-    """Object to implement session."""
+    """
+    Object to implement session.
+    """
 
     def __init__(self, user: User, ip: str):
         self.cookie = secrets.token_hex(64)
@@ -1013,7 +1028,9 @@ class Session:
 
     def __str__(self) -> str:
 
-        """This function returns a string to represent the Session object."""
+        """
+        This function returns a string to represent the Session object.
+        """
 
         return (
             f"Session(Time={time() - self.time}, IP={self.ip}, "
@@ -1024,7 +1041,9 @@ class Session:
     @log_trace
     def build_session(cls, user: User, ip: str, Pages: Pages) -> str:
 
-        """This function build and add session and return the cookie."""
+        """
+        This function build and add session and return the cookie.
+        """
 
         session: Session = cls(user, ip)
         Pages.sessions[user.id] = session
@@ -1040,7 +1059,9 @@ class Session:
         session_max_time: float = 3600,
     ) -> User:
 
-        """This function check session validity and return user."""
+        """
+        This function check session validity and return user.
+        """
 
         if cookie.startswith("SessionID="):
             cookie = cookie[10:]

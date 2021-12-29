@@ -24,7 +24,7 @@
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...)."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -70,11 +70,11 @@ from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from collections.abc import Callable
 from contextlib import suppress
+from platform import system
 from functools import wraps
 from logging import Logger
 import logging.handlers
 import logging.config
-import platform
 import logging
 import locale
 import json
@@ -99,6 +99,7 @@ else:
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
+system = system()
 
 
 class _Logs:
@@ -381,7 +382,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 logging.handlers.CustomLogHandler = CustomLogHandler
 
 
-if platform.system() == "Windows":
+if system == "Windows":
     try:
         from win32evtlogutil import ReportEvent
         import win32evtlog
@@ -726,7 +727,7 @@ def get_real_path(file_path: str) -> str:
     if file_path is None:
         return file_path
 
-    if platform.system() == "Windows":
+    if system == "Windows":
         length = 2
         index = 1
         character = ":"

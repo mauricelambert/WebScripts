@@ -88,6 +88,7 @@ try:
         # Handler,
         get_real_path,
         get_encodings,
+        WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
@@ -116,6 +117,7 @@ except ImportError:
         # Handler,
         get_real_path,
         get_encodings,
+        WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )

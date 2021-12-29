@@ -24,7 +24,7 @@
 This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class)."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -54,17 +54,18 @@ from typing import TypeVar, Tuple, List, Dict, Union
 from sys import exit, modules as sys_modules, argv
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
+from traceback import print_exc, format_exc
+from json.decoder import JSONDecodeError
 from os import _Environ, getcwd, mkdir
 from logging.config import fileConfig
 from wsgiref import simple_server
 from logging import basicConfig
 from threading import Thread
 from base64 import b64decode
+from platform import system
+from json import loads
 from glob import iglob
-import traceback
-import platform
 import logging
-import json
 import sys
 
 if __package__:
@@ -90,6 +91,7 @@ if __package__:
         # namer,
         # Handler,
         #        get_real_path,
+        WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
@@ -116,6 +118,7 @@ else:
         # namer,
         # Handler,
         #        get_real_path,
+        WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
     )
@@ -304,6 +307,22 @@ class Server:
         security = self.security = getattr(configuration, "security", True)
         self.loglevel = getattr(configuration, "log_level", "DEBUG")
 
+        self.set_default_headers(headers, security, configuration)
+        self.add_module_or_package()
+        self.add_paths()
+
+    @staticmethod
+    @log_trace
+    def set_default_headers(
+        headers: Dict[str, str], security: bool, configuration: Configuration
+    ) -> None:
+
+        """
+        This function sets defaults headers.
+        """
+
+        logger_debug("Set defaults headers...")
+
         if security:
             headers[
                 "Strict-Transport-Security"
@@ -348,9 +367,6 @@ class Server:
 
         logger_info("Default HTTP headers are set.")
 
-        self.add_module_or_package()
-        self.add_paths()
-
     @log_trace
     def check_blacklist(self, user: User, ip: str) -> bool:
 
@@ -387,7 +403,9 @@ class Server:
     @log_trace
     def get_session(self, cookies: List[str], ip: str) -> User:
 
-        """This function return User from cookies."""
+        """
+        This function return User from cookies.
+        """
 
         for cookie in cookies:
             logger_debug("Analyze a new cookie...")
@@ -417,6 +435,35 @@ class Server:
 
                 return user
 
+    @staticmethod
+    @log_trace
+    def use_basic_auth(
+        credentials: str, pages: Pages, *args
+    ) -> Tuple[str, Dict[str, str], str]:
+
+        """
+        This function decodes basic auth and
+        authenticates user with it.
+        """
+
+        logger_debug("Basic Auth detected, decode credentials...")
+        credentials = b64decode(credentials.split(" ", maxsplit=1)[1]).decode()
+
+        if ":" in credentials:
+            username, password = credentials.split(":", maxsplit=1)
+
+            logger_info("Use authentication script...")
+            return pages.auth(
+                *args,
+                ["--username", username, "--password", password],
+                [],
+            )
+
+        logger_error(
+            "Basic auth detected with invalid "
+            "credentials (':' not in credentials)."
+        )
+
     @log_trace
     def check_auth(self, environ: _Environ) -> Tuple[User, bool]:
 
@@ -424,11 +471,12 @@ class Server:
         This function check if user is authenticated and blacklisted.
         """
 
+        environ_get = environ.get
         logger_debug("Check auth...")
-        credentials = environ.get("HTTP_AUTHORIZATION")
-        api_key = environ.get("HTTP_API_KEY")
-        cookies = environ.get("HTTP_COOKIE")
-        token = environ.get("HTTP_API_TOKEN")
+        credentials = environ_get("HTTP_AUTHORIZATION")
+        api_key = environ_get("HTTP_API_KEY")
+        cookies = environ_get("HTTP_COOKIE")
+        token = environ_get("HTTP_API_TOKEN")
         ip = get_ip(environ)
 
         pages = self.pages
@@ -444,10 +492,10 @@ class Server:
             logger_debug("Cookie detected, try to get session...")
             user = self.get_session(cookies.split("; "), ip)
 
-        if token is not None:
+        elif token is not None:
             logger_debug("API token detected, try to get session...")
             user = check_session(
-                token,
+                token.split(";")[0],
                 pages,
                 ip,
                 None,
@@ -459,23 +507,17 @@ class Server:
             and credentials is not None
             and credentials.startswith("Basic ")
         ):
-            logger_debug("Basic Auth detected, decode credentials...")
-            credentials = b64decode(
-                credentials.split(" ", maxsplit=1)[1]
-            ).decode()
-
-            if ":" in credentials:
-                username, password = credentials.split(":", maxsplit=1)
-
-                logger_info("Use authentication script...")
-                code, headers, content = pages.auth(
-                    environ,
-                    default_build(ip=ip, **not_authenticated),
-                    configuration,
-                    configuration.auth_script,
-                    ["--username", username, "--password", password],
-                    [],
-                )
+            auth = self.use_basic_auth(
+                credentials,
+                pages,
+                environ,
+                default_build(ip=ip, **not_authenticated),
+                configuration,
+                configuration.auth_script,
+            )
+            code, headers, content = (
+                auth if auth is not None else (None, None, None)
+            )
 
         elif api_key is not None:
             logger_info("API key detected. Use authentication script...")
@@ -566,35 +608,31 @@ class Server:
 
         for dirname_ in (server_path, current_directory):
             logger_debug(f"Trying to find JS and static path in {dirname_}...")
-            for js_glob in configuration.js_path:
 
-                js_glob = join(dirname_, normcase(js_glob))
-                logger_debug(f"Trying to find file matching with {js_glob}...")
-                for js_file in iglob(js_glob):
-                    filename = basename(js_file)
-                    file_path = abspath(js_file)
+            for globs, type_, type_name, dict_ in (
+                (configuration.js_path, "js", "javascript", js_paths),
+                (
+                    configuration.statics_path,
+                    "static",
+                    "static",
+                    statics_paths,
+                ),
+            ):
 
-                    Logs.info(f"Find a javascript file: {file_path}")
-
-                    js_paths[filename] = CallableFile(
-                        "js", file_path, filename
+                for glob in globs:
+                    glob = join(dirname_, normcase(glob))
+                    logger_debug(
+                        f"Trying to find file matching with {glob}..."
                     )
+                    for file in iglob(glob):
+                        filename = basename(file)
+                        file_path = abspath(file)
 
-            for static_glob in configuration.statics_path:
+                        Logs.info(f"Find a {type_name} file: {file_path}")
 
-                static_glob = join(dirname_, normcase(static_glob))
-                logger_debug(
-                    f"Trying to find file matching with {static_glob}..."
-                )
-                for static_file in iglob(static_glob):
-                    filename = basename(static_file)
-                    file_path = abspath(static_file)
-
-                    Logs.info(f"Find a static file: {file_path}")
-
-                    statics_paths[filename] = CallableFile(
-                        "static", file_path, filename
-                    )
+                        dict_[filename] = CallableFile(
+                            type_, file_path, filename
+                        )
 
         if (
             configuration.active_auth
@@ -698,7 +736,7 @@ class Server:
     @log_trace
     def get_inputs(
         arguments: List[Dict[str, JsonValue]]
-    ) -> Tuple[List[str], Dict[str, JsonValue]]:
+    ) -> Tuple[List[str], List[str]]:
 
         """
         This function returns inputs and arguments from arguments.
@@ -745,37 +783,126 @@ class Server:
             logger_warning(f"Content-Length is not valid ({content_length}).")
             return 0
 
+    @staticmethod
     @log_trace
-    def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
+    def try_get_command(
+        body: Dict[str, JsonValue]
+    ) -> Union[None, Tuple[Content, str, bool]]:
 
         """
-        This function return arguments from body.
+        This function returns arguments, CSRF token and True if is WebScripts
+        request. If is not a WebScripts request because there's no "arguments"
+        section in request content, this function returns None. If an error
+        is raised in arguments parser, this function returns the JSON
+        content, None and False.
         """
 
-        content_length = self.get_content_length(environ)
-        body = environ["wsgi.input"].read(content_length)
+        body_get = body.get
+        arguments_ = body_get("arguments")
+        get_command = Argument.get_command
 
-        if content_length:
+        arguments = []
+
+        if arguments_ is not None:
+            logger_debug('"arguments" section detected in request content.')
             try:
-                body = json.loads(body)
-            except (json.decoder.JSONDecodeError, UnicodeDecodeError):
-                logger_warning("Non-JSON content detected")
+                for name, argument in arguments_.items():
+                    arguments += get_command(name, argument)
+            except (WebScriptsArgumentError, TypeError, AttributeError):
+                logger_error("Arguments detected is not in WebScripts format.")
+                return body, None, False
+
+            return arguments, body_get("csrf_token"), True
+
+    @staticmethod
+    @log_trace
+    def get_baseurl(environ_getter: Callable, environ: _Environ) -> str:
+
+        """
+        This function returns URL base.
+        """
+
+        scheme = environ["wsgi.url_scheme"]
+        port = environ["SERVER_PORT"]
+
+        host = environ_getter("HTTP_HOST") or (
+            environ["SERVER_NAME"]
+            if (scheme == "https" and port == "443")
+            or (scheme == "http" and port == "80")
+            else f"{environ['SERVER_NAME']}:{port}"
+        )
+        return f"{scheme}://{host}"
+
+    @staticmethod
+    @log_trace
+    def check_origin(environ_getter: Callable, environ: _Environ) -> bool:
+
+        """
+        This function checks Origin of POST methods.
+        """
+
+        logger_debug("Check origin...")
+        origin = environ_getter("HTTP_ORIGIN")
+        url = Server.get_baseurl(environ_getter, environ)
+
+        if origin != url:
+            logger_info(f'Bad Origin detected: "{origin}" != "{url}"')
+            return False
+
+        logger_info("Correct Origin detected.")
+        return True
+
+    @staticmethod
+    @log_trace
+    def get_json_content(body: bytes, content_type: str) -> JsonValue:
+
+        """
+        This functions returns the loaded JSON content.
+        """
+
+        logger_debug("Get JSON content...")
+        if content_type.startswith("application/json"):
+            try:
+                return loads(body)
+            except (JSONDecodeError, UnicodeDecodeError):
+                logger_warning("Non-JSON content detected.")
                 logger_info(
                     "This request is not available for"
                     " the default functions of WebScripts."
                 )
+
+        return None
+
+    @log_trace
+    def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
+
+        """
+        This function returns arguments from body.
+        """
+
+        environ_get = environ.get
+
+        if not self.check_origin(environ_get, environ):
+            logger_warning("Bad Origin detected (CSRF protection).")
+            return [], None, False
+
+        logger_debug("Read wsgi.input ...")
+        content_length = self.get_content_length(environ)
+        body = environ["wsgi.input"].read(content_length)
+        content_type = environ["CONTENT_TYPE"]
+        logger_debug("wsgi.input is read.")
+
+        if content_length:
+            json_content = self.get_json_content(body, content_type)
+
+            if not json_content:
                 return body, None, False
+            else:
+                body = json_content
 
-            body_get = body.get
-            arguments_ = body_get("arguments")
-            get_command = Argument.get_command
-
-            if arguments_ is not None:
-                arguments = []
-                for name, argument in arguments_.items():
-                    arguments += get_command(name, argument)
-
-                return arguments, body_get("csrf_token"), True
+            return_values = self.try_get_command(body)
+            if return_values is not None:
+                return return_values
 
             logger_warning(
                 'Section "arguments" is not defined in the JSON content.'
@@ -890,10 +1017,11 @@ class Server:
                 csrf_token=csrf_token,
             )
         except Exception as error:
-            traceback.print_exc()
-            error = f"{error}\n{traceback.format_exc()}"
+            print_exc()
+            error_text = format_exc()
+            error = f"{error}\n{error_text}"
             Logs.error(error)
-            return self.page_500(traceback.format_exc(), respond)
+            return self.page_500(error_text, respond)
 
         if error == "404":
             logger_debug("Send response 404, cause: function page return 404.")
@@ -939,7 +1067,7 @@ class Server:
         default_headers = self.headers.copy()
         default_headers.update(headers)
 
-        return error, headers
+        return error, default_headers
 
     @staticmethod
     @log_trace
@@ -964,7 +1092,7 @@ class Server:
         self,
         arguments: List[Dict[str, JsonValue]],
         is_webscripts_request: bool,
-    ) -> Tuple[List[JsonValue], List[JsonValue]]:
+    ) -> Tuple[List[str], List[str]]:
 
         """
         This function returns inputs (using Server.get_inputs).
@@ -1099,8 +1227,8 @@ class Server:
                 error, code
             )
         except Exception as exception:
-            traceback.print_exc()
-            error_ = f"{exception}\n{traceback.format_exc()}"
+            print_exc()
+            error_ = f"{exception}\n{format_exc()}"
             logger_error(error_)
             custom_data = None
 
@@ -1397,7 +1525,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     ]
     insert = paths.insert
 
-    if platform.system() == "Windows":
+    if system() == "Windows":
         logger_debug("Add default server configuration for Windows...")
         insert(0, join(server_path, "config", "nt", "server.json"))
         insert(0, join(server_path, "config", "nt", "server.ini"))
@@ -1412,7 +1540,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
         if exists(filename):
             logger_warning(f"Configuration file detected: {filename}")
             if filename.endswith(".json"):
-                yield json.loads(get_file_content(filename))
+                yield loads(get_file_content(filename))
             elif filename.endswith(".ini"):
                 yield get_ini_dict(filename)
         else:
@@ -1439,7 +1567,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
             logger_warning(
                 f"Configuration file detected (type json): {filename}"
             )
-            yield json.loads(get_file_content(filename))
+            yield loads(get_file_content(filename))
         else:
             logger_error(
                 f"Configuration file {filename} doesn't exists "
