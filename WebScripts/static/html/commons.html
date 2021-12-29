@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.0)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.1)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -433,7 +433,7 @@ Data descriptors defined here:<br>
 <td width="100%">Static methods defined here:<br>
 <dl><dt><a name="TokenCSRF-build_token"><strong>build_token</strong></a>(user: commons.User) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;a&nbsp;CSRF&nbsp;token&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
 
-<dl><dt><a name="TokenCSRF-check_csrf"><strong>check_csrf</strong></a>(user: commons.User, token: str, csrf_max_time: float = 300) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;validity&nbsp;of&nbsp;a&nbsp;csrf&nbsp;token.</tt></dd></dl>
+<dl><dt><a name="TokenCSRF-check_csrf"><strong>check_csrf</strong></a>(user: commons.User, token: str, csrf_max_time: float = 300, referer: str = None, baseurl: str = None) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;validity&nbsp;of&nbsp;a&nbsp;csrf&nbsp;token.</tt></dd></dl>
 
 <dl><dt><a name="TokenCSRF-clean"><strong>clean</strong></a>(user: commons.User, max_time: float) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;clean&nbsp;all&nbsp;old&nbsp;CSRF&nbsp;tokens&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
 

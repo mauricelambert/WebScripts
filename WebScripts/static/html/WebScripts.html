@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 2.4.6)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 2.4.7)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="__init__.py">__init__.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.</tt></p>
@@ -204,9 +204,9 @@ function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-page_500"><strong>page_500</strong></a>(self, error: str, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;500&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[~Content, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
+<dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[~Content, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
 
-<dl><dt><a name="Server-return_inputs"><strong>return_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]], is_webscripts_request: bool) -&gt; Tuple[List[~JsonValue], List[~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;(using&nbsp;<a href="#Server">Server</a>.get_inputs).</tt></dd></dl>
+<dl><dt><a name="Server-return_inputs"><strong>return_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]], is_webscripts_request: bool) -&gt; Tuple[List[str], List[str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;(using&nbsp;<a href="#Server">Server</a>.get_inputs).</tt></dd></dl>
 
 <dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
 
@@ -219,13 +219,30 @@ default&nbsp;headers&nbsp;updated&nbsp;with&nbsp;custom&nbsp;headers.</tt></dd><
 
 <hr>
 Static methods defined here:<br>
+<dl><dt><a name="Server-check_origin"><strong>check_origin</strong></a>(environ_getter: collections.abc.Callable, environ: os._Environ) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;Origin&nbsp;of&nbsp;POST&nbsp;methods.</tt></dd></dl>
+
 <dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_baseurl"><strong>get_baseurl</strong></a>(environ_getter: collections.abc.Callable, environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;URL&nbsp;base.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_content_length"><strong>get_content_length</strong></a>(environ: os._Environ) -&gt; int</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;content&nbsp;length.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
+<dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], List[str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_json_content"><strong>get_json_content</strong></a>(body: bytes, content_type: str) -&gt; ~JsonValue</dt><dd><tt>This&nbsp;functions&nbsp;returns&nbsp;the&nbsp;loaded&nbsp;JSON&nbsp;content.</tt></dd></dl>
 
 <dl><dt><a name="Server-return_page"><strong>return_page</strong></a>(page: Union[bytes, str, list]) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;response&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;bytes.</tt></dd></dl>
+
+<dl><dt><a name="Server-set_default_headers"><strong>set_default_headers</strong></a>(headers: Dict[str, str], security: bool, configuration: WebScripts.WebScripts.Configuration) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;sets&nbsp;defaults&nbsp;headers.</tt></dd></dl>
+
+<dl><dt><a name="Server-try_get_command"><strong>try_get_command</strong></a>(body: Dict[str, ~JsonValue]) -&gt; Optional[Tuple[~Content, str, bool]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;arguments,&nbsp;CSRF&nbsp;token&nbsp;and&nbsp;True&nbsp;if&nbsp;is&nbsp;WebScripts<br>
+request.&nbsp;If&nbsp;is&nbsp;not&nbsp;a&nbsp;WebScripts&nbsp;request&nbsp;because&nbsp;there's&nbsp;no&nbsp;"arguments"<br>
+section&nbsp;in&nbsp;request&nbsp;content,&nbsp;this&nbsp;function&nbsp;returns&nbsp;None.&nbsp;If&nbsp;an&nbsp;error<br>
+is&nbsp;raised&nbsp;in&nbsp;arguments&nbsp;parser,&nbsp;this&nbsp;function&nbsp;returns&nbsp;the&nbsp;JSON<br>
+content,&nbsp;None&nbsp;and&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="Server-use_basic_auth"><strong>use_basic_auth</strong></a>(credentials: str, pages: WebScripts.Pages.Pages, *args) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;decodes&nbsp;basic&nbsp;auth&nbsp;and<br>
+authenticates&nbsp;user&nbsp;with&nbsp;it.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
