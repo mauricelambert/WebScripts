@@ -156,6 +156,7 @@ test/TestCommons.py
 test/TestErrors.py
 test/TestUtils.py
 test/TestWebScripts.py
+test/TestWebScriptsImports.py
 test/modules/test.py
 test/static/css/test.css
 test/static/js/test.js

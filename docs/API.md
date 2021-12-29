@@ -61,6 +61,10 @@
 
 ### Request
 
+#### Body - Content
+
+A `POST` *HTTP method* is **required**. The content should be a JSON object with an `arguments` object as attribute (and a `csrf_token` string as attribute for *webbrowser*).
+
 For web browser:
 ```json
 {
@@ -85,6 +89,18 @@ For client API:
 	}
 }
 ```
+
+#### Headers
+
+Some *HTTP Headers* are **required** to use scripts with *WebScripts API*:
+
+ - `Content-Type` should be `application/json` (or `application/json; charset=utf-8`).
+ - `Origin` should be `<scheme>://<host>` (examples: `http://webscript.local`, `http://webscript.local:8000`, `https://webscript.local`, `https://webscript.local:4430`).
+ - `Referer` should be the last visited page, **required for webbrowser only**.
+
+Recommandation:
+
+ - `Api-Token` should be the *session cookie* (example: `SessionID=2:0123456789abcdef`). Session cookie is sent by the server on the response of `/auth/` script (the `/auth/` script should accept `--username` and `--password` arguments **OR** `--api-key` argument). You can use `Api-Token` as much as you want but *Basic Auth* and `Api-Key` will be blacklisted if you exceed the anti bruteforce configuration.
 
 ## Authentication
 

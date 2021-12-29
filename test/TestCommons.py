@@ -550,6 +550,11 @@ class TestTokenCSRF(TestCase):
         token = TokenCSRF.build_token(user)
 
         self.assertTrue(TokenCSRF.check_csrf(user, token))
+        self.assertFalse(
+            TokenCSRF.check_csrf(
+                user, token, 300, "http://test.fr", "http://hack.csrf"
+            )
+        )
         self.assertFalse(TokenCSRF.check_csrf(user, 0))
 
         token = TokenCSRF.build_token(user)

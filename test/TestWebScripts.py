@@ -20,19 +20,25 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This file test the WebScripts.py file"""
+"""
+This file test the WebScripts.py file
+"""
 
 from unittest.mock import MagicMock, patch, Mock
 from os import path, getcwd, chdir, rename
 from unittest import TestCase, main
+from argparse import Namespace
+from importlib import reload
 from base64 import b64encode
 from types import ModuleType
 from shutil import rmtree
 from io import BytesIO
+from time import time
 
 import logging.config
 import json
 import sys
+import os
 
 dir_path = path.dirname(__file__)
 
@@ -42,86 +48,7 @@ def disable_logs():
     logging.disable()
 
 
-def import_without_package():
-    ################
-    # SAVE VARIABLES
-    ################
-
-    path_ = sys.path.copy()
-    modules = sys.modules.copy()
-    locals_ = locals().copy()
-    globals_ = globals().copy()
-    current_path = getcwd()
-    dst1 = path.join(dir_path, "..", "WebScripts", "__init__.py")
-    dst2 = path.join(dir_path, "..", "test", "init.py")
-
-    ########################
-    # CHANGE CONTEXT AND SYS
-    ########################
-
-    error = None
-
-    try:
-        for i in [0, 0, -1, -1]:
-            sys.path.pop(i)
-
-        rename(dst1, dst2)
-        chdir(path.join(dir_path, "..", "WebScripts"))
-        sys.path.insert(0, "")
-
-        for name in [
-            "WebScripts",
-            "Configuration",
-            "Server",
-            "WebScriptsConfigurationTypeError",
-            "commons",
-            "Blacklist",
-            "Session",
-        ]:
-            if name in locals().keys():
-                del locals()[name]
-            if name in globals().keys():
-                del globals()[name]
-
-        remove_names = []
-        for name in sys.modules.keys():
-            if "WebScripts." in name or name == "WebScripts":
-                remove_names.append(name)
-
-        for name in remove_names:
-            del sys.modules[name]
-
-        from WebScripts import (
-            Configuration,
-            Server,
-            WebScriptsConfigurationTypeError,
-        )
-        from commons import Blacklist, Session
-
-    except Exception as e:
-        error = e
-
-    #########################
-    # REBUILD CONTEXT AND SYS
-    #########################
-    finally:
-        sys.path = path_
-        sys.modules = modules
-        rename(dst2, dst1)
-        chdir(current_path)
-
-        for name, value in locals_.items():
-            locals()[name] = value
-
-        for name, value in globals_.items():
-            globals()[name] = value
-
-    if error:
-        raise error
-
-
 disable_logs()
-import_without_package()
 
 from WebScripts.WebScripts import (
     Configuration,
@@ -287,13 +214,165 @@ class TestServer(TestCase):
             self.assertEqual(user.name, "Unknow")
             self.assertListEqual(user.groups, [0, 1])
 
+    def test_check_origin(self):
+        environ = {
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "webscripts.local",
+        }
+        environ_get = environ.get
+
+        result = Server.check_origin(environ_get, environ)
+        self.assertTrue(result)
+
+        environ["HTTP_ORIGIN"] = "http://test.csrf.hack"
+
+        result = Server.check_origin(environ_get, environ)
+        self.assertFalse(result)
+
+    def test_get_json_content(self):
+        content = Server.get_json_content(
+            b"{}", "application/json; charset=utf-8"
+        )
+        self.assertDictEqual(content, {})
+
+        content = Server.get_json_content(
+            b"error", "application/json; charset=utf-8"
+        )
+        self.assertIsNone(content)
+
+        content = Server.get_json_content(b"{}", "text/plain; charset=utf-8")
+        self.assertIsNone(content)
+
+    def test_get_baseurl(self):
+        environ = {
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "test",
+        }
+        environ_get = environ.get
+
+        url = Server.get_baseurl(environ_get, environ)
+        self.assertEqual(url, "http://webscripts.local")
+
+        del environ["HTTP_HOST"]
+
+        url = Server.get_baseurl(environ_get, environ)
+        self.assertEqual(url, "http://test")
+
+        environ["SERVER_PORT"] = "8000"
+
+        url = Server.get_baseurl(environ_get, environ)
+        self.assertEqual(url, "http://test:8000")
+
+        environ["SERVER_PORT"] = "443"
+        environ["wsgi.url_scheme"] = "https"
+
+        url = Server.get_baseurl(environ_get, environ)
+        self.assertEqual(url, "https://test")
+
+        environ["SERVER_PORT"] = "4433"
+
+        url = Server.get_baseurl(environ_get, environ)
+        self.assertEqual(url, "https://test:4433")
+
+    def test_set_default_headers(self):
+        h = {}
+        headers = {}
+        c = Namespace()
+        c.modules = []
+        c.modules_path = []
+        c.exclude_auth_pages = []
+
+        Server.set_default_headers(h, True, c)
+
+        headers[
+            "Strict-Transport-Security"
+        ] = "max-age=63072000; includeSubDomains; preload"
+        headers["Content-Security-Policy"] = (
+            "default-src 'self'; form-action 'none'; " "frame-ancestors 'none'"
+        )
+        headers["X-Frame-Options"] = "deny"
+        headers["X-XSS-Protection"] = "1; mode=block"
+        headers["X-Content-Type-Options"] = "nosniff"
+        headers["Referrer-Policy"] = "origin-when-cross-origin"
+        headers["Cache-Control"] = "no-store"
+        headers["Pragma"] = "no-store"
+        headers["Clear-Site-Data"] = '"cache", "executionContexts"'
+        headers["Feature-Policy"] = (
+            "payment 'none'; geolocation 'none'; "
+            "microphone 'none'; camera 'none'"
+        )
+        headers[
+            "Permissions-Policy"
+        ] = "microphone=(),camera=(),payment=(),geolocation=()"
+        headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+        headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        headers["X-Server"] = "WebScripts"
+
+        self.assertDictEqual(h, headers)
+        self.assertListEqual(c.modules, [])
+        self.assertListEqual(c.modules_path, [])
+        self.assertListEqual(c.exclude_auth_pages, [])
+
+        h = {}
+        Server.set_default_headers(h, False, c)
+        self.assertDictEqual(
+            h,
+            {
+                "Content-Security-Policy-Report-Only": (
+                    "default-src 'self'; form-action 'none'; "
+                    "frame-ancestors 'none'; report-uri /csp/debug/"
+                )
+            },
+        )
+        self.assertListEqual(c.modules, ["csp"])
+        self.assertListEqual(c.modules_path, ["modules"])
+        self.assertListEqual(c.exclude_auth_pages, ["/csp/debug/"])
+
+    def test_use_basic_auth(self):
+        def auth(cred, *args):
+            if cred == ["--username", "Admin", "--password", "Admin"]:
+                return True
+            return False
+
+        pages = Namespace()
+        pages.auth = auth
+        is_auth = Server.use_basic_auth(
+            f'Basic {b64encode(b"Admin:Admin").decode()}', pages
+        )
+
+        self.assertTrue(is_auth)
+
+        is_auth = Server.use_basic_auth(
+            f'Basic {b64encode(b"AdminAdmin").decode()}', pages
+        )
+        self.assertIsNone(is_auth)
+
     def test_check_auth(self):
         environ = {
             # "HTTP_AUTHORIZATION": "Basic ",
             # "HTTP_API_KEY": "",
             "HTTP_COOKIE": ";",
+            "HTTP_API_TOKEN": "SessionID=1:abc;test",
             "REMOTE_ADDR": "ip",
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
         }
+
+        session = Mock()
+        session.ip = "ip"
+        session.time = time()
+        session.cookie = "abc"
+        session.user = Mock(name="abc", id=1)
+        self.server.pages.sessions[1] = session
 
         user, not_blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
         self.assertEqual(user.id, 0)
@@ -331,6 +410,13 @@ class TestServer(TestCase):
             #     self.assertFalse(not_blacklisted)
 
         del environ["HTTP_COOKIE"]
+
+        user_2, not_blacklisted = self.server.check_auth(environ)
+
+        self.assertEqual(session.user.name, user_2.name)
+        self.assertTrue(not_blacklisted)
+
+        del environ["HTTP_API_TOKEN"]
         environ["HTTP_AUTHORIZATION"] = "Basic "
         environ["HTTP_API_KEY"] = ""
 
@@ -566,6 +652,12 @@ class TestServer(TestCase):
         environ = {
             "CONTENT_LENGTH": str(len(data.getvalue())),
             "wsgi.input": data,
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "webscripts.local",
+            "CONTENT_TYPE": "application/json",
         }
 
         arguments, csrf, is_webscripts_request = self.server.parse_body(
@@ -608,6 +700,12 @@ class TestServer(TestCase):
         environ = {
             "CONTENT_LENGTH": str(len(data.getvalue())),
             "wsgi.input": data,
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "webscripts.local",
+            "CONTENT_TYPE": "application/json",
         }
 
         arguments, csrf, is_webscripts_request = self.server.parse_body(
@@ -627,6 +725,12 @@ class TestServer(TestCase):
         environ = {
             "CONTENT_LENGTH": str(len(data.getvalue())),
             "wsgi.input": data,
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "webscripts.local",
+            "CONTENT_TYPE": "application/json",
         }
 
         arguments, csrf, is_webscripts_request = self.server.parse_body(
@@ -636,6 +740,23 @@ class TestServer(TestCase):
         self.assertIsNone(csrf)
         self.assertEqual(arguments, b"abc")
 
+        environ = {
+            "wsgi.url_scheme": "https",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://test.hack.csrf",
+            "SERVER_PORT": "8000",
+            "SERVER_NAME": "webscripts.local",
+            "CONTENT_TYPE": "application/json",
+        }
+
+        arguments, csrf, is_webscripts_request = self.server.parse_body(
+            environ
+        )
+
+        self.assertFalse(is_webscripts_request)
+        self.assertIsNone(csrf)
+        self.assertListEqual(arguments, [])
+
     def test_app(self):
         environ = {
             "PATH_INFO": "/static/test.css",
@@ -643,6 +764,11 @@ class TestServer(TestCase):
             "REMOTE_ADDR": "",
             "CONTENT_LENGTH": "4",
             "wsgi.input": BytesIO(b"test"),
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "webscripts.local",
+            "HTTP_ORIGIN": "http://webscripts.local",
+            "SERVER_PORT": "80",
+            "SERVER_NAME": "webscripts.local",
         }
 
         self.server.page_400 = MagicMock(return_value="400")
@@ -772,10 +898,96 @@ class TestServer(TestCase):
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
 
+        environ["REQUEST_METHOD"] = "GET"
         self.server.get_function_page = MagicMock(
             return_value=(MagicMock(return_value=(None, {}, "")), None, True)
         )
         response = self.server.app(environ, Mock())
+        self.assertListEqual([b""], response)
+
+        self.server.get_function_page = MagicMock(
+            return_value=(MagicMock(return_value=("451", {}, "")), None, True)
+        )
+        self.server.send_custom_error = MagicMock(
+            return_value=("200", {}, "abc")
+        )
+        response = self.server.app(environ, Mock())
+        self.assertListEqual([b"abc"], response)
+
+        environ["REQUEST_METHOD"] = "HEAD"
+        response = self.server.app(environ, Mock())
+        self.assertListEqual([], response)
+
+    def test_set_default_values_for_response(self):
+        e, h = self.server.set_default_values_for_response("", {})
+        self.assertEqual(e, self.server.error)
+        self.assertEqual(h, self.server.headers)
+
+        e, h = self.server.set_default_values_for_response(None, {})
+        self.assertEqual(e, self.server.error)
+        self.assertEqual(h, self.server.headers)
+
+        e, h = self.server.set_default_values_for_response(
+            "456 NOK", {"test": "test"}
+        )
+        h2 = self.server.headers.copy()
+        h2["test"] = "test"
+        self.assertEqual(e, "456 NOK")
+        self.assertEqual(h, h2)
+
+    def test_get_content_length(self):
+
+        v = self.server.get_content_length({"CONTENT_LENGTH": "10"})
+        self.assertEqual(v, 10)
+
+        v = self.server.get_content_length({"CONTENT_LENGTH": "abc"})
+        self.assertEqual(v, 0)
+
+        v = self.server.get_content_length({})
+        self.assertEqual(v, 0)
+
+    def test_return_inputs(self):
+        request = [
+            {"value": "test1", "input": False},
+            {"value": "test2", "input": True},
+        ]
+        a, i = self.server.return_inputs(request, True)
+
+        self.assertListEqual(a, ["test1"])
+        self.assertListEqual(i, ["test2"])
+
+        a, i = self.server.return_inputs(request, False)
+
+        self.assertListEqual(a, request)
+        self.assertListEqual(i, [])
+
+    def test_try_get_command(self):
+        v = self.server.try_get_command({})
+        self.assertIsNone(v)
+
+        v1, v2, v3 = self.server.try_get_command({"arguments": 1})
+        self.assertDictEqual(v1, {"arguments": 1})
+        self.assertIsNone(v2)
+        self.assertFalse(v3)
+
+        v1, v2, v3 = self.server.try_get_command(
+            {
+                "csrf_token": "1",
+                "arguments": {"test": {"value": 1, "input": False}},
+            }
+        )
+        self.assertListEqual(v1, [{"value": "1", "input": False}])
+        self.assertEqual(v2, "1")
+        self.assertTrue(v3)
+
+    def test_return_page(self):
+        response = self.server.return_page(b"")
+        self.assertListEqual([b""], response)
+
+        response = self.server.return_page("")
+        self.assertListEqual([b""], response)
+
+        response = self.server.return_page([b""])
         self.assertListEqual([b""], response)
 
     def test_send_headers(self):
@@ -796,6 +1008,22 @@ class TestServer(TestCase):
 
         start_response.assert_called_once_with(
             "500 Internal Server Error", [(k, v) for k, v in headers.items()]
+        )
+
+    def test_page_400(self):
+        a = object()
+
+        with patch.object(
+            self.server,
+            "send_error_page",
+            return_value=b"400",
+        ) as mock_method:
+
+            self.assertEqual(self.server.page_400("AUTH", a), b"400")
+        mock_method.assert_called_once_with(
+            "400 Bad Request",
+            b"Bad method, method should be GET, POST or HEAD not AUTH",
+            a,
         )
 
     def test_page_500(self):
@@ -991,7 +1219,7 @@ class TestFunctions(TestCase):
         self.server = Server(self.conf)
 
     @patch.object(
-        WebScripts.simple_server,
+        WebScripts.WebScripts.simple_server,
         "make_server",
         Mock(
             return_value=Mock(
@@ -1008,9 +1236,10 @@ class TestFunctions(TestCase):
         WebScripts.__name__ = "__main__"
         argv = sys.argv.copy()
         sys.argv = ["WebScripts", "--debug"]
+        WebScripts.main()
 
-        main()
-
+        WebScripts.argv = ["WebScripts", "--test-running"]
+        WebScripts.main()
         sys.argv = argv
 
     def test_parse_args(self):
@@ -1041,21 +1270,30 @@ class TestFunctions(TestCase):
         ]
         arguments = parse_args()
 
+        with open("test.json", "w") as f:
+            f.write('{"server": {}}')
+
+        with open("test.ini", "w") as f:
+            f.write("[server]\n")
+
         for configurations in get_server_config(arguments):
             self.assertTrue(isinstance(configurations, dict))
 
         arguments = parse_args()
         with patch.object(
-            WebScripts.platform,
+            WebScripts.WebScripts,
             "system",
             return_value="Linux"
-            if WebScripts.platform.system() == "Windows"
+            if WebScripts.WebScripts.system() == "Windows"
             else "Windows",
         ) as mock_method:
             for configurations in get_server_config(arguments):
                 self.assertTrue(isinstance(configurations, dict))
 
         sys.argv = argv
+
+        os.remove("test.json")
+        os.remove("test.ini")
 
     def test_logs_configuration(self):
         logs_configuration(self.conf)

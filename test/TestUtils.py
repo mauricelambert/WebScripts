@@ -23,11 +23,12 @@
 """This file test the WebScripts.py file"""
 
 from os import path, device_encoding, getcwd
+from unittest.mock import Mock, patch
 from unittest import TestCase, main
-from unittest.mock import Mock
 from types import MethodType
 from importlib import reload
 from typing import List
+from io import StringIO
 from json import load
 import platform
 import locale
@@ -298,6 +299,30 @@ class TestDefaultNamespace(TestCase):
 
 
 class TestCustomLogHandler(TestCase):
+    def test_doRollover(self):
+        a = open("test.txt", "w")
+        a.close()
+
+        test = Mock(
+            backupCount=5,
+            stream=StringIO(),
+            baseFilename="test.txt",
+            rotation_filename=lambda x: x,
+            delay=True,
+        )
+
+        with patch.object(test, "rotate", return_value=None) as mock:
+            CustomLogHandler.doRollover(test)
+
+        mock.assert_called_once_with("test.txt", "test.txt.1")
+        os.remove("test.txt")
+
+        self.assertIsNone(test.stream)
+
+        test.delay = None
+        CustomLogHandler.doRollover(test)
+        self.assertIsInstance(test.stream, Mock)
+
     def test_namer(self):
         self.assertEqual("test.gz", CustomLogHandler.namer(None, "test"))
 
@@ -401,6 +426,14 @@ class TestFunctions(TestCase):
             get_real_path("test.test")
 
         os.remove("test.json")
+
+        WebScripts.utils.system = (
+            "Linux" if platform.system() == "Windows" else "Windows"
+        )
+        try:
+            get_real_path("test.test")
+        except:
+            pass
 
     def test_get_ip(self):
         env = {
