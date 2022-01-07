@@ -23,7 +23,7 @@
 
 This file implement commons functions and class for WebScripts package."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -197,6 +197,9 @@ class Argument(DefaultNamespace):
         elif isinstance(value, list):
             while "" in value:
                 value.remove("")
+
+            while None in value:
+                value.remove(None)
 
             if len(value) == 0:
                 return []

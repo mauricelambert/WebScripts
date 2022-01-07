@@ -141,10 +141,10 @@ def execute_scripts(
     script = Pages.scripts.get(script_name)
 
     if script is None:
-        return None, b"404", -1, "Not Found"
+        return None, b"404", None, -1, "Not Found"
 
     if not is_auth and not check_right(user, script):
-        return None, b"403", -1, "Not Found"
+        return None, b"403", None, -1, "Not Found"
 
     arguments.insert(0, script.path)
 

@@ -1228,7 +1228,9 @@ class Server:
             )
         except Exception as exception:
             print_exc()
-            error_ = f"{exception}\n{format_exc()}"
+            error_ = (
+                f"{exception.__class__.__name__}: {exception}\n{format_exc()}"
+            )
             logger_error(error_)
             custom_data = None
 
