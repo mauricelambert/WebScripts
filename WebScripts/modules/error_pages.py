@@ -668,8 +668,8 @@ class Request:
         This function save and send request or report.
         """
 
-        referer = escape(environ.get("HTTP_REFERER"))
-        user_agent = escape(environ.get("HTTP_USER_AGENT"))
+        referer = escape(environ.get("HTTP_REFERER", ""))
+        user_agent = escape(environ.get("HTTP_USER_AGENT", ""))
         subject = escape(arguments[0])
         name = escape(arguments[1])
         reason = escape(arguments[2])
