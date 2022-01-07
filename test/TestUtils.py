@@ -430,10 +430,9 @@ class TestFunctions(TestCase):
         WebScripts.utils.system = (
             "Linux" if platform.system() == "Windows" else "Windows"
         )
-        try:
+
+        with self.assertRaises(FileNotFoundError):
             get_real_path("test.test")
-        except:
-            pass
 
     def test_get_ip(self):
         env = {

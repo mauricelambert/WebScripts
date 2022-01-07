@@ -61,3 +61,9 @@ On linux *WebScripts* logs with level `DEBUG`, `INFO`, `WARNING`, `ERROR` and `C
 ## Windows
 
 On Windows if `pywin32` is installed logs with level `DEBUG`, `INFO`, `WARNING`, `ERROR` and `CRITICAL` are redirected in **EventViewer**.
+
+## Scripts
+
+To group the logs you can use the following environment variable: `LOG_PATH`. This is the path of the WebScripts logs. I recommend using the following path for your script: `LOG_PATH/<script category>/<script name>.log`.
+
+**Caution:** To protect your WebScripts server and your system is recommended to change the directory permissions and owner (`root:root 755`), your script can not create a file in this directory (current directory of the script). **You can not make a log file in the current directory.**
