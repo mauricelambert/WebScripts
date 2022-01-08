@@ -3,7 +3,7 @@
 
 ###################
 #    This tools run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class)."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -38,7 +38,7 @@ license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -135,7 +135,7 @@ logger_warning: Callable = Logs.warning
 logger_error: Callable = Logs.error
 logger_critical: Callable = Logs.critical
 current_directory: str = getcwd()
-log_path: str = join(server_path, "logs")
+log_path: str = join(current_directory, "logs")
 
 
 class Configuration(DefaultNamespace):
@@ -932,6 +932,7 @@ class Server:
         path_info_startswith = path_info.startswith
         configuration = self.configuration
         environ["LOG_PATH"] = log_path
+        environ["WEBSCRIPTS_PATH"] = server_path
         is_head_method = method == "HEAD"
 
         logger_debug("Trying to get function page...")

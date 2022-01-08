@@ -3,7 +3,7 @@
 
 ###################
 #    This tools run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,26 +19,30 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""
+This tools run scripts and display the result in a Web Interface.
 
 This file implement some tools for WebScripts server
-and scripts (Logs, Namespace for configuration, ...)."""
+and scripts (Logs, Namespace for configuration, ...).
+"""
 
 __version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web
+__description__ = """
+This tools run scripts and display the result in a Web
 Interface.
 
 This file implement some tools for WebScripts server
-and scripts (Logs, Namespace for configuration, ...)."""
+and scripts (Logs, Namespace for configuration, ...).
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -308,7 +312,9 @@ class LinuxLogs(_Logs):
 
 def log_trace(function: FunctionType) -> FunctionType:
 
-    """This decorator trace functions (start and end)"""
+    """
+    This decorator trace functions (start and end).
+    """
 
     @wraps(function)
     def wrapper(*args, **kwds):
@@ -628,7 +634,9 @@ class DefaultNamespace(SimpleNamespace):
 @log_trace
 def get_encodings():
 
-    """This function returns the probable encodings."""
+    """
+    This function returns the probable encodings.
+    """
 
     encoding = locale.getpreferredencoding()
     if encoding is not None:
