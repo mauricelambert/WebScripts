@@ -73,7 +73,7 @@ assert "my_filename.txt" not in filenames
 
 ```python
 from WebScripts.scripts.uploads.modules.uploads_management import (
-	get_file,
+    get_file,
 )
 
 versions, counter = get_file("my_filename.txt")
@@ -134,19 +134,40 @@ You can easily use the download function in a web browser using `get_file.py`, f
 ```python
 from urllib.request import urlopen, Request
 from base64 import b64encode
+from gzip import decompress
 
 def get_basic_auth(username: str, password: str) -> str:
-	return b64encode(f"{username}:{password}".encode()).decode()
+    return b64encode(f"{username}:{password}".encode()).decode()
 
-with open("my_filename.txt", "w") as file:
-	file.write(urlopen(
-		Request("http://127.0.0.1:8000/share/Download/filename/my_filename.txt"),
-		headers={
-			"Authorization": f"Basic {get_basic_auth('Admin', 'Admin')}",
-			# Credentials are the base64 of '<username>:<password>'.
-			# Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
-		},
-	).read())
+# Uncompressed file (file are compressed by default)
+with open("my_filename.txt", "wb") as file:
+    file.write(urlopen(
+        Request(
+            "http://127.0.0.1:8000/share/Download/filename/my_filename.txt",
+            headers={
+                "Authorization": f"Basic {get_basic_auth('Admin', 'Admin')}",
+                # Credentials are the base64 of '<username>:<password>'.
+                # Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
+                "Content-Type": "application/json",
+                "Origin": "http://127.0.0.1:8000",
+            },
+        ),
+    ).read())
+
+# Compressed file (file are compressed by default)
+with open("my_filename.txt", "wb") as file:
+    file.write(decompress(urlopen(
+        Request(
+            "http://127.0.0.1:8000/share/Download/filename/my_filename.txt",
+            headers={
+                "Authorization": f"Basic {get_basic_auth('Admin', 'Admin')}",
+                # Credentials are the base64 of '<username>:<password>'.
+                # Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
+                "Content-Type": "application/json",
+                "Origin": "http://127.0.0.1:8000",
+            },
+        ),
+    ).read()))
 ```
 
 #### Upload
@@ -167,16 +188,20 @@ Without options:
 from urllib.request import urlopen, Request
 
 with open("my_filename.txt", 'rb') as file:
-	urlopen(
-		Request("http://127.0.0.1:8000/share/upload/my_filename.txt"),
-		headers={
-			"Authorization": "Basic QWRtaW46QWRtaW4=",
-			# Credentials are the base64 of '<username>:<password>'.
-			# Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
-		},
-		data=file.read(),
-		method="POST",
-	)
+    urlopen(
+        Request(
+            "http://127.0.0.1:8000/share/upload/my_filename.txt",
+            headers={
+                "Authorization": "Basic QWRtaW46QWRtaW4=",
+                # Credentials are the base64 of '<username>:<password>'.
+                # Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
+                "Content-Type": "application/octet-stream",
+                "Origin": "http://127.0.0.1:8000",
+            },
+            data=file.read(),
+            method="POST",
+        ),    
+    )
 ```
 
 Using all options:
@@ -185,23 +210,27 @@ from urllib.request import urlopen, Request
 from base64 import b64encode
 
 with open("my_filename.txt", 'rb') as file:
-	urlopen(
-		Request("http://127.0.0.1:8000/share/upload/my_filename.txt"),
-		headers={
-			"Authorization": "Basic QWRtaW46QWRtaW4=",
-			# Credentials are the base64 of '<username>:<password>'.
-			# Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
-			"No-Compression": "yes",     # The value does not matter as long as the value 'No-Compression' is not empty
-			"Is-Base64": "1",            # The value does not matter as long as the value 'Is-Base64' is not empty
-			"Hidden": "0",               # The value does not matter as long as the value 'Hidden' is not empty
-			"Binary": "no",              # The value does not matter as long as the value 'Binary' is not empty
-			"Read-Permission": "0",      # The value must be an integer otherwise you will get an error 500
-			"Write-Permission": "1000",  # The value must be an integer otherwise you will get an error 500
-			"Delete-Permission": "1000", # The value must be an integer otherwise you will get an error 500
-		},
-		data=b64encode(file.read()),
-		method="POST",
-	)
+    urlopen(
+        Request(
+            "http://127.0.0.1:8000/share/upload/my_filename.txt",
+            headers={
+                "Authorization": "Basic QWRtaW46QWRtaW4=",
+                # Credentials are the base64 of '<username>:<password>'.
+                # Get it in python with: get_basic_auth("Admin", "Admin") == "QWRtaW46QWRtaW4=".
+                "No-Compression": "yes",     # The value does not matter as long as the value 'No-Compression' is not empty
+                "Is-Base64": "1",            # The value does not matter as long as the value 'Is-Base64' is not empty
+                "Hidden": "0",               # The value does not matter as long as the value 'Hidden' is not empty
+                "Binary": "no",              # The value does not matter as long as the value 'Binary' is not empty
+                "Read-Permission": "0",      # The value must be an integer otherwise you will get an error 500
+                "Write-Permission": "1000",  # The value must be an integer otherwise you will get an error 500
+                "Delete-Permission": "1000", # The value must be an integer otherwise you will get an error 500
+                "Content-Type": "application/octet-stream",
+                "Origin": "http://127.0.0.1:8000",
+            },
+            data=b64encode(file.read()),
+            method="POST",
+        ),
+    )
 ```
 
 ### Console client
@@ -211,13 +240,20 @@ with open("my_filename.txt", 'rb') as file:
 ##### Download
 
 ```bash
-curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.extension --output - | gzip -d > file.extension
+curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/LICENSE.txt                                # for uncompressed file
+curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.text --output - | gzip -d > file.txt  # for compressed file
 ```
 
 ##### Upload
 
 ```bash
-curl -u 'Admin:Admin' -d 'data' http://127.0.0.1:8000/share/upload/file.extension
+curl -u 'Admin:Admin' -H "Origin: http://127.0.0.1:8000" -d 'data' http://127.0.0.1:8000/share/upload/file.txt
+
+curl -H "Origin: http://127.0.0.1:8000" -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "@file.tar.gz" "http://127.0.0.1:8000/share/upload/file.tar.gz" >&1
+
+## Deployed WebScripts (with HTTPS and self signed certificate)
+
+curl --insecure -H "Origin: http://127.0.0.1:8000" -H 'Is-Base64: yes' -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "$(cat file.txt | base64)" "https://webscripts.local/share/upload/file.txt"
 ```
 
 #### Windows Powershell
@@ -225,11 +261,12 @@ curl -u 'Admin:Admin' -d 'data' http://127.0.0.1:8000/share/upload/file.extensio
 ##### Download
 
 ```bash
-[System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.extension").Content) | Out-File -FilePath .\file.extension
+[System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.txt").Content) | Out-File -FilePath .\file.txt
 ```
 
 ##### Upload
 
 ```bash
-Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.extension
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.txt
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body $(Get-Content file.txt) -Uri http://127.0.0.1:8000/share/upload/file.txt
 ```

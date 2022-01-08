@@ -29,10 +29,10 @@ nav:
         - Security checks and tests (pentest): Pentest.md
     - Examples:
         - Deployment: Deployment.md
-        - Add a bash script (for authentication): Add_Script.md
+        - Add a script: Add_Script.md
         - Add a module: Add_Module.md
         - Make a custom API client: API_Client.md
 
 theme: readthedocs
 
-copyright: "WebScripts  Copyright (C) 2021  Maurice Lambert\nThis program comes with ABSOLUTELY NO WARRANTY.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions."
+copyright: "WebScripts  Copyright (C) 2021, 2022  Maurice Lambert\nThis program comes with ABSOLUTELY NO WARRANTY.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions."

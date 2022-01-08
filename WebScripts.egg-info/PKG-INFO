@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.4.8
+Version: 2.4.9
 Summary: This tools run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -34,7 +34,7 @@ Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
 
-![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png)
+![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png "WebScripts logo")
 
 # WebScripts
 

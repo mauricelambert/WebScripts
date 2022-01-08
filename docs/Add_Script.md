@@ -1,5 +1,22 @@
 # Example - Add Script
 
+## WebScriptsTools
+
+To help to integrate your script in the WebScripts environment i develop a python package with a CLI.
+
+Features:
+
+ - Get the log file path for your script (Python and CLI)
+ - Get the path of the WebScripts data to use the WebScripts databases (Python and CLI)
+ - Import the WebScripts upload manager (Python Only)
+ - Get the current user using your script (Python only)
+
+Links:
+
+ - [WebScriptsTools on github](https://github.com/mauricelambert/WebScriptsTools)
+ - [WebScriptsTools on pypi](https://pypi.org/project/WebScriptsTools)
+ - [WebScriptsTools documentation](https://mauricelambert.github.io/info/python/code/WebScriptsTools.html)
+
 ## Build the script (bash script for WebScripts authentication)
 
 Write in `auth.sh`:
@@ -194,4 +211,82 @@ except FileNotFoundError:
 data, filename = get_file_content(id_="1")
 assert b64decode(data.encode()) == b"\x00string content\xff"
 # get_file_content can read an old version (and deleted file)
+```
+
+## Real Time Output
+
+Force to flush the output is required after `print`, `echo`...
+
+1. In Python scripts, add this two lines on the top of the script:
+
+```python
+from functools import partial
+print=partial(print, flush=True)
+```
+
+alternately, you can add the flush argument on all of the `print` calls:
+
+```python
+print("first output", flush=True)
+print("second output", flush=True)
+...
+```
+
+or use `sys.stdout.flush`:
+
+```python
+import sys
+print("first output")
+sys.stdout.flush()
+sys.stdout.write("second output\n")
+sys.stdout.flush()
+...
+```
+
+2. In Bash scripts, there is no impact.
+3. In PHP scripts, call the `flush` function after `echo`:
+
+```php
+echo "first output";
+flush();
+echo "second output";
+flush();
+```
+
+4. In Ruby scripts, add this line on the top of the script:
+
+```ruby
+$stdout.sync = true
+```
+
+alternately, call the `$stdout.flush` function after `$stdout.print` or `puts` or `print`:
+
+```ruby
+$stdout.print "first output"
+$stdout.flush
+puts "second output"
+$stdout.flush
+print "third output"
+$stdout.flush
+```
+
+5. In Perl scripts, add this line on the top of the script:
+
+```perl
+local $| = 1;
+```
+
+or
+
+```perl
+STDOUT->autoflush(1)
+```
+
+alternately, call `select()->flush` function after `print`:
+
+```perl
+print "first output";
+select()->flush();
+print "second output";
+select()->flush();
 ```

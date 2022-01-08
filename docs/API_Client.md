@@ -1,9 +1,33 @@
 # API Client
 
+## WebScriptsClient
+
+I developed a WebScripts client in Python with a CLI (command-line tool). I recommend using it for advanced uses.
+
+##### Features implemented:
+
+ - Get scripts, arguments and informations
+ - Execute scripts on WebScripts Server (simple script output + real time script output)
+ - Download file from WebScripts Server
+ - Upload file on WebScripts Server
+ - Send requests or reports to WebScripts Administrator
+ - Test the WebScripts Server
+
+##### Examples
+
+Examples are available in the [README.md](https://github.com/mauricelambert/WebScriptsClient/blob/main/README.md#usages) and the [documentation](https://mauricelambert.github.io/info/python/code/WebScriptsClient.html) (Python examples and CLI).
+
+##### Links:
+
+ - [WebScriptsClient on github](https://github.com/mauricelambert/WebScriptsClient)
+ - [WebScriptsClient on pypi](https://pypi.org/project/WebScriptsClient/)
+ - [WebScriptsClient documentation](https://mauricelambert.github.io/info/python/code/WebScriptsClient.html)
+ - [WebScriptsClient executable](https://mauricelambert.github.io/info/python/code/WebScriptsClient.pyz)
+
 ## Using CURL
 
 ```bash
-curl -u 'Admin:Admin' -d '{"arguments":{"length":{"value":"10","input":false},"CRITICAL":{"value":true,"input":false}}}' http://127.0.0.1:8000/api/scripts/log_viewer.py
+curl -u 'Admin:Admin' -H "Content-Type: application/json" -H "Origin: http://127.0.0.1:8000" -d '{"arguments":{"length":{"value":"10","input":false},"CRITICAL":{"value":true,"input":false}}}' http://127.0.0.1:8000/api/scripts/log_viewer.py
 ```
 
 Response:
@@ -24,6 +48,8 @@ response = urlopen(
         method="POST",
         headers={
             "Api-Key": "AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin",
+            "Content-Type": "application/json",
+            "Origin": "http://127.0.0.1:8000",
         }
     )
 )
@@ -34,7 +60,9 @@ response = urlopen(
         "http://127.0.0.1:8000/api/scripts/view_users.py", 
         method="POST", 
         headers={
-            "Authorization": "Basic QWRtaW46QWRtaW4="
+            "Authorization": "Basic QWRtaW46QWRtaW4=",  # from base64 import b64encode; f"Basic {b64encode(b'Admin:Admin').decode()}"
+            "Content-Type": "application/json",
+            "Origin": "http://127.0.0.1:8000",
         },
         data=b'{"arguments":{"--ids":{"value":[2],"input":false}}}',
     )
@@ -71,106 +99,30 @@ For more details and other examples, see the [sharing documentation](https://web
 
 #### Download
 ```bash
-curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.extension --output - | gzip -d > file.extension
+curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/LICENSE.txt                                # for uncompressed file
+curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.text --output - | gzip -d > file.txt  # for compressed file
 ```
 
 #### Upload
 ```bash
-curl -u 'Admin:Admin' -d 'data' http://127.0.0.1:8000/share/upload/file.extension
+curl -u 'Admin:Admin' -H "Origin: http://127.0.0.1:8000" -d 'data' http://127.0.0.1:8000/share/upload/file.txt
 
-curl -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "@file.tar.gz" "http://127.0.0.1:8000/share/upload/file.tar.gz" >&1
+curl -H "Origin: http://127.0.0.1:8000" -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "@file.tar.gz" "http://127.0.0.1:8000/share/upload/file.tar.gz" >&1
 
 ## Deployed WebScripts (with HTTPS and self signed certificate)
 
-curl --insecure -H 'Is-Base64: yes' -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "$(cat file.txt | base64)" "https://webscripts.local/share/upload/file.txt" >&1
+curl --insecure -H "Origin: http://127.0.0.1:8000" -H 'Is-Base64: yes' -H 'No-Compression: yes' -H 'Api-Key: AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin' --data "$(cat file.txt | base64)" "https://webscripts.local/share/upload/file.txt"
 ```
 
 ### Windows
 
 #### Download
 ```bash
-[System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.extension").Content) | Out-File -FilePath .\file.extension
+[System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.txt").Content) | Out-File -FilePath .\file.txt
 ```
 
 #### Upload
 ```bash
-Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4=" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.extension
-```
-
-## Real Time Output
-
-Force to flush the output is required after `print`, `echo`...
-
-1. In Python scripts, add this two lines on the top of the script:
-
-```python
-from functools import partial
-print=partial(print, flush=True)
-```
-
-alternately, you can add the flush argument on all of the `print` calls:
-
-```python
-print("first call", flush=True)
-print("second call", flush=True)
-...
-```
-
-or use `sys.stdout.flush`:
-
-```python
-import sys
-print("first call")
-sys.stdout.flush()
-sys.stdout.write("second call\n")
-sys.stdout.flush()
-...
-```
-
-2. In Bash scripts, there is no impact.
-3. In PHP scripts, call the `flush` function after `echo`:
-
-```php
-echo "first call";
-flush();
-echo "second call";
-flush();
-```
-
-4. In Ruby scripts, add this line on the top of the script:
-
-```ruby
-$stdout.sync = true
-```
-
-alternately, call the `$stdout.flush` function after `$stdout.print` or `puts` or `print`:
-
-```ruby
-$stdout.print "first call"
-$stdout.flush
-puts "second call"
-$stdout.flush
-print "third call"
-$stdout.flush
-```
-
-5. In Perl scripts, add this line on the top of the script:
-
-```perl
-local $| = 1;
-```
-
-or
-
-```perl
-STDOUT->autoflush(1)
-```
-
-alternately, call `select()->flush` function after `print`:
-
-```perl
-print "first call";
-select()->flush();
-print "second call";
-select()->flush();
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.txt
+Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body $(Get-Content file.txt) -Uri http://127.0.0.1:8000/share/upload/file.txt
 ```

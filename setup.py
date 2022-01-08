@@ -3,7 +3,7 @@
 
 ###################
 #    This tools run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,7 +19,9 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface."""
+"""
+This tools run scripts and display the result in a Web Interface.
+"""
 
 __version__ = "2.2.0"
 __author__ = "Maurice Lambert"
@@ -33,7 +35,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.

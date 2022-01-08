@@ -1,4 +1,4 @@
-![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png)
+![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png "WebScripts logo")
 
 # WebScripts
 
