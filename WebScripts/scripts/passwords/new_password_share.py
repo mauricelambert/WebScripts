@@ -3,7 +3,7 @@
 
 ###################
 #    This file can share a password securely
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,9 +19,11 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""
+This tools run scripts and display the result in a Web Interface.
 
-This file can share a password securely."""
+This file can share a password securely.
+"""
 
 __version__ = "0.1.0"
 __author__ = "Maurice Lambert"
@@ -196,7 +198,7 @@ def main() -> None:
         if isinstance(string, str) and not string.isprintable():
             raise ValueError(f"Strings must be printable: '{string}' is not.")
 
-    passwords.append()
+    passwords.append(password)
     save(passwords, id_)
 
     print(
