@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,18 +20,18 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web
+__description__ = """This tool run scripts and display the result in a Web
 Interface.
 
 This file implement the hardening audit of the WebScripts installation and
@@ -634,6 +634,7 @@ class Audit:
     """This function implement hardening checks."""
 
     is_windows = platform.system() == "Windows"
+    current_dir = getcwd()
 
     def audit_in_venv(server: Server) -> Rule:
 
@@ -1161,7 +1162,7 @@ class Audit:
         """This function check the files owner."""
 
         user = getuser()
-        current_dir = getcwd()
+        current_dir = Audit.current_dir
 
         simple_filenames = []
 
@@ -1232,7 +1233,7 @@ class Audit:
 
     def get_permissions(filename: str) -> str:
 
-        """This function return the file permissions."""
+        """This function returns the file permissions."""
 
         return stat.filemode(os.stat(filename).st_mode)
 
@@ -1262,6 +1263,7 @@ class Audit:
             config_path,
             path.join(config_path, "files"),
             path.join(config_path, "scripts"),
+            Audit.current_dir,
         }
         secure_paths.update(secure_paths)
 
@@ -1319,11 +1321,15 @@ class Audit:
             )
             return
 
-        current_dir = getcwd()
+        current_dir = Audit.current_dir
 
         rw_filenames = listdir(path.join(server_path, "data")) + listdir(
-            "logs"
+            path.join(current_dir, "logs")
         )
+
+        server_logs = path.join(server_path, "logs")
+        if path.exists(server_logs):
+            rw_filenames.extend(listdir(server_logs))
 
         r_filenames = [
             path.join(server_path, "config", "server.ini"),
@@ -1484,7 +1490,9 @@ class Audit:
         latest_ = ""
 
         if __package__:
-            version = sys.modules[__package__].__version__
+            version = [
+                int(i) for i in sys.modules[__package__].__version__.split(".")
+            ]
         else:
             return None
 
@@ -1502,7 +1510,7 @@ class Audit:
             )
 
             data = json.load(response)
-            return data[0]["name"][1:]
+            return [int(i) for i in data[0]["name"][1:].split(".")]
 
         sleep(
             120
@@ -1518,7 +1526,7 @@ class Audit:
                 )
                 break
 
-            if version != latest and latest != latest_:
+            if version < latest and latest != latest_:
                 logs.critical(
                     "WebScripts is not up-to-date, current:"
                     f" {version} latest: {latest}"

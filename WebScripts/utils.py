@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,19 +20,19 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tools run scripts and display the result in a Web
+This tool run scripts and display the result in a Web
 Interface.
 
 This file implement some tools for WebScripts server
@@ -69,7 +69,7 @@ __all__ = [
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove, environ
+from os import path, _Environ, device_encoding, remove
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from collections.abc import Callable
@@ -78,7 +78,6 @@ from platform import system
 from functools import wraps
 from logging import Logger
 import logging.handlers
-import logging.config
 import logging
 import locale
 import json
@@ -728,7 +727,7 @@ def get_arguments_count(object_: Callable):
 
 
 @log_trace
-def get_real_path(file_path: str) -> str:
+def get_real_path(file_path: str, is_dir: bool = False) -> str:
 
     """This function return the real path for files."""
 
@@ -747,7 +746,12 @@ def get_real_path(file_path: str) -> str:
     file_path = path.normcase(file_path)
     server_file_path = path.join(server_path, file_path)
 
-    if path.isfile(file_path):
+    if is_dir:
+        check = path.isdir
+    else:
+        check = path.isfile
+
+    if check(file_path):
         return file_path
     elif (
         len(file_path) > length
@@ -763,6 +767,5 @@ def get_real_path(file_path: str) -> str:
 
 server_path = path.dirname(__file__)
 
-environ["LOG_PATH"] = path.join(server_path, "logs")
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")

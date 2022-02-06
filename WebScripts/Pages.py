@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file implement Pages (Api and Web system), script execution and right
 system.
@@ -32,7 +32,7 @@ __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file implement Pages (Api and Web system), script execution and right
 system.

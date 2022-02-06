@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface."""
+"""This tool run scripts and display the result in a Web Interface."""
 
-__version__ = "2.4.10"
+__version__ = "2.4.11"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = (
-    """This tools run scripts and display the result in a Web Interface."""
+    """This tool run scripts and display the result in a Web Interface."""
 )
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -19,17 +19,19 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
 This file is the "main" file of this package (implement the main function,
-the Server class and the Configuration class)."""
+the Server class and the Configuration class).
+"""
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web
+__description__ = """This tool run scripts and display the result in a Web
 Interface.
 
 This file is the "main" file of this package (implement the main function,
@@ -90,7 +92,7 @@ if __package__:
         # rotator,
         # namer,
         # Handler,
-        #        get_real_path,
+        get_real_path,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -117,7 +119,7 @@ else:
         # rotator,
         # namer,
         # Handler,
-        #        get_real_path,
+        get_real_path,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -1676,7 +1678,7 @@ def configure_logs_system() -> None:
             logger_info("./logs directory is created.")
 
     fileConfig(
-        join(server_path, "config", "loggers.ini"),
+        get_real_path(join("config", "loggers.ini")),
         disable_existing_loggers=False,
     )
 
@@ -1686,7 +1688,7 @@ def configure_logs_system() -> None:
         datefmt="%d/%m/%Y %H:%M:%S",
         encoding="utf-8",
         level=0,
-        filename="./logs/root.logs",
+        filename=join(get_real_path("logs", is_dir=True), "root.logs"),
         force=True,
     )
 
