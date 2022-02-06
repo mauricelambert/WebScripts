@@ -20,7 +20,7 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file can add a user."""
 
@@ -30,7 +30,7 @@ __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file can add a user."""
 __license__ = "GPL-3.0 License"

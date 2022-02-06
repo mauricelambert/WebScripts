@@ -20,7 +20,7 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file can share a password securely.
 """
@@ -31,7 +31,7 @@ __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file can share a password securely."""
 __license__ = "GPL-3.0 License"

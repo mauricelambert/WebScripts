@@ -19,7 +19,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tools run scripts and display the result in a Web Interface.
+"""This tool run scripts and display the result in a Web Interface.
 
 This file may display the license and copyright of WebScripts."""
 
@@ -28,7 +28,7 @@ __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tools run scripts and display the result in a Web Interface.
+__description__ = """This tool run scripts and display the result in a Web Interface.
 
 This file may display the license and copyright of WebScripts."""
 __license__ = "GPL-3.0 License"
