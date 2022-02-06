@@ -18,7 +18,7 @@
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 ## Goals
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.

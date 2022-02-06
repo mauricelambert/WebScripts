@@ -81,6 +81,7 @@ WebScripts/scripts/logs/log_viewer.py
 WebScripts/scripts/passwords/get_password_share.py
 WebScripts/scripts/passwords/new_password_share.py
 WebScripts/scripts/passwords/password_generator.py
+WebScripts/scripts/py/ASCII_arts.py
 WebScripts/scripts/py/hello.py
 WebScripts/scripts/py/show_license.py
 WebScripts/scripts/py/test_config.py
@@ -128,6 +129,7 @@ WebScripts/static/images/webscripts_icon.png
 WebScripts/static/js/webscripts_index_js_scripts.js
 WebScripts/static/js/webscripts_js_scripts.js
 WebScripts/static/js/webscripts_script_js_scripts.js
+WebScripts/static/pdf/WebScripts.pdf
 WebScripts/static/templates/index.html
 WebScripts/static/templates/script.html
 docs/API.md

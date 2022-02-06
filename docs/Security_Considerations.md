@@ -45,6 +45,7 @@ An example of deployment for production is available [here](https://webscripts.r
 
 ### SMTP password
 
+ - In the production environment, you must be notified from your WebScripts server, configure SMTP (server, email addresses...) to receive notifications.
  - Do not use SMTP password (`smtp_password != None`) without StartTLS (`smtp_starttls == True`) or SSL (`smtp_ssl == True`). If connection is not secure the password may be sniffed.
 
 ### Script configurations
@@ -71,18 +72,34 @@ Change the password of the `Admin` user and the API key or use custom authentica
 
 ### Files rigths and access
 
-Some files and directories must be protected by the system, to avoid **privilege escalation** or other attacks. To protect your files, you need to change permissions on *group* and *other* (on Linux run this command: `chmod -R 600 <directory or file>`) and make sure the owner is the user who is launching the *WebScript Server* (on Linux run this command: `chown -R <user>:<user> <directory or file>`).
+Some files and directories must be protected by the system, to avoid **privilege escalation**, **RCE** (*Remote Code Execution*) or other attacks. 
 
-Files and directories that need protection:
+#### READ-ONLY: scripts, executables and configurations
 
- - `data/`: encrypted or hashed passwords are stored here, user permissions are also set here
- - `config/`: contains: server configurations (with security configurations), script configurations (with command to generate documentation) and loggers configurations (`logging.config.fileConfig` use `eval` function)
- - `logs/`: logs contains informations about configurations
- - `scripts/`: contains default scripts (admin scripts), scripts are executed by *system user* (or *service user*) and with their rights.
+1. Scripts, executables and configurations should **never** have *setuid*, *setgid*, *sticky bit* or other special permissions.
+2. Scripts, executables and configurations should **never** have the write permissions and any permissions for *group* and *other*
+    - Use this command to protect your executables: `chmod 100 <file>`
+    - Use this command to protect your scripts and configurations: `chmod 400 <file>`
+3. The directories of scripts, executables and configurations should **always have** *root* as *owner* and **never** *write permissions* for *group* and *other*
+    1. Use this command to change the *owner* as root: `chown root:root <directory>`
+    2. Use this command to change *permissions*: `chmod 755 <directory>`
+
+#### READ and WRITE: data and logs
+
+To protect your files the read and write files, you need to change permissions on *group* and *other* (on Linux run this command: `chmod -R 600 <directory or file>`) and make sure the owner is the user who is launching the *WebScript Server* (on Linux run this command: `chown -R <user>:<user> <directory or file>`).
+
+The files and directories that need protection:
+
+ - `<lib path>/data/`: encrypted or hashed passwords are stored here, user permissions are also set here
+ - `./logs/`: logs contains informations about configurations
 
 ### Delete files
 
  - `./export_Configuration.json` is useful for debugging but it should be removed on production environments.
+
+### System administration
+
+The WebScripts is a tool that can help you administer other system (using *SSH* or *WinRM* scripts for example) but **never** the WebScripts Server system. If your scripts can change the *system* configurations, an attacker can also use it. The principle is as follow: the system protects your WebScripts server and the WebScripts server must not change the system.
 
 ## Remote Code Excution
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tools run scripts and display the result in a Web Interface.
+#    This tool run scripts and display the result in a Web Interface.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ###################
 
 """
-This tools run scripts and display the result in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 """
 
 __version__ = "2.2.0"
@@ -29,7 +29,7 @@ __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = (
-    """This tools run scripts and display the result in a Web Interface."""
+    """This tool run scripts and display the result in a Web Interface."""
 )
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
@@ -172,23 +172,29 @@ class PostInstallScript(install):
         else:
             os.chmod(filename, 0o400)
 
-        if file == "wsgi.py" or extension in (".json", ".ini"):
-            # logging.debug(
-            #     f"Add the execution permission for the owner on {filename}"
-            # )
-            # os.chmod(filename, 0o400)
+        logging.debug(
+            f'Change permissions and owner on directory "{directory}"'
+        )
+        os.chmod(directory, 0o755)  # nosec
+        os.chown(directory, 0, 0)
 
-            dir_ = path.dirname(filename)
-            logging.debug(
-                f'Change permissions and owner on directory "{dir_}"'
-            )
-            os.chmod(dir_, 0o755)  # nosec
-            os.chown(dir_, 0, 0)
-        elif file == "WebScripts":
+        # if file == "wsgi.py" or extension in (".json", ".ini"):
+        #     # logging.debug(
+        #     #     f"Add the execution permission for the owner on {filename}"
+        #     # )
+        #     # os.chmod(filename, 0o400)
+
+        #     logging.debug(
+        #         f'Change permissions and owner on directory "{directory}"'
+        #     )
+        #     os.chmod(directory, 0o755)  # nosec
+        #     os.chown(directory, 0, 0)
+        # elif file == "WebScripts":
+        if file == "WebScripts":
             logging.debug(
                 f"Add the execution permissions for the owner on {filename}"
             )
-            os.chmod(filename, 0o700)
+            os.chmod(filename, 0o500)
         elif directory.endswith("data/uploads") or directory.endswith(
             "WebScripts/doc"
         ):
@@ -198,6 +204,17 @@ class PostInstallScript(install):
                 self.owner_property.pw_uid,
                 self.owner_property.pw_gid,
             )
+            os.chmod(directory, 0o700)
+
+            if directory.endswith("WebScripts/doc"):
+                directory = directory[:-3] + "logs"
+                os.makedirs(directory, exist_ok=True)
+                os.chown(
+                    directory,
+                    self.owner_property.pw_uid,
+                    self.owner_property.pw_gid,
+                )
+                os.chmod(directory, 0o700)
 
     def add_absolute_paths_in_configuration(self) -> None:
 
@@ -404,6 +421,7 @@ setup(
     project_urls={
         "Documentation": "https://webscripts.readthedocs.io/en/latest/",
         "Wiki": "https://github.com/mauricelambert/WebScripts/wiki",
+        "Presentation": "https://www.slideshare.net/MauriceLambert1/webscripts-server",
     },
     include_package_data=True,
     classifiers=[

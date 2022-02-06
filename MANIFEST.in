@@ -14,7 +14,7 @@ recursive-include test test.*
 recursive-include .github *.yml
 recursive-include WebScripts/scripts *.py
 recursive-include WebScripts/config *.ini *.json
-recursive-include WebScripts/static *.css *.js *.html *.jpg *.png
+recursive-include WebScripts/static *.css *.js *.html *.jpg *.png *.pdf
 exclude audit.*
 prune WebScripts/logs
 prune test/modules/__pycache__

@@ -18,10 +18,12 @@
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description
-This tools run scripts and display the result in a Web Interface.
+
+This tool run scripts and display the result in a Web Interface ([a little presentation is available here](https://www.slideshare.net/MauriceLambert1/webscripts-server) and on my [github.io](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.pdf)).
 
 ## Goals
-Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
+
+Create a safe, secure and easy way to share CLI (console) scripts and scripting environnments with your team or people without IT knowledge.
 
  - Secure
     - [SAST - Static Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#sast-alerts) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
@@ -233,6 +235,7 @@ WebScripts38.main()
  - [Github](https://github.com/mauricelambert/WebScripts)
  - [ReadTheDocs](https://webscripts.readthedocs.io/en/latest/)
  - RSS Feed [pypi](https://pypi.org/rss/project/webscripts/releases.xml), [libraries](https://libraries.io/pypi/WebScripts/versions.atom)
+ - [WebScripts Server presentation](https://www.slideshare.net/MauriceLambert1/webscripts-server)
 
 ## Pictures
 
