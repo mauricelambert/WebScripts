@@ -56,8 +56,15 @@ def import_without_package():
     locals_ = locals().copy()
     globals_ = globals().copy()
     current_path = getcwd()
+    
+    print("\n", "*" * 50, "\n", path.join(current_path, "logs"), "\n", "*" * 50)
+    
     if not path.exists(path.join(current_path, "logs")):
         mkdir(path.join(current_path, "logs"))
+        
+    print("\n", "*" * 50, "\n", listdir(current_path), "\n", "*" * 50)
+    print("\n", "*" * 50, "\n", path.exists(path.join(current_path, "logs")), "\n", "*" * 50)
+        
     dst1 = path.join(dir_path, "..", "WebScripts", "__init__.py")
     dst2 = path.join(dir_path, "..", "test", "init.py")
 
@@ -132,5 +139,7 @@ import_without_package()
 import WebScripts
 
 sys.argv = ["WebScripts", "--debug"]
+print("\n", "*" * 50, "\n", listdir(current_path), "\n", "*" * 50)
+print("\n", "*" * 50, "\n", path.exists(path.join(current_path, "logs")), "\n", "*" * 50)
 WebScripts.main()
 sys.argv = argv
