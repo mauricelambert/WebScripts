@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -144,12 +144,13 @@ def execute_scripts(
         return None, b"404", None, -1, "Not Found"
 
     if not is_auth and not check_right(user, script):
-        return None, b"403", None, -1, "Not Found"
+        return None, b"403", None, -1, "Forbidden"
 
     arguments.insert(0, script.path)
 
-    if script.launcher is not None:
-        arguments.insert(0, script.launcher)
+    launcher = script.launcher
+    if launcher is not None:
+        arguments.insert(0, launcher)
 
     script_env = get_environ(environ, user, script)
 
