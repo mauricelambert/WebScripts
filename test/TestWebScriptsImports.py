@@ -25,7 +25,7 @@ This file tests specials imports with specific
 variables values.
 """
 
-from os import path, rename, chdir, getcwd
+from os import path, rename, chdir, getcwd, mkdir
 import logging.config
 import logging
 import sys
@@ -56,6 +56,8 @@ def import_without_package():
     locals_ = locals().copy()
     globals_ = globals().copy()
     current_path = getcwd()
+    if not path.exists(path.join(current_path, "logs")):
+        mkdir(path.join(current_path, "logs"))
     dst1 = path.join(dir_path, "..", "WebScripts", "__init__.py")
     dst2 = path.join(dir_path, "..", "test", "init.py")
 
