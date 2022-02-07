@@ -25,7 +25,7 @@ This file tests specials imports with specific
 variables values.
 """
 
-from os import path, rename, chdir, getcwd, mkdir
+from os import path, rename, chdir, getcwd, mkdir, listdir
 import logging.config
 import logging
 import sys
