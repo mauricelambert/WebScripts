@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file test the Errors.py file
+#    This file tests the Errors.py file
 #    from the command line and display the result in a web interface.
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,14 +20,21 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This file test the Errors.py file"""
+"""
+This file tests the Errors.py file
+"""
 
 from unittest import TestCase, main
 from os import path
 import sys
 
-sys.path = [path.join(path.dirname(__file__), ".."), *sys.path]
+# sys.path = [path.join(path.dirname(__file__), ".."), *sys.path]
 # sys.path.append(path.join(path.dirname(__file__), ".."))
+
+WebScripts_path = path.join(path.dirname(__file__), "..")
+
+if WebScripts_path not in sys.path:
+    sys.path.insert(0, WebScripts_path)
 
 from WebScripts.Errors import (
     WebScriptsError,

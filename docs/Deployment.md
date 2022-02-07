@@ -18,6 +18,7 @@ Containers contain complete deployment solutions and are hardened.
 ## Python virtual environment
 
 ### Linux
+
 ```bash
 sudo apt update
 sudo apt upgrade
@@ -36,11 +37,12 @@ chmod 700 logs
 ```
 
 ### Windows
+
 ```bash
 python -m venv WebScripts
 cd WebScripts
 Scripts\activate
-python -m pip install WebScripts --install-option "--admin-password=<your password>"
+python -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
 ```
 
 ## Web Server (Using Debian)
@@ -51,7 +53,7 @@ python -m pip install WebScripts --install-option "--admin-password=<your passwo
 
 ```bash
 useradd --system --no-create-home --shell /bin/false WebScripts
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"  --install-option "--directory=<directory>"
 
 nano /lib/systemd/system/WebScripts.service
 ```
@@ -143,7 +145,7 @@ sudo systemctl restart nginx
 sudo apt install libexpat1
 sudo apt install apache2 apache2-utils ssl-cert libapache2-mod-wsgi-py3
 
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data"
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data" --install-option "--directory=<directory>"
 
 sudo mkdir /var/www/WebScripts
 sudo chown -R www-data:www-data /var/www/WebScripts

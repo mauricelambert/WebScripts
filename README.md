@@ -85,7 +85,7 @@ Optional on Windows:
 ## Installation
 
 ```bash
-pip install WebScripts --install-option "--admin-password=<your password>"
+pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
 ```
 
 ## Basic Usages

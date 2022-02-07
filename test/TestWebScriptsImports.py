@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file test the WebScript.py file
+#    This file tests the WebScript.py file
 #    from the command line and display the result in a web interface.
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,6 +29,11 @@ from os import path, rename, chdir, getcwd
 import logging.config
 import logging
 import sys
+
+WebScripts_path = path.join(path.dirname(__file__), "..")
+
+if WebScripts_path not in sys.path:
+    sys.path.insert(0, WebScripts_path)
 
 argv = sys.argv.copy()
 sys.argv = ["WebScripts", "--test-running"]

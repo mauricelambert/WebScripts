@@ -27,9 +27,9 @@ python3 -m pip install WebScripts
 [Apache Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
 
 ```bash
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data"
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data" --install-option "--directory=<directory>"
 # OR
-python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-owww-data"
+python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-owww-data" --install-option "--d<directory>"
 ```
 
 #### Debian using NGINX as HTTPS proxy 
@@ -37,9 +37,9 @@ python3 -m pip install WebScripts --install-option "-p<your password>" --install
 [NGINX Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https)) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
 
 ```bash
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"
+python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts" --install-option "--directory=<directory>"
 # OR
-python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-oWebScripts"
+python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-oWebScripts" --install-option "--d<directory>"
 ```
 
 ## Windows
@@ -51,9 +51,9 @@ python -m pip install WebScripts
 ### Recommendations
 
 ```bash
-python -m pip install WebScripts --install-option "--admin-password=<your password>"
+python -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
 # OR
-python -m pip install WebScripts --install-option "-p<your password>"
+python -m pip install WebScripts --install-option "-p<your password>" --install-option "--d<directory>"
 ```
 
 ### Optional
@@ -182,4 +182,5 @@ mkdir logs
 ```
 
 ## License
+
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

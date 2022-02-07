@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.2.0"
+__version__ = "2.3.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,9 +50,10 @@ from setuptools.command.install import install
 
 # from setuptools.command.develop import develop
 from setuptools import setup, find_packages
+from os import path, makedirs, getcwd
 from getpass import getuser
+from os.path import join
 from typing import Dict
-from os import path
 
 import WebScripts as package
 import importlib.util
@@ -82,12 +83,15 @@ arguments = [
         "UNIX systems if you are installing with privileges).",
     ),
     ("no-hardening", "n", "Do not harden during installation."),
+    ("directory=", "d", "Current directory for the WebScripts server"),
 ]
 
 
 class PostInstallScript(install):
 
-    """This class installs and hardens the WebScripts project."""
+    """
+    This class installs and hardens the WebScripts project.
+    """
 
     logging.basicConfig(
         filemode="w",
@@ -116,6 +120,7 @@ class PostInstallScript(install):
         self.json_only = False
         self.no_hardening = False
         self.admin_password = None
+        self.directory = None
         self.owner = None
 
         logging.debug("Initialize custom properties")
@@ -127,9 +132,25 @@ class PostInstallScript(install):
 
     def linux_files_permissions(self, filename: str) -> None:
 
-        """This function changes the owner and permissions on
+        """
+        This function changes the owner and permissions on
         UNIX system files if you perform the installation
-        with privileges."""
+        with privileges.
+        """
+
+        logging.debug("Get directory...")
+        self_directory = self.directory or getcwd()
+        path_logs = join(self_directory, "logs")
+        logging.info(f"Build the log directory {path_logs}...")
+        makedirs(path_logs, exist_ok=True)
+
+        files = [
+            join(self_directory, "audit." + extention)
+            for extention in ("json", "txt", "html")
+        ]
+        for file in files:
+            file = open(file, "w")
+            file.close()
 
         if self.is_windows:
             return
@@ -216,9 +237,23 @@ class PostInstallScript(install):
                 )
                 os.chmod(directory, 0o700)
 
+        logging.warning(f"Change permissions and owner of {self_directory}")
+        os.chmod(self_directory, 0o755)  # nosec
+        os.chown(self_directory, 0, 0)
+        os.chown(
+            path_logs, self.owner_property.pw_uid, self.owner_property.pw_gid
+        )
+
+        for file in files:
+            os.chown(
+                file, self.owner_property.pw_uid, self.owner_property.pw_gid
+            )
+
     def add_absolute_paths_in_configuration(self) -> None:
 
-        """This function adds absolute paths on configurations."""
+        """
+        This function adds absolute paths on configurations.
+        """
 
         launcher = sys.executable
         for filename in self.json_config_files:

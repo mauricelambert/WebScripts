@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.4.11
+Version: 2.4.12
 Summary: This tool run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -122,7 +122,7 @@ Optional on Windows:
 ## Installation
 
 ```bash
-pip install WebScripts --install-option "--admin-password=<your password>"
+pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
 ```
 
 ## Basic Usages

@@ -18,9 +18,11 @@
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
 
 ## Description
-This tool run scripts and display the result in a Web Interface.
+
+This tool run scripts and display the result in a Web Interface ([a little presentation is available here](https://www.slideshare.net/MauriceLambert1/webscripts-server) and on my [github.io](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.pdf)).
 
 ## Goals
+
 Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
 
  - Secure
@@ -71,6 +73,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
 *Demonstration of WebScripts use - Youtube video*
 
 ## Requirements
+
 This package require:
 
  - python3
@@ -83,7 +86,7 @@ Optional on Windows:
 ## Installation
 
 ```bash
-pip install WebScripts --install-option "--admin-password=<your password>"
+pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
 ```
 
 ## Basic Usages
@@ -233,6 +236,7 @@ WebScripts38.main()
  - [Github](https://github.com/mauricelambert/WebScripts)
  - [ReadTheDocs](https://webscripts.readthedocs.io/en/latest/)
  - RSS Feed [pypi](https://pypi.org/rss/project/webscripts/releases.xml), [libraries](https://libraries.io/pypi/WebScripts/versions.atom)
+ - [WebScripts Server presentation](https://www.slideshare.net/MauriceLambert1/webscripts-server)
 
 ## Pictures
 

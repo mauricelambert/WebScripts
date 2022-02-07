@@ -156,6 +156,7 @@ docs/WEB_Interface.md
 docs/index.md
 test/TestCommons.py
 test/TestErrors.py
+test/TestPages.py
 test/TestUtils.py
 test/TestWebScripts.py
 test/TestWebScriptsImports.py
