@@ -25,7 +25,7 @@ This file tests specials imports with specific
 variables values.
 """
 
-from os import path, rename, chdir, getcwd, mkdir, listdir
+from os import path, rename, chdir, getcwd, mkdir
 import logging.config
 import logging
 import sys
@@ -56,15 +56,8 @@ def import_without_package():
     locals_ = locals().copy()
     globals_ = globals().copy()
     current_path = getcwd()
-    
-    print("\n", "*" * 50, "\n", path.join(current_path, "logs"), "\n", "*" * 50)
-    
     if not path.exists(path.join(current_path, "logs")):
         mkdir(path.join(current_path, "logs"))
-        
-    print("\n", "*" * 50, "\n", listdir(current_path), "\n", "*" * 50)
-    print("\n", "*" * 50, "\n", path.exists(path.join(current_path, "logs")), "\n", "*" * 50)
-        
     dst1 = path.join(dir_path, "..", "WebScripts", "__init__.py")
     dst2 = path.join(dir_path, "..", "test", "init.py")
 
@@ -118,6 +111,9 @@ def import_without_package():
     # REBUILD CONTEXT AND SYS
     #########################
     finally:
+        if not path.exists(path.join(getcwd(), "logs")):
+            mkdir(path.join(getcwd(), "logs"))
+
         sys.path = path_
         sys.modules = modules
         rename(dst2, dst1)
@@ -129,7 +125,6 @@ def import_without_package():
         for name, value in globals_.items():
             globals()[name] = value
 
-    print("\n", "*" * 50, "\n", path.join(current_path, "logs"), "\n", "*" * 50)
     if error:
         raise error
 
@@ -140,8 +135,5 @@ import_without_package()
 import WebScripts
 
 sys.argv = ["WebScripts", "--debug"]
-print("\n", "*" * 50, "\n", path.join(getcwd(), "logs"), "\n", "*" * 50)
-print("\n", "*" * 50, "\n", listdir(getcwd()), "\n", "*" * 50)
-print("\n", "*" * 50, "\n", path.exists(path.join(getcwd(), "logs")), "\n", "*" * 50)
 WebScripts.main()
 sys.argv = argv
