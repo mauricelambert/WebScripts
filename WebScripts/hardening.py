@@ -59,6 +59,7 @@ from smtplib import SMTP, SMTP_SSL
 from urllib.request import urlopen
 from urllib.error import URLError
 from dataclasses import dataclass
+from zipimport import zipimporter
 from socket import gethostbyname
 from pkgutil import iter_modules
 from contextlib import suppress
@@ -824,15 +825,28 @@ class Audit:
                 "WebScripts",
                 "activate_this",
                 "wsgi",
-                "_distutils_hack",
+                "distutils",
                 "uploads_management",
             ]
 
         for module in iter_modules():
+            finder = module.module_finder
+
             if (
-                module.module_finder.path.startswith(sys.prefix)
-                and module.name not in preinstall_modules
+                isinstance(finder, zipimporter)
+                and finder.archive.startswith(sys.prefix)
+                and not [
+                    m
+                    for m in preinstall_modules
+                    if m in path.basename(finder.archive)
+                ]
             ):
+                venv_modules.append(path.basename(finder.archive))
+            elif isinstance(finder, zipimporter):
+                continue
+            elif finder.path.startswith(sys.prefix) and not [
+                m for m in preinstall_modules if m in module.name
+            ]:
                 venv_modules.append(module.name)
 
         return Rule(
