@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Pages</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Pages</strong></big></big> (version 1.0.3)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="pages.py">pages.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;<a href="#Pages">Pages</a>&nbsp;(Api&nbsp;and&nbsp;Web&nbsp;system),&nbsp;script&nbsp;execution&nbsp;and&nbsp;right<br>
+system.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="Pages.html#Pages">Pages</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Pages">class <strong>Pages</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;implement&nbsp;Web&nbsp;<a href="#Pages">Pages</a>&nbsp;for&nbsp;WebScripts&nbsp;server.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Pages-__call__"><strong>__call__</strong></a>(self, environ: os._Environ, user: commons.User, server_configuration: ~ServerConfiguration, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>A&nbsp;redirect&nbsp;page&nbsp;(Error&nbsp;code&nbsp;301,&nbsp;javascript&nbsp;redirect&nbsp;and&nbsp;redirect<br>
+title)&nbsp;to&nbsp;/web/&nbsp;or&nbsp;/api/.</tt></dd></dl>
+
+<dl><dt><a name="Pages-auth"><strong>auth</strong></a>(self, environ: os._Environ, user: commons.User, server_configuration: ~ServerConfiguration, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;check&nbsp;auth&nbsp;and&nbsp;return&nbsp;headers,&nbsp;error&nbsp;and&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Pages-js"><strong>js</strong></a>(self, environ: os._Environ, user: commons.User, server_configuration: ~ServerConfiguration, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;Javascripts&nbsp;Scripts&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
+
+<dl><dt><a name="Pages-reload"><strong>reload</strong></a>(self, environ: os._Environ, user: commons.User, server_configuration: ~ServerConfiguration, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;is&nbsp;a&nbsp;simple&nbsp;URL&nbsp;to&nbsp;reload&nbsp;scripts<br>
+(useful&nbsp;for&nbsp;developpers&nbsp;to&nbsp;add/modify&nbsp;a&nbsp;script).</tt></dd></dl>
+
+<dl><dt><a name="Pages-static"><strong>static</strong></a>(self, environ: os._Environ, user: commons.User, server_configuration: ~ServerConfiguration, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;static&nbsp;file&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'ip_blacklist': typing.Dict[str, commons.Blacklist], 'js_paths': typing.Dict[str, commons.CallableFile], 'packages': &lt;class 'utils.DefaultNamespace'&gt;, 'processes': typing.Dict[str, Pages.Process], 'scripts': typing.Dict[str, commons.ScriptConfig], 'sessions': typing.Dict[int, commons.Session], 'statics_paths': typing.Dict[str, commons.CallableFile], 'user_blacklist': typing.Dict[str, commons.Blacklist]}</dl>
+
+<dl><dt><strong>api</strong> = &lt;Pages.Api object&gt;</dl>
+
+<dl><dt><strong>ip_blacklist</strong> = {}</dl>
+
+<dl><dt><strong>processes</strong> = {}</dl>
+
+<dl><dt><strong>sessions</strong> = {}</dl>
+
+<dl><dt><strong>user_blacklist</strong> = {}</dl>
+
+<dl><dt><strong>web</strong> = &lt;Pages.Web object&gt;</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['Pages']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in... Web system), script execution and right<font color="#c040c0">\n</font>system.<font color="#c040c0">\n</font>'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>
