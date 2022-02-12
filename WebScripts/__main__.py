@@ -19,15 +19,17 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface."""
+"""
+This tool run scripts and display the result in a Web Interface.
+"""
 
-__version__ = "2.4.14"
+__version__ = "2.5.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = (
-    """This tool run scripts and display the result in a Web Interface."""
+    "This tool run scripts and display the result in a Web Interface."
 )
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"

@@ -221,7 +221,9 @@ class Argument(DefaultNamespace):
 
 class ScriptConfig(DefaultNamespace):
 
-    """This class get script config."""
+    """
+    This class makes script configurations.
+    """
 
     __required__ = ["name", "dirname"]
     __defaults__ = {
@@ -358,7 +360,9 @@ class ScriptConfig(DefaultNamespace):
         server_configuration: ServerConfiguration,
     ) -> Dict[str, ScriptConfig]:
 
-        """This function build scripts from ServerConfiguration."""
+        """
+        This function build scripts from ServerConfiguration.
+        """
 
         scripts = getattr(configuration, "scripts", {})
         scripts_config = {}

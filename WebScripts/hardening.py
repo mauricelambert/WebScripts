@@ -50,13 +50,29 @@ __copyright__ = copyright
 
 __all__ = ["Report", "Rule", "Audit", "SEVERITY", "main"]
 
+from os.path import (
+    exists,
+    join,
+    isdir,
+    split,
+    dirname,
+    basename,
+    isfile,
+    isabs,
+)
+from os import getcwd, listdir, stat, stat_result, scandir
+from sys import prefix, base_prefix, modules
+from typing import TypeVar, List, Set, Dict
+from time import sleep, strftime, localtime
+from io import open, DEFAULT_BUFFER_SIZE
 from email.message import EmailMessage
-from typing import TypeVar, List, Set
 from collections.abc import Callable
-from os import getcwd, path, listdir
 from collections.abc import Iterator
+from json import load, dumps, loads
 from smtplib import SMTP, SMTP_SSL
 from urllib.request import urlopen
+from hashlib import new as newhash
+from tempfile import TemporaryFile
 from urllib.error import URLError
 from dataclasses import dataclass
 from zipimport import zipimporter
@@ -64,17 +80,14 @@ from socket import gethostbyname
 from pkgutil import iter_modules
 from contextlib import suppress
 from operator import itemgetter
+from shutil import copyfileobj
 from types import ModuleType
 from threading import Thread
 from getpass import getuser
-from time import sleep
+from platform import system
+from stat import filemode
 from enum import Enum
-import platform
 import ctypes
-import json
-import stat
-import sys
-import re
 import os
 
 try:
@@ -87,12 +100,14 @@ else:
 ServerConfiguration = TypeVar("ServerConfiguration")
 Server = TypeVar("Server")
 Logs = TypeVar("Logs")
-server_path = path.dirname(__file__)
+server_path = dirname(__file__)
 
 
 class SEVERITY(Enum):
 
-    """Severity level of the rules."""
+    """
+    Severity level of the rules.
+    """
 
     INFORMATION = "INFORMATION"
     LOW = "LOW"
@@ -122,7 +137,9 @@ class GETTER:
 @dataclass
 class Rule:
 
-    """This class implement a rule for hardening."""
+    """
+    This class implement a rule for hardening.
+    """
 
     subject: str
     id_: int
@@ -135,9 +152,17 @@ class Rule:
 
 class Report:
 
-    """This class implement the report object."""
+    """
+    This class implement the report object.
+    """
 
-    def __init__(self, rules: List[Rule], server: Server, logs: Logs):
+    def __init__(
+        self,
+        rules: List[Rule],
+        file_integrity: List[Dict[str, str]],
+        server: Server,
+        logs: Logs,
+    ):
         self.rules = rules
         self.server = server
         self.logs = logs
@@ -145,6 +170,7 @@ class Report:
         self.reports_dict: str = None
         self.reports_text: str = None
         self.reports_html: str = None
+        self.file_integrity = file_integrity
 
     @staticmethod
     def truncate_string(
@@ -161,7 +187,7 @@ class Report:
         length_string = len(string)
 
         if length_string > 13:
-            string = f"{string[:length - len(end)]}...{separator}"
+            string = f"{string[:length - len(end)]}{end}{separator}"
         else:
             string = f"{string}{separator}{' ' * (length - length_string)}"
 
@@ -169,7 +195,9 @@ class Report:
 
     def as_json(self) -> str:
 
-        """This function returns a JSON string of audit results."""
+        """
+        This function returns a JSON string of audit results.
+        """
 
         G = GETTER
 
@@ -189,6 +217,7 @@ class Report:
             "ALL": [],
             "SCORING": scoring,
             "fields": [],
+            "file integrity": self.file_integrity,
         }
 
         for rule in self.rules:
@@ -232,7 +261,7 @@ class Report:
         )
 
         fields = self.reports_dict.pop("fields")
-        self.reports_json = json.dumps(self.reports_dict, indent=4)
+        self.reports_json = dumps(self.reports_dict, indent=4)
         self.reports_dict["fields"] = fields
 
         return self.reports_json
@@ -277,6 +306,7 @@ class Report:
 
         G = GETTER
         scoring = G.score(self.reports_dict)
+        get_HTML_table = self.get_HTML_table
 
         if self.reports_dict is None:
             self.as_json()
@@ -286,14 +316,35 @@ class Report:
             "</td></tr>"
         )
 
-        table_fail = self.get_HTML_table(table, G.fail(self.reports_dict))
-        table_critical = self.get_HTML_table(table, G.crit(self.reports_dict))
-        table_high = self.get_HTML_table(table, G.high(self.reports_dict))
-        table_medium = self.get_HTML_table(table, G.med(self.reports_dict))
-        table_low = self.get_HTML_table(table, G.low(self.reports_dict))
-        table_information = self.get_HTML_table(
-            table, G.info(self.reports_dict)
-        )
+        table_fail = get_HTML_table(table, G.fail(self.reports_dict))
+        table_critical = get_HTML_table(table, G.crit(self.reports_dict))
+        table_high = get_HTML_table(table, G.high(self.reports_dict))
+        table_medium = get_HTML_table(table, G.med(self.reports_dict))
+        table_low = get_HTML_table(table, G.low(self.reports_dict))
+        table_information = get_HTML_table(table, G.info(self.reports_dict))
+
+        file_integrity = self.file_integrity
+        score_integrity = sum([x["Score"] for x in file_integrity])
+        failed_integrity = len(file_integrity)
+
+        for integrity in file_integrity:
+            if integrity["Score"] == 10:
+                integrity["severity"] = "CRITICAL"
+            elif integrity["Score"] >= 5:
+                integrity["severity"] = "HIGH"
+            else:
+                integrity["severity"] = "MEDIUM"
+
+        if file_integrity:
+            table = (
+                f"<tr><td>{'</td><td>'.join(file_integrity[0].keys())}"
+                "</td></tr>"
+            )
+            table_integrity = get_HTML_table(table, file_integrity)
+        else:
+            table_integrity = (
+                '<p class="information">No compromised files.</p>'
+            )
 
         self.reports_html = f"""
 <!DOCTYPE html>
@@ -322,6 +373,7 @@ class Report:
             .medium {{color: #B18905; border: 1px solid #B18905;}}
             .low {{color: #100B60; border: 1px solid #100B60;}}
             .information {{color: #04774E; border: 1px solid #04774E;}}
+            .integrity {{background-color: #CCCCCC; color: #B13D05;}}
         </style>
     </head>
     <body>
@@ -329,14 +381,21 @@ class Report:
 
         <h2>Links</h2>
         <ul>
+            <li><a href="#integrity_score">Integrity Score</a></li>
             <li><a href="#scoring">Scoring</a></li>
             <li><a href="#failed">Failed</a></li>
+            <li><a href="#integrity_report">Integrity Report</a></li>
             <li><a href="#critical">Critical</a></li>
             <li><a href="#high">High</a></li>
             <li><a href="#medium">Medium</a></li>
             <li><a href="#low">Low</a></li>
             <li><a href="#information">Information</a></li>
         </ul>
+
+        <h2 id="integrity_score">INTEGRITY</h2>
+
+        <p class="integrity"><strong>File number</strong>: {failed_integrity} (file should be 0)<br>
+        <strong>Score</strong>: {score_integrity} (score should be 0)<br></p>
 
         <h2 id="scoring">SCORING</h2>
         <table>
@@ -418,6 +477,12 @@ class Report:
         <h2 id="failed">FAILED</h2>
         <table>
             {table_fail}
+        </table>
+
+        <h2 id="integrity_report">INTEGRITY</h2>
+
+        <table>
+            {table_integrity}
         </table>
 
         <h2 id="critical">CRITICAL</h2>
@@ -558,8 +623,10 @@ scoring[f"{SEVERITY.INFORMATION.value} total"]},\t Fail:\
 
     def notification(self) -> None:
 
-        """This function send an email notification
-        to administrator with the audit report."""
+        """
+        This function send an email notification
+        to administrator with the audit report.
+        """
 
         if self.reports_text is None:
             self.as_text()
@@ -632,19 +699,26 @@ scoring[f"{SEVERITY.INFORMATION.value} total"]},\t Fail:\
 
 class Audit:
 
-    """This function implement hardening checks."""
+    """
+    This function implement hardening checks.
+    """
 
-    is_windows = platform.system() == "Windows"
+    is_windows = system() == "Windows"
     current_dir = getcwd()
+    network_up = True
+    latest_ = []
+    latest = []
 
     def audit_in_venv(server: Server) -> Rule:
 
-        """This function check the virtualenv."""
+        """
+        This function check the virtualenv.
+        """
 
         return Rule(
             "Virtualenv",
             0,
-            sys.prefix != sys.base_prefix,
+            prefix != base_prefix,
             3,
             SEVERITY.LOW.value,
             "Installation",
@@ -653,37 +727,41 @@ class Audit:
 
     def audit_config_files(server: Server) -> Rule:
 
-        """This function check the configurations files."""
+        """
+        This function check the configurations files.
+        """
 
         files = [
-            path.join("config", "server.ini"),
-            path.join("config", "server.json"),
-            path.join(server_path, "config", "nt", "server.ini")
+            join("config", "server.ini"),
+            join("config", "server.json"),
+            join(server_path, "config", "nt", "server.ini")
             if Audit.is_windows
-            else path.join(server_path, "config", "server.ini"),
-            path.join(server_path, "config", "nt", "server.json")
+            else join(server_path, "config", "server.ini"),
+            join(server_path, "config", "nt", "server.json")
             if Audit.is_windows
-            else path.join(server_path, "config", "server.json"),
+            else join(server_path, "config", "server.json"),
         ]
         compteur = 0
 
         for file in files:
-            if path.isfile(file):
+            if isfile(file):
                 compteur += 1
 
         return Rule(
             "Configurations files",
             31,
             compteur <= 1,
-            7,
-            SEVERITY.HIGH.value,
+            5,
+            SEVERITY.MEDIUM.value,
             "Installation",
             "WebScripts should be configured by only one configuration file.",
         )
 
     def audit_venv_modules(server: Server) -> Rule:
 
-        """This function check the virtualenv modules."""
+        """
+        This function check the virtualenv modules.
+        """
 
         venv_modules = []
 
@@ -834,17 +912,17 @@ class Audit:
 
             if (
                 isinstance(finder, zipimporter)
-                and finder.archive.startswith(sys.prefix)
+                and finder.archive.startswith(prefix)
                 and not [
                     m
                     for m in preinstall_modules
-                    if m in path.basename(finder.archive)
+                    if m in basename(finder.archive)
                 ]
             ):
-                venv_modules.append(path.basename(finder.archive))
+                venv_modules.append(basename(finder.archive))
             elif isinstance(finder, zipimporter):
                 continue
-            elif finder.path.startswith(sys.prefix) and not [
+            elif finder.path.startswith(prefix) and not [
                 m for m in preinstall_modules if m in module.name
             ]:
                 venv_modules.append(module.name)
@@ -949,35 +1027,41 @@ class Audit:
 
     def audit_security(server: Server) -> Rule:
 
-        """This function check the security configuration."""
+        """
+        This function check the security configuration.
+        """
 
         return Rule(
             "Security configuration",
             3,
             server.security,
-            8,
-            SEVERITY.CRITICAL.value,
+            6,
+            SEVERITY.HIGH.value,
             "Configuration",
             "Security configuration is not True.",
         )
 
     def audit_debug(server: Server) -> Rule:
 
-        """This function check the debug configuration."""
+        """
+        This function check the debug configuration.
+        """
 
         return Rule(
-            "Debug configuration",
+            "Debug mode",
             4,
             not server.debug,
-            8,
-            SEVERITY.CRITICAL.value,
+            6,
+            SEVERITY.HIGH.value,
             "Configuration",
             "Debug configuration is not False.",
         )
 
     def audit_blacklist(server: Server) -> Rule:
 
-        """This function check the blacklist configuration."""
+        """
+        This function check the blacklist configuration.
+        """
 
         return Rule(
             "Blacklist configuration",
@@ -992,7 +1076,9 @@ class Audit:
 
     def audit_smtp_password(server: Server) -> Rule:
 
-        """This function check the SMTP password protection."""
+        """
+        This function check the SMTP password protection.
+        """
 
         return Rule(
             "SMTP password protection",
@@ -1010,27 +1096,31 @@ class Audit:
 
     def audit_log_level(server: Server) -> Rule:
 
-        """This function check the log level."""
+        """
+        This function check the log level.
+        """
 
         return Rule(
             "Log level",
             7,
             not server.configuration.log_level,
-            8,
-            SEVERITY.HIGH.value,
+            5,
+            SEVERITY.MEDIUM.value,
             "Configuration",
             "Log level is not 0.",
         )
 
     def audits_module_path(server: Server) -> Rule:
 
-        """This function check the modules paths."""
+        """
+        This function check the modules paths.
+        """
 
         for module_path in server.configuration.modules_path:
             yield Rule(
                 "Module path",
                 30,
-                path.isabs(module_path),
+                isabs(module_path),
                 5,
                 SEVERITY.MEDIUM.value,
                 "Configuration",
@@ -1064,8 +1154,8 @@ class Audit:
                 "Error content type",
                 9,
                 script.stderr_content_type == "text/plain",
-                8,
-                SEVERITY.CRITICAL.value,
+                6,
+                SEVERITY.HIGH.value,
                 "Script Configuration",
                 "The content type of the stderr for "
                 f"{script.name} is not text/plain.",
@@ -1091,15 +1181,17 @@ class Audit:
 
     def audits_scripts_path(server: Server) -> Iterator[Rule]:
 
-        """This function check the configuration of the script path."""
+        """
+        This function check the configuration of the script path.
+        """
 
         for script in server.pages.scripts.values():
             yield Rule(
                 "Script path",
                 17,
-                script.path_is_defined and path.isabs(script.path),
-                5,
-                SEVERITY.MEDIUM.value,
+                script.path_is_defined and isabs(script.path),
+                7,
+                SEVERITY.HIGH.value,
                 "Script Configuration",
                 f"The path of {script.name} is not defined in configuration"
                 " files or is not absolute.",
@@ -1109,13 +1201,15 @@ class Audit:
 
     def audits_launcher(server: Server) -> Iterator[Rule]:
 
-        """This function check the configuration of the script launcher."""
+        """
+        This function check the configuration of the script launcher.
+        """
 
         for script in server.pages.scripts.values():
             yield Rule(
                 "Script launcher",
                 18,
-                script.launcher and path.isabs(script.launcher),
+                script.launcher and isabs(script.launcher),
                 7,
                 SEVERITY.HIGH.value,
                 "Script Configuration",
@@ -1125,11 +1219,13 @@ class Audit:
 
     def audit_admin_account(server: Server) -> Iterator[Rule]:
 
-        """This function check the admin password."""
+        """
+        This function checks the admin password.
+        """
 
         default_password = False
 
-        with open(path.join(server_path, "data", "users.csv")) as file:
+        with open(join(server_path, "data", "users.csv")) as file:
             line = file.readline()
 
             while line:
@@ -1142,18 +1238,20 @@ class Audit:
                 line = file.readline()
 
         return Rule(
-            "Admin password",
+            "Default credentials",
             11,
             not default_password,
-            10,
-            SEVERITY.CRITICAL.value,
+            7,
+            SEVERITY.HIGH.value,
             "Password",
             "Admin password is Admin.",
         )
 
     def get_owner(filename: str) -> str:
 
-        """This function return the owner of a file."""
+        """
+        This function return the owner of a file.
+        """
 
         if Audit.is_windows:
             with suppress(ImportError):
@@ -1173,7 +1271,9 @@ class Audit:
 
     def audits_file_owner(server: Server) -> Iterator[Rule]:
 
-        """This function check the files owner."""
+        """
+        This function check the files owner.
+        """
 
         user = getuser()
         current_dir = Audit.current_dir
@@ -1182,36 +1282,30 @@ class Audit:
 
         if Audit.is_windows:
             important_filenames = [
-                path.join(server_path, "config", "nt", "server.ini"),
-                path.join(server_path, "config", "nt", "server.json"),
+                join(server_path, "config", "nt", "server.ini"),
+                join(server_path, "config", "nt", "server.json"),
             ]
         else:
             important_filenames = [
-                path.join(server_path, "config", "server.ini"),
-                path.join(server_path, "config", "server.json"),
+                join(server_path, "config", "server.ini"),
+                join(server_path, "config", "server.json"),
             ]
 
-        important_filenames.append(
-            path.join(server_path, "config", "loggers.ini")
-        )
-        important_filenames.append(
-            path.join(current_dir, "config", "server.ini")
-        )
-        important_filenames.append(
-            path.join(current_dir, "config", "server.json")
-        )
+        important_filenames.append(join(server_path, "config", "loggers.ini"))
+        important_filenames.append(join(current_dir, "config", "server.ini"))
+        important_filenames.append(join(current_dir, "config", "server.json"))
 
         important_filenames += listdir("logs")
-        important_filenames += listdir(path.join(server_path, "data"))
+        important_filenames += listdir(join(server_path, "data"))
 
         for dirname in (server_path, current_dir):
 
             for file in server.pages.js_paths.values():
-                if path.exists(file.path):
+                if exists(file.path):
                     simple_filenames.append(file.path)
 
             for file in server.pages.statics_paths.values():
-                if path.exists(file.path):
+                if exists(file.path):
                     simple_filenames.append(file.path)
 
         for script in server.pages.scripts.values():
@@ -1222,7 +1316,7 @@ class Audit:
                 important_filenames.append(module.__file__)
 
         for filename in important_filenames:
-            if path.exists(filename):
+            if exists(filename):
                 yield Rule(
                     "File owner",
                     11,
@@ -1234,7 +1328,7 @@ class Audit:
                 )
 
         for filename in simple_filenames:
-            if path.exists(filename):
+            if exists(filename):
                 yield Rule(
                     "File owner",
                     11,
@@ -1247,9 +1341,11 @@ class Audit:
 
     def get_permissions(filename: str) -> str:
 
-        """This function returns the file permissions."""
+        """
+        This function returns the file permissions.
+        """
 
-        return stat.filemode(os.stat(filename).st_mode)
+        return filemode(stat(filename).st_mode)
 
     def _audits_directory_permissions(
         server: Server, secure_paths: Set[str]
@@ -1271,12 +1367,12 @@ class Audit:
             )
             return
 
-        config_path = path.join(server_path, "config")
+        config_path = join(server_path, "config")
         secure_paths = {
-            path.join(sys.prefix, "bin"),
+            join(prefix, "bin"),
             config_path,
-            path.join(config_path, "files"),
-            path.join(config_path, "scripts"),
+            join(config_path, "files"),
+            join(config_path, "scripts"),
             Audit.current_dir,
         }
         secure_paths.update(secure_paths)
@@ -1313,15 +1409,17 @@ class Audit:
                 "Script timeout",
                 35,
                 script.timeout,
-                7,
-                SEVERITY.HIGH.value,
+                5,
+                SEVERITY.MEDIUM.value,
                 "Script Configuration",
                 f"The {script.name} timeout is not defined.",
             )
 
     def audits_file_rights(server: Server) -> Iterator[Rule]:
 
-        """This function check the files rights."""
+        """
+        This function check the files rights.
+        """
 
         if Audit.is_windows:
             yield Rule(
@@ -1337,35 +1435,35 @@ class Audit:
 
         current_dir = Audit.current_dir
 
-        rw_filenames = listdir(path.join(server_path, "data")) + listdir(
-            path.join(current_dir, "logs")
+        rw_filenames = listdir(join(server_path, "data")) + listdir(
+            join(current_dir, "logs")
         )
 
-        server_logs = path.join(server_path, "logs")
-        if path.exists(server_logs):
+        server_logs = join(server_path, "logs")
+        if exists(server_logs):
             rw_filenames.extend(listdir(server_logs))
 
         r_filenames = [
-            path.join(server_path, "config", "server.ini"),
-            path.join(server_path, "config", "server.json"),
+            join(server_path, "config", "server.ini"),
+            join(server_path, "config", "server.json"),
         ]
 
-        r_filenames.append(path.join(server_path, "config", "loggers.ini"))
-        r_filenames.append(path.join(current_dir, "config", "server.ini"))
-        r_filenames.append(path.join(current_dir, "config", "server.json"))
+        r_filenames.append(join(server_path, "config", "loggers.ini"))
+        r_filenames.append(join(current_dir, "config", "server.ini"))
+        r_filenames.append(join(current_dir, "config", "server.json"))
 
         for dirname in (server_path, current_dir):
 
             r_filenames += [
                 file.path
                 for file in server.pages.js_paths.values()
-                if path.exists(file.path)
+                if exists(file.path)
             ]
 
             r_filenames += [
                 file.path
                 for file in server.pages.statics_paths.values()
-                if path.exists(file.path)
+                if exists(file.path)
             ]
 
             executable_filenames = [
@@ -1381,9 +1479,9 @@ class Audit:
         yield from Audit._audits_directory_permissions(
             server,
             {
-                path.dirname(path_)
+                dirname(path_)
                 for path_ in executable_filenames + rw_filenames + r_filenames
-                if path.exists(path_)
+                if exists(path_)
             },
         )
 
@@ -1396,11 +1494,11 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"File rights for {path.split(filename)[1]} is "
+                f"File rights for {split(filename)[1]} is "
                 "not 600 (rw- --- ---).",
             )
             for filename in rw_filenames
-            if path.exists(filename)
+            if exists(filename)
         ]
 
         yield from [
@@ -1411,15 +1509,15 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"File rights for {path.split(filename)[1]} is "
+                f"File rights for {split(filename)[1]} is "
                 "not 400 (r-- --- ---).",
             )
             for filename in r_filenames
-            if path.exists(filename)
+            if exists(filename)
         ]
 
         for filename in executable_filenames:
-            if path.exists(filename):
+            if exists(filename):
                 permissions = Audit.get_permissions(filename)
 
                 yield Rule(
@@ -1429,20 +1527,22 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {path.split(filename)[1]} is not 0 "
+                    f"File rights for {split(filename)[1]} is not 0 "
                     "for group and 0 for other (xxx --- ---).",
                 )
 
     def audit_export_configuration(server: Server) -> Iterator[Rule]:
 
-        """This function check the export configuration file."""
+        """
+        This function check the export configuration file.
+        """
 
         return Rule(
             "Export file",
             13,
-            not path.exists("export_Configuration.json"),
-            3,
-            SEVERITY.LOW.value,
+            not exists("export_Configuration.json"),
+            4,
+            SEVERITY.MEDIUM.value,
             "Files",
             "The export configuration file exist, "
             "should be deleted on production.",
@@ -1450,7 +1550,9 @@ class Audit:
 
     def log_rule(rule: Rule, logs: Logs) -> None:
 
-        """This function log rule."""
+        """
+        This function log rule.
+        """
 
         if rule.is_OK:
             state = "PASS"
@@ -1476,7 +1578,9 @@ class Audit:
 
     def run(server: Server, logs: Logs) -> List[Rule]:
 
-        """This function run audit and checks."""
+        """
+        This function run audit and checks.
+        """
 
         rules = []
         for audit in dir(Audit):
@@ -1491,21 +1595,21 @@ class Audit:
 
         return rules
 
-    def check_for_updates(
-        configuration: ServerConfiguration, logs: Logs, send_mail: Callable
-    ) -> None:
+    def check_for_updates(logs: Logs) -> None:
 
-        """This function runs in a thread indefinitely, it checks the version
+        """
+        This function runs in a thread indefinitely, it checks the version
         and the latest published version of WebScripts every hour.
         If the version and the latest published version are different,
-        this function sends an email notification."""
+        this function sends an email notification.
+        """
 
-        latest = None
-        latest_ = ""
+        latest = Audit.latest
+        latest_ = Audit.latest_
 
         if __package__:
             version = [
-                int(i) for i in sys.modules[__package__].__version__.split(".")
+                int(i) for i in modules[__package__].__version__.split(".")
             ]
         else:
             return None
@@ -1523,65 +1627,518 @@ class Audit:
                 "https://api.github.com/repos/mauricelambert/WebScripts/tags"
             )
 
-            data = json.load(response)
+            data = load(response)
             return [int(i) for i in data[0]["name"][1:].split(".")]
 
-        sleep(
-            120
-        )  # Wait 2 minutes (else "SmtpError: to many connections" is raised)
-
-        while True:
-
+        if Audit.network_up:
             try:
-                latest = get_latest()
+                latest = Audit.latest = get_latest()
             except URLError:
-                logs.critical(
-                    "Network error: the version of WebScripts is not checked."
-                )
-                break
+                logs.critical("Network error: updates are not checked.")
+                Audit.network_up = False
 
             if version < latest and latest != latest_:
                 logs.critical(
                     "WebScripts is not up-to-date, current:"
                     f" {version} latest: {latest}"
                 )
-                send_mail(
-                    configuration,
-                    f"Current WebScripts version: {version}\n"
-                    f"Latest WebScripts version:  {latest}\nIt is "
-                    "recommended that you upgrade your WebScripts server.",
+                return (
+                    f"Current WebScripts version: {'.'.join(version)}"
+                    f"Latest WebScripts version: {'.'.join(latest)}"
+                    "It is recommended that you upgrade your WebScripts server."
                 )
 
-            latest_ = latest
-            sleep(3600)
+            Audit.latest_ = latest
+
+        return ""
 
 
-'''class FilesIntegity:
+class FilesIntegity:
 
-    """This class check the files integrity."""
+    """
+    This class checks the file integrity.
+    """
 
-    def __init__(self):
-        self.
+    def __init__(self, server, logs):
+        self.webscripts_filename = join(
+            server_path, "webscripts_file_integrity.json"
+        )
+        self.uploads_filename = join(
+            server_path, "uploads_file_integrity.json"
+        )
+        self.logs_filename = join(server_path, "logs_checks.json")
+        self.temp_logs_files = {}
+        self.server = server
+        self.logs = logs
+        self.hashes = {}
 
-    def check_files_integrity(self):
+    def get_old_files(
+        self, filename: str, hash_: str
+    ) -> Dict[str, Dict[str, str]]:
 
-        """"""
+        """
+        This function returns file data to check integrity
+        from JSON file (previous check).
+        """
 
-        with open("default_files.json") as file:
-            files = json.load(file)
+        logs = self.logs
+        logs.debug("Get old file data for integrity checks.")
+        to_yield = None
 
-        for directory in ():
-            for file, data in files:
-                ...
-'''
+        with open(filename, "rb") as file:
+            data = file.read()
+            files = loads(data)
+            if hash_ is not None:
+                if newhash("sha512", data).hexdigest() != hash_:
+                    logs.critical("File for integrity checks is compromised.")
+                    to_yield = {
+                        "File": filename,
+                        "Reason": "File for integrity checks is compromised.",
+                        "Score": 10,
+                    }
+
+        return to_yield, files
+
+    def get_files(self) -> Dict[str, Dict[str, str]]:
+
+        """
+        This functions gets used files.
+        """
+
+        def build_file(path: str) -> Dict[str, str]:
+
+            """
+            This function makes file JSON object from path.
+            """
+
+            file = open(path, "rb")
+            data = file.read()
+            file.close()
+
+            self.logs.debug(f"Get hashes and metadata for {path}.")
+            metadata = stat(path)
+
+            return {
+                "path": path,
+                "sha512": newhash("sha512", data).hexdigest(),
+                "whirlpool": newhash("whirlpool", data).hexdigest(),
+                "size": metadata.st_size,
+                "modification": strftime(
+                    "%Y-%m-%d %H:%M:%S", localtime(metadata.st_mtime)
+                ),
+            }
+
+        pages = self.server.pages
+        self.webscripts_new_files = files = {}
+        self.logs.info("Get hash and metadata from code files...")
+
+        for name, callable_file in pages.js_paths.items():
+            files[f"static {name}"] = build_file(callable_file.path)
+
+        for name, callable_file in pages.statics_paths.items():
+            files[f"static {name}"] = build_file(callable_file.path)
+
+        for name, config in pages.scripts.items():
+            files[f"script {name}"] = build_file(config.path)
+
+        return files
+
+    def check_webscripts_file_integrity(self) -> Iterator[Dict[str, str]]:
+
+        """
+        This function compares old files data to new files data.
+        """
+
+        new_files_bak = self.get_files()
+        new_files = new_files_bak.copy()
+        self.logs.debug("Compare metadata and hashes for code files.")
+        to_yield, old_files = self.get_old_files(
+            self.webscripts_filename, self.hashes.get("webscripts")
+        )
+
+        if to_yield:
+            yield to_yield
+
+        for file, data in old_files.items():
+            new_data = new_files.pop(file, {})
+
+            for check, old_default, new_default, score in (
+                ("path", "??", "::", 10),  # default values are invalid.
+                # A hacker can make new file with different path when
+                # you have a weak configuration (WebScripts server
+                # research files).
+                ("sha512", "ZZ", "XX", 7),  # if file change this check
+                ("whirlpool", "ZZ", "XX", 10),  # should failed so any other
+                ("size", -1, -2, 10),  # should be failed.
+                ("modification", "~~", "!!", 10),
+            ):
+
+                old = data.get(check, old_default)
+                new = new_data.get(check, new_default)
+
+                if old != new:
+                    self.logs.critical(f"Code file: {file} is compromised.")
+                    yield {
+                        "File": file,
+                        "Reason": (
+                            f"New {check} for '{file}' "
+                            f"(Old: {old if old != old_default else None},"
+                            f" New: {new if new != new_default else None})"
+                        ),
+                        "Score": score,
+                    }
+
+        for file, data in new_files.items():
+            self.logs.critical(f"Code file: {file} is compromised.")
+            yield {
+                "File": file,
+                "Reason": (
+                    f"A new file is detected: '{file}' "
+                    f"(Last modification: {data.get('modification')})"
+                ),
+                "Score": 5,
+            }
+
+    def check_data_file_integrity(self) -> Iterator[Dict[str, str]]:
+
+        """
+        This function checks uploads file integrity
+        (uploads can not be changed from WebScripts Server).
+        """
+
+        data_files = join(server_path, "data")
+        uploads_files = join(data_files, "uploads")
+        self.new_data_files = new_data_files = {}
+        to_yield, old_files = self.get_old_files(
+            self.uploads_filename, self.hashes.get("uploads")
+        )
+
+        if to_yield:
+            yield to_yield
+
+        for file in scandir(data_files):
+            if not file.is_file():
+                continue
+
+            name = f"Data {file.name}"
+            path = file.path
+            data = old_files.pop(name, None)
+            hash_ = sha512sum(path)
+            metadata = stat(path)
+            size = metadata.st_size
+            modif = strftime("%Y-%m-%d %H:%M:%S", localtime(metadata.st_mtime))
+
+            new_data_files[name] = {
+                "size": size,
+                "hash": hash_,
+                "modification": modif,
+            }
+
+            if data is None:
+                self.logs.info(
+                    f"A new database file has been created ({name})."
+                )
+                yield {
+                    "File": name,
+                    "Reason": "A new database file has been created.",
+                    "Score": 1,
+                }
+                continue
+
+            if (
+                data.get("size", -1) != size
+                or data.get("modification", "") != modif
+                or hash_ != data.get("hash", "")
+            ):
+                self.logs.warning(
+                    f"Database file: '{file}' has been modified."
+                )
+                yield {
+                    "File": name,
+                    "Reason": "A database has been modified.",
+                    "Score": 2,
+                }
+
+        for filename in listdir(uploads_files):
+            path = join(uploads_files, filename)
+            filename = f"Uploads {filename}"
+            data = old_files.pop(filename, None)
+            hash_ = sha512sum(path)
+            metadata = stat(path)
+            size = metadata.st_size
+            modif = strftime("%Y-%m-%d %H:%M:%S", localtime(metadata.st_mtime))
+
+            new_data_files[filename] = {
+                "size": size,
+                "hash": hash_,
+                "modification": modif,
+            }
+
+            if data is None:
+                self.logs.info(
+                    f"An uploads file has been created ({filename})."
+                )
+                yield {
+                    "File": filename,
+                    "Reason": "An uploads file has been created.",
+                    "Score": 1,
+                }
+                continue
+
+            if (
+                data.get("size", -1) != size
+                or data.get("modification", -1) != modif
+                or hash_ != data.get("hash", "")
+            ):
+                self.logs.critical(
+                    f"An uploads file has been modified (this is a suspicious action, check that your server is not compromised) [{filename}]."
+                )
+                yield {
+                    "File": filename,
+                    "Reason": "An uploads file has been modified (this is a suspicious action, check that your server is not compromised).",
+                    "Score": 10,
+                }
+
+        for file in old_files:
+            self.logs.critical(
+                f"An data/uploads file is deleted (this is a suspicious action, check that your server is not compromised) [{file}]."
+            )
+            yield {
+                "File": file,
+                "Reason": f"A data/uploads is deleted (this is a suspicious action, check that your server is not compromised).",
+                "Score": 10,
+            }
+
+    def check_logs_files(self) -> Iterator[Dict[str, str]]:
+
+        """
+        This function checks logs file.
+        """
+
+        self.logs.debug("Log files integrity checks...")
+        files = [*scandir(join(server_path, "logs"))]
+        temp_logs_files = self.temp_logs_files
+        check_logs_ok = self.check_logs_ok
+        _, self.logs_checks = to_yield, logs_checks = self.get_old_files(
+            self.logs_filename, self.hashes.get("logs")
+        )
+
+        if to_yield:
+            yield to_yield
+
+        if isdir("logs"):
+            self.logs.info("Current logs directory found...")
+            files.extend(scandir("logs"))
+
+        for file in files:
+            filename = file.name
+            if (
+                file.is_file()
+                and len(filename) > 3
+                and filename[:2].isdigit()
+                and filename[2] == "-"
+                and filename.endswith(".logs")
+            ):
+                self.logs.debug(f"Check log file: '{filename}'...")
+                path = file.path
+                metadata = file.stat()
+                size = metadata.st_size
+                modification = strftime(
+                    "%Y-%m-%d %H:%M:%S", localtime(metadata.st_mtime)
+                )
+                creation = strftime(
+                    "%Y-%m-%d %H:%M:%S", localtime(metadata.st_ctime)
+                )
+                temp_file = temp_logs_files.get(path)
+
+                if temp_file is None:
+                    temp_file = temp_logs_files[path] = TemporaryFile()
+
+                if not check_logs_ok(path, temp_file, metadata):
+                    file_checks = logs_checks.get(file, {})
+                    self.logs.warning(
+                        "A log file has lost logs (check log rotation otherwise your server is compromised)."
+                    )
+                    yield {
+                        "File": f"Logs {file}",
+                        "Reason": (
+                            f"{path}: logs has been modified. "
+                            f"Last size: {file_checks.get('size')},"
+                            f" new size: {size}. Last creation: {file_checks.get('created')},"
+                            f" last modification: {file_checks.get('modification')}, new creation"
+                            f": {creation}, new modification: {modification}. "
+                            "If it's not rotating logs, your server is compromised."
+                        ),
+                        "Score": 7,  # score 7 because it will be reported on logs file rotation
+                    }
+
+                logs_checks[path] = {
+                    "modification": modification,
+                    "created": creation,
+                    "size": size,
+                }
+
+                self.logs.debug(f"Log file: '{filename}' is checked.")
+
+    def save(self) -> None:
+
+        """
+        This function saves data to check file integrity.
+        """
+
+        data_webscripts = dumps(self.webscripts_new_files).encode()
+        with open(self.webscripts_filename, "wb") as file:
+            file.write(data_webscripts)
+
+        data_uploads = dumps(self.new_data_files).encode()
+        with open(self.uploads_filename, "wb") as file:
+            file.write(data_uploads)
+
+        data_logs = dumps(self.logs_checks).encode()
+        with open(self.logs_filename, "wb") as file:
+            file.write(data_logs)
+
+        self.hashes = {
+            "webscripts": newhash("sha512", data_webscripts).hexdigest(),
+            "uploads": newhash("sha512", data_uploads).hexdigest(),
+            "logs": newhash("sha512", data_logs).hexdigest(),
+        }
+
+    @staticmethod
+    def check_logs_ok(
+        path: str, temp_file: TemporaryFile, metadata: stat_result
+    ) -> bool:
+
+        """
+        This function checks the log file integrity.
+        """
+
+        temp_metadata = stat(temp_file.name)
+        temp_file.seek(0)
+        read_check_log = temp_file.readline
+        write_check_log = temp_file.write
+
+        if (
+            temp_metadata.st_size
+            > metadata.st_size
+            # or temp_metadata.st_mtime > metadata.st_mtime
+            # or temp_metadata.st_ctime > metadata.st_ctime
+        ):
+            return False
+
+        with open(path, "rb") as log_file:
+            read_log = log_file.readline
+            log = read_log()
+            check_log = read_check_log()
+
+            while check_log:
+                if log != check_log:
+                    temp_file.seek(0)
+                    log_file.seek(0)
+                    copyfileobj(log_file, temp_file)
+                    return False
+
+                log = read_log()
+                check_log = read_check_log()
+
+            while log:
+                write_check_log(log)
+                log = read_log()
+
+        return True
+
+
+def sha512sum(path: str, length: int = DEFAULT_BUFFER_SIZE) -> str:
+
+    """
+    This function returns the SHA512 of a file.
+    """
+
+    hash_ = newhash("sha512")
+    update = hash_.update
+    with open(path, mode="rb") as file:
+        read = file.read
+        data = read(length)
+
+        while data:
+            update(data)
+            data = read(length)
+
+    return hash_.hexdigest()
+
+
+def daemon_func(
+    server: Server,
+    file_integrity: FilesIntegity,
+    logs: Logs,
+    send_mail: Callable,
+) -> None:
+
+    """
+    This function implements a daemon thread to
+    check WebScripts version, update and integrity.
+    """
+
+    sleep(5)  # No SMTP error: "SmtpError: to many connections"
+    files = []
+    text = ""
+
+    while True:
+        text += Audit.check_for_updates(logs)
+
+        if text:
+            send_mail(server.configuration, text)
+
+        sleep(30)
+        files += [
+            *file_integrity.check_webscripts_file_integrity(),
+            *file_integrity.check_logs_files(),
+            *file_integrity.check_data_file_integrity(),
+        ]
+
+        file_integrity.save()
+
+        # if [file for file in files if file["Score"] == 10]:
+        if any([file["Score"] >= 5 for file in files]):
+            lengths = {
+                "File": {"length": 12},
+                "Reason": {"length": 50},
+                "Score": {"length": 5, "separator": ",\n"},
+            }
+            text = "\n".join(
+                [
+                    Report.truncate_string(key, **lengths[key])
+                    for key in files[0].keys()
+                ]
+                + [
+                    Report.truncate_string(value, **lengths[key])
+                    for file in files
+                    for key, value in file.items()
+                ]
+            )
+            files = []
+        else:
+            text = ""
 
 
 def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
 
-    """Main function to execute this file."""
+    """
+    The main function to perform WebScripts Server hardening audit.
+    """
+
+    file_integrity = FilesIntegity(server, logs)
+
+    files = [
+        *file_integrity.check_webscripts_file_integrity(),
+        *file_integrity.check_logs_files(),
+        *file_integrity.check_data_file_integrity(),
+    ]
+
+    file_integrity.save()
 
     rules = Audit.run(server, logs)
-    report = Report(rules, server, logs)
+    report = Report(rules, files, server, logs)
     report.as_json()
     report.get_pourcent()
     report.as_html()
@@ -1599,16 +2156,17 @@ def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
     logs.debug("Start a thread to send hardening report...")
     Thread(target=report.notification).start()
 
-    logs.debug("Start a thread to check WebScripts version...")
-    version = Thread(
-        target=Audit.check_for_updates,
+    logs.debug("Start the daemon to check WebScripts version and integrity...")
+    daemon = Thread(
+        target=daemon_func,
         args=(
-            server.configuration,
+            server,
+            file_integrity,
             logs,
             send_mail,
         ),
         daemon=True,
     )
-    version.start()
+    daemon.start()
 
     return report

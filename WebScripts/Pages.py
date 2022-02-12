@@ -60,8 +60,8 @@ from os import _Environ, path
 from fnmatch import fnmatch
 from threading import Timer
 from html import escape
+from json import dumps
 from time import time
-import json
 
 try:
     from .commons import (
@@ -209,20 +209,20 @@ def start_process(
 @log_trace
 def anti_XSS(json_value: JsonValue) -> JsonValue:
 
-    """This function clean a JSON object."""
+    """
+    This function clean a JSON object.
+    """
 
     if isinstance(json_value, str):
         return escape(json_value)
     elif isinstance(json_value, int):
         return json_value
     elif isinstance(json_value, list):
-        for i, value in enumerate(json_value):
-            value[i] = anti_XSS(json_value)
-        return json_value
+        return [anti_XSS(value) for value in json_value]
     elif isinstance(json_value, dict):
-        for attribut, value in json_value.items():
-            json_value[attribut] = anti_XSS(value)
-        return json_value
+        return {
+            attribut: anti_XSS(value) for attribut, value in json_value.items()
+        }
     elif json_value is None:
         return json_value
     else:
@@ -259,27 +259,48 @@ def get_environ(
     environ: _Environ, user: User, script: ScriptConfig
 ) -> Dict[str, str]:
 
-    """This function builds the environment variables for the new process."""
+    """
+    This function builds the environment variables for the new process.
+    """
 
-    script_env = environ.copy()
+    # script_env = environ.copy()
 
-    script_env["USER"] = json.dumps(user.get_dict())
-    script_env["SCRIPT_CONFIG"] = json.dumps(script.get_JSON_API())
+    # script_env["USER"] = dumps(user.get_dict())
+    # script_env["SCRIPT_CONFIG"] = dumps(script.get_JSON_API())
 
-    to_delete = [
-        key
-        for key in script_env.keys()
+    # to_delete = [
+    #     key
+    #     for key in script_env.keys()
+    #     if key
+    #     in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
+    # ]
+    # for key in to_delete:
+    #     del script_env[key]
+
+    # script_env["wsgi.version"] = ".".join(
+    #     [str(version) for version in script_env["wsgi.version"]]
+    # )
+
+    # return {key: str(value) for key, value in script_env.items()}
+
+    script_env = {
+        key: str(value)
+        if key != "wsgi.version"
+        else ".".join([str(version) for version in value])
+        for key, value in environ.items()
         if key
-        in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
-    ]
-    for key in to_delete:
-        del script_env[key]
+        not in (
+            "wsgi.run_once",
+            "wsgi.input",
+            "wsgi.errors",
+            "wsgi.file_wrapper",
+        )
+    }
 
-    script_env["wsgi.version"] = ".".join(
-        [str(version) for version in script_env["wsgi.version"]]
-    )
+    script_env["USER"] = dumps(user.get_dict())
+    script_env["SCRIPT_CONFIG"] = dumps(script.get_JSON_API())
 
-    return {key: str(value) for key, value in script_env.items()}
+    return script_env
 
 
 @log_trace
@@ -502,7 +523,7 @@ class Script:
         return (
             "200 OK",
             {"Content-Type": "application/json; charset=utf-8"},
-            json.dumps(response_object),
+            dumps(response_object),
         )
 
 
@@ -570,7 +591,7 @@ class Api:
         return (
             "200 OK",
             {"Content-Type": "application/json; charset=utf-8"},
-            json.dumps(scripts),
+            dumps(scripts),
         )
 
     @log_trace
@@ -641,7 +662,7 @@ class Api:
         return (
             "200 OK",
             {"Content-Type": "application/json; charset=utf-8"},
-            json.dumps(response_object),
+            dumps(response_object),
         )
 
 
@@ -710,7 +731,9 @@ class Web:
         if script.command_generate_documentation is not None:
             command = script.command_generate_documentation % script.get_dict()
             Logs.info(f"Command for documentation: {command}")
-            process = Popen(command, shell=True)  # nosec # nosemgrep
+            process = Popen(
+                command, env=get_environ(environ, user, script), shell=True
+            )  # nosec # nosemgrep
             process.communicate()
 
         docfile = get_real_path(script.documentation_file)
