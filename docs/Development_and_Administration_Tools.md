@@ -26,7 +26,7 @@ python -m unittest discover -s test -p Test*.py -v
 |---------------|------------|---------|----------|
 | WebScripts.py | 759        | 3       | 99%      |
 | commons.py    | 399        | 2       | 99%      |
-| utils.py      | 332        | 6       | 98%      |
+| utils.py      | 333        | 6       | 98%      |
 | Errors.py     | 27         | 0       | 100%     |
 
 
@@ -40,6 +40,28 @@ HTML report examples:
     - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html)
     - [docker with Nginx as HTTPS proxy HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_nginx_audit.html)
     - [docker HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_audit.html)
+
+| Level         | Risk                                                                                                              |
+|---------------|-------------------------------------------------------------------------------------------------------------------|
+| CRITICAL      | Operating system compromission (RCE, privileges escalation...)                                                    |
+| HIGH          | WebScripts Server compromisssion and bypass of critical hardening rules                                           |
+| MEDIUM        | Denial of service of WebScripts server and administrator access (violation of data confidentiality and integrity) |
+| LOW           | Good practice to avoid an unexplained crash of the service                                                        |
+| INFORMATION   | Risky features you need to secure (you should not activate it if it is not necessary)                             |
+
+### File integrity
+
+The WebScripts file integrity is checked hourly since version *2.5.0* (location, size, modification/creation date and content).
+
+ - [+] Scripts are checked
+ - [+] Static files are checked
+ - [+] Javascript files are checked
+ - [+] Data files are checked
+ - [+] Uploads files are checked
+ - [+] Logs files are checked
+ - [-] Configuration files are not checked yiet
+ - [-] Module files are not checked yiet
+ - [-] WebScripts code files are not checked yiet
 
 ### Functional tests and WebScripts pentest tool
 

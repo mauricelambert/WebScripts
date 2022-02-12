@@ -25,8 +25,10 @@ This file tests the Pages.py file
 """
 
 from unittest.mock import MagicMock, patch, Mock
+from subprocess import TimeoutExpired
 from unittest import TestCase, main
 from subprocess import PIPE
+from html import unescape
 from os import path
 import sys
 
@@ -36,10 +38,14 @@ if WebScripts_path not in sys.path:
     sys.path.insert(0, WebScripts_path)
 
 from WebScripts.Pages import (
-    Pages,
     execute_scripts,
+    execution_logs,
+    start_process,
     check_right,
     get_environ,
+    anti_XSS,
+    Process,
+    Pages,
 )
 
 from WebScripts import Pages as Module
@@ -172,6 +178,143 @@ class TestFunctions(TestCase):
         self.assertEqual("stderr", err)
         self.assertEqual("code", code)
         self.assertEqual("error", error)
+
+    def test_start_process(self):
+        script = Mock(print_real_time=True)
+        proc = Mock()
+
+        with patch.object(Module, "Process", return_value=proc) as Process:
+            out, err, key, error, code = start_process(
+                script, "process", "user", "inputs"
+            )
+            Process.assert_called_once_with("process", script, "user", key)
+
+        self.assertIsNone(error)
+        self.assertIsNone(code)
+        self.assertEqual(out, b"")
+        self.assertEqual(err, b"")
+        self.assertIsInstance(key, str)
+        self.assertEqual(len(key), 56)  # 40 bytes in base64
+        self.assertIs(proc, Pages.processes[key])
+
+        script = Mock(print_real_time=False, timeout=0)
+        com = Mock(return_value=("stdout", "stderr"))
+        kill = Mock()
+        proc = Mock(communicate=com, returncode=0, kill=kill)
+        out, err, key, error, code = start_process(
+            script, proc, "user", ["inputs"]
+        )
+
+        self.assertIsNone(key)
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "stdout")
+        self.assertEqual(err, "stderr")
+        self.assertEqual(error, "No errors")
+        com.assert_called_once_with(input=b"inputs", timeout=0)
+        kill.assert_not_called()
+
+        def a(input=None, timeout=None):
+            if sys.exc_info() == (None, None, None):
+                raise TimeoutExpired("cmd", 5)
+            else:
+                return "stdout", "stderr"
+
+        proc = Mock(communicate=a, returncode=1, kill=kill)
+        out, err, key, error, code = start_process(
+            script, proc, Mock(), "inputs"
+        )
+
+        self.assertIsNone(key)
+        self.assertEqual(code, 1)
+        self.assertEqual(out, "stdout")
+        self.assertEqual(err, "stderr")
+        self.assertEqual(error, "TimeoutError")
+        kill.assert_called_once_with()
+
+    def test_anti_XSS(self):
+        value = "<string length=\"8\" name='str' & other>"
+        test = anti_XSS(value)
+        self.assertNotEqual(value, test)
+        self.assertNotIn("<", test)
+        self.assertNotIn(">", test)
+        self.assertNotIn('"', test)
+        self.assertNotIn("'", test)
+        self.assertEqual(value, unescape(test))
+
+        self.assertEqual(8, anti_XSS(8))
+
+        values = [value, value]
+        tests = anti_XSS(values)
+        self.assertIsNot(values, test)
+        self.assertNotEqual(values, test)
+
+        for test in tests:
+            self.assertNotEqual(value, test)
+            self.assertNotIn("<", test)
+            self.assertNotIn(">", test)
+            self.assertNotIn('"', test)
+            self.assertNotIn("'", test)
+            self.assertEqual(value, unescape(test))
+
+        values = {"attr": value}
+        tests = anti_XSS(values)
+        self.assertIsNot(values, tests)
+        self.assertNotEqual(values, tests)
+        self.assertNotEqual(value, tests["attr"])
+        self.assertNotIn("<", tests["attr"])
+        self.assertNotIn(">", tests["attr"])
+        self.assertNotIn('"', tests["attr"])
+        self.assertNotIn("'", tests["attr"])
+        self.assertEqual(value, unescape(tests["attr"]))
+
+    def test_execution_logs(self):
+        execution_logs(
+            Mock(no_password=True, name="script"),
+            Mock(name="user"),
+            Mock(returncode=1, args=["arg1"]),
+            b"",
+        )
+        execution_logs(
+            Mock(no_password=False, name="script"),
+            Mock(name="user"),
+            Mock(returncode=0, args=["arg1"]),
+            b"",
+        )
+        execution_logs(
+            Mock(no_password=True, name="script"),
+            Mock(name="user"),
+            Mock(returncode=0, args=["arg1"]),
+            b"stderr",
+        )
+        # coverage only
+
+    def test_get_environ(self):
+        env = {
+            "wsgi.run_once": "abc",
+            "wsgi.input": "test",
+            "wsgi.errors": "abc",
+            "wsgi.file_wrapper": "test",
+            "wsgi.version": (0, 1, 2),
+            "int": 10,
+        }
+        new_env = get_environ(
+            env,
+            Mock(get_dict=lambda: "user"),
+            Mock(get_JSON_API=lambda: "script"),
+        )
+
+        self.assertIsNot(env, new_env)
+        self.assertNotEqual(env, new_env)
+
+        self.assertEqual(new_env["USER"], '"user"')
+        self.assertEqual(new_env["SCRIPT_CONFIG"], '"script"')
+
+        self.assertEqual(new_env["wsgi.version"], "0.1.2")
+        self.assertEqual(new_env["int"], "10")
+        self.assertNotIn("wsgi.run_once", new_env)
+        self.assertNotIn("wsgi.input", new_env)
+        self.assertNotIn("wsgi.errors", new_env)
+        self.assertNotIn("wsgi.file_wrapper", new_env)
 
 
 if __name__ == "__main__":
