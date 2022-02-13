@@ -19,19 +19,22 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package."""
+This file implement commons functions and class for WebScripts package.
+"""
 
 __version__ = "0.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tool run scripts and display the result in a Web
-Interface.
+__description__ = """
+This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package."""
+This file implement commons functions and class for WebScripts package.
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -131,7 +134,9 @@ logger_critical: Callable = Logs.critical
 
 class Argument(DefaultNamespace):
 
-    """This class build argument for script."""
+    """
+    This class build argument for script.
+    """
 
     __required__ = ["name"]
     __optional__ = [
@@ -167,7 +172,9 @@ class Argument(DefaultNamespace):
         name: str, argument: Dict[str, JsonValue]
     ) -> List[Dict[str, JsonValue]]:
 
-        """This function return list for command line execution."""
+        """
+        This function return list for command line execution.
+        """
 
         if name.startswith("-"):
             list_ = [{"value": name, "input": False}]
@@ -304,8 +311,10 @@ class ScriptConfig(DefaultNamespace):
         cls, server_configuration: ServerConfiguration
     ) -> Dict[str, ScriptConfig]:
 
-        """This function build scripts from server
-        configuration and configurations files."""
+        """
+        This function build scripts from server
+        configuration and configurations files.
+        """
 
         scripts_config = cls.get_scripts_from_configuration(
             server_configuration, server_configuration
@@ -319,6 +328,9 @@ class ScriptConfig(DefaultNamespace):
         ini_scripts_config = getattr(
             server_configuration, "ini_scripts_config", []
         )
+        server_configuration.configuration_files = (
+            configuration_files
+        ) = getattr(server_configuration, "configuration_files", [])
 
         for dirname in (lib_directory, current_directory):
 
@@ -334,6 +346,7 @@ class ScriptConfig(DefaultNamespace):
                             configuration, server_configuration
                         )
                     )
+                    configuration_files.append(get_real_path(config_filename))
 
             for config_path in json_scripts_config:
                 config_path = path.join(dirname, path.normcase(config_path))
@@ -349,6 +362,7 @@ class ScriptConfig(DefaultNamespace):
                             configuration, server_configuration
                         )
                     )
+                    configuration_files.append(config_filename)
 
         return scripts_config
 
@@ -383,7 +397,7 @@ class ScriptConfig(DefaultNamespace):
                 script_configuration,
                 script_section,
             ) = cls.get_script_config_from_specific_file_config(
-                script_section, configuration
+                script_section, configuration, server_configuration
             )
 
             script_section["args"] = cls.get_arguments_from_config(
@@ -504,7 +518,9 @@ class ScriptConfig(DefaultNamespace):
         script_config: Dict[str, JsonValue],
     ) -> str:
 
-        """This function return a script path from configuration."""
+        """
+        This function return a script path from configuration.
+        """
 
         current_directory = getcwd()
 
@@ -556,7 +572,9 @@ class ScriptConfig(DefaultNamespace):
         arguments_section: str, configuration: Dict[str, Dict[str, JsonValue]]
     ) -> List[Dict[str, JsonValue]]:
 
-        """This function get arguments list of script."""
+        """
+        This function get arguments list of script.
+        """
 
         if arguments_section is not None:
             args_config = configuration.get(arguments_section)
@@ -591,10 +609,13 @@ class ScriptConfig(DefaultNamespace):
     def get_script_config_from_specific_file_config(
         script_config: Dict[str, JsonValue],
         configuration: Dict[str, JsonValue],
+        server_configuration: Dict[str, JsonValue],
     ) -> Tuple[dict, dict]:
 
-        """This function return all configuration and
-        script configuration from configuration."""
+        """
+        This function return all configuration and
+        script configuration from configuration.
+        """
 
         configuration_file = script_config.get("configuration_file")
 
@@ -616,6 +637,11 @@ class ScriptConfig(DefaultNamespace):
                 raise WebScriptsConfigurationError(
                     f'Section "script" is not defined in {configuration_file}'
                 )
+
+            server_configuration.configuration_files = (
+                configuration_files
+            ) = getattr(server_configuration, "configuration_files", [])
+            configuration_files.append(get_real_path(configuration_file))
 
         return configuration, script_config
 
@@ -660,6 +686,12 @@ class ScriptConfig(DefaultNamespace):
     def get_docfile_from_configuration(
         configuration: ServerConfiguration, filename: str
     ) -> str:
+
+        """
+        This method returns the script documentation
+        path if it exists.
+        """
+
         current_directory = getcwd()
 
         for dirname in (lib_directory, current_directory):
@@ -680,7 +712,9 @@ class ScriptConfig(DefaultNamespace):
 
 class User(DefaultNamespace):
 
-    """This class implement User object"""
+    """
+    This class implements User object.
+    """
 
     __required__ = [
         "id",
@@ -710,9 +744,13 @@ class User(DefaultNamespace):
 
 class CallableFile(Callable):
 
-    """This class build callable object to return
-    Web files content or script output."""
+    """
+    This class build callable object to return
+    Web files content or script output.
+    """
 
+    template_script_path: str = get_real_path("static/templates/script.html")
+    template_index_path: str = get_real_path("static/templates/index.html")
     template_script: str = get_file_content("static/templates/script.html")
     template_index: str = get_file_content("static/templates/index.html")
 
@@ -853,7 +891,9 @@ class CallableFile(Callable):
 
     def is_xml(self) -> bool:
 
-        """This function compare extension with xml extensions."""
+        """
+        This function compare extension with xml extensions.
+        """
 
         return self.extension in (
             ".xml",
@@ -867,26 +907,34 @@ class CallableFile(Callable):
 
     def is_html(self) -> bool:
 
-        """This function compare extension with html extensions."""
+        """
+        This function compare extension with html extensions.
+        """
 
         return self.extension in (".html", ".htm", ".shtml", ".xhtml")
 
     def is_jpeg(self) -> bool:
 
-        """This function compare extension with jpeg extensions."""
+        """
+        This function compare extension with jpeg extensions.
+        """
 
         return self.extension in (".jpg", ".jpeg", ".jpe")
 
     def is_tiff(self) -> bool:
 
-        """This function compare extension with tif extensions."""
+        """
+        This function compare extension with tif extensions.
+        """
 
         return self.extension in (".tiff", ".tif")
 
 
 class Blacklist:
 
-    """This class implement blacklist."""
+    """
+    This class implement blacklist.
+    """
 
     def __init__(
         self,
@@ -921,7 +969,9 @@ class Blacklist:
     @log_trace
     def is_blacklist(self, configuration: ServerConfiguration) -> bool:
 
-        """This function return True if this object is blacklisted."""
+        """
+        This function return True if this object is blacklisted.
+        """
 
         blacklist_time = getattr(configuration, "blacklist_time", None)
         auth_failures_to_blacklist = getattr(
@@ -964,13 +1014,17 @@ class Blacklist:
 
 class TokenCSRF:
 
-    """This class brings together the functions related to the CSRF token"""
+    """
+    This class brings together the functions related to the CSRF token
+    """
 
     @staticmethod
     @log_trace
     def build_token(user: User) -> str:
 
-        """This function build a CSRF token for a user."""
+        """
+        This function build a CSRF token for a user.
+        """
 
         token = b64encode(secrets.token_bytes(48)).decode()
         user.csrf[token] = time()
@@ -1008,7 +1062,9 @@ class TokenCSRF:
     @log_trace
     def clean(user: User, max_time: float) -> None:
 
-        """This function clean all old CSRF tokens for a user."""
+        """
+        This function clean all old CSRF tokens for a user.
+        """
 
         to_delete = []
 

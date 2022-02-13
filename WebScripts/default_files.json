@@ -1,0 +1,557 @@
+{
+    "Scripts/activate_this.py": {
+        "sha512": "a5812b5b39a80d67c036936b949bb8a52da21096369d66f65000f8b37ce093d193000ef541e6dc4eec67efda0cec3dff6c07617700cf1df3aa47a651a00f3122",
+        "size": 947,
+        "is_default": true
+    },
+    "Scripts/wsgi.py": {
+        "sha512": "b8d60e1a56049d0c22927416cd59fb3fdbb4fb37dc8e7bd23c1e3f2dda3805295ccd2d4f7fafb67c5d2bd5aa143fa47ea409555f4b5abf6ea966f8ca2d972d05",
+        "size": 2029,
+        "is_default": true
+    },
+    "WebScripts/Errors.py": {
+        "sha512": "ebdc74626b3db60d252d784723e203b958f3e5ea29697571f835751b3cae9f9093d74a86b2af072746088320c8653d3a84c4233faeb9940122395b1254261e02",
+        "size": 2960,
+        "is_default": true
+    },
+    "WebScripts/LICENSE.txt": {
+        "sha512": "4a326a621e13f12d4ec5cfbd96d05d6146a40ff964cc3235ef62c53884baf1b7af0c95571f503a8dd5eb2c7d3870659b7de82c436844b801d80790e3ac8bf3ec",
+        "size": 35821,
+        "is_default": true
+    },
+    "WebScripts/Pages.py": {
+        "sha512": "6787109f828913129916e349ac5fd74a6291951510f2c461d818ad009de344a9b6694797755a4eee3378c9227eea3220d21d4eeb795a3f91768898778a9aecdf",
+        "size": 29729,
+        "is_default": true
+    },
+    "WebScripts/WebScripts.py": {
+        "sha512": "06a4ef97bae8f10d254d5a363078fba4ef91800c6a3ff685c28a883f0ee48c510f59d211764f15364ae9b475db4fcddcbbd1fd6665e27baa0b595db62138747a",
+        "size": 58466,
+        "is_default": true
+    },
+    "WebScripts/__init__.py": {
+        "sha512": "eb76879cca3998c2a0adf78bddab07b6c5a724dd6fd708d68c6cd39c70273e78169247b111ec6659a6260f10d1598a4ae81d427008fc00b3ba473d7ddde6c4e9",
+        "size": 1827,
+        "is_default": true
+    },
+    "WebScripts/__main__.py": {
+        "sha512": "77b5909c62d21c73e707721e2deb1bd44cda347dbeb1c0655670186ea7a3b7763b6b9280bc3d8b4ca10747d2c1123c6eae6a5970f2504b25063ca78c58bbfd99",
+        "size": 1740,
+        "is_default": true
+    },
+    "WebScripts/commons.py": {
+        "sha512": "65436e7d910a94220a47c37db391b652e273fd5b7cf7ab60d0b62937299e987ceebaa5a01d2cea331642e572ae4ad07ebc66cb7e80e90bacfbc8847c9e1113ad",
+        "size": 35028,
+        "is_default": true
+    },
+    "WebScripts/hardening.py": {
+        "sha512": "f37c37ac943101b7648a9f26006147e642340ec68c4e51043ea1aa536f4ac2cc543acf7870d0a85b668fbffd3b735b79510e1329d69a37f58bf8cc6b76e8f6e7",
+        "size": 70007,
+        "is_default": true
+    },
+    "WebScripts/utils.py": {
+        "sha512": "caa23d40b9d0605e62894ce21a5a123d5875177b05578c869cf869423349d091e26580ef82b1c26e09b04c8126f21e80f0b6fccc6c4763d8a28465b49f260abc",
+        "size": 22065,
+        "is_default": true
+    },
+    "WebScripts/config/loggers.ini": {
+        "sha512": "46b4506195efff3e3927a72c140150401e978e427bde8557909611f1f1df72745fa870339357ed48140cfc6e3935e7732b9f2746454c4cf93f7fae305eac068e",
+        "size": 2948,
+        "is_default": true
+    },
+    "WebScripts/config/server.ini": {
+        "sha512": "4ff172559116ca115cbfcc6dced0474b3f00d0fc8dbcad4c98af490e6353e0d189572876a288423c45b424d5bdf7b505ee26bd9f2e6b31bbf4aa2b85c8b78c88",
+        "size": 15344,
+        "is_default": true
+    },
+    "WebScripts/config/server.json": {
+        "sha512": "3116715cf345418c96c0acd61640d863e9de3dd8938a1661d366d655512936ba3390fa2b8bf6c098ecd3423a0f14b43a4ec76cfed786cc3192ff50108b65516e",
+        "size": 3180,
+        "is_default": true
+    },
+    "WebScripts/config/files/change_my_password.json": {
+        "sha512": "51f877c606f7fe7d84f71fcddf0718b4f621511cd372a73b6cb0a9d87ebe6180c048cb84a8bfbb6192bb9b7c1fe2db9b1b3e276ca5e00513753e5cd70822ba96",
+        "size": 894,
+        "is_default": true
+    },
+    "WebScripts/config/files/test_config.json": {
+        "sha512": "cb2752223e1651623b8b7cfc5eb4d686d90d6bc1ffe234f44ef98c048d4b0000758e366dd40d89c5725c695c076b6d7938320f20503b1f6818427abe0065b99b",
+        "size": 1824,
+        "is_default": true
+    },
+    "WebScripts/config/nt/server.ini": {
+        "sha512": "6f47eed2f386166f5c072c19e5d16c4cd74a4dfec07900d746754b4aad02912c50a0da657a4dfd3dc99461214c0039b426997acfa9a919b7e123df30589f20e4",
+        "size": 15374,
+        "is_default": true
+    },
+    "WebScripts/config/nt/server.json": {
+        "sha512": "44515d813b8b6063b75fabac1504585a3488c6c9eb9dc415ed625a388156ace6c651777eb834acaa901f0fea2c345ac46f72531c0edfdcdd9ba0fd8244731279",
+        "size": 3293,
+        "is_default": true
+    },
+    "WebScripts/config/nt/files/change_my_password.json": {
+        "sha512": "68c1512ed563161e5dc6af79a1b693d4203306f13bf7c27876c7595901a5447ce58543f323c3f286c5dceb1be727c1d3d7749fc0bf746a9af903c27393fb051e",
+        "size": 893,
+        "is_default": true
+    },
+    "WebScripts/config/nt/files/test_config.json": {
+        "sha512": "723a23fd5db6f4ca09bcc5b6318b538a5566cfeea6558b29fa8fc38b15248fded1ab86f1a6a581eaf6fbe5512671dac225ab1cfebd7e0f6f293c11b5e310d6d9",
+        "size": 1823,
+        "is_default": true
+    },
+    "WebScripts/config/nt/scripts/default_admin_scripts.json": {
+        "sha512": "7bd35eeaa52ac9bb580e1bb478eaebc6516edcebaa215b36c0296c626a5b2fd3ebb3752c369ea7a2db36fe3725c277dadd5361a4a346fd753d23d019afb22b26",
+        "size": 6912,
+        "is_default": true
+    },
+    "WebScripts/config/nt/scripts/default_log_scripts.json": {
+        "sha512": "ad2bf3e490c1105297942f04db6c4841ed31358261b7c61a94f827a7fe92e44e676de07deafb273849d052636c9a7ee0f473e979c8988345d61e1ffe8efd349f",
+        "size": 1826,
+        "is_default": true
+    },
+    "WebScripts/config/nt/scripts/default_password_scripts.json": {
+        "sha512": "deb342844c55187861a08a941e7f74d976ba6641e78935bc4cda3afa962f425af18667c4e4c9ef43a34cdc4d75eb857047289bc42840a9cb45bcd59eff38ec75",
+        "size": 2172,
+        "is_default": true
+    },
+    "WebScripts/config/nt/scripts/default_requests_scripts.json": {
+        "sha512": "6c10dd858a76dbfa9f62e36f2e5ca996a0cb4d1b757b4f6077bb4b3e9bb2fba4098a54476c0782d5a832e1a715180f0c8085ebc469a8424aab4938c7776bce91",
+        "size": 1499,
+        "is_default": true
+    },
+    "WebScripts/config/nt/scripts/default_uploads_scripts.json": {
+        "sha512": "9dedf7e3e0f08e40dae46b606b1d696a982bdf8793cb173b5c5b3efb446640e4d42f591dbc8956fab57fe0e18875a6ce9176ac4f8a1526d894693c9fb819e3fb",
+        "size": 6276,
+        "is_default": true
+    },
+    "WebScripts/config/scripts/default_admin_scripts.json": {
+        "sha512": "7e33bf89eeb8bc4b9e951c48a2ad5f2f2825833f84b9f240ce10f015a77c18bd3724432a64dfbe2674548ecfc5e4001a80556c57e3d8afceb1a0c2ee397b9879",
+        "size": 6932,
+        "is_default": true
+    },
+    "WebScripts/config/scripts/default_log_scripts.json": {
+        "sha512": "dcd92812cac4bcfa42c1533cfe2bf52d125d6d3e201974fc842e511d83c743de53611005c2c8e5b86ef45faf613afe4ff554b752f4381bae5dbcc294aa04fff7",
+        "size": 1830,
+        "is_default": true
+    },
+    "WebScripts/config/scripts/default_password_scripts.json": {
+        "sha512": "cfc5595f189d26d97f905d5c70056dc524c8390854f846698a8b661f6a6b16962ce86bccc96af5e8cde7b3c1ee22401eca0edde9cb6ee9fbc8e5adc7e1ffed52",
+        "size": 2178,
+        "is_default": true
+    },
+    "WebScripts/config/scripts/default_requests_scripts.json": {
+        "sha512": "83420f087582ca03ebb07a6f109f43b42a0095543f8da7253f0eae24d0f72e9f92213c84d45520ba6ccd3725ab885ef9a9029e901ef359bdb9e1d51202a5a69c",
+        "size": 1505,
+        "is_default": true
+    },
+    "WebScripts/config/scripts/default_uploads_scripts.json": {
+        "sha512": "1fbc4dcd141f5c284c8f62ee6583a70a61aecb775ee0acd6aa83ea36e06a8f7e054bbdc0c2d9dc8525038923d67e96d750017bbc34e4481c8143eb9f04046f7a",
+        "size": 6296,
+        "is_default": true
+    },
+    "WebScripts/data/groups.csv": {
+        "sha512": "db4930c60af57c5c50dcaaa9fd1caf141a2782f4c54d498027ee1cbadf6889526c7270422c4811e4b4edfbdd8917048836b45d011d770bb4dc15a81ad0b0249f",
+        "size": 131,
+        "is_default": true
+    },
+    "WebScripts/data/id": {
+        "sha512": "31bca02094eb78126a517b206a88c73cfa9ec6f704c7030d18212cace820f025f00bf0ea68dbf3f3a5436ca63b53bf7bf80ad8d5de7d8359d0b7fed9dbc3ab99",
+        "size": 1,
+        "is_default": true
+    },
+    "WebScripts/data/passwords.csv": {
+        "sha512": "441c78edf3413488bb9a054856dec8455cc7b849f0e3c43fd0b157467e4274af2c83b763baa847c7a1bb92b743a063c3908d035850dc0e1affbbba1f4bc7a206",
+        "size": 11,
+        "is_default": true
+    },
+    "WebScripts/data/requests.csv": {
+        "sha512": "d23ec389dbe0aed03d8c8fba2117f33c2752df1df1066ed30abb5d3bf21dcdfe9b7be02295d2d2961534cb2d645c092e2de44330e7968c84bcc8d8f35275fd06",
+        "size": 63,
+        "is_default": true
+    },
+    "WebScripts/data/uploads.csv": {
+        "sha512": "84f2e2002bdaa2ff55a64497aa0c356bd6ca6251ecb04bf721753c9fff72d7b201616434760022c99074782fe17b0b43f489cfe72c4e8b235efe9b18815c13a0",
+        "size": 112,
+        "is_default": true
+    },
+    "WebScripts/data/users.csv": {
+        "sha512": "874327c7b7571f8930101ad8824b4f33810b6feca238562cf0f0135c06c2c0e1a7511043fc5bf5871c5e20bafdceb1632a554a70947658ad9234d96c9a16f8c7",
+        "size": 527,
+        "is_default": true
+    },
+    "WebScripts/data/uploads/LICENSE_210725_181116.txt": {
+        "sha512": "4a326a621e13f12d4ec5cfbd96d05d6146a40ff964cc3235ef62c53884baf1b7af0c95571f503a8dd5eb2c7d3870659b7de82c436844b801d80790e3ac8bf3ec",
+        "size": 35821,
+        "is_default": true
+    },
+    "WebScripts/doc/empty.html": {
+        "sha512": "e857bd1285b0aa96736ff3fb2c64e9a77ed645c6b50e31ae6775368b3463b8b9fe607ee51091472175e4ad29f1dab1c6c16cf4ad7f43c9ed3b719d0081bc78bb",
+        "size": 4,
+        "is_default": true
+    },
+    "WebScripts/modules/csp.py": {
+        "sha512": "07951f355bc2b30415d969ad42b5f6a67049c95b3003d6f26963b98833730ce8ffe801336285076a83d5c3fc498ce3acd5666a8d84461b6ee4c061eafcd05037",
+        "size": 2811,
+        "is_default": true
+    },
+    "WebScripts/modules/error_pages.py": {
+        "sha512": "569edb190717bc623a077ad93627adf62f04ba4e1c2e627dd314069c9f9328347ccb70fc3cb39f6930df82eeba70489ecb76b254f2503fac3e543fed9c93ceb3",
+        "size": 25004,
+        "is_default": true
+    },
+    "WebScripts/modules/share.py": {
+        "sha512": "61ad5b574767f2e301fa0f91e4dc6b9f580444b8a140303153432dbb152017a4ad6ac730ff940255f67ecd008fe5225b7f07bad67b31d176158fcf3b1524dde0",
+        "size": 6513,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/add_group.py": {
+        "sha512": "18d5ee46bc6a2a67a82acd160027f6eea270c263eb46a29f17b022df2b23ae5acf52e662bf78c49f574c0310c4d4e160bd3daf41dae46fd438de610737037f31",
+        "size": 2285,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/add_user.py": {
+        "sha512": "30fe5cfd67bba47b29de9bba7119764dbc122b65ed5a038bf983569e0c8f81e6b3248f1603c0bd7735baa764437bb0b60951224a0722939802fc1fa61b975867",
+        "size": 3619,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/api_view_groups.py": {
+        "sha512": "1b28a563cce0955315aea61e94055e3e08104bd56ec44d2741ec253769d193b2bb831109c50bac866663829e386ed383a5d1fed94f81369dc500dab2d38f1689",
+        "size": 3068,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/api_view_users.py": {
+        "sha512": "e81c42bce46b99bcdb56235109e43dfff9ed3278b2d0f3c45edadf60a0ba07a954dc06b268a454ec2fbacd9d01ae5133b6a955220bb3aaad1aa0bb725428643e",
+        "size": 3036,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/auth.py": {
+        "sha512": "d7c287a4df5446b09a57ec1e0f0bedb829edd8781686166f0e0dc738bd232471ec3bd6267a571a0093f6f83377b3808e8be21b38afc5d4a93eb090ec6f680c0b",
+        "size": 3651,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/change_my_password.py": {
+        "sha512": "00a1e6943c8a1ce2785a53847f9dc7e52fbca859b5e81574681e5987c2759c8fc7b41f998d73829759fd13d9bcd3459f43b01af6bd745ebd2b87a1de5caea9dd",
+        "size": 3235,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/change_user_password.py": {
+        "sha512": "7ffada09c99e25d5b403fcb26b1ebf8a5989058b3d5b1909df892790c4b194363c5447b942fd2484b2275bdc706749d41c9bc77a29028fd9068df8014e088b1d",
+        "size": 2679,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/delete_group.py": {
+        "sha512": "d5763faef0ba692b1ebd0524327051070a3031c63891d93b4d47060db050cc15cece7ad8a8ccdfa38f9be2b59e07307cb1bdd89e9a1dad7cf2cd42d63adec966",
+        "size": 2385,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/delete_user.py": {
+        "sha512": "0cd8b06decda0b6cd2e3e990bfefd776230c83a5e2e5960e5437f632951ed45b56b781a050fb591f57ae87635a2f6a9ce41757e781013496c4044622cba18049",
+        "size": 2354,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/get_apikey.py": {
+        "sha512": "148157c27026d717f659399f81d87727cd0c6ea14527da843dcdc9510b3a02d2472bb86fbe78f897c4950d1f14d2a6d2277661551f651f4c5f66686f81652643",
+        "size": 2306,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/view_groups.py": {
+        "sha512": "14af27077768948bc8b2435db21b260f0127a632947843f0b3bf3e64f0b21204f31507f21d7f49a99e14720d70f3a8d44587c3081ba8309f1512022a5858ec4d",
+        "size": 3223,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/view_users.py": {
+        "sha512": "d069b89a9728cd40e346bd0e157d9deabddbc548baca43dbfee1e12e61f29a948b536965692c9d26a55abebf7745fe9bcf233d85332da113a89fc27bd7a80da3",
+        "size": 3495,
+        "is_default": true
+    },
+    "WebScripts/scripts/account/modules/manage_defaults_databases.py": {
+        "sha512": "b76e4fffa3be3f9534813f453c21d960beefcdff8493429e61c0e6fe4fe84be47a06dd716594de78e199f33c5f1b49a2768361d936d8f0bfb9b546b6816d1310",
+        "size": 13285,
+        "is_default": true
+    },
+    "WebScripts/scripts/doc/py_doc.py": {
+        "sha512": "76d3c3943839a446079de984a08d26c24574510ad9229d237637fba1549f99841381bb02026fbb335a20c8c60322b0ed45201e18ab62e1918b55152004b1bee5",
+        "size": 3106,
+        "is_default": true
+    },
+    "WebScripts/scripts/logs/log_analysis.py": {
+        "sha512": "2fc8bef04be71478317f392dfd337615bcb1045ed82654feeab12e329dc694d623207e935e24fd836d9a0de5003ce7fe8e1d699426e37ad2e1d2b6af7d69d393",
+        "size": 3954,
+        "is_default": true
+    },
+    "WebScripts/scripts/logs/log_viewer.py": {
+        "sha512": "744ed7537f8b3664b034fbd3d3e631316bdfee881dc0469a2758d7e869d56f4f20c791ca835b2e71ca573b8c38cbd1f03e2f8e8b92f9d277700058a33a7a7b67",
+        "size": 3753,
+        "is_default": true
+    },
+    "WebScripts/scripts/passwords/get_password_share.py": {
+        "sha512": "a2aad83652bfdb6919580a8067bac0c5bb9f74f34bd8756bbe20afc8708ee171d31a9e4e3b5498e238782d80c63bca27224b4ce74e80a5d055bee6a61d428aa0",
+        "size": 5584,
+        "is_default": true
+    },
+    "WebScripts/scripts/passwords/new_password_share.py": {
+        "sha512": "1347c17c1ece4de25abe504631fcba4ae647cf19a6b34ba550628426ca4e10e582b1fe3617fc29223853f9c5a6a10b3d076858c4980a2cd847f1066766983095",
+        "size": 6008,
+        "is_default": true
+    },
+    "WebScripts/scripts/passwords/password_generator.py": {
+        "sha512": "798522816ac009199a80a10b6d00c69822076ac2e3b24800e76d63d3f163c3860735bd3fc99e34c8916b72cee1b70ba87b549e14d4b2604edde6fd0c7273fadc",
+        "size": 1956,
+        "is_default": true
+    },
+    "WebScripts/scripts/py/ASCII_arts.py": {
+        "sha512": "407109ef60e525b434c1c9ebe76d5d5a2c1ae8ce918cf226154d059fa5bfcf01435fbdb1164389e7249911153f6fc7b3858bca04274ac1b466aa143ef6a81b23",
+        "size": 2816,
+        "is_default": true
+    },
+    "WebScripts/scripts/py/hello.py": {
+        "sha512": "216f13c94e32f8facc6398a2fa0090dc1c1fc52d32973399cc907f176fdfc0466d4c3a6871a45a00fc75ce818b61e38b106d70dc0936aee3da5490ae59fe44c9",
+        "size": 893,
+        "is_default": true
+    },
+    "WebScripts/scripts/py/show_license.py": {
+        "sha512": "62de4564dab50461e8223ff1e332b8b3b57baa2f97d67d124467606418ffd400ddf4fa822e5f47590fb394724e9e48198d1478871d23b996e93d48c8bb44a6b1",
+        "size": 3287,
+        "is_default": true
+    },
+    "WebScripts/scripts/py/test_config.py": {
+        "sha512": "61f8ce8677dc2c26220fedffb235fdaccf7591996c317727e20bd112953ade55ccf6e56496787e848b487e86ff5812032913510b7575cffbfbca54d649c45f8b",
+        "size": 654,
+        "is_default": true
+    },
+    "WebScripts/scripts/request/delete_request.py": {
+        "sha512": "cbc2f73063d88e1b9dfc0dd569cc4cd7c3c6aa6ecf607031613daf09111e9a43d28241124473f570e1fb4aa8400850280121e7d5b058f51fa9b8100602e97af1",
+        "size": 2638,
+        "is_default": true
+    },
+    "WebScripts/scripts/request/get_request.py": {
+        "sha512": "67736d29c5ded2b0e7a418dde85afbbd13c25b717a3372a6ec9d8aab118a04a6a316ae6b6a0543496bfed216601393f6271ebc323f1dc220b3d1d3a1dab6e247",
+        "size": 2559,
+        "is_default": true
+    },
+    "WebScripts/scripts/request/get_requests.py": {
+        "sha512": "95fa3c33866fc480f70e59e8a2ca0dc5561a290cb1e637ec5c0c93189c89e42da7ce0c1f7274cd19888260bb3e8af74b286d3d7fd6f7c4d6d8c7b969b9d02775",
+        "size": 3002,
+        "is_default": true
+    },
+    "WebScripts/scripts/request/modules/requests_management.py": {
+        "sha512": "690720ac091df6a0cb4a38be678d8e0d2545ba616a822270133a3662d634f8b87f215df01ff5beb476a60bd44f5711377f8fc88c7c0f3af0c4006fc4031e1002",
+        "size": 3954,
+        "is_default": true
+    },
+    "WebScripts/scripts/to_3.8/to_3.8.py": {
+        "sha512": "df71eb5470b024df9674fcda4b8ee2a58e9d847e27ad423d0a830331011e278460eafc3dd7a232a4efc6d9214a3913071d1bdf6c323dd8ee4f782038dee84248",
+        "size": 5918,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/api_get_all_files.py": {
+        "sha512": "04439957774ce08f108a0374ee3a1a000689505ea89d27e4ea9e01918c1bf336398376e7595a77c08ccb8c657e77d3e84c1fb52905304cd28195967345283c7a",
+        "size": 2360,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/api_get_files.py": {
+        "sha512": "e5b848b576c2ff6de5c4c47f5dda40e9c4111f8bbc862615bb6bf6195a8588b4179ed9bbba567c8617132467253e9281a9268bc920586eeaf191db7ecb4ffcb5",
+        "size": 2420,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/api_get_history.py": {
+        "sha512": "559b4cc8038f7f1e538aaa0012a33f4feef0d05f48a1f70e92b7d2199a15d2e8fb3361b53b068c785c6c77a9cdf4e632f0a2d734c55ebb7d7225ae7732297128",
+        "size": 2350,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/delete_file.py": {
+        "sha512": "c389cbcf87f97730dd60087544a79b63d45270d82cbe5efad6ffd318e94f336f858477d5f806e6ab728b54d937910fb7aac2f314c0d6167d9fe74857a74deb57",
+        "size": 2304,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/get_all_files.py": {
+        "sha512": "0ffd7b0bc4fa3361659e7a6100c93545bb684f66564aa325f30336a8d93234db36822c20a02901c9fb1d9c423c25d8bc6a6e225ade1a39916ee014f27b758b19",
+        "size": 3082,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/get_any_file.py": {
+        "sha512": "bd49c1de7feee40aa415558534a299f7c7e53192e17eb58844639334c9a39ded1893ad805784a739c0145ca0294139d220c6421dcd9a20d7e40643cdfaf80ed9",
+        "size": 2859,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/get_file.py": {
+        "sha512": "d9350b32d98a8662427640116cf8cac9a7a5cd4d462411fbbda67b0e237f9bf2825c0271eb4a1c83b5459d8e452b432affbdf8bfeacd1cfffb9182518c97b8fc",
+        "size": 3171,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/get_files.py": {
+        "sha512": "3aecd6433c64394c4a7641fb95243fb28fd22b10652b8c21cb0e8b2fde47975396a11c38efa6e5e1947e7d849a612488f8f6222bb49c303611cd42553b08f235",
+        "size": 2928,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/get_history.py": {
+        "sha512": "ba7e4d7a2b2aca48c096121b3ad916a09f2fe0b7fc2379dece139a3239609b92786781c7d33e35aa4e6e8fdb6bfd9bf5cc3667aa2037534083f21829c288e48b",
+        "size": 3124,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/upload_file.py": {
+        "sha512": "4b8f1e91d3108d42101aca3359294ba6f0995dc0dd81fb4d787b7dc17bc14a7b128076d572a86d3ea1f2d9236347c8d000ca703a5c83b9de74dfb0217c513683",
+        "size": 3962,
+        "is_default": true
+    },
+    "WebScripts/scripts/uploads/modules/uploads_management.py": {
+        "sha512": "8e2a0f1c7d3d75a3bc90ebab1ccb10d9225dd4fa9b2fe65f91aa1b7926f92c0162d1a5f9324c3787dd3ab141fe255d4186cae1c6ee4491fd2123d799d9918bb7",
+        "size": 11750,
+        "is_default": true
+    },
+    "WebScripts/static/css/webscripts_index_style.css": {
+        "sha512": "53d0965bfde6d1b8ed367696c1b7fbcf159c30eb9826e0e40f002df0555c62013726382882f465e28eb1df5253e8b3934a9fe31bf7519dc8f9d32cae6931e180",
+        "size": 874,
+        "is_default": true
+    },
+    "WebScripts/static/css/webscripts_script_style.css": {
+        "sha512": "4b7f321a35393dc53d660fd0b326ddf0dd55a98d2d1dd7995ea08eef973b872091ab0bbdd32bae4c142333c86c1802ed1cb1050318827a90d65fc615a09b7b72",
+        "size": 3389,
+        "is_default": true
+    },
+    "WebScripts/static/css/webscripts_style.css": {
+        "sha512": "0df5a25245bde7bc3fc650bd765124d37f3be25563a0f245cceef16899e3b4c8ed4a99cda29c5022d880331898d24ed2b0e7bf96a339343a55bc4a1e61b18cc2",
+        "size": 5265,
+        "is_default": true
+    },
+    "WebScripts/static/html/Errors.html": {
+        "sha512": "f6cae80c15b0fe936e2352020ccbf1c4b195bfb7df6d27825294cd6a137215bf05f52e8f49098f885ea11dc1603eb40123c4f4e9c8100f955ed8a222dba61725",
+        "size": 32853,
+        "is_default": true
+    },
+    "WebScripts/static/html/Pages.html": {
+        "sha512": "7944cef3ceeec0bf541de462c6aa1f250ecf4f6b0bb1057a8cd619aab5ef985c75fecd13ba33d76cf192467ae6d1275ce5bcc38d606758c85d2beaa5e09a170f",
+        "size": 7694,
+        "is_default": true
+    },
+    "WebScripts/static/html/WebScripts.html": {
+        "sha512": "a1713a0994a3cf683971801d6a680290bfabc842485eff934ea881cc7e08a99c5f40487ceeeeaf2c335bee2a782d0dc442e0829a36b5c3861d174357dbc70348",
+        "size": 23784,
+        "is_default": true
+    },
+    "WebScripts/static/html/commons.html": {
+        "sha512": "b84b9ce37e21690716be886a539a1766d6106a54df0d394ec1bb16b469557a3858944c9c7c6c95022b304b1d2175b2973a406e7f3b76efb431f91281cb9d817f",
+        "size": 44859,
+        "is_default": true
+    },
+    "WebScripts/static/html/csp.html": {
+        "sha512": "c2f2c9a18b43da47a6e57d5612bedd0f4dfa24fc5d5b6d7b5acee97dc963cbb11ecd6c8777371843225a3a6e31415e55d4e4e74edf6fdd4d01b324c41090e92a",
+        "size": 4294,
+        "is_default": true
+    },
+    "WebScripts/static/html/error_pages.html": {
+        "sha512": "42155059f45d8a34b2178e7322fef275e33dec998b0b1e888b6640173c1d430011411da6df054b1e2b7abd12adfc46ce981d8437bfaed844e99868f8c77b9333",
+        "size": 8559,
+        "is_default": true
+    },
+    "WebScripts/static/html/hardening.html": {
+        "sha512": "60924dc619f20bc3ea0e5c5867d3c1dd870334b3bcd2be386a1e70b0fac100caa789588af30bb7dc6cf39009f5e0728f15a0a696e2bcae9ad00df96c305f666c",
+        "size": 21452,
+        "is_default": true
+    },
+    "WebScripts/static/html/index.html": {
+        "sha512": "e04a412d2e4a00b34d338ae57c8bf8f2c77681f9d8e08d46fd9273b5b14c2eb43962a56e97f96d182c9955f26b15ed9e9580b2f28aff1c4eac0c5f6cb7a7ccbc",
+        "size": 22849,
+        "is_default": true
+    },
+    "WebScripts/static/html/manage_defaults_databases.html": {
+        "sha512": "0e57ed60d9c3de0ce6518a9bda9eaaa547cfb594b5cc9df5c2fd3a3fa552f7caf6eb2dba315ef9fba5837bc372ab861e69656e5a98c71f4ccfbdf6882a2ac9cc",
+        "size": 27642,
+        "is_default": true
+    },
+    "WebScripts/static/html/requests_management.html": {
+        "sha512": "38e5ad9184f999c64b0f4affef92b0beb04063b7b55d046fa4eee53072f29d4d82758a886eb28ebf021eded413f4fb6a9fca9570b9b339940b381c9c11c4f120",
+        "size": 11956,
+        "is_default": true
+    },
+    "WebScripts/static/html/share.html": {
+        "sha512": "0fca630039bffcb45e31260821381afbb959c82f2baa74b3849ac577987b23812093588a07abf4135b0a8a477a515b18b5e268a0e4f793d0c8323de316108f66",
+        "size": 6977,
+        "is_default": true
+    },
+    "WebScripts/static/html/uploads_management.html": {
+        "sha512": "5154679c5e7996306cd52c8ccb157a083ec7659e21389f6bab8fc883d7cc149776600866c3e09c583ecd2ed67b687c4eec39a5e9d3a3d15c15d9449f7aed9d4f",
+        "size": 14189,
+        "is_default": true
+    },
+    "WebScripts/static/html/utils.html": {
+        "sha512": "8ea3c8f2d5a702d57521d4de8fec08d555e4ddb210c497150bca8abaf71ad2946b4b223d9e96e538db870c6b135551b0d5c8daf0fd14d4aa91b5bb8488e7a216",
+        "size": 30999,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts1.png": {
+        "sha512": "98e059ab3d57567c881900b6706474e28e55c8b6e8d3f63f4ce5f661dfc0449b27cd08478243c76a7fc11e99feaa247af9907398eb9ebb14bdaf97b5c66daf1f",
+        "size": 90843,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts2.png": {
+        "sha512": "cf0af164caed5a03d608689c45bd1fb9d7b4f1ed9b43ec7553fc995e977d29cf546a4c81961527411a614f61a7f72614a41e52f235d1206c4df553241b2dcb2b",
+        "size": 99659,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts3.png": {
+        "sha512": "0290018336a3f022450b9666dd85d762398d105d7332b78040accda13299b50d21754dddcf2ee42ba4706cf819085416750dfda1daccac9d8b365cba0cb99b66",
+        "size": 97909,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts4.png": {
+        "sha512": "7640f2da9a066f69bd7e9a9870355aec3a4cad7fb9c99becdd97892a7dfcd6876e9fb0fe84c1f518a505451a9c091e61f3e55bd7c522279d036e697cc5610b49",
+        "size": 88696,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts5.png": {
+        "sha512": "8be06ce3de865d78c5e4c675a25f68122cfb75897372e25b03d9629ccda8401501b519d8f5bb7e5d4b3a018374495c0d7fe51732f913f59eb7f4117cf873a757",
+        "size": 95444,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts6.png": {
+        "sha512": "63d103f6cecacad7b74ca4a03d3b9fa852986ca25fd55bacb9a470fd49ef2de5aa7d215162ff3566bef3dfb4d3854bb4067b0e5252f4632b879ebb895893f243",
+        "size": 95082,
+        "is_default": true
+    },
+    "WebScripts/static/images/WebScripts7.png": {
+        "sha512": "5cd126d62c6d2ad374a0ca7adb8e89589636105e1b7ff724112f69ad42131cfd3f8d3a78f90b33de0d473dd27f8006c0adfdc3c688b97f11e9f82b58c7134c3c",
+        "size": 32125,
+        "is_default": true
+    },
+    "WebScripts/static/images/webscripts_header.png": {
+        "sha512": "8be06ce3de865d78c5e4c675a25f68122cfb75897372e25b03d9629ccda8401501b519d8f5bb7e5d4b3a018374495c0d7fe51732f913f59eb7f4117cf873a757",
+        "size": 95444,
+        "is_default": true
+    },
+    "WebScripts/static/images/webscripts_icon.png": {
+        "sha512": "63d103f6cecacad7b74ca4a03d3b9fa852986ca25fd55bacb9a470fd49ef2de5aa7d215162ff3566bef3dfb4d3854bb4067b0e5252f4632b879ebb895893f243",
+        "size": 95082,
+        "is_default": true
+    },
+    "WebScripts/static/js/webscripts_index_js_scripts.js": {
+        "sha512": "591a8b7264195f5f58c948e4a3142a1a9ab5332bb12f3561a11c3f984ebc5118bac147fe0485d9efa26390149bdb0172d1fb741c59b1271d0d6cf6d3f6045689",
+        "size": 2534,
+        "is_default": true
+    },
+    "WebScripts/static/js/webscripts_js_scripts.js": {
+        "sha512": "46464a0e31b94f72a55c93f378d3651fd3fa4c615e63fa9a312b4ab2fafa15095f0066ef396e0411c1cba18e478aaae0615a58ef6973d53f7ba6126984335aa9",
+        "size": 4612,
+        "is_default": true
+    },
+    "WebScripts/static/js/webscripts_script_js_scripts.js": {
+        "sha512": "25d7a6279d629e96d32a4ebdab8954ea416ad2c99aa992bc56fdf1d470dc2e2b37dc9ae2dbc312beb6e36c64fc3fd9f2e1ba8af982f100764cc91c78d735ae03",
+        "size": 25799,
+        "is_default": true
+    },
+    "WebScripts/static/pdf/WebScripts.pdf": {
+        "sha512": "da51f9c432033c9f181d0d7a84ec1d96cfe93f19f1eb2d3567b61f5df02c64166020b3ddba3c7391007424473e0e531864f7345e5107c6da32ff76c222fb39fd",
+        "size": 502949,
+        "is_default": true
+    },
+    "WebScripts/static/templates/index.html": {
+        "sha512": "6b8ca7a1c69b27a3a617855c483b1d2e863e78e23e923a3a0784b1b5edf78660658af7a2e8b8248a66b630fe2f7963ef1b3e6554397eea424015ebedb38946ca",
+        "size": 8195,
+        "is_default": true
+    },
+    "WebScripts/static/templates/script.html": {
+        "sha512": "cc7ca2c280479dcf9809066d9c1900f3635ae3108c8595ecebb37398cf5f5a3931e3164821360563c2631408ea69ed8e3255df29f60771919b800afbc799a5da",
+        "size": 9323,
+        "is_default": true
+    }
+}

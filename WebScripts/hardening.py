@@ -26,16 +26,17 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "0.3.1"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tool run scripts and display the result in a Web
-Interface.
+__description__ = """
+This tool run scripts and display the result in a Web Interface.
 
 This file implement the hardening audit of the WebScripts installation and
-configuration."""
+configuration.
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -61,8 +62,8 @@ from os.path import (
     isabs,
 )
 from os import getcwd, listdir, stat, stat_result, scandir
+from typing import TypeVar, List, Set, Dict, Tuple
 from sys import prefix, base_prefix, modules
-from typing import TypeVar, List, Set, Dict
 from time import sleep, strftime, localtime
 from io import open, DEFAULT_BUFFER_SIZE
 from email.message import EmailMessage
@@ -87,6 +88,7 @@ from getpass import getuser
 from platform import system
 from stat import filemode
 from enum import Enum
+from glob import glob
 import ctypes
 import os
 
@@ -394,7 +396,8 @@ class Report:
 
         <h2 id="integrity_score">INTEGRITY</h2>
 
-        <p class="integrity"><strong>File number</strong>: {failed_integrity} (file should be 0)<br>
+        <p class="integrity"><strong>File number</strong>: {failed_integrity}
+        (file should be 0)<br>
         <strong>Score</strong>: {score_integrity} (score should be 0)<br></p>
 
         <h2 id="scoring">SCORING</h2>
@@ -1298,15 +1301,15 @@ class Audit:
         important_filenames += listdir("logs")
         important_filenames += listdir(join(server_path, "data"))
 
-        for dirname in (server_path, current_dir):
+        # for dirname_ in (server_path, current_dir):
 
-            for file in server.pages.js_paths.values():
-                if exists(file.path):
-                    simple_filenames.append(file.path)
+        for file in server.pages.js_paths.values():
+            if exists(file.path):
+                simple_filenames.append(file.path)
 
-            for file in server.pages.statics_paths.values():
-                if exists(file.path):
-                    simple_filenames.append(file.path)
+        for file in server.pages.statics_paths.values():
+            if exists(file.path):
+                simple_filenames.append(file.path)
 
         for script in server.pages.scripts.values():
             important_filenames.append(script.path)
@@ -1452,23 +1455,23 @@ class Audit:
         r_filenames.append(join(current_dir, "config", "server.ini"))
         r_filenames.append(join(current_dir, "config", "server.json"))
 
-        for dirname in (server_path, current_dir):
+        # for dirname_ in (server_path, current_dir):
 
-            r_filenames += [
-                file.path
-                for file in server.pages.js_paths.values()
-                if exists(file.path)
-            ]
+        r_filenames += [
+            file.path
+            for file in server.pages.js_paths.values()
+            if exists(file.path)
+        ]
 
-            r_filenames += [
-                file.path
-                for file in server.pages.statics_paths.values()
-                if exists(file.path)
-            ]
+        r_filenames += [
+            file.path
+            for file in server.pages.statics_paths.values()
+            if exists(file.path)
+        ]
 
-            executable_filenames = [
-                script.path for script in server.pages.scripts.values()
-            ]
+        executable_filenames = [
+            script.path for script in server.pages.scripts.values()
+        ]
 
         executable_filenames += [
             module.__file__
@@ -1643,9 +1646,9 @@ class Audit:
                     f" {version} latest: {latest}"
                 )
                 return (
-                    f"Current WebScripts version: {'.'.join(version)}"
-                    f"Latest WebScripts version: {'.'.join(latest)}"
-                    "It is recommended that you upgrade your WebScripts server."
+                    f"Current WebScripts version: {'.'.join(version)}\n"
+                    f"Latest WebScripts version: {'.'.join(latest)}.\nIt is "
+                    "recommended that you upgrade your WebScripts server."
                 )
 
             Audit.latest_ = latest
@@ -1728,18 +1731,52 @@ class FilesIntegity:
                 ),
             }
 
-        pages = self.server.pages
+        server = self.server
+        pages = server.pages
         self.webscripts_new_files = files = {}
         self.logs.info("Get hash and metadata from code files...")
 
+        templates = []
+
         for name, callable_file in pages.js_paths.items():
-            files[f"static {name}"] = build_file(callable_file.path)
+            if not templates:
+                templates = [
+                    callable_file.template_index_path,
+                    callable_file.template_script_path,
+                ]
+            files[f"js {name}"] = build_file(callable_file.path)
 
         for name, callable_file in pages.statics_paths.items():
+            if not templates:
+                templates = [
+                    callable_file.template_index_path,
+                    callable_file.template_script_path,
+                ]
             files[f"static {name}"] = build_file(callable_file.path)
 
         for name, config in pages.scripts.items():
             files[f"script {name}"] = build_file(config.path)
+
+        for path in glob(join(server_path, "*.py")):
+            files[f"webscript {basename(path)}"] = build_file(path)
+
+        for path in server.configuration.configuration_files:
+            files[f"configuration {basename(path)}"] = build_file(path)
+
+        for template in templates:
+            files[f"template {basename(template)}"] = build_file(template)
+
+        module_path = join(server_path, "modules")
+        for filename, path in get_files_recursive(module_path):
+            files[f"server modules {filename}"] = build_file(
+                join(module_path, path)
+            )
+
+        module_path = join(Audit.current_dir, "modules")
+        for filename, path in get_files_recursive(module_path):
+            files[f"current modules {filename}"] = build_file(
+                join(module_path, path)
+            )
 
         return files
 
@@ -1891,21 +1928,31 @@ class FilesIntegity:
                 or hash_ != data.get("hash", "")
             ):
                 self.logs.critical(
-                    f"An uploads file has been modified (this is a suspicious action, check that your server is not compromised) [{filename}]."
+                    "An uploads file has been modified (this is a suspicious "
+                    "action, check that your server is not compromised)"
+                    f" [{filename}]."
                 )
                 yield {
                     "File": filename,
-                    "Reason": "An uploads file has been modified (this is a suspicious action, check that your server is not compromised).",
+                    "Reason": (
+                        "An uploads file has been modified (this is a "
+                        "suspicious action, check that your server is not "
+                        "compromised)."
+                    ),
                     "Score": 10,
                 }
 
         for file in old_files:
             self.logs.critical(
-                f"An data/uploads file is deleted (this is a suspicious action, check that your server is not compromised) [{file}]."
+                "An data/uploads file is deleted (this is a suspicious action,"
+                f" check that your server is not compromised) [{file}]."
             )
             yield {
                 "File": file,
-                "Reason": f"A data/uploads is deleted (this is a suspicious action, check that your server is not compromised).",
+                "Reason": (
+                    "A data/uploads is deleted (this is a suspicious action,"
+                    " check that your server is not compromised)."
+                ),
                 "Score": 10,
             }
 
@@ -1916,7 +1963,6 @@ class FilesIntegity:
         """
 
         self.logs.debug("Log files integrity checks...")
-        files = [*scandir(join(server_path, "logs"))]
         temp_logs_files = self.temp_logs_files
         check_logs_ok = self.check_logs_ok
         _, self.logs_checks = to_yield, logs_checks = self.get_old_files(
@@ -1925,6 +1971,12 @@ class FilesIntegity:
 
         if to_yield:
             yield to_yield
+
+        server_log_path = join(server_path, "logs")
+        if isdir(server_log_path):
+            files = [*scandir(server_log_path)]
+        else:
+            files = []
 
         if isdir("logs"):
             self.logs.info("Current logs directory found...")
@@ -1957,19 +2009,24 @@ class FilesIntegity:
                 if not check_logs_ok(path, temp_file, metadata):
                     file_checks = logs_checks.get(file, {})
                     self.logs.warning(
-                        "A log file has lost logs (check log rotation otherwise your server is compromised)."
+                        "A log file has lost logs (check log rotation "
+                        "otherwise your server is compromised)."
                     )
                     yield {
                         "File": f"Logs {file}",
                         "Reason": (
                             f"{path}: logs has been modified. "
                             f"Last size: {file_checks.get('size')},"
-                            f" new size: {size}. Last creation: {file_checks.get('created')},"
-                            f" last modification: {file_checks.get('modification')}, new creation"
+                            f" new size: {size}. Last creation: "
+                            f"{file_checks.get('created')}, last modification:"
+                            f" {file_checks.get('modification')}, new creation"
                             f": {creation}, new modification: {modification}. "
-                            "If it's not rotating logs, your server is compromised."
+                            "If it's not rotating logs, your server is"
+                            " compromised."
                         ),
-                        "Score": 7,  # score 7 because it will be reported on logs file rotation
+                        "Score": 7,
+                        # score 7 because it will be reported on
+                        # logs file rotation
                     }
 
                 logs_checks[path] = {
@@ -2079,7 +2136,7 @@ def daemon_func(
     check WebScripts version, update and integrity.
     """
 
-    sleep(5)  # No SMTP error: "SmtpError: to many connections"
+    sleep(120)  # No SMTP error: "SmtpError: to many connections"
     files = []
     text = ""
 
@@ -2089,7 +2146,7 @@ def daemon_func(
         if text:
             send_mail(server.configuration, text)
 
-        sleep(30)
+        sleep(3600)
         files += [
             *file_integrity.check_webscripts_file_integrity(),
             *file_integrity.check_logs_files(),
@@ -2119,6 +2176,22 @@ def daemon_func(
             files = []
         else:
             text = ""
+
+
+def get_files_recursive(path: str) -> Iterator[Tuple[str, str]]:
+
+    """
+    This function returns path and file names recursively.
+    """
+
+    if not isdir(path):
+        return None
+
+    for file in listdir(path):
+        if isfile(file):
+            yield join(path, file), file
+        elif isdir(file):
+            yield from get_files_recursive(join(path, file))
 
 
 def main(server: Server, logs: Logs, send_mail: Callable) -> Report:

@@ -26,7 +26,7 @@ This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -76,6 +76,7 @@ from collections.abc import Callable
 from contextlib import suppress
 from platform import system
 from functools import wraps
+from os.path import abspath
 from logging import Logger
 import logging.handlers
 import logging
@@ -107,7 +108,9 @@ system = system()
 
 class _Logs:
 
-    """This class implement basic python logs."""
+    """
+    This class implement basic python logs.
+    """
 
     console: Logger = logging.getLogger("WebScripts.console")
     file: Logger = logging.getLogger("WebScripts.file")
@@ -122,7 +125,9 @@ class _Logs:
 
     def debug(log: str) -> None:
 
-        """This function implement basic python debug logs for WebScripts."""
+        """
+        This function implement basic python debug logs for WebScripts.
+        """
 
         Logs.log_debug.debug(log)
         Logs.console.debug(f"\x1b[32m{log}\x1b[0m")
@@ -131,7 +136,9 @@ class _Logs:
 
     def info(log: str) -> None:
 
-        """This function implement basic python info logs for WebScripts."""
+        """
+        This function implement basic python info logs for WebScripts.
+        """
 
         Logs.log_info.info(log)
         Logs.console.info(f"\x1b[34m{log}\x1b[0m")
@@ -185,27 +192,35 @@ class _Logs:
 
     def trace(log: str) -> None:
 
-        """This function implement trace logs for WebScripts."""
+        """
+        This function implement trace logs for WebScripts.
+        """
 
         Logs.log_trace.log(5, log)
         logging.log(5, log)
 
     def config(*args, **kwargs):
 
-        """This function config ROOT logger."""
+        """
+        This function config ROOT logger.
+        """
 
         logging.basicConfig(*args, **kwargs)
 
 
 class WindowsLogs(_Logs):
 
-    """This class log on Windows."""
+    """
+    This class log on Windows.
+    """
 
     app: str = "WebScripts"
 
     def debug(log: str) -> None:
 
-        """This function log debugs on Windows."""
+        """
+        This function log debugs on Windows.
+        """
 
         super(WindowsLogs, WindowsLogs).debug(log)
         if WINDOWS_LOGS:
@@ -218,7 +233,9 @@ class WindowsLogs(_Logs):
 
     def info(log: str) -> None:
 
-        """This function log infos on Windows."""
+        """
+        This function log infos on Windows.
+        """
 
         super(WindowsLogs, WindowsLogs).info(log)
         if WINDOWS_LOGS:
@@ -231,7 +248,9 @@ class WindowsLogs(_Logs):
 
     def warning(log: str) -> None:
 
-        """This function log warnings on Windows."""
+        """
+        This function log warnings on Windows.
+        """
 
         super(WindowsLogs, WindowsLogs).warning(log)
         if WINDOWS_LOGS:
@@ -244,7 +263,9 @@ class WindowsLogs(_Logs):
 
     def error(log: str) -> None:
 
-        """This function log errors on Windows."""
+        """
+        This function log errors on Windows.
+        """
 
         super(WindowsLogs, WindowsLogs).error(log)
         if WINDOWS_LOGS:
@@ -257,7 +278,9 @@ class WindowsLogs(_Logs):
 
     def critical(log: str) -> None:
 
-        """This function log criticals on Windows."""
+        """
+        This function log criticals on Windows.
+        """
 
         super(WindowsLogs, WindowsLogs).critical(log)
         if WINDOWS_LOGS:
@@ -271,39 +294,51 @@ class WindowsLogs(_Logs):
 
 class LinuxLogs(_Logs):
 
-    """This class log on Linux."""
+    """
+    This class log on Linux.
+    """
 
     def debug(log: str) -> None:
 
-        """This function log debugs on Linux."""
+        """
+        This function log debugs on Linux.
+        """
 
         super(LinuxLogs, LinuxLogs).debug(log)
         ReportEvent(syslog.LOG_DEBUG, log)
 
     def info(log: str) -> None:
 
-        """This function log infos on Linux."""
+        """
+        This function log infos on Linux.
+        """
 
         super(LinuxLogs, LinuxLogs).info(log)
         ReportEvent(syslog.LOG_INFO, log)
 
     def warning(log: str) -> None:
 
-        """This function log warnings on Linux."""
+        """
+        This function log warnings on Linux.
+        """
 
         super(LinuxLogs, LinuxLogs).warning(log)
         ReportEvent(syslog.LOG_WARNING, log)
 
     def error(log: str) -> None:
 
-        """This function log errors on Linux."""
+        """
+        This function log errors on Linux.
+        """
 
         super(LinuxLogs, LinuxLogs).error(log)
         ReportEvent(syslog.LOG_ERR, log)
 
     def critical(log: str) -> None:
 
-        """This function log criticals on Linux."""
+        """
+        This function log criticals on Linux.
+        """
 
         super(LinuxLogs, LinuxLogs).critical(log)
         ReportEvent(syslog.LOG_CRIT, log)
@@ -425,8 +460,10 @@ else:
 
 class DefaultNamespace(SimpleNamespace):
 
-    """This class build simple namespace with default
-    attributs."""
+    """
+    This class build simple namespace with default
+    attributs.
+    """
 
     def __init__(
         self,
@@ -447,16 +484,20 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def update(self, **kwargs):
 
-        """This function add/update attributes with **kwargs arguments."""
+        """
+        This function add/update attributes with **kwargs arguments.
+        """
 
         self.__dict__.update(kwargs)
 
     @log_trace
     def check_required(self) -> None:
 
-        """This function checks required attributes
+        """
+        This function checks required attributes
         if one of required attributes is missing this
-        function raise MissingAttributesError."""
+        function raise MissingAttributesError.
+        """
 
         for attribut in self.__required__:
             if getattr(self, attribut, None) is None:
@@ -467,8 +508,10 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def get_missings(self) -> List[str]:
 
-        """This function checks required attributes
-        and return a List[str] of missing required attributes."""
+        """
+        This function checks required attributes
+        and return a List[str] of missing required attributes.
+        """
 
         missings = []
 
@@ -481,12 +524,14 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def get_unexpecteds(self, log: bool = True) -> List[str]:
 
-        """This function return a List[str] of
+        """
+        This function return a List[str] of
         all attributes not in optional and
         required attributes.
 
         If log argument is True a Warning log message is
-        write for all unexpected attributes."""
+        write for all unexpected attributes.
+        """
 
         all_ = self.__required__ + self.__optional__
         unexpecteds = []
@@ -506,7 +551,9 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def get_dict(self) -> None:
 
-        """This function return a dict of attributes."""
+        """
+        This function return a dict of attributes.
+        """
 
         dict_ = self.__dict__.copy()
 
@@ -541,7 +588,9 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def build_types(self) -> None:
 
-        """This function build type from configuration values."""
+        """
+        This function build type from configuration values.
+        """
 
         for attribut, type_ in self.__types__.items():
             value = getattr(self, attribut, None)
@@ -595,7 +644,9 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def set_defaults(self) -> None:
 
-        """This function set defaults attribut with defaults values."""
+        """
+        This function set defaults attribut with defaults values.
+        """
 
         for attr, value in self.__defaults__.items():
             setattr(self, attr, getattr(self, attr, value))
@@ -603,14 +654,18 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def get(self, key: str, default=None):
 
-        """Compatibility with dict."""
+        """
+        Compatibility with dict.
+        """
 
         return getattr(self, key, default)
 
     @log_trace
     def __getitem__(self, key: str):
 
-        """Compatibility with dict."""
+        """
+        Compatibility with dict.
+        """
 
         return getattr(self, key)
 
@@ -618,8 +673,10 @@ class DefaultNamespace(SimpleNamespace):
     @log_trace
     def default_build(cls, **kwargs) -> DefaultNamespace:
 
-        """Default build for DefaultNamespace (set defaults, add values,
-        check requirements and unexpected values and build types)."""
+        """
+        Default build for DefaultNamespace (set defaults, add values,
+        check requirements and unexpected values and build types).
+        """
 
         namespace = cls()
         namespace.set_defaults()
@@ -653,7 +710,9 @@ def get_encodings():
 @log_trace
 def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 
-    """This function return a dict from ini filename."""
+    """
+    This function return a dict from ini filename.
+    """
 
     config = ConfigParser(allow_no_value=True, inline_comment_prefixes="#")
     config.read(filename)
@@ -663,7 +722,9 @@ def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 @log_trace
 def get_ip(environ: _Environ) -> str:
 
-    """This function return the real IP."""
+    """
+    This function return the real IP.
+    """
 
     return (
         environ.get("X_REAL_IP")
@@ -676,7 +737,9 @@ def get_ip(environ: _Environ) -> str:
 @log_trace
 def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
 
-    """This function return the file content."""
+    """
+    This function return the file content.
+    """
 
     if "encoding" in kwargs or "rb" in args or "rb" in kwargs.values():
         with open(get_real_path(file_path), *args, **kwargs) as file:
@@ -729,7 +792,9 @@ def get_arguments_count(object_: Callable):
 @log_trace
 def get_real_path(file_path: str, is_dir: bool = False) -> str:
 
-    """This function return the real path for files."""
+    """
+    This function return the real path for files.
+    """
 
     if file_path is None:
         return file_path
@@ -752,13 +817,13 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
         check = path.isfile
 
     if check(file_path):
-        return file_path
+        return abspath(file_path)
     elif (
         len(file_path) > length
         and file_path[index] != character
         and path.isfile(server_file_path)
     ):
-        return server_file_path
+        return abspath(server_file_path)
 
     raise FileNotFoundError(
         f"[WebScripts] No such file or directory: '{file_path}'"

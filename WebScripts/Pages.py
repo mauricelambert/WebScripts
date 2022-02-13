@@ -57,10 +57,10 @@ from base64 import urlsafe_b64encode
 from contextlib import suppress
 from secrets import token_bytes
 from os import _Environ, path
+from json import dumps, loads
 from fnmatch import fnmatch
 from threading import Timer
 from html import escape
-from json import dumps
 from time import time
 
 try:
@@ -237,7 +237,9 @@ def execution_logs(
     script: ScriptConfig, user: User, process: Popen, stderr: bytes
 ) -> None:
 
-    """This function logs the script execution."""
+    """
+    This function logs the script execution.
+    """
 
     if script.no_password:
         Logs.info(f"Command: {process.args}")
@@ -272,7 +274,10 @@ def get_environ(
     #     key
     #     for key in script_env.keys()
     #     if key
-    #     in ("wsgi.run_once", "wsgi.input", "wsgi.errors", "wsgi.file_wrapper")
+    #     in (
+    #         "wsgi.run_once", "wsgi.input",
+    #         "wsgi.errors", "wsgi.file_wrapper"
+    #     )
     # ]
     # for key in to_delete:
     #     del script_env[key]
@@ -306,7 +311,9 @@ def get_environ(
 @log_trace
 def check_right(user: User, configuration: ScriptConfig) -> bool:
 
-    """This function check rights for script/user and return boolean."""
+    """
+    This function check rights for script/user and return boolean.
+    """
 
     if (
         user.groups
@@ -341,7 +348,9 @@ def check_categories_scripts_access(
     user: User, configuration: ScriptConfig
 ) -> bool:
 
-    """This function check access on script and categories."""
+    """
+    This function check access on script and categories.
+    """
 
     if any(
         [fnmatch(configuration.category, access) for access in user.categories]
@@ -959,7 +968,7 @@ class Pages:
         if code or stdout is None or stderr:
             return "500", {}, ""
 
-        user = User.default_build(**anti_XSS(json.loads(stdout)))
+        user = User.default_build(**anti_XSS(loads(stdout)))
 
         if user.id != 0:
             Pages.ip_blacklist[ip] = Blacklist(
