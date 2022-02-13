@@ -29,6 +29,7 @@ from unittest.mock import Mock, patch
 from unittest import TestCase, main
 from types import MethodType
 from importlib import reload
+from os.path import abspath
 from typing import List
 from io import StringIO
 from json import load
@@ -410,9 +411,11 @@ class TestFunctions(TestCase):
             file.write('{"test": "test"}')
 
         self.assertIsNone(get_real_path(None))
-        self.assertEqual("test.json", get_real_path("test.json"))
+        self.assertEqual(abspath("test.json"), get_real_path("test.json"))
         self.assertEqual(
-            path.normcase(server_path + "/static/html/utils.html").lower(),
+            abspath(
+                path.normcase(server_path + "/static/html/utils.html").lower()
+            ),
             get_real_path("static/html/utils.html").lower(),
         )
 

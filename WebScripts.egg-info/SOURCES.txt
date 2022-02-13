@@ -25,8 +25,12 @@ WebScripts/WebScripts.py
 WebScripts/__init__.py
 WebScripts/__main__.py
 WebScripts/commons.py
+WebScripts/default_files.json
 WebScripts/hardening.py
+WebScripts/logs_checks.json
+WebScripts/uploads_file_integrity.json
 WebScripts/utils.py
+WebScripts/webscripts_file_integrity.json
 WebScripts.egg-info/PKG-INFO
 WebScripts.egg-info/SOURCES.txt
 WebScripts.egg-info/dependency_links.txt
@@ -39,6 +43,7 @@ WebScripts/config/files/change_my_password.json
 WebScripts/config/files/test_config.json
 WebScripts/config/nt/server.ini
 WebScripts/config/nt/server.json
+WebScripts/config/nt/files/change_my_password.ini
 WebScripts/config/nt/files/change_my_password.json
 WebScripts/config/nt/files/test_config.json
 WebScripts/config/nt/scripts/default_admin_scripts.json

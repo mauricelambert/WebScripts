@@ -35,6 +35,7 @@ Create a safe, secure and easy way to share CLI (console) scripts and scripting 
         - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html), 
         - [docker with Nginx as HTTPS proxy HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_nginx_audit.html), 
         - [docker HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_audit.html)
+    - [File integrity checks](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#file-integrity)([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#file-integrity)), the WebScripts server implements a daemon thread to check file integrity hourly.
     - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
     - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
     - Easy to deploy securely

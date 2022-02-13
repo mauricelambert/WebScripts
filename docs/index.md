@@ -1,4 +1,4 @@
-![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png)
+![WebScripts Logo](https://mauricelambert.github.io/info/python/code/WebScripts/small_logo.png "WebScripts logo")
 
 # WebScripts
 
@@ -23,7 +23,7 @@ This tool run scripts and display the result in a Web Interface ([a little prese
 
 ## Goals
 
-Create a safe, secure and easy way to share console scripts and scripting environnments with your team or people without IT knowledge.
+Create a safe, secure and easy way to share CLI (console) scripts and scripting environnments with your team or people without IT knowledge.
 
  - Secure
     - [SAST - Static Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#sast-alerts) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)) using [bandit](https://mauricelambert.github.io/info/python/code/WebScripts/bandit.txt), semgrep, CodeQL and Pycharm Security.
@@ -35,6 +35,7 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
         - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html), 
         - [docker with Nginx as HTTPS proxy HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_nginx_audit.html), 
         - [docker HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_audit.html)
+    - [File integrity checks](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#file-integrity)([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#file-integrity)), the WebScripts server implements a daemon thread to check file integrity hourly.
     - Centralization of logs (using Syslog on Linux and Event Viewer on Windows)
     - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
     - Easy to deploy securely
@@ -73,7 +74,6 @@ Create a safe, secure and easy way to share console scripts and scripting enviro
 *Demonstration of WebScripts use - Youtube video*
 
 ## Requirements
-
 This package require:
 
  - python3

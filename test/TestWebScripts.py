@@ -42,6 +42,23 @@ import os
 
 WebScripts_path = path.join(path.dirname(__file__), "..")
 
+if not path.exists(
+    path.join(WebScripts_path, "webscripts_file_integrity.json")
+):
+    f = open(path.join(WebScripts_path, "webscripts_file_integrity.json"), "w")
+    f.write("{}")
+    f.close()
+
+if not path.exists(path.join(WebScripts_path, "uploads_file_integrity.json")):
+    f = open(path.join(WebScripts_path, "uploads_file_integrity.json"), "w")
+    f.write("{}")
+    f.close()
+
+if not path.exists(path.join(WebScripts_path, "logs_checks.json")):
+    f = open(path.join(WebScripts_path, "logs_checks.json"), "w")
+    f.write("{}")
+    f.close()
+
 if WebScripts_path not in sys.path:
     sys.path.insert(0, WebScripts_path)
 

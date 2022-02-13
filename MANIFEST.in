@@ -5,6 +5,7 @@ include *.yaml
 include docs/*.md
 include test/*.py
 include WebScripts/*.txt
+include WebScripts/*.json
 include WebScripts/data/id
 include WebScripts/data/*.csv
 include WebScripts/modules/*.py

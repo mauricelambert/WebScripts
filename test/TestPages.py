@@ -30,6 +30,7 @@ from unittest import TestCase, main
 from subprocess import PIPE
 from html import unescape
 from os import path
+import locale
 import sys
 
 WebScripts_path = path.join(path.dirname(__file__), "..")
@@ -38,8 +39,10 @@ if WebScripts_path not in sys.path:
     sys.path.insert(0, WebScripts_path)
 
 from WebScripts.Pages import (
+    check_categories_scripts_access,
     execute_scripts,
     execution_logs,
+    decode_output,
     start_process,
     check_right,
     get_environ,
@@ -49,6 +52,7 @@ from WebScripts.Pages import (
 )
 
 from WebScripts import Pages as Module
+import WebScripts.utils
 
 
 class TestFunctions(TestCase):
@@ -315,6 +319,94 @@ class TestFunctions(TestCase):
         self.assertNotIn("wsgi.input", new_env)
         self.assertNotIn("wsgi.errors", new_env)
         self.assertNotIn("wsgi.file_wrapper", new_env)
+
+    def test_check_right(self):
+        user = Mock(groups=[1000])
+        configuration = Mock(
+            minimum_access=None, access_users=None, access_groups=[1000]
+        )
+
+        with patch.object(
+            Module, "check_categories_scripts_access", return_value=True
+        ) as method:
+            self.assertTrue(check_right(user, configuration))
+            method.assert_called_once_with(user, configuration)
+
+        user = Mock(id=1000)
+        configuration = Mock(
+            minimum_access=None, access_users=[1000], access_groups=None
+        )
+
+        with patch.object(
+            Module, "check_categories_scripts_access", return_value=True
+        ) as method:
+            self.assertTrue(check_right(user, configuration))
+            method.assert_called_once_with(user, configuration)
+
+        user = Mock(groups=[1000])
+        configuration = Mock(
+            access_users=None, minimum_access=1000, access_groups=None
+        )
+
+        with patch.object(
+            Module, "check_categories_scripts_access", return_value=True
+        ) as method:
+            self.assertTrue(check_right(user, configuration))
+            method.assert_called_once_with(user, configuration)
+
+        user = Mock()
+        configuration = Mock(
+            minimum_access=None, access_users=None, access_groups=None
+        )
+
+        with patch.object(
+            Module, "check_categories_scripts_access", return_value=True
+        ) as method:
+            self.assertTrue(check_right(user, configuration))
+            method.assert_called_once_with(user, configuration)
+
+        user = Mock(groups=[999])
+        configuration = Mock(
+            minimum_access=1000, access_users=None, access_groups=None
+        )
+        self.assertFalse(check_right(user, configuration))
+
+    def test_check_categories_scripts_access(self):
+        class MyObjectTest:
+            pass
+
+        user = Mock(
+            categories=["test", "test_*"], scripts=["scriptest", "scriptest_*"]
+        )
+        configuration = Mock(category="test")
+        self.assertTrue(check_categories_scripts_access(user, configuration))
+
+        configuration = Mock(category="test_test")
+        self.assertTrue(check_categories_scripts_access(user, configuration))
+
+        configuration = MyObjectTest()
+        configuration.category = "testfalse"
+        configuration.name = "scriptest"
+        # configuration = Mock(category="testfalse", name="scriptest")
+        self.assertTrue(check_categories_scripts_access(user, configuration))
+
+        configuration.name = "scriptest_test"
+        # configuration = Mock(category="testfalse", name="scriptest_test")
+        self.assertTrue(check_categories_scripts_access(user, configuration))
+
+        configuration.name = "scriptestfalse"
+        # configuration = Mock(category="testfalse", name="scriptestfalse")
+        self.assertFalse(check_categories_scripts_access(user, configuration))
+
+    def test_decode_output(self):
+        with patch.object(
+            WebScripts.utils.locale, "getpreferredencoding", return_value=None
+        ) as m1, patch.object(
+            WebScripts.utils, "device_encoding", return_value=None
+        ) as m2:
+            self.assertEqual("\u2588", decode_output(b"\xe2\x96\x88"))
+            self.assertEqual("\xff\xfe\xef", decode_output(b"\xff\xfe\xef"))
+            self.assertEqual("€", decode_output(b"\x80"))
 
 
 if __name__ == "__main__":

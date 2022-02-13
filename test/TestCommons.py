@@ -140,6 +140,19 @@ class TestScriptConfig(TestCase):
             ScriptConfig.build_scripts_from_configuration(configuration)
 
         self.assertEqual(len(config_mock.mock_calls), 3)
+        self.assertListEqual(
+            [
+                path.abspath(file).casefold()
+                for file in configuration.configuration_files
+            ],
+            [
+                path.abspath(file).casefold()
+                for file in [
+                    "./unittests_configuration.ini",
+                    "./unittests_configuration.json",
+                ]
+            ],
+        )
 
         self.assertEqual(len(config_mock.mock_calls[0].args), 2)
         self.assertListEqual(
@@ -318,7 +331,9 @@ class TestScriptConfig(TestCase):
 
     def test_get_script_config_from_specific_file_config(self):
         self.assertEqual(
-            ScriptConfig.get_script_config_from_specific_file_config({}, None),
+            ScriptConfig.get_script_config_from_specific_file_config(
+                {}, None, {}
+            ),
             (None, {}),
         )
 
@@ -327,28 +342,41 @@ class TestScriptConfig(TestCase):
 
         with self.assertRaises(WebScriptsConfigurationError):
             ScriptConfig.get_script_config_from_specific_file_config(
-                {"configuration_file": "test.json"}, {}
+                {"configuration_file": "test.json"}, {}, {}
             )
+
+        class MyObject:
+            pass
 
         with open("test.ini", "w") as file:
             file.write("[script]\ntest=test")
 
+        config = MyObject()
         configs = ScriptConfig.get_script_config_from_specific_file_config(
-            {"configuration_file": "test.ini"}, {}
+            {"configuration_file": "test.ini"}, {}, config
         )
 
         self.assertDictEqual(configs[0]["script"], configs[1])
         self.assertDictEqual(configs[0], {"script": {"test": "test"}})
+        self.assertListEqual(
+            [f.casefold() for f in config.configuration_files],
+            [path.abspath("test.ini").casefold()],
+        )
 
         with open("test.json", "w") as file:
             json.dump({"script": {"test": "test"}}, file)
 
+        config = MyObject()
         configs = ScriptConfig.get_script_config_from_specific_file_config(
-            {"configuration_file": "test.json"}, {}
+            {"configuration_file": "test.json"}, {}, config
         )
 
         self.assertDictEqual(configs[0]["script"], configs[1])
         self.assertDictEqual(configs[0], {"script": {"test": "test"}})
+        self.assertListEqual(
+            [f.casefold() for f in config.configuration_files],
+            [path.abspath("test.json").casefold()],
+        )
 
     def test_get_JSON_API(self):
         script = DefaultNamespace()
