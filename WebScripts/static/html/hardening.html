@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 0.3.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.0.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -21,14 +21,8 @@ configuration.</tt></p>
     
 <tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
-<a href="json.html">json</a><br>
-<a href="os.html">os</a><br>
-</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
-<a href="pip.html">pip</a><br>
-<a href="platform.html">platform</a><br>
-</td><td width="25%" valign=top><a href="re.html">re</a><br>
-<a href="stat.html">stat</a><br>
-<a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="pip.html">pip</a><br>
 </td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#C89B48">
@@ -64,7 +58,7 @@ configuration.</tt></p>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Audit-audit_active_auth"><strong>audit_active_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;authentication&nbsp;is&nbsp;enabled.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_admin_account"><strong>audit_admin_account</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;admin&nbsp;password.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_admin_account"><strong>audit_admin_account</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;admin&nbsp;password.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audit_blacklist"><strong>audit_blacklist</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;blacklist&nbsp;configuration.</tt></dd></dl>
 
@@ -111,7 +105,7 @@ type.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_timeout"><strong>audits_timeout</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;scripts&nbsp;timeout.</tt></dd></dl>
 
-<dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(configuration: ~ServerConfiguration, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
+<dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(logs: ~Logs) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
 and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;of&nbsp;WebScripts&nbsp;every&nbsp;hour.<br>
 If&nbsp;the&nbsp;version&nbsp;and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;are&nbsp;different,<br>
 this&nbsp;function&nbsp;sends&nbsp;an&nbsp;email&nbsp;notification.</tt></dd></dl>
@@ -138,6 +132,12 @@ Data and other attributes defined here:<br>
 
 <dl><dt><strong>is_windows</strong> = True</dl>
 
+<dl><dt><strong>latest</strong> = []</dl>
+
+<dl><dt><strong>latest_</strong> = []</dl>
+
+<dl><dt><strong>network_up</strong> = True</dl>
+
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#EEC477">
@@ -145,12 +145,12 @@ Data and other attributes defined here:<br>
 <font color="#000000" face="helvetica, arial"><a name="Report">class <strong>Report</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Report">Report</a>(rules:&nbsp;List[hardening.<a href="#Rule">Rule</a>],&nbsp;server:&nbsp;~Server,&nbsp;logs:&nbsp;~Logs)<br>
+<td colspan=2><tt><a href="#Report">Report</a>(rules:&nbsp;List[hardening.<a href="#Rule">Rule</a>],&nbsp;file_integrity:&nbsp;List[Dict[str,&nbsp;str]],&nbsp;server:&nbsp;~Server,&nbsp;logs:&nbsp;~Logs)<br>
 &nbsp;<br>
 This&nbsp;class&nbsp;implement&nbsp;the&nbsp;report&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Report-__init__"><strong>__init__</strong></a>(self, rules: List[hardening.Rule], server: ~Server, logs: ~Logs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="Report-__init__"><strong>__init__</strong></a>(self, rules: List[hardening.Rule], file_integrity: List[Dict[str, str]], server: ~Server, logs: ~Logs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <dl><dt><a name="Report-as_html"><strong>as_html</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;HTML&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
 
@@ -266,7 +266,7 @@ is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.<
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; hardening.Report</dt><dd><tt>Main&nbsp;function&nbsp;to&nbsp;execute&nbsp;this&nbsp;file.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; hardening.Report</dt><dd><tt>The&nbsp;main&nbsp;function&nbsp;to&nbsp;perform&nbsp;WebScripts&nbsp;Server&nbsp;hardening&nbsp;audit.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">
@@ -277,7 +277,7 @@ is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.<
 <td width="100%"><strong>__all__</strong> = ['Report', 'Rule', 'Audit', 'SEVERITY', 'main']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = 'This tool run scripts and display the result in ...of the WebScripts installation and<font color="#c040c0">\n</font>configuration.'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...f the WebScripts installation and<font color="#c040c0">\n</font>configuration.<font color="#c040c0">\n</font>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>

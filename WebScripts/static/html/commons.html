@@ -231,11 +231,15 @@ Data descriptors defined here:<br>
 Data and other attributes defined here:<br>
 <dl><dt><strong>__abstractmethods__</strong> = frozenset()</dl>
 
-<dl><dt><strong>__annotations__</strong> = {'template_index': &lt;class 'str'&gt;, 'template_script': &lt;class 'str'&gt;}</dl>
+<dl><dt><strong>__annotations__</strong> = {'template_index': &lt;class 'str'&gt;, 'template_index_path': &lt;class 'str'&gt;, 'template_script': &lt;class 'str'&gt;, 'template_script_path': &lt;class 'str'&gt;}</dl>
 
 <dl><dt><strong>template_index</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page for index.<font color="#c040c0">\n</font>    Copyright (C)...ipts(build_categories);&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
 
+<dl><dt><strong>template_index_path</strong> = r'/home/WebScripts\static\templates\index.html'</dl>
+
 <dl><dt><strong>template_script</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page to launch scripts.<font color="#c040c0">\n</font>    Copyr...);<font color="#c040c0">\n\t\t\t</font>add_buttons();<font color="#c040c0">\n\t\t</font>&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
+
+<dl><dt><strong>template_script_path</strong> = r'/home/WebScripts\static\templates\script.html'</dl>
 
 <hr>
 Class methods inherited from <a href="collections.abc.html#Callable">collections.abc.Callable</a>:<br>
@@ -263,7 +267,7 @@ overrides&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;(and&nbsp;the&nbsp;outcome&nb
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt><a href="#ScriptConfig">ScriptConfig</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
 &nbsp;<br>
-This&nbsp;class&nbsp;get&nbsp;script&nbsp;config.<br>&nbsp;</tt></td></tr>
+This&nbsp;class&nbsp;makes&nbsp;script&nbsp;configurations.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="commons.html#ScriptConfig">ScriptConfig</a></dd>
@@ -291,12 +295,13 @@ Static methods defined here:<br>
 
 <dl><dt><a name="ScriptConfig-get_arguments_from_config"><strong>get_arguments_from_config</strong></a>(arguments_section: str, configuration: Dict[str, Dict[str, ~JsonValue]]) -&gt; List[Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;arguments&nbsp;list&nbsp;of&nbsp;script.</tt></dd></dl>
 
-<dl><dt><a name="ScriptConfig-get_docfile_from_configuration"><strong>get_docfile_from_configuration</strong></a>(configuration: ~ServerConfiguration, filename: str) -&gt; str</dt></dl>
+<dl><dt><a name="ScriptConfig-get_docfile_from_configuration"><strong>get_docfile_from_configuration</strong></a>(configuration: ~ServerConfiguration, filename: str) -&gt; str</dt><dd><tt>This&nbsp;method&nbsp;returns&nbsp;the&nbsp;script&nbsp;documentation<br>
+path&nbsp;if&nbsp;it&nbsp;exists.</tt></dd></dl>
 
 <dl><dt><a name="ScriptConfig-get_documentation_from_configuration"><strong>get_documentation_from_configuration</strong></a>(script_config: Dict[str, ~JsonValue], name: str, paths: List[str]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;documentation&nbsp;from&nbsp;script&nbsp;configuration<br>
 or&nbsp;search&nbsp;it&nbsp;in&nbsp;documentation&nbsp;path.</tt></dd></dl>
 
-<dl><dt><a name="ScriptConfig-get_script_config_from_specific_file_config"><strong>get_script_config_from_specific_file_config</strong></a>(script_config: Dict[str, ~JsonValue], configuration: Dict[str, ~JsonValue]) -&gt; Tuple[dict, dict]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;all&nbsp;configuration&nbsp;and<br>
+<dl><dt><a name="ScriptConfig-get_script_config_from_specific_file_config"><strong>get_script_config_from_specific_file_config</strong></a>(script_config: Dict[str, ~JsonValue], configuration: Dict[str, ~JsonValue], server_configuration: Dict[str, ~JsonValue]) -&gt; Tuple[dict, dict]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;all&nbsp;configuration&nbsp;and<br>
 script&nbsp;configuration&nbsp;from&nbsp;configuration.</tt></dd></dl>
 
 <dl><dt><a name="ScriptConfig-get_script_path"><strong>get_script_path</strong></a>(server_configuration: ~ServerConfiguration, script_config: Dict[str, ~JsonValue]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;script&nbsp;path&nbsp;from&nbsp;configuration.</tt></dd></dl>
@@ -454,7 +459,7 @@ Data descriptors defined here:<br>
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt><a href="#User">User</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
 &nbsp;<br>
-This&nbsp;class&nbsp;implement&nbsp;<a href="#User">User</a>&nbsp;<a href="builtins.html#object">object</a><br>&nbsp;</tt></td></tr>
+This&nbsp;class&nbsp;implements&nbsp;<a href="#User">User</a>&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="commons.html#User">User</a></dd>
@@ -561,7 +566,7 @@ Data and other attributes inherited from <a href="types.html#SimpleNamespace">ty
 <strong>__annotations__</strong> = {'logger_critical': &lt;class 'collections.abc.Callable'&gt;, 'logger_debug': &lt;class 'collections.abc.Callable'&gt;, 'logger_error': &lt;class 'collections.abc.Callable'&gt;, 'logger_info': &lt;class 'collections.abc.Callable'&gt;, 'logger_warning': &lt;class 'collections.abc.Callable'&gt;}<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = 'This tool run scripts and display the result in ...mmons functions and class for WebScripts package.'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...mons functions and class for WebScripts package.<font color="#c040c0">\n</font>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
