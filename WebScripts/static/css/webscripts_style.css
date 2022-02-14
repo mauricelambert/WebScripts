@@ -122,7 +122,7 @@ button {
 	font-size: 80%;
 }
 
-#webscripts_footer_list_doc, #webscripts_footer_list_pdf, #webscripts_footer_list_pydoc {
+.list.footer {
 	font-size: 80%;
 	margin-bottom: 1%;
 }

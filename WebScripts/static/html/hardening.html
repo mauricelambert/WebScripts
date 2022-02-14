@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.0.0)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -56,54 +56,54 @@ configuration.</tt></p>
 <td colspan=2><tt>This&nbsp;function&nbsp;implement&nbsp;hardening&nbsp;checks.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Audit-audit_active_auth"><strong>audit_active_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;authentication&nbsp;is&nbsp;enabled.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_active_auth"><strong>audit_active_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;authentication&nbsp;is&nbsp;enabled.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audit_admin_account"><strong>audit_admin_account</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;admin&nbsp;password.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_blacklist"><strong>audit_blacklist</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;blacklist&nbsp;configuration.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_blacklist"><strong>audit_blacklist</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;blacklist&nbsp;configuration.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_config_files"><strong>audit_config_files</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configurations&nbsp;files.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_config_files"><strong>audit_config_files</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configurations&nbsp;files.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_debug"><strong>audit_debug</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;debug&nbsp;configuration.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_debug"><strong>audit_debug</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;debug&nbsp;configuration.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_force_auth"><strong>audit_force_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;authentication&nbsp;is&nbsp;forced.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_force_auth"><strong>audit_force_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;authentication&nbsp;is&nbsp;forced.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_in_venv"><strong>audit_in_venv</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;virtualenv.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_in_venv"><strong>audit_in_venv</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;virtualenv.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_interface"><strong>audit_interface</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;network&nbsp;interface.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_interface"><strong>audit_interface</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;network&nbsp;interface.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_limit_exclude_auth"><strong>audit_limit_exclude_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;exclusions&nbsp;for&nbsp;authentication.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_limit_exclude_auth"><strong>audit_limit_exclude_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;exclusions&nbsp;for&nbsp;authentication.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_log_level"><strong>audit_log_level</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;log&nbsp;level.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_log_level"><strong>audit_log_level</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;log&nbsp;level.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_security"><strong>audit_security</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;security&nbsp;configuration.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_security"><strong>audit_security</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;security&nbsp;configuration.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_smtp_password"><strong>audit_smtp_password</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;SMTP&nbsp;password&nbsp;protection.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_smtp_password"><strong>audit_smtp_password</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;SMTP&nbsp;password&nbsp;protection.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_system_user"><strong>audit_system_user</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;user.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_system_user"><strong>audit_system_user</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;user.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_venv_modules"><strong>audit_venv_modules</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;virtualenv&nbsp;modules.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_venv_modules"><strong>audit_venv_modules</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;virtualenv&nbsp;modules.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_file_owner"><strong>audits_file_owner</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;files&nbsp;owner.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_file_owner"><strong>audits_file_owner</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;files&nbsp;owner.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_file_rights"><strong>audits_file_rights</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;files&nbsp;rights.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_file_rights"><strong>audits_file_rights</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;files&nbsp;rights.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_launcher"><strong>audits_launcher</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;launcher.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_launcher"><strong>audits_launcher</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;launcher.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_module_path"><strong>audits_module_path</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;modules&nbsp;paths.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_module_path"><strong>audits_module_path</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;modules&nbsp;paths.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_scripts_logs"><strong>audits_scripts_logs</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;log.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_scripts_logs"><strong>audits_scripts_logs</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;log.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_scripts_path"><strong>audits_scripts_path</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;path.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_scripts_path"><strong>audits_scripts_path</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;path.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_scripts_stderr_content_type"><strong>audits_scripts_stderr_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;stderr&nbsp;content<br>
+<dl><dt><a name="Audit-audits_scripts_stderr_content_type"><strong>audits_scripts_stderr_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;stderr&nbsp;content<br>
 type.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audits_timeout"><strong>audits_timeout</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;scripts&nbsp;timeout.</tt></dd></dl>
+<dl><dt><a name="Audit-audits_timeout"><strong>audits_timeout</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;scripts&nbsp;timeout.</tt></dd></dl>
 
 <dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(logs: ~Logs) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
 and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;of&nbsp;WebScripts&nbsp;every&nbsp;hour.<br>
