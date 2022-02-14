@@ -707,7 +707,11 @@ class Web:
                     "MYpCdGdSryg=='"
                 )
             },
-            CallableFile.template_index,
+            CallableFile.template_index
+            % {
+                "footer": CallableFile.template_footer,
+                "header": CallableFile.template_header,
+            },
         )
 
     @log_trace
@@ -722,7 +726,9 @@ class Web:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function return Web Page with scripts documentation."""
+        """
+        This function return Web Page with scripts documentation.
+        """
 
         script = Pages.scripts.get(filename)
 
@@ -740,8 +746,10 @@ class Web:
         if script.command_generate_documentation is not None:
             command = script.command_generate_documentation % script.get_dict()
             Logs.info(f"Command for documentation: {command}")
-            process = Popen(
-                command, env=get_environ(environ, user, script), shell=True
+            process = Popen(  # nosec # nosemgrep
+                command,
+                env=get_environ(environ, user, script),
+                shell=True,  # nosec # nosemgrep
             )  # nosec # nosemgrep
             process.communicate()
 

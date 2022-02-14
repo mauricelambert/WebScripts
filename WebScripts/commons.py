@@ -750,9 +750,14 @@ class CallableFile(Callable):
     """
 
     template_script_path: str = get_real_path("static/templates/script.html")
+    template_header_path: str = get_real_path("static/templates/header.html")
+    template_footer_path: str = get_real_path("static/templates/footer.html")
     template_index_path: str = get_real_path("static/templates/index.html")
-    template_script: str = get_file_content("static/templates/script.html")
-    template_index: str = get_file_content("static/templates/index.html")
+
+    template_script: str = get_file_content(template_script_path)
+    template_header: str = get_file_content(template_header_path)
+    template_footer: str = get_file_content(template_footer_path)
+    template_index: str = get_file_content(template_index_path)
 
     @log_trace
     def __init__(
@@ -875,6 +880,8 @@ class CallableFile(Callable):
                     "user": user.name,
                     "csrf": TokenCSRF.build_token(user),
                     "nonce": nonce,
+                    "header": self.template_header,
+                    "footer": self.template_footer,
                 },
             )
             # return (

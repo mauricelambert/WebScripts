@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -579,29 +579,29 @@ class Report:
     |___________________________________________|
 
  1. Scoring
-    - ALL:         Total:\t{G.total(scoring)},\
-\t Fail:\t{G.fail(scoring)},\t Pourcent:\t\
-{self.pourcent['ALL']}%
+    - ALL:         Total:\t{G.total(scoring):0>4},\
+  Fail:\t{G.fail(scoring):0>4},  Pourcent:\t\
+{self.pourcent['ALL']:0>3}%
     - CRITICAL:    Total:\t\
-{scoring[f"{SEVERITY.CRITICAL.value} total"]},\t Fail:\t\
-{scoring[f"{SEVERITY.CRITICAL.value} fail"]},\t \
-Pourcent:\t{G.crit(self.pourcent)}%
+{scoring[f"{SEVERITY.CRITICAL.value} total"]:0>4},  Fail:\t\
+{scoring[f"{SEVERITY.CRITICAL.value} fail"]:0>4},  \
+Pourcent:\t{G.crit(self.pourcent):0>3}%
     - HIGH:        Total:\t\
-{scoring[f"{SEVERITY.HIGH.value} total"]},\t Fail:\t\
-{scoring[f"{SEVERITY.HIGH.value} fail"]},\t Pourcent:\t\
-{G.high(self.pourcent)}%
+{scoring[f"{SEVERITY.HIGH.value} total"]:0>4},  Fail:\t\
+{scoring[f"{SEVERITY.HIGH.value} fail"]:0>4},  Pourcent:\t\
+{G.high(self.pourcent):0>3}%
     - MEDIUM:      Total:\t\
-{scoring[f"{SEVERITY.MEDIUM.value} total"]},\t Fail:\t\
-{scoring[f"{SEVERITY.MEDIUM.value} fail"]},\t Pourcent:\
-\t{G.med(self.pourcent)}%
+{scoring[f"{SEVERITY.MEDIUM.value} total"]:0>4},  Fail:\t\
+{scoring[f"{SEVERITY.MEDIUM.value} fail"]:0>4},  Pourcent:\
+\t{G.med(self.pourcent):0>3}%
     - LOW:         Total:\t\
-{scoring[f"{SEVERITY.LOW.value} total"]},\t Fail:\t\
-{scoring[f"{SEVERITY.LOW.value} fail"]},\t Pourcent:\t\
-{G.low(self.pourcent)}%
+{scoring[f"{SEVERITY.LOW.value} total"]:0>4},  Fail:\t\
+{scoring[f"{SEVERITY.LOW.value} fail"]:0>4},  Pourcent:\t\
+{G.low(self.pourcent):0>3}%
     - INFORMATION: Total:\t{
-scoring[f"{SEVERITY.INFORMATION.value} total"]},\t Fail:\
-\t{scoring[f"{SEVERITY.INFORMATION.value} fail"]},\t\
- Pourcent:\t{G.info(self.pourcent)}%
+scoring[f"{SEVERITY.INFORMATION.value} total"]:0>4},  Fail:\
+\t{scoring[f"{SEVERITY.INFORMATION.value} fail"]:0>4}, \
+ Pourcent:\t{G.info(self.pourcent):0>3}%
 
  2. Failed
 {fail_text}
@@ -715,7 +715,7 @@ class Audit:
     def audit_in_venv(server: Server) -> Rule:
 
         """
-        This function check the virtualenv.
+        This function checks the virtualenv.
         """
 
         return Rule(
@@ -731,7 +731,7 @@ class Audit:
     def audit_config_files(server: Server) -> Rule:
 
         """
-        This function check the configurations files.
+        This function checks the configurations files.
         """
 
         files = [
@@ -763,7 +763,7 @@ class Audit:
     def audit_venv_modules(server: Server) -> Rule:
 
         """
-        This function check the virtualenv modules.
+        This function checks the virtualenv modules.
         """
 
         venv_modules = []
@@ -943,7 +943,9 @@ class Audit:
 
     def audit_system_user(server: Server) -> Rule:
 
-        """This function check the user."""
+        """
+        This function checks the user.
+        """
 
         if Audit.is_windows:
             is_admin = not ctypes.windll.shell32.IsUserAnAdmin()
@@ -962,7 +964,9 @@ class Audit:
 
     def audit_interface(server: Server) -> Rule:
 
-        """This function check the network interface."""
+        """
+        This function checks the network interface.
+        """
 
         return Rule(
             "Network Interface",
@@ -976,7 +980,7 @@ class Audit:
 
     def audit_force_auth(server: Server) -> Rule:
 
-        """This function check authentication is forced."""
+        """This function checks authentication is forced."""
 
         return Rule(
             "Force authentication",
@@ -991,7 +995,9 @@ class Audit:
 
     def audit_active_auth(server: Server) -> Rule:
 
-        """This function check authentication is enabled."""
+        """
+        This function checks authentication is enabled.
+        """
 
         return Rule(
             "Active authentication",
@@ -1006,7 +1012,9 @@ class Audit:
 
     def audit_limit_exclude_auth(server: Server) -> Rule:
 
-        """This function check exclusions for authentication."""
+        """
+        This function checks exclusions for authentication.
+        """
 
         limit_exclusion = True
 
@@ -1031,7 +1039,7 @@ class Audit:
     def audit_security(server: Server) -> Rule:
 
         """
-        This function check the security configuration.
+        This function checks the security configuration.
         """
 
         return Rule(
@@ -1047,7 +1055,7 @@ class Audit:
     def audit_debug(server: Server) -> Rule:
 
         """
-        This function check the debug configuration.
+        This function checks the debug configuration.
         """
 
         return Rule(
@@ -1063,7 +1071,7 @@ class Audit:
     def audit_blacklist(server: Server) -> Rule:
 
         """
-        This function check the blacklist configuration.
+        This function checks the blacklist configuration.
         """
 
         return Rule(
@@ -1080,7 +1088,7 @@ class Audit:
     def audit_smtp_password(server: Server) -> Rule:
 
         """
-        This function check the SMTP password protection.
+        This function checks the SMTP password protection.
         """
 
         return Rule(
@@ -1100,7 +1108,7 @@ class Audit:
     def audit_log_level(server: Server) -> Rule:
 
         """
-        This function check the log level.
+        This function checks the log level.
         """
 
         return Rule(
@@ -1116,7 +1124,7 @@ class Audit:
     def audits_module_path(server: Server) -> Rule:
 
         """
-        This function check the modules paths.
+        This function checks the modules paths.
         """
 
         for module_path in server.configuration.modules_path:
@@ -1132,7 +1140,9 @@ class Audit:
 
     def audits_scripts_logs(server: Server) -> Iterator[Rule]:
 
-        """This function check the configuration of the script log."""
+        """
+        This function checks the configuration of the script log.
+        """
 
         for script in server.pages.scripts.values():
             yield Rule(
@@ -1148,7 +1158,7 @@ class Audit:
     def audits_scripts_stderr_content_type(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the configuration of the script stderr content
+        This function checks the configuration of the script stderr content
         type.
         """
 
@@ -1167,7 +1177,7 @@ class Audit:
     def audits_scripts_content_type(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the configuration of the script content type.
+        This function checks the configuration of the script content type.
         """
 
         for script in server.pages.scripts.values():
@@ -1185,7 +1195,7 @@ class Audit:
     def audits_scripts_path(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the configuration of the script path.
+        This function checks the configuration of the script path.
         """
 
         for script in server.pages.scripts.values():
@@ -1205,7 +1215,7 @@ class Audit:
     def audits_launcher(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the configuration of the script launcher.
+        This function checks the configuration of the script launcher.
         """
 
         for script in server.pages.scripts.values():
@@ -1275,7 +1285,7 @@ class Audit:
     def audits_file_owner(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the files owner.
+        This function checks the files owner.
         """
 
         user = getuser()
@@ -1355,7 +1365,7 @@ class Audit:
     ) -> Iterator[Rule]:
 
         """
-        This function check owner and permissions on bin directory.
+        This function checks owner and permissions on bin directory.
         """
 
         if Audit.is_windows:
@@ -1404,7 +1414,7 @@ class Audit:
     def audits_timeout(server: Server) -> Iterator[Rule]:
 
         """
-        This function check scripts timeout.
+        This function checks scripts timeout.
         """
 
         for script in server.pages.scripts.values():
@@ -1421,7 +1431,7 @@ class Audit:
     def audits_file_rights(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the files rights.
+        This function checks the files rights.
         """
 
         if Audit.is_windows:
@@ -1537,7 +1547,7 @@ class Audit:
     def audit_export_configuration(server: Server) -> Iterator[Rule]:
 
         """
-        This function check the export configuration file.
+        This function checks the export configuration file.
         """
 
         return Rule(
@@ -1663,13 +1673,34 @@ class FilesIntegity:
     """
 
     def __init__(self, server, logs):
-        self.webscripts_filename = join(
-            server_path, "webscripts_file_integrity.json"
+        directory = Audit.current_dir
+        webscripts_filenames = (
+            join(directory, "webscripts_file_integrity.json"),
+            join(server_path, "webscripts_file_integrity.json"),
         )
-        self.uploads_filename = join(
-            server_path, "uploads_file_integrity.json"
+        for path in webscripts_filenames:
+            if exists(path):
+                self.webscripts_filename = path
+                break
+
+        uploads_filenames = (
+            join(directory, "uploads_file_integrity.json"),
+            join(server_path, "uploads_file_integrity.json"),
         )
-        self.logs_filename = join(server_path, "logs_checks.json")
+        for path in uploads_filenames:
+            if exists(path):
+                self.uploads_filename = path
+                break
+
+        logs_filenames = (
+            join(directory, "logs_checks.json"),
+            join(server_path, "logs_checks.json"),
+        )
+        for path in logs_filenames:
+            if exists(path):
+                self.logs_filename = path
+                break
+
         self.temp_logs_files = {}
         self.server = server
         self.logs = logs
@@ -1743,6 +1774,8 @@ class FilesIntegity:
                 templates = [
                     callable_file.template_index_path,
                     callable_file.template_script_path,
+                    callable_file.template_header_path,
+                    callable_file.template_footer_path,
                 ]
             files[f"js {name}"] = build_file(callable_file.path)
 
@@ -2076,10 +2109,9 @@ class FilesIntegity:
         write_check_log = temp_file.write
 
         if (
-            temp_metadata.st_size
-            > metadata.st_size
+            temp_metadata.st_size > metadata.st_size
             # or temp_metadata.st_mtime > metadata.st_mtime
-            # or temp_metadata.st_ctime > metadata.st_ctime
+            or temp_metadata.st_ctime < metadata.st_ctime
         ):
             return False
 
