@@ -4,6 +4,8 @@
 
  - The index page path should be `static/templates/index.html` of the current directory, if not exist the default file will be used.
  - The script page path should be `static/templates/script.html` of the current directory, if not exist the default file will be used.
+ - The header tag file should be `static/templates/header.html` of the current directory, if not exist the default file will be used.
+ - The footer tag file should be `static/templates/footer.html` of the current directory, if not exist the default file will be used.
 
 ## Static and JS paths
 

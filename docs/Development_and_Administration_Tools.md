@@ -25,7 +25,7 @@ python -m unittest discover -s test -p Test*.py -v
 | File          | Statements | missing | coverage |
 |---------------|------------|---------|----------|
 | WebScripts.py | 759        | 3       | 99%      |
-| commons.py    | 401        | 2       | 99%      |
+| commons.py    | 410        | 2       | 99%      |
 | utils.py      | 334        | 6       | 98%      |
 | Errors.py     | 27         | 0       | 100%     |
 
@@ -59,9 +59,10 @@ The WebScripts file integrity is checked hourly since version *2.5.0* (location,
  - [+] Data files are checked
  - [+] Uploads files are checked
  - [+] Logs files are checked
- - [-] Configuration files are not checked yiet
- - [-] Module files are not checked yiet
- - [-] WebScripts code files are not checked yiet
+ - [+] Configuration files are checked
+ - [+] Module files are checked
+ - [+] WebScripts code files are checked
+ - [+] HTML templates files are checked
 
 ### Functional tests and WebScripts pentest tool
 

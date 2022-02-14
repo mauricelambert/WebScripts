@@ -135,6 +135,8 @@ WebScripts/static/js/webscripts_index_js_scripts.js
 WebScripts/static/js/webscripts_js_scripts.js
 WebScripts/static/js/webscripts_script_js_scripts.js
 WebScripts/static/pdf/WebScripts.pdf
+WebScripts/static/templates/footer.html
+WebScripts/static/templates/header.html
 WebScripts/static/templates/index.html
 WebScripts/static/templates/script.html
 docs/API.md

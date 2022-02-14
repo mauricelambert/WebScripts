@@ -25,12 +25,13 @@ This file tests specials imports with specific
 variables values.
 """
 
-from os import path, rename, chdir, getcwd, mkdir
+from os import path, rename, chdir, getcwd, mkdir, remove
 import logging.config
 import logging
 import sys
 
 WebScripts_path = path.join(path.dirname(__file__), "..")
+to_remove = []
 
 if not path.exists(
     path.join(WebScripts_path, "webscripts_file_integrity.json")
@@ -38,16 +39,21 @@ if not path.exists(
     f = open(path.join(WebScripts_path, "webscripts_file_integrity.json"), "w")
     f.write("{}")
     f.close()
+    to_remove.append(
+        path.join(WebScripts_path, "webscripts_file_integrity.json")
+    )
 
 if not path.exists(path.join(WebScripts_path, "uploads_file_integrity.json")):
     f = open(path.join(WebScripts_path, "uploads_file_integrity.json"), "w")
     f.write("{}")
     f.close()
+    to_remove.append(path.join(WebScripts_path, "uploads_file_integrity.json"))
 
 if not path.exists(path.join(WebScripts_path, "logs_checks.json")):
     f = open(path.join(WebScripts_path, "logs_checks.json"), "w")
     f.write("{}")
     f.close()
+    to_remove.append(path.join(WebScripts_path, "logs_checks.json"))
 
 if WebScripts_path not in sys.path:
     sys.path.insert(0, WebScripts_path)
@@ -154,3 +160,6 @@ import WebScripts
 sys.argv = ["WebScripts", "--debug"]
 WebScripts.main()
 sys.argv = argv
+
+for file in to_remove:
+    remove(file)

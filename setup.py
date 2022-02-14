@@ -144,6 +144,21 @@ class PostInstallScript(install):
         logging.info(f"Build the log directory {path_logs}...")
         makedirs(path_logs, exist_ok=True)
 
+        filename1 = join(self_directory, "webscripts_file_integrity.json")
+        if not exists(filename):
+            with open(filename, "w") as file:
+                file.write("{}")
+
+        filename2 = join(self_directory, "uploads_file_integrity.json")
+        if not exists(filename):
+            with open(filename, "w") as file:
+                file.write("{}")
+
+        filename3 = join(self_directory, "logs_checks.json")
+        if not exists(filename):
+            with open(filename, "w") as file:
+                file.write("{}")
+
         files = [
             join(self_directory, "audit." + extention)
             for extention in ("json", "txt", "html")
@@ -243,6 +258,19 @@ class PostInstallScript(install):
         os.chown(
             path_logs, self.owner_property.pw_uid, self.owner_property.pw_gid
         )
+
+        os.chown(
+            filename1, self.owner_property.pw_uid, self.owner_property.pw_gid
+        )
+        os.chown(
+            filename2, self.owner_property.pw_uid, self.owner_property.pw_gid
+        )
+        os.chown(
+            filename3, self.owner_property.pw_uid, self.owner_property.pw_gid
+        )
+        os.chmod(filename1, 0o600)
+        os.chmod(filename2, 0o600)
+        os.chmod(filename3, 0o600)
 
         for file in files:
             os.chown(
