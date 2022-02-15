@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.3.0"
+__version__ = "2.3.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -51,8 +51,8 @@ from setuptools.command.install import install
 # from setuptools.command.develop import develop
 from setuptools import setup, find_packages
 from os import path, makedirs, getcwd
+from os.path import join, exists
 from getpass import getuser
-from os.path import join
 from typing import Dict
 
 import WebScripts as package
@@ -484,7 +484,9 @@ setup(
     project_urls={
         "Documentation": "https://webscripts.readthedocs.io/en/latest/",
         "Wiki": "https://github.com/mauricelambert/WebScripts/wiki",
-        "Presentation": "https://www.slideshare.net/MauriceLambert1/webscripts-server",
+        "Presentation": (
+            "https://www.slideshare.net/MauriceLambert1/webscripts-server"
+        ),
     },
     include_package_data=True,
     classifiers=[

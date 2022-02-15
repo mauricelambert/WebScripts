@@ -154,6 +154,15 @@ class TestScriptConfig(TestCase):
             ],
         )
 
+        self.assertDictEqual(
+            {"scripts": {"test.py": "test"}, "test": {}},
+            list(configuration.configuration_files.values())[0],
+        )
+        self.assertDictEqual(
+            {"scripts": {"test.sh": "test"}, "test": {}},
+            list(configuration.configuration_files.values())[1],
+        )
+
         self.assertEqual(len(config_mock.mock_calls[0].args), 2)
         self.assertListEqual(
             config_mock.mock_calls[0].args[0].ini_scripts_config,
@@ -362,6 +371,10 @@ class TestScriptConfig(TestCase):
             [f.casefold() for f in config.configuration_files],
             [path.abspath("test.ini").casefold()],
         )
+        self.assertDictEqual(
+            list(config.configuration_files.values())[0],
+            {"script": {"test": "test"}},
+        )
 
         with open("test.json", "w") as file:
             json.dump({"script": {"test": "test"}}, file)
@@ -376,6 +389,10 @@ class TestScriptConfig(TestCase):
         self.assertListEqual(
             [f.casefold() for f in config.configuration_files],
             [path.abspath("test.json").casefold()],
+        )
+        self.assertDictEqual(
+            list(config.configuration_files.values())[0],
+            {"script": {"test": "test"}},
         )
 
     def test_get_JSON_API(self):

@@ -11,6 +11,7 @@ Priority:
  5. Default INI file
 
 The default configuration JSON files:
+
 ```json
 {
     "server": {
@@ -26,8 +27,11 @@ The default configuration JSON files:
         "auth_script": "auth.py",
         "auth_failures_to_blacklist": 3,
         "blacklist_time": 30,
+        "admin_groups": [1000],
         "exclude_auth_paths": ["/static/", "/js/"],
         "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
+        "session_max_time": 3600,
+        "csrf_max_time": 300,
 
         "scripts_path": [
             "./scripts/account", 
@@ -43,7 +47,7 @@ The default configuration JSON files:
         "documentations_path": [
             "./doc/*.html"
         ],
-        "modules": ["error_pages"],
+        "modules": ["error_pages", "share"],
         "modules_path": ["./modules"],
         "js_path": [
             "./static/js/*.js"
@@ -77,6 +81,7 @@ The default configuration JSON files:
 ```
 
 The default configuration INI file:
+
 ```ini
 [server]
 interface=127.0.0.1                                                                            # required value
@@ -91,8 +96,11 @@ active_auth=true                                                                
 auth_script=auth.py                                                                            # Change it to use a custom authentication script
 auth_failures_to_blacklist=3                                                                   # Number of authentication failures to blacklist an IP address or user
 blacklist_time=30                                                                              # Blacklist time in seconds
+admin_groups=1000                                                                              # Integer list to defines Adminitrators groups
 exclude_auth_paths=/static/,/js/                                                               # Start of paths where the unauthenticated user gets access
 exclude_auth_pages=/api/,/auth/,/web/auth/                                                     # Specific page where the unauthenticated user has access
+session_max_time=3600                                                                          # Maximum time in seconds of sessions (recommended value: 3600)
+csrf_max_time=300                                                                              # Maximum time in seconds of csrf tokens (recommended value: 300)
 
 scripts_path=./scripts/account,./scripts/passwords,./scripts/uploads                           # Add scripts from location
 json_scripts_config=./config/scripts/*.json                                                    # Add server configuration (syntax: json)
@@ -100,7 +108,7 @@ ini_scripts_config=./config/scripts/*.ini                                       
 documentations_path=./doc/*.html                                                               # Add path to search documentation scripts
 # modules                                                                                      # Add custom modules (names) to the server
 # modules_path                                                                                 # Add directory to import custom modules
-modules=error_pages
+modules=error_pages,share
 modules_path=./modules
 js_path=./static/js/*.js                                                                       # Add glob syntax files to get javascript files
 statics_path=./static/html/*.html,./static/css/*.css,./static/images/*.png,./static/images/*.jpg,./static/pdf/*.pdf  # Add glob syntax files to get static files
@@ -129,8 +137,11 @@ notification_address=notification@webscripts.local                              
  - *auth_script*: filename for the authentication script
  - *auth_failures_to_blacklist*: Number of authentication failures to blacklist an IP address or user
  - *blacklist_time*: Time in seconds to blacklist an IP address or user
+ - *admin_groups*: This integer list defines all ID groups with privileges (for WebScripts administration)
  - *exclude_auth_paths*: Start of paths where the unauthenticated user gets access
  - *exclude_auth_pages*: Specific page where the unauthenticated user has access
+ - *session_max_time*: timeout in seconds for WebScript sessions
+ - *csrf_max_time*: timeout in seconds for WebScript CSRF tokens
  - *scripts_path*: paths to research a script (if not defined in script configuration)
  - *ini_scripts_config*: **glob syntax** to research INI scripts configurations files
  - *json_scripts_config*: **glob syntax** to research JSON scripts configurations files
@@ -159,6 +170,7 @@ notification_address=notification@webscripts.local                              
 To build a list in *INI* files, use `,`.
 
 Example:
+
 ```ini
 list=value1,value2,value3
 ```
@@ -168,6 +180,7 @@ list=value1,value2,value3
 To build a list in *INI* files, use `true` or `false`.
 
 Example:
+
 ```ini
 booleanTrue=true
 booleanFalse=false

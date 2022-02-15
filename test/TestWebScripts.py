@@ -791,6 +791,7 @@ class TestServer(TestCase):
             "HTTP_ORIGIN": "http://webscripts.local",
             "SERVER_PORT": "80",
             "SERVER_NAME": "webscripts.local",
+            "REMOTE_PORT": 0,
         }
 
         self.server.page_400 = MagicMock(return_value="400")
