@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run Bandit Report
-        uses: libertyy/py3-bandit-check@update_python_version_for_bandit
+        uses: libertyy/py3-bandit-check@fix/update_python_version_for_bandit
       - name: Save Bandit txt Report
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
