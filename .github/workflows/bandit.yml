@@ -13,11 +13,11 @@ jobs:
   bandit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@update_python_version_for_bandit
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Run Bandit Report
-        uses: libertyy/py3-bandit-check@v2
+        uses: libertyy/py3-bandit-check@update_python_version_for_bandit
       - name: Save Bandit txt Report
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
