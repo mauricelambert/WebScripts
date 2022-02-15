@@ -26,7 +26,7 @@ This file implement some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -69,7 +69,7 @@ __all__ = [
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove
+from os import path, _Environ, device_encoding, remove, environ
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from collections.abc import Callable
@@ -821,7 +821,7 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
     elif (
         len(file_path) > length
         and file_path[index] != character
-        and path.isfile(server_file_path)
+        and check(server_file_path)
     ):
         return abspath(server_file_path)
 
@@ -834,3 +834,6 @@ server_path = path.dirname(__file__)
 
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
+
+environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
+environ["WEBSCRIPTS_PATH"] = server_path

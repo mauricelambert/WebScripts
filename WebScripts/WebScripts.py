@@ -26,7 +26,7 @@ This file is the "main" file of this package (implement the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -142,8 +142,10 @@ log_path: str = join(current_directory, "logs")
 
 class Configuration(DefaultNamespace):
 
-    """This class build the configuration from dict(s) with
-    configuration files and arguments."""
+    """
+    This class build the configuration from dict(s) with
+    configuration files and arguments.
+    """
 
     __defaults__ = {
         "interface": "127.0.0.1",
@@ -202,11 +204,14 @@ class Configuration(DefaultNamespace):
         "active_auth": bool,
         "accept_unknow_user": bool,
         "accept_unauthenticated_user": bool,
+        "admin_groups": List[int],
         "modules": list,
         "modules_path": list,
         "js_path": list,
         "statics_path": list,
         "documentations_path": list,
+        "exclude_auth_paths": list,
+        "exclude_auth_pages": list,
         "scripts_path": list,
         "json_scripts_config": list,
         "ini_scripts_config": list,
@@ -216,6 +221,8 @@ class Configuration(DefaultNamespace):
         "smtp_port": int,
         "smtp_ssl": bool,
         "admin_adresses": list,
+        "csrf_max_time": int,
+        "session_max_time": int,
     }
 
     @log_trace
@@ -239,13 +246,13 @@ class Configuration(DefaultNamespace):
 
                     if isinstance(value, str):
                         logger_debug(
-                            "Add configuration list " "using INI/CFG syntax."
+                            "Add configuration list using INI/CFG syntax."
                         )
                         value = value.split(",")
 
                     if isinstance(value, list):
                         logger_debug(
-                            "Add configuration list " "using JSON syntax."
+                            "Add configuration list using JSON syntax."
                         )
                         for value_ in value:
                             if value_ not in dict_[key]:
@@ -272,7 +279,9 @@ class Configuration(DefaultNamespace):
 
 class Server:
 
-    """This class implement the WebScripts server."""
+    """
+    This class implement the WebScripts server.
+    """
 
     @log_trace
     def __init__(self, configuration: Configuration):
@@ -928,8 +937,10 @@ class Server:
 
         path_info = environ["PATH_INFO"]
         method = environ["REQUEST_METHOD"]
+        port = environ["REMOTE_PORT"]
         logger_debug(
-            f"Request ({method}) from " f"{get_ip(environ)} on {path_info}."
+            f"Request ({method}) from "
+            f"{get_ip(environ)}:{port} on {path_info}."
         )
         path_info_startswith = path_info.startswith
         configuration = self.configuration
@@ -1768,6 +1779,8 @@ def main() -> int:
     logger_info("Configurations are loaded.")
 
     if getattr(configuration, "debug", None):
+        # first export to get server configuration on
+        # Script Configuration Error
         logger_debug("Debug mode detected: export configuration...")
         configuration.export_as_json()
 
@@ -1787,6 +1800,11 @@ def main() -> int:
 
     logger_info("Check hardening of the WebScripts server...")
     hardening(server, Logs, send_mail)
+
+    if getattr(configuration, "debug", None):
+        # second export to get all configurations
+        logger_debug("Debug mode detected: export configuration...")
+        configuration.export_as_json()
 
     logger_warning(
         f"Starting server on http://{server.interface}:{server.port}/ ..."

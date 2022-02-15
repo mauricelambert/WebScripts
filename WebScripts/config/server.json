@@ -12,6 +12,7 @@
 		"auth_script": "auth.py",
 		"auth_failures_to_blacklist": 3,
 		"blacklist_time": 30,
+		"admin_groups": [1000],
 		"exclude_auth_paths": ["/static/", "/js/"],
 		"exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
 		"session_max_time": 3600,

@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 This file implement commons functions and class for WebScripts package.
 """
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -330,7 +330,7 @@ class ScriptConfig(DefaultNamespace):
         )
         server_configuration.configuration_files = (
             configuration_files
-        ) = getattr(server_configuration, "configuration_files", [])
+        ) = getattr(server_configuration, "configuration_files", {})
 
         for dirname in (lib_directory, current_directory):
 
@@ -339,14 +339,17 @@ class ScriptConfig(DefaultNamespace):
 
                 for config_filename in iglob(config_path):
                     configuration = DefaultNamespace()
-                    configuration.update(**get_ini_dict(config_filename))
+                    temp_configurations = get_ini_dict(config_filename)
+                    configuration.update(**temp_configurations)
 
                     scripts_config.update(
                         cls.get_scripts_from_configuration(
                             configuration, server_configuration
                         )
                     )
-                    configuration_files.append(get_real_path(config_filename))
+                    configuration_files[
+                        get_real_path(config_filename)
+                    ] = temp_configurations
 
             for config_path in json_scripts_config:
                 config_path = path.join(dirname, path.normcase(config_path))
@@ -355,14 +358,15 @@ class ScriptConfig(DefaultNamespace):
                     configuration = DefaultNamespace()
 
                     with open(config_filename) as file:
-                        configuration.update(**json.load(file))
+                        temp_configurations = json.load(file)
+                        configuration.update(**temp_configurations)
 
                     scripts_config.update(
                         cls.get_scripts_from_configuration(
                             configuration, server_configuration
                         )
                     )
-                    configuration_files.append(config_filename)
+                    configuration_files[config_filename] = temp_configurations
 
         return scripts_config
 
@@ -640,8 +644,10 @@ class ScriptConfig(DefaultNamespace):
 
             server_configuration.configuration_files = (
                 configuration_files
-            ) = getattr(server_configuration, "configuration_files", [])
-            configuration_files.append(get_real_path(configuration_file))
+            ) = getattr(server_configuration, "configuration_files", {})
+            configuration_files[
+                get_real_path(configuration_file)
+            ] = configuration
 
         return configuration, script_config
 

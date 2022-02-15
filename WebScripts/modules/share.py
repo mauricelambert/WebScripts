@@ -26,7 +26,7 @@ This file download and upload functions for scripts,
 tools and command line client.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,24 +49,23 @@ license = __license__
 __copyright__ = copyright
 
 from typing import List, Tuple, Dict, TypeVar
-from os import path, _Environ
+from os import path, _Environ, environ as env
+from sys import path as syspath
 from lzma import decompress
 from gzip import compress
-import json
-import sys
-import os
+from json import dumps
 
-if "WebScripts" in sys.modules:
-    base_path = [path.dirname(sys.modules["WebScripts"].__file__)]
-elif "WebScripts38" in sys.modules:
-    base_path = [path.dirname(sys.modules["WebScripts38"].__file__)]
-else:
-    base_path = [path.dirname(__file__), ".."]
+# if "WebScripts" in sys.modules:
+#     base_path = [path.dirname(sys.modules["WebScripts"].__file__)]
+# elif "WebScripts38" in sys.modules:
+#     base_path = [path.dirname(sys.modules["WebScripts38"].__file__)]
+# else:
+#     base_path = [path.dirname(__file__), ".."]
 
-sys.path = [
-    path.join(*base_path, "scripts", "uploads", "modules"),
-    path.join(*base_path),
-] + sys.path
+syspath.insert(
+    0,
+    path.join(env.get("WEBSCRIPTS_PATH", ""), "scripts", "uploads", "modules"),
+)
 
 from uploads_management import (
     User,
@@ -77,10 +76,8 @@ from uploads_management import (
     get_files,
     Upload,
 )
-from Pages import Pages, check_right
 
-sys.path.pop(0)
-sys.path.pop(0)
+syspath.pop(0)
 ServerConfiguration = TypeVar("ServerConfiguration")
 
 
@@ -163,13 +160,17 @@ class Download:
         This funtion download file by ID.
         """
 
-        script = Pages.scripts.get("get_any_file.py")
+        # script = Pages.scripts.get("get_any_file.py")
+        permissions = getattr(server_configuration, "admin_groups", None)
 
-        if script is None:
+        if permissions is None:
             return "404", {}, b""
 
-        if not check_right(user, script):
+        if not any(g in permissions for g in user["groups"]):
             return "403", {}, b""
+
+        # if not check_right(user, script):
+        #     return "403", {}, b""
 
         headers = {
             "Content-Type": "application/octet-stream",
@@ -210,7 +211,7 @@ def upload(
     """
 
     if not isinstance(data, bytes):
-        data = json.dumps(data)
+        data = dumps(data)
     else:
         data = data.decode("latin-1")
 
@@ -225,7 +226,7 @@ def upload(
     no_compression = environ.get("HTTP_NO_COMPRESSION", False)
     is_b64 = environ.get("HTTP_IS_BASE64", False)
 
-    os.environ["USER"] = json.dumps(user.get_dict())
+    env["USER"] = dumps(user.get_dict())
 
     write_file(
         data,

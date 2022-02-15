@@ -62,8 +62,8 @@ from os.path import (
     isabs,
 )
 from os import getcwd, listdir, stat, stat_result, scandir
+from sys import prefix, base_prefix, modules, executable
 from typing import TypeVar, List, Set, Dict, Tuple
-from sys import prefix, base_prefix, modules
 from time import sleep, strftime, localtime
 from io import open, DEFAULT_BUFFER_SIZE
 from email.message import EmailMessage
@@ -1793,8 +1793,23 @@ class FilesIntegity:
         for path in glob(join(server_path, "*.py")):
             files[f"webscript {basename(path)}"] = build_file(path)
 
+        for path in [
+            join("config", "server.ini"),
+            join("config", "server.json"),
+            join("config", "nt", "server.ini"),
+            join("config", "nt", "server.json"),
+            join(server_path, "config", "server.ini"),
+            join(server_path, "config", "server.json"),
+            join(server_path, "config", "nt", "server.ini"),
+            join(server_path, "config", "nt", "server.json"),
+        ]:
+            if exists(path):
+                files[f"server configuration {basename(path)}"] = build_file(
+                    path
+                )
+
         for path in server.configuration.configuration_files:
-            files[f"configuration {basename(path)}"] = build_file(path)
+            files[f"script configuration {basename(path)}"] = build_file(path)
 
         for template in templates:
             files[f"template {basename(template)}"] = build_file(template)
@@ -1810,6 +1825,12 @@ class FilesIntegity:
             files[f"current modules {filename}"] = build_file(
                 join(module_path, path)
             )
+
+        for script in scandir(dirname(executable)):
+            if script.is_file():
+                files[f"venv scripts/bin {script.name}"] = build_file(
+                    script.path
+                )
 
         return files
 
