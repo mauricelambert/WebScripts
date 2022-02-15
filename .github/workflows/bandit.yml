@@ -13,7 +13,7 @@ jobs:
   bandit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@fix/update_python_version_for_bandit
+      - uses: actions/checkout@update_python_version_for_bandit
         with:
           fetch-depth: 0
       - name: Run Bandit Report
