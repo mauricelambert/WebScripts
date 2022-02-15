@@ -69,7 +69,7 @@ __all__ = [
 
 from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove, environ
+from os import path, _Environ, device_encoding, remove
 from subprocess import check_call, DEVNULL  # nosec
 from configparser import ConfigParser
 from collections.abc import Callable
@@ -834,6 +834,3 @@ server_path = path.dirname(__file__)
 
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
-
-environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
-environ["WEBSCRIPTS_PATH"] = server_path

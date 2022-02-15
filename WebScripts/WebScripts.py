@@ -54,11 +54,11 @@ from os.path import basename, abspath, join, dirname, normcase, exists, isdir
 from types import SimpleNamespace, ModuleType, FunctionType
 from typing import TypeVar, Tuple, List, Dict, Union
 from sys import exit, modules as sys_modules, argv
+from os import _Environ, getcwd, mkdir, environ
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
 from traceback import print_exc, format_exc
 from json.decoder import JSONDecodeError
-from os import _Environ, getcwd, mkdir
 from logging.config import fileConfig
 from wsgiref import simple_server
 from logging import basicConfig
@@ -937,7 +937,7 @@ class Server:
 
         path_info = environ["PATH_INFO"]
         method = environ["REQUEST_METHOD"]
-        port = environ["REMOTE_PORT"]
+        port = environ.get("REMOTE_PORT")
         logger_debug(
             f"Request ({method}) from "
             f"{get_ip(environ)}:{port} on {path_info}."
@@ -1758,6 +1758,8 @@ def main() -> int:
         NO_START = False
 
     configure_logs_system()
+    environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
+    environ["WEBSCRIPTS_PATH"] = server_path
     args = parse_args()
 
     logger_debug("Load configurations...")
@@ -1777,8 +1779,9 @@ def main() -> int:
     configuration.build_types()
 
     logger_info("Configurations are loaded.")
+    debug = getattr(configuration, "debug", None)
 
-    if getattr(configuration, "debug", None):
+    if debug:
         # first export to get server configuration on
         # Script Configuration Error
         logger_debug("Debug mode detected: export configuration...")
@@ -1801,7 +1804,7 @@ def main() -> int:
     logger_info("Check hardening of the WebScripts server...")
     hardening(server, Logs, send_mail)
 
-    if getattr(configuration, "debug", None):
+    if debug:
         # second export to get all configurations
         logger_debug("Debug mode detected: export configuration...")
         configuration.export_as_json()
