@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML table of uploaded file versions
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file prints a HTML table of uploaded file versions."""
+This file prints a HTML table of uploaded file versions.
+"""
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,12 +33,13 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints a HTML table of uploaded file versions"""
+This file prints a HTML table of uploaded file versions.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -48,20 +51,22 @@ __all__ = []
 
 from modules.uploads_management import get_file
 from time import localtime, strftime
+from sys import argv, exit, stderr
 from urllib.parse import quote
-import html
-import sys
+from html import escape
 
 
-def main() -> None:
+def main() -> int:
 
-    """Print the HTML table of file history."""
+    """
+    Print the HTML table of file history.
+    """
 
-    if len(sys.argv) != 2:
+    if len(argv) != 2:
         print("USAGE: get_history.py [FILENAME required string]")
-        sys.exit(1)
+        return 1
 
-    filename = sys.argv[1]
+    filename = argv[1]
 
     fields = [
         "ID",
@@ -76,30 +81,34 @@ def main() -> None:
         "user",
         "version",
     ]
-    print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
+    print(
+        f"<table><thead><tr><th>{'</th><th>'.join(fields)}"
+        "</th></tr></thead><tbody>"
+    )
 
     try:
         files, counter = get_file(filename)
     except Exception as e:
-        print(html.escape(f"{e.__class__.__name__}: {e}"))
-        sys.exit(127)
+        print(escape(f"{e.__class__.__name__}: {e}"), file=stderr)
+        return 127
 
     for file in files:
         file = file._replace(
-            ID='<a href="get_any_file.py?type=ID&identifier='
-            f'{quote(file.ID)}">{html.escape(file.ID)}</a>',
+            ID='<a href="/share/Download/id/'
+            f'{quote(file.ID)}">{escape(file.ID)}</a>',
             timestamp=strftime(
                 "%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp))
             ),
         )
         print(
-            f'<tr><td>{"</td><td>".join([html.escape(x) for x in file])}'
+            f'<tr><td>{"</td><td>".join([escape(x) for x in file])}'
             "</td></tr>"
         )
 
-    print("</table>")
+    print("</tbody><tfoot></tfoot></table>")
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

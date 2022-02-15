@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML link to download a file
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file prints a HTML link to download a file."""
+This file prints a HTML link to download a file.
+"""
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -36,7 +38,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -46,48 +48,64 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.uploads_management import get_file_content
+# from modules.uploads_management import get_file_content
+from sys import argv, exit, stderr
 from urllib.parse import quote
-import html
-import sys
+from html import escape
 
 
-def main() -> None:
+def main() -> int:
 
-    """Print the HTML link to download the file or
-    exit with an error code."""
+    """
+    Print the HTML link to download the file or
+    exit with an error code.
+    """
 
-    if len(sys.argv) != 3:
+    if len(argv) != 3:
         print(
             "USAGE: get_file.py [TYPE required string] "
-            '[FILENAME required string]\n\t TYPE must be "ID" or "name"'
+            '[FILENAME required string]\n\t TYPE must be "ID" or "name"',
+            file=stderr,
         )
-        sys.exit(1)
+        return 1
 
-    _, type_, identifier = sys.argv
+    _, type_, identifier = argv
     type_ = type_.lower()
 
     if type_ == "id":
-        id_, name = identifier, None
+        print(
+            f"""
+            <a href="/share/Download/id/{quote(identifier)}">
+                Click here to download the file
+            </a>
+            """
+        )
     elif type_ == "name":
-        name, id_ = identifier, None
+        print(
+            f"""
+            <a href="/share/Download/filename/{quote(identifier)}">
+                Click here to download the {escape(identifier)}
+            </a>
+            """
+        )
     else:
-        print('ERROR: TYPE must be "ID" or "name"')
-        sys.exit(2)
+        print('ERROR: TYPE must be "ID" or "name"', file=stderr)
+        return 2
 
-    try:
-        data, filename = get_file_content(name=name, id_=id_)
-    except Exception as e:
-        print(html.escape(f"{e.__class__.__name__}: {e}"))
-        sys.exit(127)
+    # try:
+    #     data, filename = get_file_content(name=name, id_=id_)
+    # except Exception as e:
+    #     print(escape(f"{e.__class__.__name__}: {e}"), file=stderr)
+    #     exit(127)
 
-    print(
-        f'<a href="data:application/octet-stream;base64, {data}" '
-        f'download="{quote(filename)}">Click here to download '
-        f"{html.escape(filename)}</a>"
-    )
+    # print(
+    #     f'<a href="data:application/octet-stream;base64, {data}" '
+    #     f'download="{quote(filename)}">Click here to download '
+    #     f"{escape(filename)}</a>"
+    # )
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())
