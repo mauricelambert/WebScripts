@@ -1,0 +1,589 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module commons</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.3)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;commons&nbsp;functions&nbsp;and&nbsp;class&nbsp;for&nbsp;WebScripts&nbsp;package.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top><a href="secrets.html">secrets</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="commons.html#Blacklist">Blacklist</a>
+</font></dt><dt><font face="helvetica, arial"><a href="commons.html#Session">Session</a>
+</font></dt><dt><font face="helvetica, arial"><a href="commons.html#TokenCSRF">TokenCSRF</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="collections.abc.html#Callable">collections.abc.Callable</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="commons.html#CallableFile">CallableFile</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>(<a href="types.html#SimpleNamespace">types.SimpleNamespace</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="commons.html#Argument">Argument</a>
+</font></dt><dt><font face="helvetica, arial"><a href="commons.html#ScriptConfig">ScriptConfig</a>
+</font></dt><dt><font face="helvetica, arial"><a href="commons.html#User">User</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Argument">class <strong>Argument</strong></a>(<a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Argument">Argument</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;build&nbsp;argument&nbsp;for&nbsp;script.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="commons.html#Argument">Argument</a></dd>
+<dd><a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a></dd>
+<dd><a href="types.html#SimpleNamespace">types.SimpleNamespace</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Argument-get_command"><strong>get_command</strong></a>(name: str, argument: Dict[str, ~JsonValue]) -&gt; List[Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;list&nbsp;for&nbsp;command&nbsp;line&nbsp;execution.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__defaults__</strong> = {'default_value': None, 'description': None, 'example': None, 'html_type': 'text', 'input': None, 'is_advanced': False, 'javascript_attributs': {}}</dl>
+
+<dl><dt><strong>__optional__</strong> = ['list', 'input', 'example', 'html_type', 'is_advanced', 'description', 'default_value', 'predefined_values', 'javascript_attributs']</dl>
+
+<dl><dt><strong>__required__</strong> = ['name']</dl>
+
+<dl><dt><strong>__types__</strong> = {'input': &lt;class 'bool'&gt;, 'is_advanced': &lt;class 'bool'&gt;, 'list': &lt;class 'bool'&gt;, 'predefined_values': &lt;class 'list'&gt;}</dl>
+
+<hr>
+Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="Argument-__getitem__"><strong>__getitem__</strong></a>(self, key: str)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Argument-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="Argument-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
+function&nbsp;raise&nbsp;MissingAttributesError.</tt></dd></dl>
+
+<dl><dt><a name="Argument-export_as_json"><strong>export_as_json</strong></a>(self, name: str = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;export&nbsp;namespace&nbsp;values&nbsp;(useful&nbsp;for&nbsp;debugging).</tt></dd></dl>
+
+<dl><dt><a name="Argument-get"><strong>get</strong></a>(self, key: str, default=None)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="Argument-get_dict"><strong>get_dict</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;of&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Argument-get_missings"><strong>get_missings</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+and&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of&nbsp;missing&nbsp;required&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Argument-get_unexpecteds"><strong>get_unexpecteds</strong></a>(self, log: bool = True) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of<br>
+all&nbsp;attributes&nbsp;not&nbsp;in&nbsp;optional&nbsp;and<br>
+required&nbsp;attributes.<br>
+&nbsp;<br>
+If&nbsp;log&nbsp;argument&nbsp;is&nbsp;True&nbsp;a&nbsp;Warning&nbsp;log&nbsp;message&nbsp;is<br>
+write&nbsp;for&nbsp;all&nbsp;unexpected&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Argument-set_defaults"><strong>set_defaults</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;set&nbsp;defaults&nbsp;attribut&nbsp;with&nbsp;defaults&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="Argument-update"><strong>update</strong></a>(self, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;add/update&nbsp;attributes&nbsp;with&nbsp;**kwargs&nbsp;arguments.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="Argument-default_build"><strong>default_build</strong></a>(**kwargs) -&gt; ~DefaultNamespace<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Default&nbsp;build&nbsp;for&nbsp;<a href="utils.html#DefaultNamespace">DefaultNamespace</a>&nbsp;(set&nbsp;defaults,&nbsp;add&nbsp;values,<br>
+check&nbsp;requirements&nbsp;and&nbsp;unexpected&nbsp;values&nbsp;and&nbsp;build&nbsp;types).</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="Argument-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Argument-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Argument-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling</tt></dd></dl>
+
+<dl><dt><a name="Argument-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="Argument-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="Argument-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Blacklist">class <strong>Blacklist</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Blacklist">Blacklist</a>(configuration:&nbsp;~ServerConfiguration,&nbsp;last_blacklist:&nbsp;~<a href="#Blacklist">Blacklist</a>&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implement&nbsp;blacklist.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Blacklist-__init__"><strong>__init__</strong></a>(self, configuration: ~ServerConfiguration, last_blacklist: ~Blacklist = None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Blacklist-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;string&nbsp;to&nbsp;represent&nbsp;the&nbsp;<a href="#Blacklist">Blacklist</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Blacklist-is_blacklist"><strong>is_blacklist</strong></a>(self, configuration: ~ServerConfiguration) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;True&nbsp;if&nbsp;this&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;blacklisted.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CallableFile">class <strong>CallableFile</strong></a>(<a href="collections.abc.html#Callable">collections.abc.Callable</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#CallableFile">CallableFile</a>(type_:&nbsp;str,&nbsp;path_:&nbsp;str,&nbsp;filename:&nbsp;str,&nbsp;config:&nbsp;dict&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;build&nbsp;callable&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;return<br>
+Web&nbsp;files&nbsp;content&nbsp;or&nbsp;script&nbsp;output.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="commons.html#CallableFile">CallableFile</a></dd>
+<dd><a href="collections.abc.html#Callable">collections.abc.Callable</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="CallableFile-__call__"><strong>__call__</strong></a>(self, user: commons.User) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>Call&nbsp;self&nbsp;as&nbsp;a&nbsp;function.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-__init__"><strong>__init__</strong></a>(self, type_: str, path_: str, filename: str, config: dict = None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-is_html"><strong>is_html</strong></a>(self) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;compare&nbsp;extension&nbsp;with&nbsp;html&nbsp;extensions.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-is_jpeg"><strong>is_jpeg</strong></a>(self) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;compare&nbsp;extension&nbsp;with&nbsp;jpeg&nbsp;extensions.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-is_tiff"><strong>is_tiff</strong></a>(self) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;compare&nbsp;extension&nbsp;with&nbsp;tif&nbsp;extensions.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-is_xml"><strong>is_xml</strong></a>(self) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;compare&nbsp;extension&nbsp;with&nbsp;xml&nbsp;extensions.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__abstractmethods__</strong> = frozenset()</dl>
+
+<dl><dt><strong>__annotations__</strong> = {'template_footer': &lt;class 'str'&gt;, 'template_footer_path': &lt;class 'str'&gt;, 'template_header': &lt;class 'str'&gt;, 'template_header_path': &lt;class 'str'&gt;, 'template_index': &lt;class 'str'&gt;, 'template_index_path': &lt;class 'str'&gt;, 'template_script': &lt;class 'str'&gt;, 'template_script_path': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>template_footer</strong> = '<font color="#c040c0">\t\t</font>&lt;footer id="webscripts_footer" class="footer b...bScripts/share.html"&gt;online&lt;/a&gt;.&lt;/li&gt;<font color="#c040c0">\n\t\t</font>&lt;/footer&gt;'</dl>
+
+<dl><dt><strong>template_footer_path</strong> = r'/home/WebScripts\static\templates\footer.html'</dl>
+
+<dl><dt><strong>template_header</strong> = '<font color="#c040c0">\t\t</font>&lt;header id="webscripts_header" class="header b...tic/webscripts_header.png"&gt;&lt;/a&gt;&lt;/div&gt;<font color="#c040c0">\n\t\t</font>&lt;/header&gt;'</dl>
+
+<dl><dt><strong>template_header_path</strong> = r'/home/WebScripts\static\templates\header.html'</dl>
+
+<dl><dt><strong>template_index</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page for index.<font color="#c040c0">\n</font>    Copyright (C)...ipts(build_categories);&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
+
+<dl><dt><strong>template_index_path</strong> = r'/home/WebScripts\static\templates\index.html'</dl>
+
+<dl><dt><strong>template_script</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page to launch scripts.<font color="#c040c0">\n</font>    Copyr...);<font color="#c040c0">\n\t\t\t</font>add_buttons();<font color="#c040c0">\n\t\t</font>&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
+
+<dl><dt><strong>template_script_path</strong> = r'/home/WebScripts\static\templates\script.html'</dl>
+
+<hr>
+Class methods inherited from <a href="collections.abc.html#Callable">collections.abc.Callable</a>:<br>
+<dl><dt><a name="CallableFile-__class_getitem__"><strong>__class_getitem__</strong></a> = _CallableGenericAlias(args)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Represent&nbsp;`<a href="collections.abc.html#Callable">Callable</a>[argtypes,&nbsp;resulttype]`.<br>
+&nbsp;<br>
+This&nbsp;sets&nbsp;``__args__``&nbsp;to&nbsp;a&nbsp;tuple&nbsp;containing&nbsp;the&nbsp;flattened``argtypes``<br>
+followed&nbsp;by&nbsp;``resulttype``.<br>
+&nbsp;<br>
+Example:&nbsp;``<a href="collections.abc.html#Callable">Callable</a>[[int,&nbsp;str],&nbsp;float]``&nbsp;sets&nbsp;``__args__``&nbsp;to<br>
+``(int,&nbsp;str,&nbsp;float)``.</tt></dd></dl>
+
+<dl><dt><a name="CallableFile-__subclasshook__"><strong>__subclasshook__</strong></a>(C)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Abstract&nbsp;classes&nbsp;can&nbsp;override&nbsp;this&nbsp;to&nbsp;customize&nbsp;issubclass().<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;invoked&nbsp;early&nbsp;on&nbsp;by&nbsp;abc.ABCMeta.__subclasscheck__().<br>
+It&nbsp;should&nbsp;return&nbsp;True,&nbsp;False&nbsp;or&nbsp;NotImplemented.&nbsp;&nbsp;If&nbsp;it&nbsp;returns<br>
+NotImplemented,&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;is&nbsp;used.&nbsp;&nbsp;Otherwise,&nbsp;it<br>
+overrides&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;(and&nbsp;the&nbsp;outcome&nbsp;is&nbsp;cached).</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ScriptConfig">class <strong>ScriptConfig</strong></a>(<a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ScriptConfig">ScriptConfig</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;makes&nbsp;script&nbsp;configurations.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="commons.html#ScriptConfig">ScriptConfig</a></dd>
+<dd><a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a></dd>
+<dd><a href="types.html#SimpleNamespace">types.SimpleNamespace</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ScriptConfig-build_args"><strong>build_args</strong></a>(self, configuration: ~Configuration)</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;Arguments&nbsp;from&nbsp;self.<strong>args</strong>:&nbsp;List[Dict[str,&nbsp;str]]</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_JSON_API"><strong>get_JSON_API</strong></a>(self) -&gt; Dict</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;for&nbsp;JSON&nbsp;API<br>
+(visible&nbsp;configuration&nbsp;for&nbsp;user).</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="ScriptConfig-build_scripts_from_configuration"><strong>build_scripts_from_configuration</strong></a>(server_configuration: ~ServerConfiguration) -&gt; Dict[str, ~ScriptConfig]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;scripts&nbsp;from&nbsp;server<br>
+configuration&nbsp;and&nbsp;configurations&nbsp;files.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_scripts_from_configuration"><strong>get_scripts_from_configuration</strong></a>(configuration: ~Configuration, server_configuration: ~ServerConfiguration) -&gt; Dict[str, ~ScriptConfig]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;scripts&nbsp;from&nbsp;ServerConfiguration.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="ScriptConfig-get_Windows_default_script_launcher"><strong>get_Windows_default_script_launcher</strong></a>(script_config: Dict[str, ~JsonValue]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;the&nbsp;Windows&nbsp;default&nbsp;launcher&nbsp;to&nbsp;execute&nbsp;a&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_arguments_from_config"><strong>get_arguments_from_config</strong></a>(arguments_section: str, configuration: Dict[str, Dict[str, ~JsonValue]]) -&gt; List[Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;arguments&nbsp;list&nbsp;of&nbsp;script.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_docfile_from_configuration"><strong>get_docfile_from_configuration</strong></a>(configuration: ~ServerConfiguration, filename: str) -&gt; str</dt><dd><tt>This&nbsp;method&nbsp;returns&nbsp;the&nbsp;script&nbsp;documentation<br>
+path&nbsp;if&nbsp;it&nbsp;exists.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_documentation_from_configuration"><strong>get_documentation_from_configuration</strong></a>(script_config: Dict[str, ~JsonValue], name: str, paths: List[str]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;documentation&nbsp;from&nbsp;script&nbsp;configuration<br>
+or&nbsp;search&nbsp;it&nbsp;in&nbsp;documentation&nbsp;path.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_script_config_from_specific_file_config"><strong>get_script_config_from_specific_file_config</strong></a>(script_config: Dict[str, ~JsonValue], configuration: Dict[str, ~JsonValue], server_configuration: Dict[str, ~JsonValue]) -&gt; Tuple[dict, dict]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;all&nbsp;configuration&nbsp;and<br>
+script&nbsp;configuration&nbsp;from&nbsp;configuration.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_script_path"><strong>get_script_path</strong></a>(server_configuration: ~ServerConfiguration, script_config: Dict[str, ~JsonValue]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;script&nbsp;path&nbsp;from&nbsp;configuration.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__defaults__</strong> = {'access_groups': None, 'access_users': None, 'args': [], 'category': '', 'command_generate_documentation': None, 'content_type': 'text/plain', 'description': None, 'documentation_content_type': 'text/html', 'documentation_file': None, 'launcher': None, ...}</dl>
+
+<dl><dt><strong>__optional__</strong> = ['command_generate_documentation', 'documentation_content_type', 'stderr_content_type', 'documentation_file', 'minimum_access', 'access_groups', 'content_type', 'access_users', 'no_password', 'description', 'category', 'launcher', 'timeout', 'path', 'args']</dl>
+
+<dl><dt><strong>__required__</strong> = ['name', 'dirname']</dl>
+
+<dl><dt><strong>__types__</strong> = {'access_groups': typing.List[int], 'access_users': typing.List[int], 'minimum_access': &lt;class 'int'&gt;, 'no_password': &lt;class 'bool'&gt;, 'timeout': &lt;class 'int'&gt;}</dl>
+
+<hr>
+Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="ScriptConfig-__getitem__"><strong>__getitem__</strong></a>(self, key: str)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
+function&nbsp;raise&nbsp;MissingAttributesError.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-export_as_json"><strong>export_as_json</strong></a>(self, name: str = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;export&nbsp;namespace&nbsp;values&nbsp;(useful&nbsp;for&nbsp;debugging).</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get"><strong>get</strong></a>(self, key: str, default=None)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_dict"><strong>get_dict</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;of&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_missings"><strong>get_missings</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+and&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of&nbsp;missing&nbsp;required&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-get_unexpecteds"><strong>get_unexpecteds</strong></a>(self, log: bool = True) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of<br>
+all&nbsp;attributes&nbsp;not&nbsp;in&nbsp;optional&nbsp;and<br>
+required&nbsp;attributes.<br>
+&nbsp;<br>
+If&nbsp;log&nbsp;argument&nbsp;is&nbsp;True&nbsp;a&nbsp;Warning&nbsp;log&nbsp;message&nbsp;is<br>
+write&nbsp;for&nbsp;all&nbsp;unexpected&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-set_defaults"><strong>set_defaults</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;set&nbsp;defaults&nbsp;attribut&nbsp;with&nbsp;defaults&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-update"><strong>update</strong></a>(self, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;add/update&nbsp;attributes&nbsp;with&nbsp;**kwargs&nbsp;arguments.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="ScriptConfig-default_build"><strong>default_build</strong></a>(**kwargs) -&gt; ~DefaultNamespace<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Default&nbsp;build&nbsp;for&nbsp;<a href="utils.html#DefaultNamespace">DefaultNamespace</a>&nbsp;(set&nbsp;defaults,&nbsp;add&nbsp;values,<br>
+check&nbsp;requirements&nbsp;and&nbsp;unexpected&nbsp;values&nbsp;and&nbsp;build&nbsp;types).</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="ScriptConfig-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="ScriptConfig-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Session">class <strong>Session</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Session">Session</a>(user:&nbsp;commons.<a href="#User">User</a>,&nbsp;ip:&nbsp;str)<br>
+&nbsp;<br>
+Object&nbsp;to&nbsp;implement&nbsp;session.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Session-__init__"><strong>__init__</strong></a>(self, user: commons.User, ip: str)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Session-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;string&nbsp;to&nbsp;represent&nbsp;the&nbsp;<a href="#Session">Session</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="Session-build_session"><strong>build_session</strong></a>(user: commons.User, ip: str, Pages: ~Pages) -&gt; str<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;and&nbsp;add&nbsp;session&nbsp;and&nbsp;return&nbsp;the&nbsp;cookie.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Session-check_session"><strong>check_session</strong></a>(cookie: str, pages: ~Pages, ip: str, default_user: commons.User, session_max_time: float = 3600) -&gt; commons.User</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;session&nbsp;validity&nbsp;and&nbsp;return&nbsp;user.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TokenCSRF">class <strong>TokenCSRF</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;brings&nbsp;together&nbsp;the&nbsp;functions&nbsp;related&nbsp;to&nbsp;the&nbsp;CSRF&nbsp;token<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Static methods defined here:<br>
+<dl><dt><a name="TokenCSRF-build_token"><strong>build_token</strong></a>(user: commons.User) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;a&nbsp;CSRF&nbsp;token&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
+
+<dl><dt><a name="TokenCSRF-check_csrf"><strong>check_csrf</strong></a>(user: commons.User, token: str, csrf_max_time: float = 300, referer: str = None, baseurl: str = None) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;the&nbsp;validity&nbsp;of&nbsp;a&nbsp;csrf&nbsp;token.</tt></dd></dl>
+
+<dl><dt><a name="TokenCSRF-clean"><strong>clean</strong></a>(user: commons.User, max_time: float) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;clean&nbsp;all&nbsp;old&nbsp;CSRF&nbsp;tokens&nbsp;for&nbsp;a&nbsp;user.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="User">class <strong>User</strong></a>(<a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#User">User</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implements&nbsp;<a href="#User">User</a>&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="commons.html#User">User</a></dd>
+<dd><a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a></dd>
+<dd><a href="types.html#SimpleNamespace">types.SimpleNamespace</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__defaults__</strong> = {'categories': ['*'], 'check_csrf': False, 'csrf': {}, 'groups': [], 'scripts': ['*']}</dl>
+
+<dl><dt><strong>__required__</strong> = ['id', 'name', 'groups', 'csrf', 'ip', 'categories', 'scripts', 'check_csrf']</dl>
+
+<dl><dt><strong>__types__</strong> = {'categories': &lt;class 'list'&gt;, 'check_csrf': &lt;class 'bool'&gt;, 'groups': typing.List[int], 'id': &lt;class 'int'&gt;, 'scripts': &lt;class 'list'&gt;}</dl>
+
+<hr>
+Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="User-__getitem__"><strong>__getitem__</strong></a>(self, key: str)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="User-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="User-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="User-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
+function&nbsp;raise&nbsp;MissingAttributesError.</tt></dd></dl>
+
+<dl><dt><a name="User-export_as_json"><strong>export_as_json</strong></a>(self, name: str = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;export&nbsp;namespace&nbsp;values&nbsp;(useful&nbsp;for&nbsp;debugging).</tt></dd></dl>
+
+<dl><dt><a name="User-get"><strong>get</strong></a>(self, key: str, default=None)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="User-get_dict"><strong>get_dict</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;of&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="User-get_missings"><strong>get_missings</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+and&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of&nbsp;missing&nbsp;required&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="User-get_unexpecteds"><strong>get_unexpecteds</strong></a>(self, log: bool = True) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of<br>
+all&nbsp;attributes&nbsp;not&nbsp;in&nbsp;optional&nbsp;and<br>
+required&nbsp;attributes.<br>
+&nbsp;<br>
+If&nbsp;log&nbsp;argument&nbsp;is&nbsp;True&nbsp;a&nbsp;Warning&nbsp;log&nbsp;message&nbsp;is<br>
+write&nbsp;for&nbsp;all&nbsp;unexpected&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="User-set_defaults"><strong>set_defaults</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;set&nbsp;defaults&nbsp;attribut&nbsp;with&nbsp;defaults&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="User-update"><strong>update</strong></a>(self, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;add/update&nbsp;attributes&nbsp;with&nbsp;**kwargs&nbsp;arguments.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="User-default_build"><strong>default_build</strong></a>(**kwargs) -&gt; ~DefaultNamespace<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Default&nbsp;build&nbsp;for&nbsp;<a href="utils.html#DefaultNamespace">DefaultNamespace</a>&nbsp;(set&nbsp;defaults,&nbsp;add&nbsp;values,<br>
+check&nbsp;requirements&nbsp;and&nbsp;unexpected&nbsp;values&nbsp;and&nbsp;build&nbsp;types).</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamespace</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="User-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="User-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="User-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="User-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="User-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="User-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="User-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling</tt></dd></dl>
+
+<dl><dt><a name="User-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="User-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="User-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>JsonValue</strong> = ~JsonValue<br>
+<strong>ServerConfiguration</strong> = ~ServerConfiguration<br>
+<strong>__all__</strong> = ['User', 'Session', 'Argument', 'JsonValue', 'TokenCSRF', 'Blacklist', 'ScriptConfig', 'CallableFile', 'ServerConfiguration']<br>
+<strong>__annotations__</strong> = {'logger_critical': &lt;class 'collections.abc.Callable'&gt;, 'logger_debug': &lt;class 'collections.abc.Callable'&gt;, 'logger_error': &lt;class 'collections.abc.Callable'&gt;, 'logger_info': &lt;class 'collections.abc.Callable'&gt;, 'logger_warning': &lt;class 'collections.abc.Callable'&gt;}<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...mons functions and class for WebScripts package.<font color="#c040c0">\n</font>'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>

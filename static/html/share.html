@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module share</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>share</strong></big></big> (version 0.1.0)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="share.py">share.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;download&nbsp;and&nbsp;upload&nbsp;functions&nbsp;for&nbsp;scripts,<br>
+tools&nbsp;and&nbsp;command&nbsp;line&nbsp;client.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="share.html#Download">Download</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Download">class <strong>Download</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;implement&nbsp;download&nbsp;functions&nbsp;for&nbsp;filename&nbsp;or&nbsp;ID.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Download-filename"><strong>filename</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, filename: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;download&nbsp;file&nbsp;by&nbsp;filename.</tt></dd></dl>
+
+<dl><dt><a name="Download-id"><strong>id</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, id_: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;download&nbsp;file&nbsp;by&nbsp;ID.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Download-get_data"><strong>get_data</strong></a>(file: uploads_management.Upload) -&gt; bytes</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;file&nbsp;and&nbsp;manage&nbsp;the&nbsp;compression.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#A57927">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-upload"><strong>upload</strong></a>(environ: os._Environ, user: ~User, server_configuration: ~ServerConfiguration, filename: str, data: bytes, none: None, csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;funtion&nbsp;upload&nbsp;file.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Dict</strong> = typing.Dict<br>
+<strong>List</strong> = typing.List<br>
+<strong>ServerConfiguration</strong> = ~ServerConfiguration<br>
+<strong>Tuple</strong> = typing.Tuple<br>
+<strong>User</strong> = ~User<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...tions for scripts,<font color="#c040c0">\n</font>tools and command line client.'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
+<strong>copyright</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>env</strong> = environ({'ALLUSERSPROFILE': 'C:\\ProgramData', '...\\CSU1\\go\\bin', '_OLD_VIRTUAL_PROMPT': '$P$G'})<br>
+<strong>license</strong> = 'GPL-3.0 License'<br>
+<strong>syspath</strong> = [r'/home/WebScripts\scripts\doc', r'C:\Program Files\Python\python39.zip', r'C:\Program Files\Python\DLLs', r'C:\Program Files\Python\lib', r'C:\Program Files\Python', r'C:\Users\CSU1\Documents\dev\test', r'C:\Users\CSU1\Documents\dev\test\lib\site-packages', r'c:\users\csu1\documents\dev\modules\webscripts', r'C:\Users\CSU1\Documents\dev\test\lib\site-packages\win32', r'C:\Users\CSU1\Documents\dev\test\lib\site-packages\win32\lib', r'C:\Users\CSU1\Documents\dev\test\lib\site-packages\Pythonwin', r'/home/WebScripts\modules']</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>

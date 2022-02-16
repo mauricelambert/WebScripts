@@ -1,0 +1,280 @@
+/*
+
+		Style for WebScript pages.
+		Copyright (C) 2021, 2022  Maurice Lambert
+
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+/*
+	* Colors: 
+		Dark mode:
+			#222222: Gris foncé;
+			#333333: Gris clair;
+		Light mode:
+			#DDDDDD: Gris clair;
+			#CCCCCC: Gris foncé;
+
+		#ffc26a: Orange clair;
+		#f0a83f: Orange mi-clair;
+		#dd8a12 rgb(221, 138, 18) : Orange;
+		#b16b05: Orange mi-foncé;
+		#895100: Orange foncé;
+
+		#DDAD12: Jaune;
+		#896900: Jaune foncé;
+
+		#615CB9: Bleu clair;
+		#433DA7: Bleu mi-clair;
+		#27219a: Bleu;
+		#100B60: Bleu mi-foncé;
+		#0F0B60: Bleu foncé;
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body, html {
+	margin: 0%;
+	padding: 0%;
+	width: 100%;
+	height: 100%;
+	/*overflow: hidden;*/
+	font-family : Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+	/*overflow-y:scroll;*/
+	background-color: #222222;
+}
+
+header, footer {
+	font-style: italic;
+	padding: 2%;
+}
+
+pre {
+	tab-size: 4;
+	background-color: black;
+	color: white;
+	font-family: "Courier", "Lucida Console", "Consolas", "sans-serif";
+	font-size: 100%;
+}
+
+a {
+	color: #895100;
+}
+
+button {
+	padding: 1%;
+	width: 100%;
+	background-color: #222222;
+	color: #dd8a12;
+	transition: 0.5s;
+	font-size: 100%;
+	border: 2px solid #f0a83f;
+	border-radius: 10px;
+}
+
+.border {
+	color: #ffc26a;
+}
+
+.description {
+	font-style: italic;
+	font-size: 80%;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.center {
+	text-align: center;
+}
+
+#webscripts_content {
+	background-color: #333333;
+	color: #dd8a12;
+	padding: 2%;
+	width: 87%;
+	display: inline-block;
+	border: 1px solid #b16b05;
+	border-radius: 10px;
+}
+
+#webscripts_title {
+	font-size: 120%;
+}
+
+#webscripts_description {
+	font-size: 80%;
+}
+
+.list.footer {
+	font-size: 80%;
+	margin-bottom: 1%;
+}
+
+#webscripts_border_left {
+	display: inline-block;
+	width: 4%;
+}
+
+#webscripts_border_right {
+	display: inline-block;
+	width: 4%;
+}
+
+#webscripts_header_image {
+}
+
+#webscripts_header_image_position {
+	float: right;
+	display: inline-block;
+}
+
+#webscripts_header_text_position {
+	display: inline-block;
+	width: 20%;
+}
+
+#prevent_no_javascript {
+	background-color: red;
+	padding: 2%;
+	margin: 3%;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+::-moz-selection { /* Code for Firefox */
+	color: #333333;
+	background: #f0a83f;
+}
+
+::selection {
+	color: #333333;
+	background: #f0a83f;
+}
+
+html.light, body.light, button.light, input.light, select.light {
+	background-color: #CCCCCC;
+}
+
+input.light:hover, select.light:hover, button.light:hover {
+	background-color: #DDDDDD;
+}
+
+a.light {
+	color: #615CB9;
+}
+
+#webscripts_content.light {
+	background-color: #DDDDDD;
+}
+
+.border.light, button.light {
+	color: #0F0B60;
+}
+
+#bar.light {
+	background-color: #615CB9;
+	color: #0F0B60;
+}
+
+button.light {
+	border-color: #0F0B60;
+}
+
+#webscripts_content.light, input.light, td.light {
+	color: #100B60;
+	border-color: #100B60;
+}
+
+@media (prefers-color-scheme: dark) {
+	html.default_theme, body.default_theme, button.default_theme, input.default_theme, select.default_theme {
+		background-color: #222222;
+	}
+
+	input.default_theme:hover, select.default_theme:hover, button.default_theme:hover {
+		background-color: #333333;
+	}
+
+	a.default_theme {
+		color: #895100;
+	}
+
+	#webscripts_content.default_theme {
+		background-color: #333333;
+	}
+
+	.border.default_theme {
+		color: #ffc26a;
+	}
+
+	button.default_theme, input.default_theme, select.default_theme {
+		color: #dd8a12;
+		border-color: #f0a83f;
+	}
+
+	#webscripts_content.default_theme,  td.default_theme {
+		color: #dd8a12;
+		border-color: #b16b05;
+	}
+
+	#bar.default_theme {
+		background-color: #895100;
+		color: #ffc26a;
+	}
+
+	td.default_theme {
+		border-color: #dd8a12;
+	}
+}
+
+@media (prefers-color-scheme: light) {
+	html.default_theme, body.default_theme, button.default_theme, input.default_theme, select.default_theme {
+		background-color: #CCCCCC;
+	}
+
+	input.default_theme:hover, select.default_theme:hover, button.default_theme:hover {
+		background-color: #DDDDDD;
+	}
+
+	a.default_theme {
+		color: #615CB9;
+	}
+
+	#webscripts_content.default_theme {
+		background-color: #DDDDDD;
+	}
+
+	.border.default_theme, button.default_theme {
+		color: #0F0B60;
+	}
+
+	#bar.default_theme {
+		background-color: #615CB9;
+		color: #0F0B60;
+	}
+
+	button.default_theme {
+		border-color: #0F0B60;
+	}
+
+	#webscripts_content.default_theme, input.default_theme, td.default_theme {
+		color: #100B60;
+		border-color: #100B60;
+	}
+}

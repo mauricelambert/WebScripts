@@ -1,0 +1,90 @@
+<!--
+
+    HTML page to launch scripts.
+    Copyright (C) 2021, 2022  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>%(name)s of WebScripts Server</title>
+		<link rel="shortcut icon" type="image/png" href="/static/webscripts_icon.png"/>
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_style.css">
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_script_style.css">
+		<script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
+		<script type="text/javascript" src="/js/webscripts_script_js_scripts.js"></script>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s'">
+	</head>
+
+	<body>
+		<div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div>
+		%(header)s
+
+		<div id="webscripts_border_left" class="border"></div>
+
+		<div id="webscripts_content">
+			<div id="script_presentation">
+				<h1 id="script_title">Script: %(name)s</h1>
+				<p class="description" id="script_description"></p><a href="/web/doc/%(name)s">Documentation</a>
+			</div>
+
+			<p>Welcome on script "%(name)s" user "%(user)s" !</p>
+
+			<div id="script_interface">
+				<div class="advanced_container" id="advanced_container">
+					<div class="advanced_arguments" id="advanced_arguments">
+					</div>
+
+					<div class="advanced_button_arguments" id="advanced_button_arguments">
+						<button class="print_advanced" id="print_advanced">
+							Show advanced arguments
+						</button>
+					</div>
+				</div>
+
+				<div id="submit_row" class="row">
+					<input type="hidden" name="csrf_token" id="csrf_token" value="%(csrf)s">
+					<div class="submit_position">
+						<input id="submit_button" type="submit" class="submit" value="Start script execution">
+					</div>
+				</div>
+			</div>
+
+			<div id="progress_bar">
+				<div id="bar">
+				</div>
+			</div>
+
+			<div  id="script_outputs">
+				
+			</div>
+		</div>
+
+		<div id="webscripts_border_right" class="border"></div>
+
+		%(footer)s
+
+		<script type="text/javascript" nonce="%(nonce)s">
+			document.getElementById("submit_button").onclick=start_script_execution;
+			document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";
+			script_name="%(name)s";
+			get_scripts(build_script_interface);
+			add_buttons();
+		</script>
+	</body>
+</html>

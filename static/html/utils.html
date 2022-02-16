@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module utils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big> (version 0.1.5)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="utils.py">utils.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;some&nbsp;tools&nbsp;for&nbsp;WebScripts&nbsp;server<br>
+and&nbsp;scripts&nbsp;(<a href="#Logs">Logs</a>,&nbsp;Namespace&nbsp;for&nbsp;configuration,&nbsp;...).</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="gzip.html">gzip</a><br>
+<a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="locale.html">locale</a><br>
+<a href="logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+<a href="win32evtlog.html">win32evtlog</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="logging.handlers.html#RotatingFileHandler">logging.handlers.RotatingFileHandler</a>(<a href="logging.handlers.html#BaseRotatingHandler">logging.handlers.BaseRotatingHandler</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="utils.html#CustomLogHandler">CustomLogHandler</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="types.html#SimpleNamespace">types.SimpleNamespace</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="utils.html#DefaultNamespace">DefaultNamespace</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="utils.html#_Logs">_Logs</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="utils.html#WindowsLogs">WindowsLogs</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CustomLogHandler">class <strong>CustomLogHandler</strong></a>(<a href="logging.handlers.html#RotatingFileHandler">logging.handlers.RotatingFileHandler</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#CustomLogHandler">CustomLogHandler</a>(filename,&nbsp;mode='a',&nbsp;maxBytes=0,&nbsp;backupCount=0,&nbsp;encoding=None,&nbsp;delay=False,&nbsp;errors=None)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;is&nbsp;a&nbsp;custom&nbsp;logging&nbsp;handler.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="utils.html#CustomLogHandler">CustomLogHandler</a></dd>
+<dd><a href="logging.handlers.html#RotatingFileHandler">logging.handlers.RotatingFileHandler</a></dd>
+<dd><a href="logging.handlers.html#BaseRotatingHandler">logging.handlers.BaseRotatingHandler</a></dd>
+<dd><a href="logging.html#FileHandler">logging.FileHandler</a></dd>
+<dd><a href="logging.html#StreamHandler">logging.StreamHandler</a></dd>
+<dd><a href="logging.html#Handler">logging.Handler</a></dd>
+<dd><a href="logging.html#Filterer">logging.Filterer</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="CustomLogHandler-doRollover"><strong>doRollover</strong></a>(self)</dt><dd><tt>Do&nbsp;a&nbsp;rollover,&nbsp;as&nbsp;described&nbsp;in&nbsp;<a href="#CustomLogHandler-__init__">__init__</a>().</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-namer"><strong>namer</strong></a>(self, name: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;new&nbsp;name&nbsp;of&nbsp;the&nbsp;old&nbsp;log&nbsp;files.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-rotator"><strong>rotator</strong></a>(self, source: str, destination: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;compresses&nbsp;old&nbsp;log&nbsp;files.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="logging.handlers.html#RotatingFileHandler">logging.handlers.RotatingFileHandler</a>:<br>
+<dl><dt><a name="CustomLogHandler-__init__"><strong>__init__</strong></a>(self, filename, mode='a', maxBytes=0, backupCount=0, encoding=None, delay=False, errors=None)</dt><dd><tt>Open&nbsp;the&nbsp;specified&nbsp;file&nbsp;and&nbsp;use&nbsp;it&nbsp;as&nbsp;the&nbsp;stream&nbsp;for&nbsp;logging.<br>
+&nbsp;<br>
+By&nbsp;default,&nbsp;the&nbsp;file&nbsp;grows&nbsp;indefinitely.&nbsp;You&nbsp;can&nbsp;specify&nbsp;particular<br>
+values&nbsp;of&nbsp;maxBytes&nbsp;and&nbsp;backupCount&nbsp;to&nbsp;allow&nbsp;the&nbsp;file&nbsp;to&nbsp;rollover&nbsp;at<br>
+a&nbsp;predetermined&nbsp;size.<br>
+&nbsp;<br>
+Rollover&nbsp;occurs&nbsp;whenever&nbsp;the&nbsp;current&nbsp;log&nbsp;file&nbsp;is&nbsp;nearly&nbsp;maxBytes&nbsp;in<br>
+length.&nbsp;If&nbsp;backupCount&nbsp;is&nbsp;&gt;=&nbsp;1,&nbsp;the&nbsp;system&nbsp;will&nbsp;successively&nbsp;create<br>
+new&nbsp;files&nbsp;with&nbsp;the&nbsp;same&nbsp;pathname&nbsp;as&nbsp;the&nbsp;base&nbsp;file,&nbsp;but&nbsp;with&nbsp;extensions<br>
+".1",&nbsp;".2"&nbsp;etc.&nbsp;appended&nbsp;to&nbsp;it.&nbsp;For&nbsp;example,&nbsp;with&nbsp;a&nbsp;backupCount&nbsp;of&nbsp;5<br>
+and&nbsp;a&nbsp;base&nbsp;file&nbsp;name&nbsp;of&nbsp;"app.log",&nbsp;you&nbsp;would&nbsp;get&nbsp;"app.log",<br>
+"app.log.1",&nbsp;"app.log.2",&nbsp;...&nbsp;through&nbsp;to&nbsp;"app.log.5".&nbsp;The&nbsp;file&nbsp;being<br>
+written&nbsp;to&nbsp;is&nbsp;always&nbsp;"app.log"&nbsp;-&nbsp;when&nbsp;it&nbsp;gets&nbsp;filled&nbsp;up,&nbsp;it&nbsp;is&nbsp;closed<br>
+and&nbsp;renamed&nbsp;to&nbsp;"app.log.1",&nbsp;and&nbsp;if&nbsp;files&nbsp;"app.log.1",&nbsp;"app.log.2"&nbsp;etc.<br>
+exist,&nbsp;then&nbsp;they&nbsp;are&nbsp;renamed&nbsp;to&nbsp;"app.log.2",&nbsp;"app.log.3"&nbsp;etc.<br>
+respectively.<br>
+&nbsp;<br>
+If&nbsp;maxBytes&nbsp;is&nbsp;zero,&nbsp;rollover&nbsp;never&nbsp;occurs.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-shouldRollover"><strong>shouldRollover</strong></a>(self, record)</dt><dd><tt>Determine&nbsp;if&nbsp;rollover&nbsp;should&nbsp;occur.<br>
+&nbsp;<br>
+Basically,&nbsp;see&nbsp;if&nbsp;the&nbsp;supplied&nbsp;record&nbsp;would&nbsp;cause&nbsp;the&nbsp;file&nbsp;to&nbsp;exceed<br>
+the&nbsp;size&nbsp;limit&nbsp;we&nbsp;have.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="logging.handlers.html#BaseRotatingHandler">logging.handlers.BaseRotatingHandler</a>:<br>
+<dl><dt><a name="CustomLogHandler-emit"><strong>emit</strong></a>(self, record)</dt><dd><tt>Emit&nbsp;a&nbsp;record.<br>
+&nbsp;<br>
+Output&nbsp;the&nbsp;record&nbsp;to&nbsp;the&nbsp;file,&nbsp;catering&nbsp;for&nbsp;rollover&nbsp;as&nbsp;described<br>
+in&nbsp;<a href="#CustomLogHandler-doRollover">doRollover</a>().</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-rotate"><strong>rotate</strong></a>(self, source, dest)</dt><dd><tt>When&nbsp;rotating,&nbsp;rotate&nbsp;the&nbsp;current&nbsp;log.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;implementation&nbsp;calls&nbsp;the&nbsp;'rotator'&nbsp;attribute&nbsp;of&nbsp;the<br>
+handler,&nbsp;if&nbsp;it's&nbsp;callable,&nbsp;passing&nbsp;the&nbsp;source&nbsp;and&nbsp;dest&nbsp;arguments&nbsp;to<br>
+it.&nbsp;If&nbsp;the&nbsp;attribute&nbsp;isn't&nbsp;callable&nbsp;(the&nbsp;default&nbsp;is&nbsp;None),&nbsp;the&nbsp;source<br>
+is&nbsp;simply&nbsp;renamed&nbsp;to&nbsp;the&nbsp;destination.<br>
+&nbsp;<br>
+:param&nbsp;source:&nbsp;The&nbsp;source&nbsp;filename.&nbsp;This&nbsp;is&nbsp;normally&nbsp;the&nbsp;base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename,&nbsp;e.g.&nbsp;'test.log'<br>
+:param&nbsp;dest:&nbsp;&nbsp;&nbsp;The&nbsp;destination&nbsp;filename.&nbsp;This&nbsp;is&nbsp;normally<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;what&nbsp;the&nbsp;source&nbsp;is&nbsp;rotated&nbsp;to,&nbsp;e.g.&nbsp;'test.log.1'.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-rotation_filename"><strong>rotation_filename</strong></a>(self, default_name)</dt><dd><tt>Modify&nbsp;the&nbsp;filename&nbsp;of&nbsp;a&nbsp;log&nbsp;file&nbsp;when&nbsp;rotating.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;provided&nbsp;so&nbsp;that&nbsp;a&nbsp;custom&nbsp;filename&nbsp;can&nbsp;be&nbsp;provided.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;implementation&nbsp;calls&nbsp;the&nbsp;'namer'&nbsp;attribute&nbsp;of&nbsp;the<br>
+handler,&nbsp;if&nbsp;it's&nbsp;callable,&nbsp;passing&nbsp;the&nbsp;default&nbsp;name&nbsp;to<br>
+it.&nbsp;If&nbsp;the&nbsp;attribute&nbsp;isn't&nbsp;callable&nbsp;(the&nbsp;default&nbsp;is&nbsp;None),&nbsp;the&nbsp;name<br>
+is&nbsp;returned&nbsp;unchanged.<br>
+&nbsp;<br>
+:param&nbsp;default_name:&nbsp;The&nbsp;default&nbsp;name&nbsp;for&nbsp;the&nbsp;log&nbsp;file.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="logging.html#FileHandler">logging.FileHandler</a>:<br>
+<dl><dt><a name="CustomLogHandler-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-close"><strong>close</strong></a>(self)</dt><dd><tt>Closes&nbsp;the&nbsp;stream.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="logging.html#StreamHandler">logging.StreamHandler</a>:<br>
+<dl><dt><a name="CustomLogHandler-flush"><strong>flush</strong></a>(self)</dt><dd><tt>Flushes&nbsp;the&nbsp;stream.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-setStream"><strong>setStream</strong></a>(self, stream)</dt><dd><tt>Sets&nbsp;the&nbsp;StreamHandler's&nbsp;stream&nbsp;to&nbsp;the&nbsp;specified&nbsp;value,<br>
+if&nbsp;it&nbsp;is&nbsp;different.<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;old&nbsp;stream,&nbsp;if&nbsp;the&nbsp;stream&nbsp;was&nbsp;changed,&nbsp;or&nbsp;None<br>
+if&nbsp;it&nbsp;wasn't.</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="logging.html#StreamHandler">logging.StreamHandler</a>:<br>
+<dl><dt><strong>terminator</strong> = '<font color="#c040c0">\n</font>'</dl>
+
+<hr>
+Methods inherited from <a href="logging.html#Handler">logging.Handler</a>:<br>
+<dl><dt><a name="CustomLogHandler-acquire"><strong>acquire</strong></a>(self)</dt><dd><tt>Acquire&nbsp;the&nbsp;I/O&nbsp;thread&nbsp;lock.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-createLock"><strong>createLock</strong></a>(self)</dt><dd><tt>Acquire&nbsp;a&nbsp;thread&nbsp;lock&nbsp;for&nbsp;serializing&nbsp;access&nbsp;to&nbsp;the&nbsp;underlying&nbsp;I/O.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-format"><strong>format</strong></a>(self, record)</dt><dd><tt>Format&nbsp;the&nbsp;specified&nbsp;record.<br>
+&nbsp;<br>
+If&nbsp;a&nbsp;formatter&nbsp;is&nbsp;set,&nbsp;use&nbsp;it.&nbsp;Otherwise,&nbsp;use&nbsp;the&nbsp;default&nbsp;formatter<br>
+for&nbsp;the&nbsp;module.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-get_name"><strong>get_name</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="CustomLogHandler-handle"><strong>handle</strong></a>(self, record)</dt><dd><tt>Conditionally&nbsp;emit&nbsp;the&nbsp;specified&nbsp;logging&nbsp;record.<br>
+&nbsp;<br>
+Emission&nbsp;depends&nbsp;on&nbsp;filters&nbsp;which&nbsp;may&nbsp;have&nbsp;been&nbsp;added&nbsp;to&nbsp;the&nbsp;handler.<br>
+Wrap&nbsp;the&nbsp;actual&nbsp;emission&nbsp;of&nbsp;the&nbsp;record&nbsp;with&nbsp;acquisition/release&nbsp;of<br>
+the&nbsp;I/O&nbsp;thread&nbsp;lock.&nbsp;Returns&nbsp;whether&nbsp;the&nbsp;filter&nbsp;passed&nbsp;the&nbsp;record&nbsp;for<br>
+emission.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-handleError"><strong>handleError</strong></a>(self, record)</dt><dd><tt>Handle&nbsp;errors&nbsp;which&nbsp;occur&nbsp;during&nbsp;an&nbsp;<a href="#CustomLogHandler-emit">emit</a>()&nbsp;call.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;should&nbsp;be&nbsp;called&nbsp;from&nbsp;handlers&nbsp;when&nbsp;an&nbsp;exception&nbsp;is<br>
+encountered&nbsp;during&nbsp;an&nbsp;<a href="#CustomLogHandler-emit">emit</a>()&nbsp;call.&nbsp;If&nbsp;raiseExceptions&nbsp;is&nbsp;false,<br>
+exceptions&nbsp;get&nbsp;silently&nbsp;ignored.&nbsp;This&nbsp;is&nbsp;what&nbsp;is&nbsp;mostly&nbsp;wanted<br>
+for&nbsp;a&nbsp;logging&nbsp;system&nbsp;-&nbsp;most&nbsp;users&nbsp;will&nbsp;not&nbsp;care&nbsp;about&nbsp;errors&nbsp;in<br>
+the&nbsp;logging&nbsp;system,&nbsp;they&nbsp;are&nbsp;more&nbsp;interested&nbsp;in&nbsp;application&nbsp;errors.<br>
+You&nbsp;could,&nbsp;however,&nbsp;replace&nbsp;this&nbsp;with&nbsp;a&nbsp;custom&nbsp;handler&nbsp;if&nbsp;you&nbsp;wish.<br>
+The&nbsp;record&nbsp;which&nbsp;was&nbsp;being&nbsp;processed&nbsp;is&nbsp;passed&nbsp;in&nbsp;to&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-release"><strong>release</strong></a>(self)</dt><dd><tt>Release&nbsp;the&nbsp;I/O&nbsp;thread&nbsp;lock.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-setFormatter"><strong>setFormatter</strong></a>(self, fmt)</dt><dd><tt>Set&nbsp;the&nbsp;formatter&nbsp;for&nbsp;this&nbsp;handler.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-setLevel"><strong>setLevel</strong></a>(self, level)</dt><dd><tt>Set&nbsp;the&nbsp;logging&nbsp;level&nbsp;of&nbsp;this&nbsp;handler.&nbsp;&nbsp;level&nbsp;must&nbsp;be&nbsp;an&nbsp;int&nbsp;or&nbsp;a&nbsp;str.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-set_name"><strong>set_name</strong></a>(self, name)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="logging.html#Handler">logging.Handler</a>:<br>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<hr>
+Methods inherited from <a href="logging.html#Filterer">logging.Filterer</a>:<br>
+<dl><dt><a name="CustomLogHandler-addFilter"><strong>addFilter</strong></a>(self, filter)</dt><dd><tt>Add&nbsp;the&nbsp;specified&nbsp;filter&nbsp;to&nbsp;this&nbsp;handler.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-filter"><strong>filter</strong></a>(self, record)</dt><dd><tt>Determine&nbsp;if&nbsp;a&nbsp;record&nbsp;is&nbsp;loggable&nbsp;by&nbsp;consulting&nbsp;all&nbsp;the&nbsp;filters.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;is&nbsp;to&nbsp;allow&nbsp;the&nbsp;record&nbsp;to&nbsp;be&nbsp;logged;&nbsp;any&nbsp;filter&nbsp;can&nbsp;veto<br>
+this&nbsp;and&nbsp;the&nbsp;record&nbsp;is&nbsp;then&nbsp;dropped.&nbsp;Returns&nbsp;a&nbsp;zero&nbsp;value&nbsp;if&nbsp;a&nbsp;record<br>
+is&nbsp;to&nbsp;be&nbsp;dropped,&nbsp;else&nbsp;non-zero.<br>
+&nbsp;<br>
+..&nbsp;versionchanged::&nbsp;3.2<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;Allow&nbsp;filters&nbsp;to&nbsp;be&nbsp;just&nbsp;callables.</tt></dd></dl>
+
+<dl><dt><a name="CustomLogHandler-removeFilter"><strong>removeFilter</strong></a>(self, filter)</dt><dd><tt>Remove&nbsp;the&nbsp;specified&nbsp;filter&nbsp;from&nbsp;this&nbsp;handler.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="logging.html#Filterer">logging.Filterer</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DefaultNamespace">class <strong>DefaultNamespace</strong></a>(<a href="types.html#SimpleNamespace">types.SimpleNamespace</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#DefaultNamespace">DefaultNamespace</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;build&nbsp;simple&nbsp;namespace&nbsp;with&nbsp;default<br>
+attributs.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="utils.html#DefaultNamespace">DefaultNamespace</a></dd>
+<dd><a href="types.html#SimpleNamespace">types.SimpleNamespace</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DefaultNamespace-__getitem__"><strong>__getitem__</strong></a>(self, key: str)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
+function&nbsp;raise&nbsp;MissingAttributesError.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-export_as_json"><strong>export_as_json</strong></a>(self, name: str = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;export&nbsp;namespace&nbsp;values&nbsp;(useful&nbsp;for&nbsp;debugging).</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-get"><strong>get</strong></a>(self, key: str, default=None)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-get_dict"><strong>get_dict</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;of&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-get_missings"><strong>get_missings</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+and&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of&nbsp;missing&nbsp;required&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-get_unexpecteds"><strong>get_unexpecteds</strong></a>(self, log: bool = True) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of<br>
+all&nbsp;attributes&nbsp;not&nbsp;in&nbsp;optional&nbsp;and<br>
+required&nbsp;attributes.<br>
+&nbsp;<br>
+If&nbsp;log&nbsp;argument&nbsp;is&nbsp;True&nbsp;a&nbsp;Warning&nbsp;log&nbsp;message&nbsp;is<br>
+write&nbsp;for&nbsp;all&nbsp;unexpected&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-set_defaults"><strong>set_defaults</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;set&nbsp;defaults&nbsp;attribut&nbsp;with&nbsp;defaults&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-update"><strong>update</strong></a>(self, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;add/update&nbsp;attributes&nbsp;with&nbsp;**kwargs&nbsp;arguments.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="DefaultNamespace-default_build"><strong>default_build</strong></a>(**kwargs) -&gt; ~DefaultNamespace<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Default&nbsp;build&nbsp;for&nbsp;<a href="#DefaultNamespace">DefaultNamespace</a>&nbsp;(set&nbsp;defaults,&nbsp;add&nbsp;values,<br>
+check&nbsp;requirements&nbsp;and&nbsp;unexpected&nbsp;values&nbsp;and&nbsp;build&nbsp;types).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="DefaultNamespace-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="DefaultNamespace-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>Logs</strong> = <a name="Logs">class WindowsLogs</a>(<a href="utils.html#_Logs">_Logs</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;log&nbsp;on&nbsp;Windows.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="utils.html#WindowsLogs">WindowsLogs</a></dd>
+<dd><a href="utils.html#_Logs">_Logs</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="WindowsLogs-critical"><strong>critical</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;criticals&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-debug"><strong>debug</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;debugs&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-error"><strong>error</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;errors&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-info"><strong>info</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;infos&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-warning"><strong>warning</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;warnings&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'app': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>app</strong> = 'WebScripts'</dl>
+
+<hr>
+Methods inherited from <a href="utils.html#_Logs">_Logs</a>:<br>
+<dl><dt><a name="WindowsLogs-config"><strong>config</strong></a>(*args, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;config&nbsp;ROOT&nbsp;logger.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-exception"><strong>exception</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implement&nbsp;basic&nbsp;python&nbsp;exception&nbsp;(error)&nbsp;logs&nbsp;for<br>
+WebScripts.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-trace"><strong>trace</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implement&nbsp;trace&nbsp;logs&nbsp;for&nbsp;WebScripts.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="utils.html#_Logs">_Logs</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<br>
+<dl><dt><strong>console</strong> = &lt;Logger WebScripts.console (WARNING)&gt;</dl>
+
+<dl><dt><strong>file</strong> = &lt;Logger WebScripts.file (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_critical</strong> = &lt;Logger WebScripts.critical (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_debug</strong> = &lt;Logger WebScripts.debug (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_error</strong> = &lt;Logger WebScripts.error (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_info</strong> = &lt;Logger WebScripts.info (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_trace</strong> = &lt;Logger WebScripts.trace (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_warning</strong> = &lt;Logger WebScripts.warning (WARNING)&gt;</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#A57927">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_arguments_count"><strong>get_arguments_count</strong></a>(object_: collections.abc.Callable)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;argument&nbsp;to&nbsp;call&nbsp;this&nbsp;Callable&nbsp;object.</tt></dd></dl>
+ <dl><dt><a name="-get_encodings"><strong>get_encodings</strong></a>()</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;probable&nbsp;encodings.</tt></dd></dl>
+ <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(file_path, *args, **kwargs) -&gt; ~StrOrBytes</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
+ <dl><dt><a name="-get_ini_dict"><strong>get_ini_dict</strong></a>(filename: str) -&gt; Dict[str, Dict[str, str]]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;from&nbsp;ini&nbsp;filename.</tt></dd></dl>
+ <dl><dt><a name="-get_ip"><strong>get_ip</strong></a>(environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;IP.</tt></dd></dl>
+ <dl><dt><a name="-get_real_path"><strong>get_real_path</strong></a>(file_path: str, is_dir: bool = False) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;path&nbsp;for&nbsp;files.</tt></dd></dl>
+ <dl><dt><a name="-log_trace"><strong>log_trace</strong></a>(function: function) -&gt; function</dt><dd><tt>This&nbsp;decorator&nbsp;trace&nbsp;functions&nbsp;(start&nbsp;and&nbsp;end).</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['Logs', 'DefaultNamespace', 'log_trace', 'get_ip', 'get_arguments_count', 'get_file_content', 'get_real_path', 'get_encodings', 'get_ini_dict', 'server_path', 'CustomLogHandler']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...cripts (Logs, Namespace for configuration, ...).<font color="#c040c0">\n</font>'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
+<strong>server_path</strong> = /home/WebScripts</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>

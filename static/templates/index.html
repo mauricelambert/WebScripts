@@ -1,0 +1,49 @@
+<!--
+
+    HTML page for index.
+    Copyright (C) 2021, 2022  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Index of WebScripts Server</title>
+		<link rel="shortcut icon" type="image/png" href="/static/webscripts_icon.png"/>
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_style.css">
+		<link rel="stylesheet" type="text/css" href="/static/webscripts_index_style.css">
+		<script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
+		<script type="text/javascript" src="/js/webscripts_index_js_scripts.js"></script>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='">
+	</head>
+	
+	<body>
+		<div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div>
+		%(header)s
+
+		<div id="webscripts_border_left" class="border"></div>
+
+		<div id="webscripts_content" class="content">
+		</div>
+
+		<div id="webscripts_border_right" class="border"></div>
+
+		%(footer)s
+
+		<script type="text/javascript">document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";get_scripts(build_categories);</script>
+	</body>
+</html>

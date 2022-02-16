@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module hardening</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.0)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;the&nbsp;hardening&nbsp;audit&nbsp;of&nbsp;the&nbsp;WebScripts&nbsp;installation&nbsp;and<br>
+configuration.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="pip.html">pip</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="hardening.html#Audit">Audit</a>
+</font></dt><dt><font face="helvetica, arial"><a href="hardening.html#Report">Report</a>
+</font></dt><dt><font face="helvetica, arial"><a href="hardening.html#Rule">Rule</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="hardening.html#SEVERITY">SEVERITY</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Audit">class <strong>Audit</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;function&nbsp;implement&nbsp;hardening&nbsp;checks.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Audit-audit_active_auth"><strong>audit_active_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;authentication&nbsp;is&nbsp;enabled.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_admin_account"><strong>audit_admin_account</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;admin&nbsp;password.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_blacklist"><strong>audit_blacklist</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;blacklist&nbsp;configuration.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_config_files"><strong>audit_config_files</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configurations&nbsp;files.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_debug"><strong>audit_debug</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;debug&nbsp;configuration.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_force_auth"><strong>audit_force_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;authentication&nbsp;is&nbsp;forced.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_in_venv"><strong>audit_in_venv</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;virtualenv.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_interface"><strong>audit_interface</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;network&nbsp;interface.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_limit_exclude_auth"><strong>audit_limit_exclude_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;exclusions&nbsp;for&nbsp;authentication.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_log_level"><strong>audit_log_level</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;log&nbsp;level.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_security"><strong>audit_security</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;security&nbsp;configuration.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_smtp_password"><strong>audit_smtp_password</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;SMTP&nbsp;password&nbsp;protection.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_system_user"><strong>audit_system_user</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;user.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audit_venv_modules"><strong>audit_venv_modules</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;virtualenv&nbsp;modules.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_file_owner"><strong>audits_file_owner</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;files&nbsp;owner.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_file_rights"><strong>audits_file_rights</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;files&nbsp;rights.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_launcher"><strong>audits_launcher</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;launcher.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_module_path"><strong>audits_module_path</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;modules&nbsp;paths.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_scripts_logs"><strong>audits_scripts_logs</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;log.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_scripts_path"><strong>audits_scripts_path</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;path.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_scripts_stderr_content_type"><strong>audits_scripts_stderr_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;stderr&nbsp;content<br>
+type.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_timeout"><strong>audits_timeout</strong></a>(server: ~Server) -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;scripts&nbsp;timeout.</tt></dd></dl>
+
+<dl><dt><a name="Audit-check_for_updates"><strong>check_for_updates</strong></a>(logs: ~Logs) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;runs&nbsp;in&nbsp;a&nbsp;thread&nbsp;indefinitely,&nbsp;it&nbsp;checks&nbsp;the&nbsp;version<br>
+and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;of&nbsp;WebScripts&nbsp;every&nbsp;hour.<br>
+If&nbsp;the&nbsp;version&nbsp;and&nbsp;the&nbsp;latest&nbsp;published&nbsp;version&nbsp;are&nbsp;different,<br>
+this&nbsp;function&nbsp;sends&nbsp;an&nbsp;email&nbsp;notification.</tt></dd></dl>
+
+<dl><dt><a name="Audit-get_owner"><strong>get_owner</strong></a>(filename: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;owner&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="Audit-get_permissions"><strong>get_permissions</strong></a>(filename: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;file&nbsp;permissions.</tt></dd></dl>
+
+<dl><dt><a name="Audit-log_rule"><strong>log_rule</strong></a>(rule: hardening.Rule, logs: ~Logs) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;rule.</tt></dd></dl>
+
+<dl><dt><a name="Audit-run"><strong>run</strong></a>(server: ~Server, logs: ~Logs) -&gt; List[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;run&nbsp;audit&nbsp;and&nbsp;checks.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>current_dir</strong> = r'C:\Users\CSU1\Documents\dev\modules\WebScripts'</dl>
+
+<dl><dt><strong>is_windows</strong> = True</dl>
+
+<dl><dt><strong>latest</strong> = []</dl>
+
+<dl><dt><strong>latest_</strong> = []</dl>
+
+<dl><dt><strong>network_up</strong> = True</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Report">class <strong>Report</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Report">Report</a>(rules:&nbsp;List[hardening.<a href="#Rule">Rule</a>],&nbsp;file_integrity:&nbsp;List[Dict[str,&nbsp;str]],&nbsp;server:&nbsp;~Server,&nbsp;logs:&nbsp;~Logs)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implement&nbsp;the&nbsp;report&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Report-__init__"><strong>__init__</strong></a>(self, rules: List[hardening.Rule], file_integrity: List[Dict[str, str]], server: ~Server, logs: ~Logs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Report-as_html"><strong>as_html</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;HTML&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
+
+<dl><dt><a name="Report-as_json"><strong>as_json</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;JSON&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
+
+<dl><dt><a name="Report-as_text"><strong>as_text</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;HTML&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
+
+<dl><dt><a name="Report-get_pourcent"><strong>get_pourcent</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;calcul&nbsp;pourcent.</tt></dd></dl>
+
+<dl><dt><a name="Report-notification"><strong>notification</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;an&nbsp;email&nbsp;notification<br>
+to&nbsp;administrator&nbsp;with&nbsp;the&nbsp;audit&nbsp;report.</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Report-get_HTML_table"><strong>get_HTML_table</strong></a>(headers: str, rules: List[hardening.Rule]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;a&nbsp;HTML&nbsp;table&nbsp;with&nbsp;rule&nbsp;attributes&nbsp;as&nbsp;columns.</tt></dd></dl>
+
+<dl><dt><a name="Report-get_text_table"><strong>get_text_table</strong></a>(headers: str, rules: List[hardening.Rule], joiner: str = '    ') -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;text&nbsp;table&nbsp;with&nbsp;rule&nbsp;attributes&nbsp;as&nbsp;columns.</tt></dd></dl>
+
+<dl><dt><a name="Report-truncate_string"><strong>truncate_string</strong></a>(string: str, length: int = 13, end: str = '...', separator: str = ',') -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;truncate&nbsp;a&nbsp;string.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Rule">class <strong>Rule</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Rule">Rule</a>(subject:&nbsp;str,&nbsp;id_:&nbsp;int,&nbsp;is_OK:&nbsp;bool,&nbsp;level:&nbsp;int,&nbsp;severity:&nbsp;str,&nbsp;category:&nbsp;str,&nbsp;reason:&nbsp;str)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implement&nbsp;a&nbsp;rule&nbsp;for&nbsp;hardening.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Rule-__eq__"><strong>__eq__</strong></a>(self, other)</dt></dl>
+
+<dl><dt><a name="Rule-__init__"><strong>__init__</strong></a>(self, subject: str, id_: int, is_OK: bool, level: int, severity: str, category: str, reason: str) -&gt; None</dt></dl>
+
+<dl><dt><a name="Rule-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'category': &lt;class 'str'&gt;, 'id_': &lt;class 'int'&gt;, 'is_OK': &lt;class 'bool'&gt;, 'level': &lt;class 'int'&gt;, 'reason': &lt;class 'str'&gt;, 'severity': &lt;class 'str'&gt;, 'subject': &lt;class 'str'&gt;}</dl>
+
+<dl><dt><strong>__dataclass_fields__</strong> = {'category': Field(name='category',type=&lt;class 'str'&gt;,default...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'id_': Field(name='id_',type=&lt;class 'int'&gt;,default=&lt;dat...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'is_OK': Field(name='is_OK',type=&lt;class 'bool'&gt;,default=&lt;...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'level': Field(name='level',type=&lt;class 'int'&gt;,default=&lt;d...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'reason': Field(name='reason',type=&lt;class 'str'&gt;,default=&lt;...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'severity': Field(name='severity',type=&lt;class 'str'&gt;,default...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'subject': Field(name='subject',type=&lt;class 'str'&gt;,default=...rue,metadata=mappingproxy({}),_field_type=_FIELD)}</dl>
+
+<dl><dt><strong>__dataclass_params__</strong> = _DataclassParams(init=True,repr=True,eq=True,order=False,unsafe_hash=False,frozen=False)</dl>
+
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SEVERITY">class <strong>SEVERITY</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SEVERITY">SEVERITY</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+Severity&nbsp;level&nbsp;of&nbsp;the&nbsp;rules.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="hardening.html#SEVERITY">SEVERITY</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>CRITICAL</strong> = &lt;SEVERITY.CRITICAL: 'CRITICAL'&gt;</dl>
+
+<dl><dt><strong>HIGH</strong> = &lt;SEVERITY.HIGH: 'HIGH'&gt;</dl>
+
+<dl><dt><strong>INFORMATION</strong> = &lt;SEVERITY.INFORMATION: 'INFORMATION'&gt;</dl>
+
+<dl><dt><strong>LOW</strong> = &lt;SEVERITY.LOW: 'LOW'&gt;</dl>
+
+<dl><dt><strong>MEDIUM</strong> = &lt;SEVERITY.MEDIUM: 'MEDIUM'&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#A57927">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; hardening.Report</dt><dd><tt>The&nbsp;main&nbsp;function&nbsp;to&nbsp;perform&nbsp;WebScripts&nbsp;Server&nbsp;hardening&nbsp;audit.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['Report', 'Rule', 'Audit', 'SEVERITY', 'main']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...f the WebScripts installation and<font color="#c040c0">\n</font>configuration.<font color="#c040c0">\n</font>'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>
