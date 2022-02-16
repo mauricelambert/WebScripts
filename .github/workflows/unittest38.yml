@@ -28,7 +28,7 @@ jobs:
       - name: Test WebScripts with unittest
         run: |
           python WebScripts/scripts/to_3.8/to_3.8.py
-          python -c "from os import rename;from shutil import rmtree;rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
+          python -c "from os import rename, replace;from shutil import rmtree;rmtree('WebScripts');rename('WebScripts38', 'WebScripts');replace('setup38.py', 'setup.py')"
           python -m unittest discover -s test -p Test*.py -v
           python -m WebScripts --test-running
           python -m pip install .
