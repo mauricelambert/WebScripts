@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -145,18 +145,18 @@ class PostInstallScript(install):
         makedirs(path_logs, exist_ok=True)
 
         filename1 = join(self_directory, "webscripts_file_integrity.json")
-        if not exists(filename):
-            with open(filename, "w") as file:
+        if not exists(filename1):
+            with open(filename1, "w") as file:
                 file.write("{}")
 
         filename2 = join(self_directory, "uploads_file_integrity.json")
-        if not exists(filename):
-            with open(filename, "w") as file:
+        if not exists(filename2):
+            with open(filename2, "w") as file:
                 file.write("{}")
 
         filename3 = join(self_directory, "logs_checks.json")
-        if not exists(filename):
-            with open(filename, "w") as file:
+        if not exists(filename3):
+            with open(filename3, "w") as file:
                 file.write("{}")
 
         files = [
