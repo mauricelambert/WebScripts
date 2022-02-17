@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from os.path import join, dirname, environ
 from collections.abc import Callable
-from os.path import join, dirname
 from os import chdir, name
 from typing import List
 import atexit
@@ -23,6 +23,7 @@ from WebScripts.WebScripts import (
     Server,
     configure_logs_system,
     send_mail,
+    get_real_path,
     hardening,
     Logs,
 )
@@ -40,6 +41,8 @@ class Paths:
 
 
 configure_logs_system()
+environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
+environ["WEBSCRIPTS_PATH"] = server_path
 
 logger_debug: Callable = Logs.debug
 logger_info: Callable = Logs.info

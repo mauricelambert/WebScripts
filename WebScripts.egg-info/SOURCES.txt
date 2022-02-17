@@ -7,17 +7,17 @@ mkdocs.yml
 requirenments.txt
 setup.cfg
 setup.py
-.github/workflows/WebScripts38_test.yml
 .github/workflows/ZAP.yml
 .github/workflows/ZAP2.yml
 .github/workflows/bandit.yml
-.github/workflows/ci.yml
 .github/workflows/codeql-analysis.yml
 .github/workflows/kali_tools_scans.yml
 .github/workflows/nuclei.yml
 .github/workflows/pycharm.yml
 .github/workflows/safety_check.yml
 .github/workflows/semgrep.yml
+.github/workflows/unittest.yml
+.github/workflows/unittest38.yml
 Scripts/activate_this.py
 Scripts/wsgi.py
 WebScripts/Errors.py
@@ -27,7 +27,6 @@ WebScripts/WebScripts.py
 WebScripts/__init__.py
 WebScripts/__main__.py
 WebScripts/commons.py
-WebScripts/default_files.json
 WebScripts/hardening.py
 WebScripts/logs_checks.json
 WebScripts/uploads_file_integrity.json
