@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from os.path import join, dirname, environ
 from collections.abc import Callable
-from os import chdir, name
+from os import chdir, name, environ
+from os.path import join, dirname
 from typing import List
 import atexit
 
@@ -20,6 +20,7 @@ from WebScripts.WebScripts import (
     get_server_config,
     add_configuration,
     logs_configuration,
+    server_path,
     Server,
     configure_logs_system,
     send_mail,
