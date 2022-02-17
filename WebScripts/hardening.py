@@ -1621,8 +1621,9 @@ class Audit:
         latest_ = Audit.latest_
 
         if __package__:
+            str_version = modules[__package__].__version__
             version = [
-                int(i) for i in modules[__package__].__version__.split(".")
+                int(i) for i in str_version.split(".")
             ]
         else:
             try:
@@ -1630,6 +1631,7 @@ class Audit:
             except ImportError:
                 from .__init__ import __version__
             
+            str_version = __version__
             version = [
                 int(i) for i in __version__.split(".")
             ]
@@ -1658,13 +1660,14 @@ class Audit:
                 Audit.network_up = False
 
             if version < latest and latest != latest_:
+                str_latest = ".".join(str(x) for x in latest)
                 logs.critical(
                     "WebScripts is not up-to-date, current:"
-                    f" {version} latest: {latest}"
+                    f" {str_version} latest: {str_latest}"
                 )
                 return (
-                    f"Current WebScripts version: {'.'.join(version)}\n"
-                    f"Latest WebScripts version: {'.'.join(latest)}.\nIt is "
+                    f"Current WebScripts version: {str_version}\n"
+                    f"Latest WebScripts version: {str_latest}.\nIt is "
                     "recommended that you upgrade your WebScripts server."
                 )
 
@@ -1839,7 +1842,7 @@ class FilesIntegity:
                     module._webscripts_filepath
                 )
 
-        for script in scandir(dirname(executable)):
+        for script in scandir(join(prefix, "Scripts" if Audit.is_windows else "bin")):
             if script.is_file():
                 files[f"venv scripts/bin {script.name}"] = build_file(
                     script.path
