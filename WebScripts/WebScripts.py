@@ -50,7 +50,7 @@ __copyright__ = copyright
 
 __all__ = ["Configuration", "Server", "main"]
 
-from os.path import basename, abspath, join, dirname, normcase, exists, isdir
+from os.path import basename, abspath, join, dirname, normpath, exists, isdir
 from types import SimpleNamespace, ModuleType, FunctionType
 from typing import TypeVar, Tuple, List, Dict, Union
 from sys import exit, modules as sys_modules, argv
@@ -591,6 +591,7 @@ class Server:
             logger_warning(f"Add package/module named: {package}")
 
             package = __import__(package)
+            package._webscripts_filepath = normpath(package.__file__)
             setattr(packages, package.__name__, package)
 
         logger_info("Remove new paths...")
@@ -631,7 +632,7 @@ class Server:
             ):
 
                 for glob in globs:
-                    glob = join(dirname_, normcase(glob))
+                    glob = join(dirname_, normpath(glob))
                     logger_debug(
                         f"Trying to find file matching with {glob}..."
                     )

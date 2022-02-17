@@ -1625,7 +1625,14 @@ class Audit:
                 int(i) for i in modules[__package__].__version__.split(".")
             ]
         else:
-            return None
+            try:
+                from __init__ import __version__
+            except ImportError:
+                from .__init__ import __version__
+            
+            version = [
+                int(i) for i in __version__.split(".")
+            ]
 
         def get_latest() -> str:
 
@@ -1814,17 +1821,23 @@ class FilesIntegity:
         for template in templates:
             files[f"template {basename(template)}"] = build_file(template)
 
-        module_path = join(server_path, "modules")
-        for filename, path in get_files_recursive(module_path):
-            files[f"server modules {filename}"] = build_file(
-                join(module_path, path)
-            )
+        # module_path = join(server_path, "modules")
+        # for filename, path in get_files_recursive(module_path):
+        #     files[f"server modules {filename}"] = build_file(
+        #         join(module_path, path)
+        #     )
 
-        module_path = join(Audit.current_dir, "modules")
-        for filename, path in get_files_recursive(module_path):
-            files[f"current modules {filename}"] = build_file(
-                join(module_path, path)
-            )
+        # module_path = join(Audit.current_dir, "modules")
+        # for filename, path in get_files_recursive(module_path):
+        #     files[f"current modules {filename}"] = build_file(
+        #         join(module_path, path)
+        #     )
+
+        for name, module in pages.packages.__dict__.items():
+            if isinstance(module, ModuleType):
+                files[f"modules {name}"] = build_file(
+                    module._webscripts_filepath
+                )
 
         for script in scandir(dirname(executable)):
             if script.is_file():
