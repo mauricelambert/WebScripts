@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -2148,7 +2148,7 @@ class FilesIntegity:
         if (
             temp_metadata.st_size > metadata.st_size
             # or temp_metadata.st_mtime > metadata.st_mtime
-            or temp_metadata.st_ctime < metadata.st_ctime
+            # or temp_metadata.st_ctime < metadata.st_ctime
         ):
             return False
 
@@ -2162,6 +2162,7 @@ class FilesIntegity:
                     temp_file.seek(0)
                     log_file.seek(0)
                     copyfileobj(log_file, temp_file)
+                    temp_file.truncate()
                     return False
 
                 log = read_log()
