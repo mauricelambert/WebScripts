@@ -27,6 +27,7 @@ WebScripts/WebScripts.py
 WebScripts/__init__.py
 WebScripts/__main__.py
 WebScripts/commons.py
+WebScripts/default_files.json
 WebScripts/hardening.py
 WebScripts/logs_checks.json
 WebScripts/uploads_file_integrity.json
