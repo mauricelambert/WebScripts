@@ -228,6 +228,7 @@ function build_script_interface(scripts) {
     script = scripts[script_name];
 
     add_description(script);
+    console.log(arguments.callee.toString());
     add_arguments(script);
 }
 
@@ -237,10 +238,15 @@ function start_script_execution(event) {
         let counter = 0;
         let values = Array.from(document.getElementsByTagName('input')).concat(
             Array.from(document.getElementsByTagName('select')));
-        let script_interface = document.getElementById('script_interface');
+        // let script_interface = document.getElementById('script_interface');
         let arguments_ = {};
 
-        add_arguments(values, counter, arguments_);
+        console.log(arguments.callee.toString());
+        add_arguments(
+            values,
+            counter,
+            arguments_,
+        );
     }
 
     get_arguments();
@@ -268,8 +274,15 @@ function sort_arguments(arguments_) {
     return send_object;
 }
 
-function add_value_for_request(arguments_, script_interface, id, name, value,
-    values, counter) {
+function add_value_for_request(
+    arguments_,
+    script_interface,
+    id,
+    name,
+    value,
+    values,
+    counter,
+) {
     if (arguments_[name] !== undefined) {
         if (!Array.isArray(arguments_[name]["value"])) {
             arguments_[name]["value"] = [arguments_[name]["value"]];
@@ -302,10 +315,19 @@ function add_value_for_request(arguments_, script_interface, id, name, value,
         }
     }
 
-    add_arguments(values, counter, arguments_);
+    console.log(arguments.callee.toString());
+    add_arguments(
+        values,
+        counter,
+        arguments_,
+    );
 }
 
-function add_arguments(values, counter, arguments_) {
+function add_arguments(
+    values,
+    counter,
+    arguments_,
+) {
 
     function make_json_request(arguments_) {
         let csrf = document.getElementById("csrf_token");
@@ -315,11 +337,18 @@ function add_arguments(values, counter, arguments_) {
         }));
     }
 
-    if (counter < values.length) {
-        let value = values[counter];
+    // if (counter < values.length) {
+    // let value = values[counter];
+    let value = values.pop();
+    console.log("pass");
+    if (value) {
         counter++;
-        window[`add_${value.tagName}_argument`](value, values, counter,
-            arguments_);
+        window[`add_${value.tagName}_argument`](
+            value,
+            values,
+            counter,
+            arguments_,
+        );
     } else {
         arguments_ = sort_arguments(arguments_);
         make_json_request(arguments_);
@@ -331,10 +360,20 @@ function add_arguments(values, counter, arguments_) {
 function add_NULL_argument() {}
 
 
-function add_INPUT_argument(input, values, counter, arguments_) {
+function add_INPUT_argument(
+    input,
+    values,
+    counter,
+    arguments_,
+) {
 
     if (input.type === "submit" || input.name === "csrf_token") {
-        add_arguments(values, counter, arguments_);
+        console.log(arguments.callee.toString());
+        add_arguments(
+            values,
+            counter,
+            arguments_,
+        );
         return;
     }
 
@@ -366,7 +405,12 @@ function add_INPUT_argument(input, values, counter, arguments_) {
         if (input.files.length) {
             reader.readAsBinaryString(input.files[0]);
         } else {
-            add_arguments(values, counter, arguments_);
+            console.log(arguments.callee.toString());
+            add_arguments(
+                values,
+                counter,
+                arguments_,
+            );
         }
     } else {
         add_value_for_request(
@@ -381,7 +425,12 @@ function add_INPUT_argument(input, values, counter, arguments_) {
     }
 }
 
-function add_SELECT_argument(select, values, counter, arguments_) {
+function add_SELECT_argument(
+    select,
+    values,
+    counter,
+    arguments_,
+) {
     let selected = [];
     let first = true;
 
@@ -400,17 +449,29 @@ function add_SELECT_argument(select, values, counter, arguments_) {
         }
     }
 
-    selected.forEach((item) => {
+    if (selected.length) {
+        selected.forEach((item) => {
+            add_value_for_request(
+                arguments_,
+                script_interface,
+                select.id,
+                select.name,
+                item,
+                values,
+                counter,
+            );
+        });
+    } else {
         add_value_for_request(
             arguments_,
             script_interface,
             select.id,
             select.name,
-            item,
+            "",
             values,
-            counter++,
+            counter,
         );
-    });
+    }
 
     return arguments_;
 }
