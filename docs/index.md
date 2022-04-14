@@ -16,10 +16,11 @@
 ![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/webscripts?color=orange)
 [![Compatibility](https://img.shields.io/badge/compatibility-python3.8-orange)](https://webscripts.readthedocs.io/en/latest/Installation/#python38)
 [![Containers](https://img.shields.io/badge/containers-docker-orange)](https://github.com/mauricelambert/WebScriptsContainers)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-orange.svg)](https://github.com/psf/black)
 
 ## Description
 
-This tool run scripts and display the result in a Web Interface ([a little presentation is available here](https://www.slideshare.net/MauriceLambert1/webscripts-server) and on my [github.io](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.pdf)).
+This tool run scripts and display the result in a Web Interface ([a little presentation is available here](https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216) and on my [github.io](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.pdf)).
 
 ## Goals
 
@@ -236,7 +237,7 @@ WebScripts38.main()
  - [Github](https://github.com/mauricelambert/WebScripts)
  - [ReadTheDocs](https://webscripts.readthedocs.io/en/latest/)
  - RSS Feed [pypi](https://pypi.org/rss/project/webscripts/releases.xml), [libraries](https://libraries.io/pypi/WebScripts/versions.atom)
- - [WebScripts Server presentation](https://www.slideshare.net/MauriceLambert1/webscripts-server)
+ - [WebScripts Server presentation](https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216)
 
 ## Pictures
 
