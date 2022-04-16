@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.3.2"
+__version__ = "2.3.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -485,7 +485,7 @@ setup(
         "Documentation": "https://webscripts.readthedocs.io/en/latest/",
         "Wiki": "https://github.com/mauricelambert/WebScripts/wiki",
         "Presentation": (
-            "https://www.slideshare.net/MauriceLambert1/webscripts-server"
+            "https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216"
         ),
     },
     include_package_data=True,

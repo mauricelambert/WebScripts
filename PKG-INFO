@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 2.5.9
+Version: 2.5.10
 Summary: This tool run scripts and display the result in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -10,7 +10,7 @@ Maintainer-email: mauricelambert434@gmail.com
 License: GPL-3.0 License
 Project-URL: Documentation, https://webscripts.readthedocs.io/en/latest/
 Project-URL: Wiki, https://github.com/mauricelambert/WebScripts/wiki
-Project-URL: Presentation, https://www.slideshare.net/MauriceLambert1/webscripts-server
+Project-URL: Presentation, https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216
 Keywords: Server,Web,Scripts,SOC,Administration,DevOps,WebScripts
 Platform: Windows
 Platform: Linux
