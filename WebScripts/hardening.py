@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1617,24 +1617,19 @@ class Audit:
         this function sends an email notification.
         """
 
-        latest = Audit.latest
-        latest_ = Audit.latest_
+        latest_ = Audit.latest
 
         if __package__:
             str_version = modules[__package__].__version__
-            version = [
-                int(i) for i in str_version.split(".")
-            ]
         else:
             try:
-                from __init__ import __version__
+                from __init__ import __version__ as str_version
             except ImportError:
-                from .__init__ import __version__
-            
-            str_version = __version__
-            version = [
-                int(i) for i in __version__.split(".")
-            ]
+                from .__init__ import __version__ as str_version
+        
+        version = [
+            int(i) for i in __version__.split(".")
+        ]
 
         def get_latest() -> str:
 
@@ -1649,18 +1644,17 @@ class Audit:
                 "https://api.github.com/repos/mauricelambert/WebScripts/tags"
             )
 
-            data = load(response)
-            return [int(i) for i in data[0]["name"][1:].split(".")]
+            str_latest = load(response)[0]["name"][1:]
+            return str_latest, [int(i) for i in str_latest.split(".")]
 
         if Audit.network_up:
             try:
-                latest = Audit.latest = get_latest()
+                str_latest, latest = str_latest, Audit.latest = get_latest()
             except URLError:
                 logs.critical("Network error: updates are not checked.")
                 Audit.network_up = False
 
             if version < latest and latest != latest_:
-                str_latest = ".".join(str(x) for x in latest)
                 logs.critical(
                     "WebScripts is not up-to-date, current:"
                     f" {str_version} latest: {str_latest}"
@@ -1670,8 +1664,6 @@ class Audit:
                     f"Latest WebScripts version: {str_latest}.\nIt is "
                     "recommended that you upgrade your WebScripts server."
                 )
-
-            Audit.latest_ = latest
 
         return ""
 
@@ -1874,9 +1866,10 @@ class FilesIntegity:
                 # A hacker can make new file with different path when
                 # you have a weak configuration (WebScripts server
                 # research files).
-                ("sha512", "ZZ", "XX", 7),  # if file change this check
-                ("whirlpool", "ZZ", "XX", 10),  # should failed so any other
-                ("size", -1, -2, 10),  # should be failed.
+                ("sha512", "ZZ", "XX", 10),
+                ("whirlpool", "ZZ", "XX", 10),
+                ("size", -1, -2, 10),
+                # if the file changes, these three checks should fail.
                 ("modification", "~~", "!!", 10),
             ):
 
@@ -2140,6 +2133,15 @@ class FilesIntegity:
         This function checks the log file integrity.
         """
 
+        def restore(temp_file):
+            temp_file.seek(0)
+            with open(path, "rb+") as log_file:
+                log_file.seek(0)
+                copyfileobj(log_file, temp_file)
+            
+            temp_file.truncate()
+
+        return_value: bool = True
         temp_metadata = stat(temp_file.name)
         temp_file.seek(0)
         read_check_log = temp_file.readline
@@ -2150,29 +2152,29 @@ class FilesIntegity:
             # or temp_metadata.st_mtime > metadata.st_mtime
             # or temp_metadata.st_ctime < metadata.st_ctime
         ):
+            restore(temp_file)
             return False
 
-        with open(path, "rb") as log_file:
+        with open(path, "rb+") as log_file:
             read_log = log_file.readline
             log = read_log()
             check_log = read_check_log()
 
             while check_log:
                 if log != check_log:
-                    temp_file.seek(0)
-                    log_file.seek(0)
-                    copyfileobj(log_file, temp_file)
-                    temp_file.truncate()
-                    return False
+                    return_value = False
 
                 log = read_log()
                 check_log = read_check_log()
+
+            if not return_value:
+                restore(temp_file)
 
             while log:
                 write_check_log(log)
                 log = read_log()
 
-        return True
+        return return_value
 
 
 def sha512sum(path: str, length: int = DEFAULT_BUFFER_SIZE) -> str:
