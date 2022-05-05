@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1628,7 +1628,7 @@ class Audit:
                 from .__init__ import __version__ as str_version
         
         version = [
-            int(i) for i in __version__.split(".")
+            int(i) for i in str_version.split(".")
         ]
 
         def get_latest() -> str:
