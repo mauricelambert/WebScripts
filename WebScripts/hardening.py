@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -62,8 +62,8 @@ from os.path import (
     isabs,
 )
 from os import getcwd, listdir, stat, stat_result, scandir
-from sys import prefix, base_prefix, modules, executable
 from typing import TypeVar, List, Set, Dict, Tuple
+from sys import prefix, base_prefix, modules
 from time import sleep, strftime, localtime
 from io import open, DEFAULT_BUFFER_SIZE
 from email.message import EmailMessage
@@ -1653,6 +1653,7 @@ class Audit:
             except URLError:
                 logs.critical("Network error: updates are not checked.")
                 Audit.network_up = False
+                return ""
 
             if version < latest and latest != latest_:
                 logs.critical(

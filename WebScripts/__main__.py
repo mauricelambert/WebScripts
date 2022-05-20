@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.5.13"
+__version__ = "2.5.14"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
