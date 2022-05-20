@@ -22,7 +22,8 @@ Examples are available in the [README.md](https://github.com/mauricelambert/WebS
  - [WebScriptsClient on github](https://github.com/mauricelambert/WebScriptsClient)
  - [WebScriptsClient on pypi](https://pypi.org/project/WebScriptsClient/)
  - [WebScriptsClient documentation](https://mauricelambert.github.io/info/python/code/WebScriptsClient.html)
- - [WebScriptsClient executable](https://mauricelambert.github.io/info/python/code/WebScriptsClient.pyz)
+ - [WebScriptsClient python executable](https://mauricelambert.github.io/info/python/code/WebScriptsClient.pyz)
+ - [WebScriptsClient Windows executable](https://github.com/mauricelambert/WebScriptsClient/releases/download/v0.0.3/WebScriptsClient.exe)
 
 ## Using CURL
 

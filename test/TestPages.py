@@ -25,8 +25,9 @@ This file tests the Pages.py file
 """
 
 from unittest.mock import MagicMock, patch, Mock
-from subprocess import TimeoutExpired, PIPE # nosec
+from subprocess import TimeoutExpired
 from unittest import TestCase, main
+from subprocess import PIPE
 from html import unescape
 from os import path
 import locale

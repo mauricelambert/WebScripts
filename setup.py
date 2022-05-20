@@ -485,7 +485,8 @@ setup(
         "Documentation": "https://webscripts.readthedocs.io/en/latest/",
         "Wiki": "https://github.com/mauricelambert/WebScripts/wiki",
         "Presentation": (
-            "https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216"
+            "https://www.slideshare.net/MauriceLambert"
+            "1/webscripts-server-251581216"
         ),
     },
     include_package_data=True,
