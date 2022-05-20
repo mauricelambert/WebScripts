@@ -6,12 +6,12 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big> (version 0.1.5)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>utils</strong></big></big> (version 1.0.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="utils.py">utils.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;implement&nbsp;some&nbsp;tools&nbsp;for&nbsp;WebScripts&nbsp;server<br>
+This&nbsp;file&nbsp;implements&nbsp;some&nbsp;tools&nbsp;for&nbsp;WebScripts&nbsp;server<br>
 and&nbsp;scripts&nbsp;(<a href="#Logs">Logs</a>,&nbsp;Namespace&nbsp;for&nbsp;configuration,&nbsp;...).</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -247,7 +247,9 @@ Methods defined here:<br>
 
 <dl><dt><a name="DefaultNamespace-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="DefaultNamespace-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+<dl><dt><a name="DefaultNamespace-build_type"><strong>build_type</strong></a>(self, attribut: str, value: Any, type_: type = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="DefaultNamespace-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
 
 <dl><dt><a name="DefaultNamespace-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
 if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
@@ -335,15 +337,19 @@ Data and other attributes inherited from <a href="types.html#SimpleNamespace">ty
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="WindowsLogs-critical"><strong>critical</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;criticals&nbsp;on&nbsp;Windows.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-access"><strong>access</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;access&nbsp;on&nbsp;Windows.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-debug"><strong>debug</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;debugs&nbsp;on&nbsp;Windows.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-critical"><strong>critical</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;criticals&nbsp;on&nbsp;Windows.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-error"><strong>error</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;errors&nbsp;on&nbsp;Windows.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-debug"><strong>debug</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;debugs&nbsp;on&nbsp;Windows.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-info"><strong>info</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;infos&nbsp;on&nbsp;Windows.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-error"><strong>error</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;errors&nbsp;on&nbsp;Windows.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-warning"><strong>warning</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;warnings&nbsp;on&nbsp;Windows.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-info"><strong>info</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;infos&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-response"><strong>response</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;response&nbsp;on&nbsp;Windows.</tt></dd></dl>
+
+<dl><dt><a name="WindowsLogs-warning"><strong>warning</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;warnings&nbsp;on&nbsp;Windows.</tt></dd></dl>
 
 <hr>
 Data and other attributes defined here:<br>
@@ -355,10 +361,10 @@ Data and other attributes defined here:<br>
 Methods inherited from <a href="utils.html#_Logs">_Logs</a>:<br>
 <dl><dt><a name="WindowsLogs-config"><strong>config</strong></a>(*args, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;config&nbsp;ROOT&nbsp;logger.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-exception"><strong>exception</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implement&nbsp;basic&nbsp;python&nbsp;exception&nbsp;(error)&nbsp;logs&nbsp;for<br>
+<dl><dt><a name="WindowsLogs-exception"><strong>exception</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implements&nbsp;basic&nbsp;python&nbsp;exception&nbsp;(error)&nbsp;logs&nbsp;for<br>
 WebScripts.</tt></dd></dl>
 
-<dl><dt><a name="WindowsLogs-trace"><strong>trace</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implement&nbsp;trace&nbsp;logs&nbsp;for&nbsp;WebScripts.</tt></dd></dl>
+<dl><dt><a name="WindowsLogs-trace"><strong>trace</strong></a>(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;implements&nbsp;trace&nbsp;logs&nbsp;for&nbsp;WebScripts.</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="utils.html#_Logs">_Logs</a>:<br>
@@ -374,6 +380,8 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 
 <dl><dt><strong>file</strong> = &lt;Logger WebScripts.file (WARNING)&gt;</dl>
 
+<dl><dt><strong>log_access</strong> = &lt;Logger WebScripts.access (WARNING)&gt;</dl>
+
 <dl><dt><strong>log_critical</strong> = &lt;Logger WebScripts.critical (WARNING)&gt;</dl>
 
 <dl><dt><strong>log_debug</strong> = &lt;Logger WebScripts.debug (WARNING)&gt;</dl>
@@ -381,6 +389,8 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 <dl><dt><strong>log_error</strong> = &lt;Logger WebScripts.error (WARNING)&gt;</dl>
 
 <dl><dt><strong>log_info</strong> = &lt;Logger WebScripts.info (WARNING)&gt;</dl>
+
+<dl><dt><strong>log_response</strong> = &lt;Logger WebScripts.response (WARNING)&gt;</dl>
 
 <dl><dt><strong>log_trace</strong> = &lt;Logger WebScripts.trace (WARNING)&gt;</dl>
 
@@ -395,11 +405,18 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-get_arguments_count"><strong>get_arguments_count</strong></a>(object_: collections.abc.Callable)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;number&nbsp;of&nbsp;argument&nbsp;to&nbsp;call&nbsp;this&nbsp;Callable&nbsp;object.</tt></dd></dl>
  <dl><dt><a name="-get_encodings"><strong>get_encodings</strong></a>()</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;probable&nbsp;encodings.</tt></dd></dl>
- <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(file_path, *args, **kwargs) -&gt; ~StrOrBytes</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
+ <dl><dt><a name="-get_file_content"><strong>get_file_content</strong></a>(file_path, *args, as_iterator: bool = False, **kwargs) -&gt; ~StrOrBytes</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;file&nbsp;content.</tt></dd></dl>
  <dl><dt><a name="-get_ini_dict"><strong>get_ini_dict</strong></a>(filename: str) -&gt; Dict[str, Dict[str, str]]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;from&nbsp;ini&nbsp;filename.</tt></dd></dl>
  <dl><dt><a name="-get_ip"><strong>get_ip</strong></a>(environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;IP.</tt></dd></dl>
- <dl><dt><a name="-get_real_path"><strong>get_real_path</strong></a>(file_path: str, is_dir: bool = False) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;path&nbsp;for&nbsp;files.</tt></dd></dl>
- <dl><dt><a name="-log_trace"><strong>log_trace</strong></a>(function: function) -&gt; function</dt><dd><tt>This&nbsp;decorator&nbsp;trace&nbsp;functions&nbsp;(start&nbsp;and&nbsp;end).</tt></dd></dl>
+ <dl><dt><a name="-get_real_path"><strong>get_real_path</strong></a>(file_path: str, is_dir: bool = False, no_error: bool = False) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;the&nbsp;real&nbsp;path&nbsp;for&nbsp;files.</tt></dd></dl>
+ <dl><dt><a name="-log_trace"><strong>log_trace</strong></a>(function: function) -&gt; function</dt><dd><tt>This&nbsp;decorator&nbsp;traces&nbsp;functions&nbsp;(start&nbsp;and&nbsp;end).</tt></dd></dl>
+ <dl><dt><a name="-logger_access"><strong>logger_access</strong></a> = access(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;access&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_critical"><strong>logger_critical</strong></a> = critical(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;criticals&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_debug"><strong>logger_debug</strong></a> = debug(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;debugs&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_error"><strong>logger_error</strong></a> = error(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;errors&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_info"><strong>logger_info</strong></a> = info(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;infos&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_response"><strong>logger_response</strong></a> = response(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;response&nbsp;on&nbsp;Windows.</tt></dd></dl>
+ <dl><dt><a name="-logger_warning"><strong>logger_warning</strong></a> = warning(log: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;logs&nbsp;warnings&nbsp;on&nbsp;Windows.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">
@@ -407,7 +424,8 @@ Data and other attributes inherited from <a href="utils.html#_Logs">_Logs</a>:<b
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__all__</strong> = ['Logs', 'DefaultNamespace', 'log_trace', 'get_ip', 'get_arguments_count', 'get_file_content', 'get_real_path', 'get_encodings', 'get_ini_dict', 'server_path', 'CustomLogHandler']<br>
+<td width="100%"><strong>__all__</strong> = ['Logs', 'DefaultNamespace', 'log_trace', 'get_ip', 'get_arguments_count', 'get_file_content', 'get_real_path', 'get_encodings', 'get_ini_dict', 'server_path', 'CustomLogHandler', 'logger_debug', 'logger_info', 'logger_access', 'logger_response', 'logger_warning', 'logger_error', 'logger_critical']<br>
+<strong>__annotations__</strong> = {'logger_access': &lt;class 'collections.abc.Callable'&gt;, 'logger_critical': &lt;class 'collections.abc.Callable'&gt;, 'logger_debug': &lt;class 'collections.abc.Callable'&gt;, 'logger_error': &lt;class 'collections.abc.Callable'&gt;, 'logger_info': &lt;class 'collections.abc.Callable'&gt;, 'logger_response': &lt;class 'collections.abc.Callable'&gt;, 'logger_warning': &lt;class 'collections.abc.Callable'&gt;}<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
 <strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...cripts (Logs, Namespace for configuration, ...).<font color="#c040c0">\n</font>'<br>

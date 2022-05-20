@@ -25,21 +25,23 @@ This tool run scripts and display the result in a Web Interface.
 This file implement error, report and request pages by default.
 """
 
-from typing import Tuple, Dict, List, TypeVar
+from typing import Tuple, Dict, List, TypeVar, Any
+from csv import reader, writer, QUOTE_ALL
 from email.message import EmailMessage
 from collections.abc import Iterator
 from smtplib import SMTP, SMTP_SSL
 from collections import namedtuple
 from os import _Environ, path
+from secrets import token_hex
 from threading import Thread
 from string import Template
 from html import escape
+from sys import modules
+from json import dumps
 from time import time
-import secrets
-import json
-import csv
 
 ServerConfiguration = TypeVar("ServerConfiguration")
+Server = TypeVar("Server")
 User = TypeVar("User")
 
 _Request = namedtuple(
@@ -57,7 +59,7 @@ _Request = namedtuple(
     ],
 )
 
-__version__ = "0.0.4"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -65,7 +67,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement errors and report/request pages by default."""
+This file implement errors and report/request pages by default.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -87,12 +90,15 @@ __all__ = [
     "Report",
 ]
 
+commons = modules.get("commons") or modules["WebScripts.commons"]
+CallableFile = commons.CallableFile
+
 page = Template(
     """
 <!--
 
     HTML page to launch scripts.
-    Copyright (C) 2021  Maurice Lambert
+    Copyright (C) 2021, 2022  Maurice Lambert
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -136,28 +142,7 @@ src="/js/webscripts_script_js_scripts.js">
             </span>
         </div>
 
-        <header id="webscripts_header" class="header border">
-            <div id="webscripts_header_text_position">
-                <h1 id="webscripts_title" class="title header border">
-                    WebScripts Server
-                </h1>
-
-                <p id="webscripts_description" class="paragraph header border">
-                    This server can help administrators,
-                    SOC teams (Security Operations Center) and devops teams
-                    to deploy faster some scripts, to share some
-                    "console scripts" with people who have no particular
-                    computer knowledge and share environnements of scripts
-                    with their teams without install requirements on all
-                    computers of the team.
-                </p>
-            </div>
-
-            <div id="webscripts_header_image_position">
-                <img id="webscripts_header_image" \
-src="/static/webscripts_header.png">
-            </div>
-        </header>
+        %(header)s
 
         <div id="webscripts_border_left" class="border"></div>
 
@@ -238,183 +223,7 @@ value="{csrf}">
 
         <div id="webscripts_border_right" class="border"></div>
 
-        <footer id="webscripts_footer" class="footer border">
-            <ul id="webscripts_footer_list" class="list footer border">
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Source code and contact is
-                    <a id="webscripts_link_source" \
-href="https://github.com/mauricelambert/WebScripts">
-                        here (on my github)
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_wiki" \
-class="bullet_point footer border">
-                    Documentation is
-                    <a id="webscripts_link_wiki" \
-href="https://webscripts.readthedocs.io/en/latest/">
-                        on readthedocs
-                    </a> and
-                    <a id="webscripts_link_wiki" \
-href="https://github.com/mauricelambert/WebScripts/wiki">
-                        on my github wiki
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_wiki" \
-class="bullet_point footer border">
-                    License:
-                    <a id="webscripts_link_wiki" \
-href="https://www.gnu.org/licenses/">
-                        GPL-3.0 License
-                    </a>.
-                </li>
-            </ul>
-
-            <ul id="webscripts_footer_list" class="list footer border">
-                <li id="webscripts_footer_list_source" class="bullet_point \
-footer border">
-                    Pydoc documentation index:
-                    <a id="webscripts_link_source" href="/static/index.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" href=\
-"https://mauricelambert.github.io/info/python/code/WebScripts/index.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for WebScripts.py:
-                    <a id="webscripts_link_source" \
-href="/static/WebScripts.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" href=\
-"https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for Pages.py:
-                    <a id="webscripts_link_source" href="/static/Pages.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/Pages.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for commons.py:
-                    <a id="webscripts_link_source" href="/static/commons.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-commons.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for utils.py:
-                    <a id="webscripts_link_source" href="/static/utils.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/utils.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for Errors.py:
-                    <a id="webscripts_link_source" href="/static/Errors.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-Errors.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for manage_defaults_databases.py:
-                    <a id="webscripts_link_source" \
-href="/static/manage_defaults_databases.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-manage_defaults_databases.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for uploads_management.py:
-                    <a id="webscripts_link_source" \
-href="/static/uploads_management.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-uploads_management.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for requests_management.py:
-                    <a id="webscripts_link_source" \
-href="/static/requests_management.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-requests_management.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for module error_pages.py:
-                    <a id="webscripts_link_source" \
-href="/static/error_pages.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/\
-error_pages.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for module csp.py:
-                    <a id="webscripts_link_source" href="/static/csp.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/csp.html">
-                        online
-                    </a>.
-                </li>
-                <li id="webscripts_footer_list_source" \
-class="bullet_point footer border">
-                    Pydoc documentation for module share.py:
-                    <a id="webscripts_link_source" href="/static/share.html">
-                        local
-                    </a>,
-                    <a id="webscripts_link_documentation" \
-href="https://mauricelambert.github.io/info/python/code/WebScripts/share.html">
-                        online
-                    </a>.
-                </li>
-        </footer>
+        %(footer)s
 
         <script type="text/javascript" nonce="${nonce}">
             document.getElementById("submit_button").onclick\
@@ -452,6 +261,10 @@ document.getElementById("webscripts_header_text_position").offsetHeight + "px";
     </body>
 </html>
 """
+    % {
+        "header": CallableFile.template_header,
+        "footer": CallableFile.template_footer,
+    }
 )
 
 
@@ -499,7 +312,7 @@ def send_error_page(
     This function returns the default error code, headers and formatted pages.
     """
 
-    nonce = secrets.token_hex(20)
+    nonce = token_hex(20)
     code = escape(code)
     return (
         error,
@@ -520,21 +333,25 @@ def send_error_page(
 
 class Report:
 
-    """This class implements pages for the report feature by default."""
+    """
+    This class implements pages for the report feature by default.
+    """
 
     def new(
         environ: _Environ,
         user: User,
-        configuration: ServerConfiguration,
+        server: Server,
         code: str,
         arguments: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function returns the report page by default."""
+        """
+        This function returns the report page by default.
+        """
 
-        nonce = secrets.token_hex(20)
+        nonce = token_hex(20)
         code = escape(code)
         return (
             "200 OK",
@@ -553,14 +370,23 @@ class Report:
 
 class Request:
 
-    """This class implements pages for the report feature by default."""
+    """
+    This class implements pages for the report feature by default.
+    """
 
     def send_mail(
-        configuration: ServerConfiguration, notification: str
+        configuration: ServerConfiguration,
+        notification: str,
+        title: str = "[! WebScripts Notification ]",
+        content_type: str = None,
+        attachments: List[Tuple[List[Any], Dict[str, Any]]] = [],
     ) -> None:
 
         """
         This function send a notification mail.
+
+        Attachments is a list of tuple with args
+        and kwargs of EmailMessage.add_attachment function.
         """
 
         server_name = getattr(configuration, "smtp_server", None)
@@ -568,7 +394,7 @@ class Request:
         password = getattr(configuration, "smtp_password", None)
 
         if not server_name:
-            return
+            return None
 
         try:
             if starttls:
@@ -584,7 +410,7 @@ class Request:
                     server_name, getattr(configuration, "smtp_port", 25)
                 )
         except TimeoutError:
-            return
+            return None
 
         if password:
             server.login(configuration.email, password)
@@ -593,7 +419,17 @@ class Request:
         email.set_content(notification)
         email["To"] = ", ".join(configuration.admin_adresses)
         email["From"] = configuration.notification_address
-        email["Subject"] = "[! WebScripts Notification ]"
+        email["Subject"] = title
+
+        if content_type is not None:
+            email.replace_header("Content-Type", content_type)
+
+        add_attachment = email.add_attachment
+        for attachment_args, attachment_kwargs in attachments:
+            add_attachment(
+                *attachment_args,
+                **attachment_kwargs,
+            )
 
         server.send_message(email)
         server.quit()
@@ -624,9 +460,9 @@ class Request:
 
             yield from map(
                 _Request._make,
-                csv.reader(
+                reader(
                     open(filename, "r", newline=""),
-                    quoting=csv.QUOTE_ALL,
+                    quoting=QUOTE_ALL,
                 ),
             )
 
@@ -639,7 +475,7 @@ class Request:
             id_ = int(request.ID) + 1
 
         with open(filename, "a", newline="") as file:
-            csvfile = csv.writer(file, quoting=csv.QUOTE_ALL)
+            csvfile = writer(file, quoting=QUOTE_ALL)
             csvfile.writerow(
                 [
                     str(id_),
@@ -657,7 +493,7 @@ class Request:
     def send(
         environ: _Environ,
         user: User,
-        configuration: ServerConfiguration,
+        server: Server,
         code: str,
         arguments: List[str],
         inputs: List[str],
@@ -703,7 +539,7 @@ class Request:
         Thread(
             target=Request.send_mail,
             args=(
-                configuration,
+                server.configuration,
                 notification,
             ),
         ).start()
@@ -711,7 +547,7 @@ class Request:
         return (
             "200 OK",
             {"Content-Type": "application/json; charset=utf-8"},
-            json.dumps(
+            dumps(
                 {
                     "stdout": "Request or report sent successfully.",
                     "stderr": "",

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file adds a new group
-#    Copyright (C) 2021, 2022  Maurice Lambert
+#    This file prints a JSON object of uploaded files
+#    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""
-This tool run scripts and display the result in a Web Interface.
+"""This tool run scripts and display the result in a Web Interface.
 
-This file adds a new group.
-"""
+This file prints a JSON object of uploaded files."""
 
-__version__ = "0.0.2"
+__version__ = "0.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,13 +31,12 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file adds a new group.
-"""
+This file prints a JSON object of uploaded files"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
+WebScripts  Copyright (C) 2021  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -49,30 +46,35 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import add_group, GroupError
-from sys import exit, argv, stderr
+from modules.uploads_management import get_files
+import json
+import sys
 
 
-def main() -> int:
-    if len(argv) != 3 and not argv[2].isdigit():
-        print(
-            "USAGES: add_group.py [NAME string required] [ID integer required]"
-        )
-        return 1
+def main() -> None:
+
+    """Print the JSON object of uploaded files."""
+
+    fields = [
+        "name",
+        "read_permission",
+        "write_permission",
+        "delete_permission",
+        "user",
+    ]
 
     try:
-        group = add_group(argv[2], argv[1])
-    except GroupError as error:
-        print(error.__class__.__name__, error, file=stderr)
-        return 2
-    except Exception as error:
-        print(error.__class__.__name__, error, file=stderr)
-        return 127
+        files = {
+            file.name: {field: getattr(file, field) for field in fields}
+            for file in get_files()
+        }
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}")
+        sys.exit(127)
 
-    print(f"Group added:\n\t - Name: {group.name}\n\t - ID: {group.ID}")
-
-    return 0
+    print(json.dumps(files, indent=4))
 
 
 if __name__ == "__main__":
-    exit(main())
+    main()
+    sys.exit(0)

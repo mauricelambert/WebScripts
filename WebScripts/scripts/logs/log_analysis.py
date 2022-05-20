@@ -3,7 +3,7 @@
 
 ###################
 #    This file displays an HTML table for log and activity analysis
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file displays an HTML table for log and activity analysis."""
+This file displays an HTML table for log and activity analysis.
+"""
 
-__version__ = "0.0.2"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file displays an HTML table for log and activity analysis."""
+This file displays an HTML table for log and activity analysis.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -46,9 +49,10 @@ __copyright__ = copyright
 
 __all__ = ["get_line", "build_html_table", "main"]
 
+from collections import Counter
 from typing import Dict, List
-from os import path  # , chdir
-import sys
+from os.apth import join
+from sys import exit
 
 
 def get_line(
@@ -58,12 +62,16 @@ def get_line(
     table: Dict[str, Dict[str, int]],
 ) -> str:
 
-    """This function creates an HTML table row."""
+    """
+    This function creates an HTML table row.
+    """
 
     line = ""
 
+    add = dates.append
+
     if date not in dates:
-        dates.append(date)
+        add(date)
         line = "<tr>"
         for column in columns:
             if column == "date":
@@ -79,7 +87,9 @@ def get_line(
 
 def build_html_table(table: Dict[str, Dict[str, int]]) -> str:
 
-    """This function builds the HTML table."""
+    """
+    This function builds the HTML table.
+    """
 
     columns = ["date"] + list(table.keys())
     dates = []
@@ -92,45 +102,48 @@ def build_html_table(table: Dict[str, Dict[str, int]]) -> str:
     return html + "</table>"
 
 
-def main() -> None:
+def main() -> int:
 
-    """This function read the logfile and parse lines."""
-
-    # chdir(path.join(path.dirname(__file__), "..", ".."))
+    """
+    This function read the logfile and parse lines.
+    """
 
     table = {}
     last_char = -1
 
-    with open(path.join("logs", "00-server.logs")) as logfile:
-        line = logfile.readline()
+    with open(join("logs", "00-server.logs")) as logfile:
+        readline = logfile.readline
+        tell = logfile.tell
+        line = readline()
 
         while last_char != logfile.tell():
             line = line.split(maxsplit=4)
 
             if len(line) == 5 and line[2] in (
                 "DEBUG",
-                "WARNING",
                 "INFO",
+                "ACCESS",
+                "RESPONSE",
+                "WARNING",
                 "ERROR",
                 "CRITICAL",
             ):
                 date, time, level, level_no, log = line
             else:
-                line = logfile.readline()
-                last_char = logfile.tell()
+                line = readline()
+                last_char = tell()
                 continue
 
-            table.setdefault(level, {})
-            table_level = table[level]
-            table_level.setdefault(date, 0)
+            table_level = table.setdefault(level, Counter())
             table_level[date] += 1
 
-            last_char = logfile.tell()
-            line = logfile.readline()
+            last_char = tell()
+            line = readline()
 
     print(build_html_table(table))
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

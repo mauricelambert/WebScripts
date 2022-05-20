@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.0)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.2)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -116,7 +116,7 @@ this&nbsp;function&nbsp;sends&nbsp;an&nbsp;email&nbsp;notification.</tt></dd></d
 
 <dl><dt><a name="Audit-log_rule"><strong>log_rule</strong></a>(rule: hardening.Rule, logs: ~Logs) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;log&nbsp;rule.</tt></dd></dl>
 
-<dl><dt><a name="Audit-run"><strong>run</strong></a>(server: ~Server, logs: ~Logs) -&gt; List[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;run&nbsp;audit&nbsp;and&nbsp;checks.</tt></dd></dl>
+<dl><dt><a name="Audit-run"><strong>run</strong></a>(server: ~Server) -&gt; List[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;run&nbsp;audit&nbsp;and&nbsp;checks.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -145,12 +145,12 @@ Data and other attributes defined here:<br>
 <font color="#000000" face="helvetica, arial"><a name="Report">class <strong>Report</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Report">Report</a>(rules:&nbsp;List[hardening.<a href="#Rule">Rule</a>],&nbsp;file_integrity:&nbsp;List[Dict[str,&nbsp;str]],&nbsp;server:&nbsp;~Server,&nbsp;logs:&nbsp;~Logs)<br>
+<td colspan=2><tt><a href="#Report">Report</a>(rules:&nbsp;List[hardening.<a href="#Rule">Rule</a>],&nbsp;file_integrity:&nbsp;List[Dict[str,&nbsp;str]],&nbsp;server:&nbsp;~Server)<br>
 &nbsp;<br>
 This&nbsp;class&nbsp;implement&nbsp;the&nbsp;report&nbsp;<a href="builtins.html#object">object</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Report-__init__"><strong>__init__</strong></a>(self, rules: List[hardening.Rule], file_integrity: List[Dict[str, str]], server: ~Server, logs: ~Logs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="Report-__init__"><strong>__init__</strong></a>(self, rules: List[hardening.Rule], file_integrity: List[Dict[str, str]], server: ~Server)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <dl><dt><a name="Report-as_html"><strong>as_html</strong></a>(self) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;HTML&nbsp;string&nbsp;of&nbsp;audit&nbsp;results.</tt></dd></dl>
 
@@ -266,7 +266,7 @@ is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.<
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server, logs: ~Logs, send_mail: collections.abc.Callable) -&gt; hardening.Report</dt><dd><tt>The&nbsp;main&nbsp;function&nbsp;to&nbsp;perform&nbsp;WebScripts&nbsp;Server&nbsp;hardening&nbsp;audit.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(server: ~Server) -&gt; hardening.Report</dt><dd><tt>The&nbsp;main&nbsp;function&nbsp;to&nbsp;perform&nbsp;WebScripts&nbsp;Server&nbsp;hardening&nbsp;audit.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">

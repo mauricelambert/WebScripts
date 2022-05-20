@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file can authenticate user
-#    Copyright (C) 2021  Maurice Lambert
+#    This file authenticates users
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file can authenticate user."""
+This file authenticates users
+"""
 
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,12 +33,13 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file can authenticate user"""
+This file authenticates users
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -44,65 +47,60 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = []
+__all__ = ["parse_args", "main"]
 
 from modules.manage_defaults_databases import auth
 from argparse import ArgumentParser, Namespace
+from sys import stderr, exit
 from os import environ
-import json
-import sys
+from json import dumps
 
 
 def parse_args() -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parses command line arguments.
+    """
 
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--username", "-u", help="Username to authenticate the user."
-    )
-    parser.add_argument(
-        "--password", "-p", help="Password to authenticate the user."
-    )
-    parser.add_argument(
-        "--api-key", "-a", help="API key to authenticate the user."
-    )
+    parser = ArgumentParser("This script authenticates users.")
+    add_argument = parser.add_argument
+    add_argument("--username", "-u", help="Username to authenticate the user.")
+    add_argument("--password", "-p", help="Password to authenticate the user.")
+    add_argument("--api-key", "-a", help="API key to authenticate the user.")
     return parser.parse_args()
 
 
 def main() -> None:
 
-    """Main function to authenticate the user."""
+    """
+    This function authenticates a user.
+    """
 
-    parser = parse_args()
+    arguments = parse_args()
 
     if (
-        parser.username is None or parser.password is None
-    ) and parser.api_key is None:
+        arguments.username is None or arguments.password is None
+    ) and arguments.api_key is None:
         print(
             "USAGES:\n\t - auth.py --username [USERNAME string required]"
             " --password [PASSWORD string required]\n\t - auth.py --api-key"
-            " [APIKEY string required]"
+            " [APIKEY string required]",
+            file=stderr,
         )
-        sys.exit(1)
-
-    if parser.api_key is not None:
-        arguments = {"apikey": parser.api_key}
-    else:
-        arguments = {"username": parser.username, "password": parser.password}
+        return 1
 
     try:
-        user = auth(**arguments)
+        user = auth(**arguments.__dict__)
     except Exception as error:
-        print(error)
-        sys.exit(127)
+        print(error, file=stderr)
+        return 127
 
     if user is None:
         print("Authentication failed.")
-        sys.exit(3)
+        return 3
 
     print(
-        json.dumps(
+        dumps(
             {
                 "id": user.ID,
                 "name": user.name,
@@ -119,5 +117,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

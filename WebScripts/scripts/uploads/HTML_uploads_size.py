@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file can display the latest logs
+#    This file prints an HTML table of uploaded files sizes.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file can display the latest logs.
+This file prints an HTML table of uploaded files sizes.
 """
 
 __version__ = "1.0.0"
@@ -33,13 +33,13 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file can display the latest logs.
+This file prints an HTML table of uploaded files sizes.
 """
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -47,58 +47,35 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = []
+__all__ = ["main"]
 
-from sys import exit, stderr, argv
-from collections import deque
-from os import environ
+from modules.uploads_management import get_metadata
+from sys import exit
 
 
 def main() -> int:
 
     """
-    Main function to display the latest logs.
+    This function prints an HTML table of uploaded files sizes.
     """
 
-    length = len(argv) < 2 or argv[1]
+    print(
+        "<table><thead><tr><th>name</th><th>full size (all version)</th><th>"
+        "size</th><th>Number of version</th><th>modification</th>"
+        "<th>Creation (OS)</th><th>Creation (WebScripts)</th><th>Acces</th>"
+        "</tr></thead><tbody>"
+    )
 
-    if not length or not length.isdigit():
+    for name, metadata in get_metadata().items():
         print(
-            "USAGE: log_viewer.py [length required int] [level1 required "
-            "string] [levelX optional string]..."
-            "\n\tPossible values for files:\n\t\t - all\n\t\t - DEBUG\n\t\t"
-            " - INFO\n\t\t - ACCESS\n\t\t - RESPONSE\n\t\t - WARNING"
-            "\n\t\t - ERROR\n\t\t - CRITICAL\n\t\t - TRACE",
-            file=stderr,
+            f"<tr><td>{name}</td><td>{metadata.full_size}</td>"
+            f"<td>{metadata.last_size}</td><td>{metadata.version}</td>"
+            f"<td>{metadata.modification}</td><td>{metadata.creation}</td>"
+            f"<td>{metadata.webscripts_creation}</td><td>{metadata.access}"
+            "</td></tr>"
         )
-        print(
-            "ERROR: argument length is required and must be an "
-            "integer, and a minimum of one level is required",
-            file=stderr,
-        )
-        return 1
 
-    length = int(length)
-    del argv[1]
-    del argv[0]
-
-    levels = {}
-    for level in environ["WEBSCRIPTS_LOGS_FILES"].split(":"):
-        level, filename = level.split("|", 1)
-        levels[level.casefold()] = filename
-
-    for level in argv:
-        filename = levels.get(level.casefold())
-
-        if filename is None:
-            continue
-
-        argv.remove(level)
-        with open(filename) as logfile:
-            print("".join(deque(logfile, length)))
-
-    if len(argv) != 0:
-        print(f"ERROR: unexpected arguments {argv}", file=stderr)
+    print("</tbody><tfoot></tfoot></table>")
 
     return 0
 

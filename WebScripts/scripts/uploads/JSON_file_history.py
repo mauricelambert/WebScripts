@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file can display the latest logs
+#    This file prints a JSON objects of uploaded file versions
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file can display the latest logs.
+This file prints a JSON objects of uploaded file versions.
 """
 
 __version__ = "1.0.0"
@@ -33,13 +33,12 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file can display the latest logs.
-"""
+This file prints a JSON object of uploaded file versions"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -49,56 +48,32 @@ __copyright__ = copyright
 
 __all__ = []
 
-from sys import exit, stderr, argv
-from collections import deque
-from os import environ
+from modules.uploads_management import get_file
+from sys import exit, argv, stderr
+from json import dumps
 
 
 def main() -> int:
 
     """
-    Main function to display the latest logs.
+    Print the JSON objects of file history.
     """
 
-    length = len(argv) < 2 or argv[1]
-
-    if not length or not length.isdigit():
-        print(
-            "USAGE: log_viewer.py [length required int] [level1 required "
-            "string] [levelX optional string]..."
-            "\n\tPossible values for files:\n\t\t - all\n\t\t - DEBUG\n\t\t"
-            " - INFO\n\t\t - ACCESS\n\t\t - RESPONSE\n\t\t - WARNING"
-            "\n\t\t - ERROR\n\t\t - CRITICAL\n\t\t - TRACE",
-            file=stderr,
-        )
-        print(
-            "ERROR: argument length is required and must be an "
-            "integer, and a minimum of one level is required",
-            file=stderr,
-        )
+    if len(argv) != 2:
+        print("USAGE: api_get_history.py [FILENAME required string]")
         return 1
 
-    length = int(length)
-    del argv[1]
-    del argv[0]
+    filename = argv[1]
 
-    levels = {}
-    for level in environ["WEBSCRIPTS_LOGS_FILES"].split(":"):
-        level, filename = level.split("|", 1)
-        levels[level.casefold()] = filename
+    try:
+        files, counter = get_file(filename)
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}", file=stderr)
+        return 127
 
-    for level in argv:
-        filename = levels.get(level.casefold())
+    versions = [file._asdict() for file in files]
 
-        if filename is None:
-            continue
-
-        argv.remove(level)
-        with open(filename) as logfile:
-            print("".join(deque(logfile, length)))
-
-    if len(argv) != 0:
-        print(f"ERROR: unexpected arguments {argv}", file=stderr)
+    print(dumps(versions, indent=4))
 
     return 0
 

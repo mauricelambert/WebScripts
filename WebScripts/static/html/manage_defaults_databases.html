@@ -6,22 +6,13 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>manage_defaults_databases</strong></big></big> (version 1.2.0)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>manage_defaults_databases</strong></big></big> (version 2.0.0)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="manage_defaults_databases.py">manage_defaults_databases.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
 This&nbsp;file&nbsp;implement&nbsp;some&nbsp;functions&nbsp;to&nbsp;manage&nbsp;WebScript&nbsp;default&nbsp;databases.</tt></p>
 <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#75B4AD">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
-</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#C89B48">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -388,6 +379,7 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
  <dl><dt><a name="-delete_group"><strong>delete_group</strong></a>(id_: int) -&gt; manage_defaults_databases.Group</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;a&nbsp;group&nbsp;by&nbsp;id&nbsp;and&nbsp;return&nbsp;the&nbsp;deleted&nbsp;group.</tt></dd></dl>
  <dl><dt><a name="-delete_user"><strong>delete_user</strong></a>(id_: int) -&gt; manage_defaults_databases.User</dt><dd><tt>This&nbsp;function&nbsp;delete&nbsp;a&nbsp;user&nbsp;by&nbsp;id&nbsp;and&nbsp;return&nbsp;the&nbsp;deleted&nbsp;user.</tt></dd></dl>
  <dl><dt><a name="-get_apikey"><strong>get_apikey</strong></a>(id_: str, password: str) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;API&nbsp;key&nbsp;after&nbsp;verification&nbsp;of&nbsp;authentication.</tt></dd></dl>
+ <dl><dt><a name="-get_dict_groups"><strong>get_dict_groups</strong></a>(by_name: bool = False) -&gt; Dict[str, str]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;dict&nbsp;of&nbsp;groups&nbsp;(ID:&nbsp;Name&nbsp;or&nbsp;Name:&nbsp;ID).</tt></dd></dl>
  <dl><dt><a name="-get_groups"><strong>get_groups</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;groups&nbsp;from&nbsp;CSV&nbsp;database.</tt></dd></dl>
  <dl><dt><a name="-get_users"><strong>get_users</strong></a>() -&gt; collections.abc.Iterator</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;users&nbsp;from&nbsp;CSV&nbsp;database.</tt></dd></dl>
 </td></tr></table><p>
@@ -397,10 +389,10 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__all__</strong> = ['User', 'Group', 'add_user', 'add_group', 'get_users', 'UserError', 'GroupError', 'get_groups', 'get_apikey', 'delete_user', 'delete_group', 'change_user_password', 'create_default_databases']<br>
+<td width="100%"><strong>__all__</strong> = ['User', 'Group', 'add_user', 'add_group', 'get_users', 'UserError', 'GroupError', 'get_groups', 'get_apikey', 'delete_user', 'delete_group', 'get_dict_groups', 'change_user_password', 'create_default_databases']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021  Maurice Lambert...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...e functions to manage WebScript default databases'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...ctions to manage WebScript default user database<font color="#c040c0">\n</font>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>

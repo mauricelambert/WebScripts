@@ -3,7 +3,7 @@
 
 ###################
 #    This file implement some functions to manage WebScript default databases
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage WebScript default databases."""
+This file implement some functions to manage WebScript default databases.
+"""
 
-__version__ = "1.2.0"
+__version__ = "2.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,12 +33,13 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage WebScript default databases"""
+This file implements functions to manage WebScript default user database
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -56,21 +59,23 @@ __all__ = [
     "get_apikey",
     "delete_user",
     "delete_group",
+    "get_dict_groups",
     "change_user_password",
     "create_default_databases",
 ]
 
 from secrets import randbelow, token_bytes
+from csv import reader, writer, QUOTE_ALL
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
 from collections import namedtuple
 from hmac import compare_digest
 from hashlib import pbkdf2_hmac
-from os import environ, path
+from typing import List, Dict
 from fnmatch import fnmatch
-from typing import List
+from os.path import join
 from html import escape
-import csv
+from os import environ
 
 User = namedtuple(
     "User",
@@ -88,78 +93,111 @@ User = namedtuple(
     ],
 )
 Group = namedtuple("Group", ["ID", "name"])
-FILES = ("users.csv", "groups.csv")
-DIRECTORY = path.join(path.dirname(__file__), "..", "..", "..", "data")
+DIRECTORY = environ["WEBSCRIPTS_DATA_PATH"]
+USERFILE = "users.csv"
+GROUPFILE = "groups.csv"
 
 
 class UserError(Exception):
 
-    """This class can raise a UserError."""
+    """
+    This class can raise a UserError.
+    """
 
 
 class GroupError(Exception):
 
-    """This class can raise a GroupError."""
+    """
+    This class can raise a GroupError.
+    """
 
 
 def upgrade_database() -> None:
 
-    """This function upgrade the database.
+    """
+    This function upgrade the database.
 
     Add default categories ("*")
     Add default scripts    ("*")
     """
 
     users = []
-    first = False
+    user_add = users.append
+    first = True
 
-    with open(path.join(DIRECTORY, FILES[0]), newline="") as csvfile:
-        csvreader = csv.reader(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, USERFILE), newline="") as csvfile:
+        csvreader = reader(csvfile, quoting=QUOTE_ALL)
 
         for row in csvreader:
             if len(row) == 8:
-
+                row_add = row.append
                 if first:
-                    row.append("*")
-                    row.append("*")
+                    row_add("categories")
+                    row_add("scripts")
+                    first = False
                 else:
-                    row.append("categories")
-                    row.append("scripts")
-                    first = True
+                    row_add("*")
+                    row_add("*")
 
-            users.append(row)
+            user_add(row)
 
-    with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-
-        for user in users:
-            csvwriter.writerow(user)
+    with open(join(DIRECTORY, USERFILE), "w", newline="") as csvfile:
+        csvwriter = writer(csvfile, quoting=QUOTE_ALL)
+        writerow = csvwriter.writerow
+        [writerow(user) for user in users]
 
 
 def get_users() -> Iterator[User]:
 
-    """This function get users from CSV database."""
+    """
+    This function get users from CSV database.
+    """
 
     yield from map(
         User._make,
-        csv.reader(
-            open(path.join(DIRECTORY, FILES[0]), "r", newline=""),
-            quoting=csv.QUOTE_ALL,
+        reader(
+            open(join(DIRECTORY, USERFILE), "r", newline=""),
+            quoting=QUOTE_ALL,
         ),
     )
 
 
 def get_groups() -> Iterator[Group]:
 
-    """This function get groups from CSV database."""
+    """
+    This function get groups from CSV database.
+    """
 
     yield from map(
         Group._make,
-        csv.reader(
-            open(path.join(DIRECTORY, FILES[1]), "r", newline=""),
-            quoting=csv.QUOTE_ALL,
+        reader(
+            open(join(DIRECTORY, GROUPFILE), "r", newline=""),
+            quoting=QUOTE_ALL,
         ),
     )
+
+
+def get_dict_groups(by_name: bool = False) -> Dict[str, str]:
+
+    """
+    This function returns the dict of groups (ID: Name or Name: ID).
+    """
+
+    if by_name:
+        return {
+            n: i
+            for i, n in reader(
+                open(join(DIRECTORY, GROUPFILE), "r", newline=""),
+                quoting=QUOTE_ALL,
+            )
+        }
+    return {
+        i: n
+        for i, n in reader(
+            open(join(DIRECTORY, GROUPFILE), "r", newline=""),
+            quoting=QUOTE_ALL,
+        )
+    }
 
 
 def get_apikey(id_: str, password: str) -> str:
@@ -197,7 +235,9 @@ def change_user_password(
     id_: str, new_password: str, old_password: str = None
 ) -> User:
 
-    """This function change a user password."""
+    """
+    This function change a user password.
+    """
 
     users = []
     user_ = None
@@ -250,7 +290,7 @@ def add_user(
     name = escape(name)
     for i, user in enumerate(get_users()):
         if name == user.name:
-            raise UserError(f'unique constraint failed: name "{name}" is used')
+            raise UserError(f"unique constraint failed: name {name!r} is used")
 
     enumerations = 90000 + randbelow(20000)
     salt = token_bytes(32)
@@ -276,8 +316,8 @@ def add_user(
         if not string.isprintable():
             raise ValueError(f"Strings must be printable: '{string}' is not.")
 
-    with open(path.join(DIRECTORY, FILES[0]), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, USERFILE), "a", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
         csv_writer.writerow(user)
 
     return user
@@ -285,8 +325,10 @@ def add_user(
 
 def auth_username_password(name: str, password: str) -> User:
 
-    """This function verifies the authentication
-    with user name and password."""
+    """
+    This function verifies the authentication
+    with user name and password.
+    """
 
     name = escape(name)
     for user in get_users():
@@ -312,8 +354,10 @@ def auth_username_password(name: str, password: str) -> User:
 
 def auth_apikey(apikey: str) -> User:
 
-    """This function verifies the authentication
-    with api key."""
+    """
+    This function verifies the authentication
+    with api key.
+    """
 
     for user in get_users():
         if apikey == user.apikey:
@@ -326,8 +370,10 @@ def auth(
     username: str = None, password: str = None, apikey: str = None
 ) -> User:
 
-    """This function returns a User from credentials
-    (username and password) or an api key."""
+    """
+    This function returns a User from credentials
+    (username and password) or an api key.
+    """
 
     if apikey is None:
         return auth_username_password(username, password)
@@ -337,7 +383,9 @@ def auth(
 
 def add_group(name: str, id_: int) -> Group:
 
-    """This function add group in database or raise a GroupError."""
+    """
+    This function add group in database or raise a GroupError.
+    """
 
     for group in get_groups():
         if name == group.name:
@@ -353,8 +401,8 @@ def add_group(name: str, id_: int) -> Group:
         if not string.isprintable():
             raise ValueError(f"Strings must be printable: '{string}' is not.")
 
-    with open(path.join(DIRECTORY, FILES[1]), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, GROUPFILE), "a", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
         csv_writer.writerow(group)
 
     return group
@@ -362,17 +410,20 @@ def add_group(name: str, id_: int) -> Group:
 
 def delete_user(id_: int) -> User:
 
-    """This function delete a user by id and return the deleted user."""
+    """
+    This function delete a user by id and return the deleted user.
+    """
 
     users = []
     deleted_user = None
 
     for user in get_users():
-        if user.ID != "ID" and int(user.ID) == id_:
+        user_id = user.ID
+        if user_id != "ID" and int(user_id) == id_:
             deleted_user = user
             users.append(
                 User(
-                    user.ID,
+                    user_id,
                     "",
                     "",
                     "",
@@ -394,40 +445,47 @@ def delete_user(id_: int) -> User:
 
 def rewrite_users(users: List[User]) -> None:
 
-    """This function rewrite a list of User."""
+    """
+    This function rewrite a list of User.
+    """
 
-    with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, USERFILE), "w", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
         # csv_writer.writerow(User._fields)
-        for user in users:
-            csv_writer.writerow(anti_XSS(user))
+        writerow = csv_writer.writerow
+        [writerow(anti_XSS(user)) for user in users]
 
 
 def delete_group(id_: int) -> Group:
 
-    """This function delete a group by id and return the deleted group."""
+    """
+    This function delete a group by id and return the deleted group.
+    """
 
     groups = []
     deleted_group = None
 
     for group in get_groups():
-        if group.ID != "ID" and int(group.ID) == id_:
+        group_id = group.ID
+        if group_id != "ID" and int(group_id) == id_:
             deleted_group = group
         else:
             groups.append(group)
 
-    with open(path.join(DIRECTORY, FILES[1]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, GROUPFILE), "w", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
         # csv_writer.writerow(Group._fields)
-        for group in groups:
-            csv_writer.writerow(anti_XSS(group))
+        writerow = csv_writer.writerow
+        [writerow(anti_XSS(group)) for group in groups]
 
     return anti_XSS(deleted_group)
 
 
 def create_default_databases() -> None:
 
-    """This function create defaults users and groups."""
+    """
+    This function create defaults users and groups.
+    """
 
     default_users = [
         User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*"),
@@ -455,17 +513,19 @@ def create_default_databases() -> None:
         Group("1000", "Administrators"),
     ]
 
-    with open(path.join(DIRECTORY, FILES[0]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        csv_writer.writerow(User._fields)
-        for user in default_users:
-            csv_writer.writerow(user)
+    with open(join(DIRECTORY, USERFILE), "w", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
+        writerow = csv_writer.writerow
 
-    with open(path.join(DIRECTORY, FILES[1]), "w", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        csv_writer.writerow(Group._fields)
-        for group in default_groups:
-            csv_writer.writerow(group)
+        writerow(User._fields)
+        [writerow(user) for user in default_users]
+
+    with open(join(DIRECTORY, GROUPFILE), "w", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
+        writerow = csv_writer.writerow
+
+        writerow(Group._fields)
+        [writerow(group) for group in default_groups]
 
 
 if __name__ == "__main__":

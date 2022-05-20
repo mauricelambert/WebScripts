@@ -3,7 +3,7 @@
 
 ###################
 #    This file implement some functions to manage uploads on WebScripts
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage uploads on WebScripts."""
+This file implement some functions to manage uploads on WebScripts.
+"""
 
-__version__ = "0.0.6"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement some functions to manage uploads on WebScripts"""
+This file implement some functions to manage uploads on WebScripts
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -49,23 +52,30 @@ __all__ = [
     "get_file",
     "read_file",
     "write_file",
+    "get_reader",
     "delete_file",
+    "get_metadata",
+    "FileMetadata",
+    "UploadedFile",
     "get_file_content",
     "get_visible_files",
 ]
 
-from gzip import compress as gzip, decompress as ungzip
-from lzma import compress as xz, decompress as unxz
+from gzip import open as gzip, decompress as ungzip
+from lzma import open as xz, decompress as unxz
+from os.path import join, split, splitext, exists
+from typing import Tuple, List, TypeVar, Dict
 from collections import namedtuple, Counter
 from time import time, strftime, localtime
-from typing import Tuple, List, TypeVar
+from csv import reader, writer, QUOTE_ALL
+from os import environ, stat, stat_result
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
-from os import environ, path
+from collections import defaultdict
+from _io import _TextIOBase
 from html import escape
+from json import loads
 from math import ceil
-import json
-import csv
 
 Upload = namedtuple(
     "Upload",
@@ -85,88 +95,117 @@ Upload = namedtuple(
     ],
 )
 FILE = "uploads.csv"
-DIRECTORY = path.join(
-    path.dirname(__file__),
-    "..",
-    "..",
-    "..",
-    "data",
-)
+DIRECTORY = environ["WEBSCRIPTS_DATA_PATH"]
 FILES_DIRECTORY = "uploads"
 User = TypeVar("User")
 Data = TypeVar("Data", str, bytes)
 
 
-def upgrade_uploads() -> None:
+class FileMetadata:
 
-    """This function upgrade the database.
-
-    Add default no_compression ("", empty string)
+    """
+    This class implements file metadata for
+    uploaded files.
     """
 
-    uploads = []
-    first = False
+    def __init__(self):
+        self.full_size = 0
+        self.version = 0
 
-    with open(path.join(DIRECTORY, FILE), newline="") as csvfile:
-        csvreader = csv.reader(csvfile, quoting=csv.QUOTE_ALL)
+    def add(self, stat: stat_result, timestamp: float):
 
-        for row in csvreader:
-            if len(row) == 11:
+        """
+        This function add a version to file metadata.
+        """
 
-                if first:
-                    row.insert(8, "")
-                else:
-                    row.insert(8, "no_compression")
-                    first = True
+        size = stat.st_size
+        self.version += 1
+        self.last_size = size
+        self.full_size = size
 
-            uploads.append(row)
+        self.webscripts_creation = timestamp
 
-    with open(path.join(DIRECTORY, FILE), "w", newline="") as csvfile:
-        csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-
-        for upload in uploads:
-            csvwriter.writerow(upload)
+        self.modification = stat.st_mtime
+        self.creation = stat.st_ctime
+        self.access = stat.st_atime
 
 
-def anti_XSS(named_tuple: namedtuple) -> namedtuple:
+class UploadedFile:
 
-    """This function returns a namedtuple without HTML special characters."""
+    """
+    This class implements the file type for
+    uploaded files.
+    """
 
-    new = {}
-    for attribut, value in named_tuple._asdict().items():
-        new[attribut] = escape(value)
-    return named_tuple.__class__(**new)
+    def __init__(
+        self,
+        name: str,
+        read_access: int,
+        write_access: int,
+        delete_access: int,
+        hidden: bool,
+        binary: bool,
+        no_compression: bool,
+        with_access: bool = True,
+    ):
 
+        owner = get_user()
+        uploads, counter = get_file(name)
 
-def get_files() -> Iterator[Upload]:
+        if with_access and len(uploads) != 0:
+            file = uploads[-1]
+            check_permissions(file, owner, "write")
 
-    """This function build Uploads from database."""
+        timestamp = time()
 
-    yield from map(
-        Upload._make,
-        csv.reader(
-            open(path.join(DIRECTORY, FILE), "r", newline=""),
-            quoting=csv.QUOTE_ALL,
-        ),
-    )
+        upload = self.upload = anti_XSS(
+            Upload(
+                str(sum(counter.values())),
+                name,
+                str(read_access),
+                str(write_access),
+                str(delete_access),
+                "hidden" if hidden else "visible",
+                "exist",
+                "binary" if binary else "text",
+                "no_compression" if no_compression else "",
+                str(timestamp),
+                owner["name"],
+                str(counter[name]),
+            )
+        )
 
+        write_action(upload)
 
-def get_visible_files() -> Iterator[Upload]:
+        filename = get_real_file_name(name, timestamp)
 
-    """This function return upload if not hidden."""
+        compression = not no_compression
+        if compression and not binary:
+            self.file = gzip(filename, "wb")
+        elif compression and binary:
+            self.file = xz(filename, "wb")
+        else:
+            self.file = open(filename, "wb")
 
-    files = {}
+    def __getattr__(self, attr: str):
+        if attr in dir(self):
+            return object.__getattr__(self, attr)
+        return getattr(self.file, attr)
 
-    for file in get_files():
-        file = anti_XSS(file)
-        if file.hidden != "hidden" and file.is_deleted != "deleted":
-            files[file.name] = file
-        elif (
-            file.hidden == "hidden" or file.is_deleted == "deleted"
-        ) and file.name in files.keys():
-            del files[file.name]
+    def __del__(self, *args, **kwargs):
+        return self.file.__del__(*args, **kwargs)
 
-    return files
+    def __enter__(self, *args, **kwargs):
+        return self.file.__enter__(*args, **kwargs)
+
+    def __exit__(self, *args, **kwargs):
+        return self.file.__exit__(*args, **kwargs)
+
+    def __iter__(self, *args, **kwargs):
+        yield from self.file.__iter__(*args, **kwargs)
+
+    def __next__(self, *args, **kwargs):
+        yield from self.file.__next__(*args, **kwargs)
 
 
 def write_file(
@@ -182,60 +221,135 @@ def write_file(
     with_access: bool = True,
 ) -> Upload:
 
-    """This function upload a file."""
-
-    owner = get_user()
-    uploads, counter = get_file(name)
-
-    if with_access and len(uploads) != 0:
-        file = uploads[-1]
-        check_permissions(file, owner, "write")
-
-    timestamp = time()
-
-    upload = anti_XSS(
-        Upload(
-            str(sum(counter.values())),
-            name,
-            str(read_access),
-            str(write_access),
-            str(delete_access),
-            "hidden" if hidden else "visible",
-            "exist",
-            "binary" if binary else "text",
-            "no_compression" if no_compression else "",
-            str(timestamp),
-            owner["name"],
-            str(counter[name]),
-        )
-    )
-
-    write_action(upload)
+    """
+    This function uploads a file.
+    """
 
     if is_b64:
         data = b64decode(data.encode())
     else:
         data = data.encode("utf-8")
 
-    filename = get_real_file_name(name, timestamp)
+    file = UploadedFile(
+        name,
+        read_access,
+        write_access,
+        delete_access,
+        hidden,
+        binary,
+        no_compression,
+        with_access,
+    )
+    file.write(data)
+    file.close()
 
-    if not no_compression and not binary:
-        data = gzip(data)
-    elif not no_compression and binary:
-        data = xz(data)
+    return file.upload
 
-    with open(
-        filename,
-        "wb",
-    ) as file:
-        file.write(data)
 
-    return upload
+def upgrade_uploads() -> None:
+
+    """
+    This function upgrade the database.
+
+    Add default no_compression ("", empty string)
+    """
+
+    uploads = []
+    first = False
+    filepath = join(DIRECTORY, FILE)
+    uploads_add = uploads.append
+
+    with open(filepath, newline="") as csvfile:
+        csvreader = reader(csvfile, quoting=QUOTE_ALL)
+
+        for row in csvreader:
+            if len(row) == 11:
+
+                if first:
+                    row.insert(8, "")
+                else:
+                    row.insert(8, "no_compression")
+                    first = True
+
+            uploads_add(row)
+
+    with open(filepath, "w", newline="") as csvfile:
+        csvwriter = writer(csvfile, quoting=QUOTE_ALL)
+        writerow = csvwriter.writerow
+
+        [writerow(upload) for upload in uploads]
+
+
+def anti_XSS(named_tuple: namedtuple) -> namedtuple:
+
+    """
+    This function returns a namedtuple
+    without HTML special characters.
+    """
+
+    new = {}
+    for attribut, value in named_tuple._asdict().items():
+        new[attribut] = escape(value)
+    return named_tuple.__class__(**new)
+
+
+def get_files() -> Iterator[Upload]:
+
+    """
+    This function build Uploads from database.
+    """
+
+    yield from map(
+        Upload._make,
+        reader(
+            open(join(DIRECTORY, FILE), "r", newline=""),
+            quoting=QUOTE_ALL,
+        ),
+    )
+
+
+def get_metadata() -> Dict[str, FileMetadata]:
+
+    """
+    This function returns metadata of
+    each uploaded files and versions.
+    """
+
+    files = defaultdict(FileMetadata)
+
+    for file in get_files():
+        name = file.name
+        timestamp = float(file.timestamp)
+        filename = get_real_file_name(name, timestamp)
+        files[name].add(stat(filename), timestamp)
+
+    return files
+
+
+def get_visible_files() -> Iterator[Upload]:
+
+    """
+    This function return upload if not hidden.
+    """
+
+    files = {}
+
+    for file in get_files():
+        file = anti_XSS(file)
+        if file.hidden != "hidden" and file.is_deleted != "deleted":
+            files[file.name] = file
+        elif (
+            file.hidden == "hidden" or file.is_deleted == "deleted"
+        ) and file.name in files.keys():
+            del files[file.name]
+
+    return files
 
 
 def unicode_to_bytes(string: str) -> bytes:
 
-    """This function return bytes from unicode strings."""
+    """
+    This function return bytes from unicode strings."""
 
     data = b""
     for char in string:
@@ -247,7 +361,9 @@ def unicode_to_bytes(string: str) -> bytes:
 
 def delete_file(name: str) -> Upload:
 
-    """This function delete an uploaded file."""
+    """
+    This function delete an uploaded file.
+    """
 
     uploads, counter = get_file(name)
 
@@ -290,15 +406,17 @@ def write_action(upload: Upload) -> None:
         if not string.isprintable():
             raise ValueError(f"Strings must be printable: '{string}' is not.")
 
-    with open(path.join(DIRECTORY, FILE), "a", newline="") as csvfile:
-        csv_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+    with open(join(DIRECTORY, FILE), "a", newline="") as csvfile:
+        csv_writer = writer(csvfile, quoting=QUOTE_ALL)
         csv_writer.writerow(anti_XSS(upload))
 
 
 def check_permissions(file: Upload, owner: User, attr: str) -> None:
 
-    """This function raises a PermissionError if
-    the user does not have write permission."""
+    """
+    This function raises a PermissionError if
+    the user does not have write permission.
+    """
 
     permission = int(getattr(file, f"{attr}_permission"))
 
@@ -324,16 +442,19 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
 
 def get_user() -> User:
 
-    """This function return the user."""
+    """
+    This function return the user.
+    """
 
-    user = json.loads(environ["USER"])
-    return user
+    return loads(environ["USER"])
 
 
 def read_file(name: str) -> str:
 
-    """This function check permission and
-    return a base64 of the file content."""
+    """
+    This function check permission and
+    return a base64 of the file content.
+    """
 
     uploads, counter = get_file(name)
 
@@ -347,32 +468,50 @@ def read_file(name: str) -> str:
     return get_content(file)
 
 
+def get_reader(file: Upload) -> _TextIOBase:
+
+    """
+    This function returns a reader
+    of the uploaded file.
+    """
+
+    compression = not file.no_compression
+    filename = get_real_file_name(file.name, float(file.timestamp))
+
+    if compression and file.is_binary == "text":
+        reader = ungzip(filename)
+    elif compression and file.is_binary == "binary":
+        reader = unxz(filename)
+    else:
+        reader = open(filename, "rb")
+
+    return reader
+
+
 def get_content(file: Upload) -> str:
 
-    """This function read, decompress and encode/decode the file content."""
+    """
+    This function read, decompress and
+    encode/decode the file content.
+    """
 
-    with open(
-        get_real_file_name(file.name, float(file.timestamp)), "rb"
-    ) as file_:
-        data = file_.read()
-
-    if not file.no_compression and file.is_binary == "text":
-        data = ungzip(data)
-    elif not file.no_compression and file.is_binary == "binary":
-        data = unxz(data)
+    data = reader.read()
+    reader.close()
 
     return b64encode(data).decode()
 
 
 def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
 
-    """This function return a base64 of the file
+    """
+    This function return a base64 of the file
     content and the filename (without check permissions).
 
     If id_ and name arguments are None this function return (None, None).
 
     Using a name this function return the last versions of the file content.
-    Using an ID this function return the version of this ID."""
+    Using an ID this function return the version of this ID.
+    """
 
     if id_ is not None:
         error_description = f'using "{id_}" as ID'
@@ -393,20 +532,22 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
     file = uploads[-1]
     filename = get_real_file_name(file.name, float(file.timestamp))
 
-    if not path.exists(filename):
+    if not exists(filename):
         raise FileNotFoundError(
             f"No such file or directory: {error_description}."
         )
 
-    only_filename = path.split(file.name)[1]
+    only_filename = split(file.name)[1]
     return get_content(file), only_filename
 
 
 def get_file(name: str, id_: str = None) -> Tuple[List[Upload], Counter]:
 
-    """This function return the history of a file.
+    """
+    This function return the history of a file.
 
-    If name is None, this function get Upload by ID."""
+    If name is None, this function get Upload by ID.
+    """
 
     versions = []
     counter = Counter()
@@ -422,11 +563,13 @@ def get_file(name: str, id_: str = None) -> Tuple[List[Upload], Counter]:
 
 def get_real_file_name(filename: str, timestamp: float) -> str:
 
-    """This function return the real filename of a file."""
+    """
+    This function return the real filename of a file.
+    """
 
-    filename, extension = path.splitext(path.split(filename)[1])
+    filename, extension = splitext(split(filename)[1])
 
-    return path.join(
+    return join(
         DIRECTORY,
         FILES_DIRECTORY,
         f"{filename}_"

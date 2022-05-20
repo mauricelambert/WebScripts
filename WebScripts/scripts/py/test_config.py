@@ -11,7 +11,7 @@ print("Inputs:")
 print(inputs)
 print("Inputs end.")
 
-print(f"Log path: {environ['LOG_PATH']}")
+print(f"Log path: {environ['WEBSCRIPTS_LOGS_PATH']}")
 
 sleep(5)
 print("5 seconds...")

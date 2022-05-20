@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file adds a new group
+#    This file prints a HTML table of uploaded file versions
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file adds a new group.
+This file prints a HTML table of uploaded file versions.
 """
 
-__version__ = "0.0.2"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file adds a new group.
+This file prints a HTML table of uploaded file versions.
 """
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
@@ -49,27 +49,65 @@ __copyright__ = copyright
 
 __all__ = []
 
-from modules.manage_defaults_databases import add_group, GroupError
-from sys import exit, argv, stderr
+from modules.uploads_management import get_file
+from time import localtime, strftime
+from sys import argv, exit, stderr
+from urllib.parse import quote
+from html import escape
 
 
 def main() -> int:
-    if len(argv) != 3 and not argv[2].isdigit():
-        print(
-            "USAGES: add_group.py [NAME string required] [ID integer required]"
-        )
+
+    """
+    Print the HTML table of file history.
+    """
+
+    if len(argv) != 2:
+        print("USAGE: get_history.py [FILENAME required string]")
         return 1
 
+    filename = argv[1]
+
+    fields = [
+        "ID",
+        "name",
+        "read_permission",
+        "write_permission",
+        "delete_permission",
+        "hidden",
+        "is_deleted",
+        "is_binary",
+        "timestamp",
+        "user",
+        "version",
+    ]
+    print(
+        f"<table><thead><tr><th>{'</th><th>'.join(fields)}"
+        "</th></tr></thead><tbody>"
+    )
+
     try:
-        group = add_group(argv[2], argv[1])
-    except GroupError as error:
-        print(error.__class__.__name__, error, file=stderr)
-        return 2
-    except Exception as error:
-        print(error.__class__.__name__, error, file=stderr)
+        files, counter = get_file(filename)
+    except Exception as e:
+        print(f"{e.__class__.__name__}: {e}", file=stderr)
         return 127
 
-    print(f"Group added:\n\t - Name: {group.name}\n\t - ID: {group.ID}")
+    for file in files:
+        id_ = file.ID
+        file = file._replace(
+            ID='<a title="download link" href="/share/Download/id/'
+            f'{quote(id_)}">{escape(id_)}</a>',
+            timestamp=strftime(
+                "%Y-%m-%d %H:%M:%S", localtime(float(file.timestamp))
+            ),
+        )
+
+        values = [
+            escape(v) if k != "ID" else v for k, v in file._asdict().items()
+        ]
+        print(f'<tr><td>{"</td><td>".join(values)}' "</td></tr>")
+
+    print("</tbody><tfoot></tfoot></table>")
 
     return 0
 

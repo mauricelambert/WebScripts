@@ -11,7 +11,7 @@
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;implement&nbsp;commons&nbsp;functions&nbsp;and&nbsp;class&nbsp;for&nbsp;WebScripts&nbsp;package.</tt></p>
+This&nbsp;file&nbsp;implements&nbsp;commons&nbsp;functions&nbsp;and&nbsp;class&nbsp;for&nbsp;WebScripts&nbsp;package.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#75B4AD">
@@ -19,10 +19,8 @@ This&nbsp;file&nbsp;implement&nbsp;commons&nbsp;functions&nbsp;and&nbsp;class&nb
 <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
-</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
-</td><td width="25%" valign=top><a href="secrets.html">secrets</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#C89B48">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -90,7 +88,9 @@ Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamesp
 
 <dl><dt><a name="Argument-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="Argument-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+<dl><dt><a name="Argument-build_type"><strong>build_type</strong></a>(self, attribut: str, value: Any, type_: type = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="Argument-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
 
 <dl><dt><a name="Argument-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
 if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
@@ -299,7 +299,7 @@ configuration&nbsp;and&nbsp;configurations&nbsp;files.</tt></dd></dl>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="ScriptConfig-get_Windows_default_script_launcher"><strong>get_Windows_default_script_launcher</strong></a>(script_config: Dict[str, ~JsonValue]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;the&nbsp;Windows&nbsp;default&nbsp;launcher&nbsp;to&nbsp;execute&nbsp;a&nbsp;file.</tt></dd></dl>
+<dl><dt><a name="ScriptConfig-get_Windows_default_script_launcher"><strong>get_Windows_default_script_launcher</strong></a>(script_config: Dict[str, ~JsonValue]) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;gets&nbsp;the&nbsp;Windows&nbsp;default&nbsp;launcher&nbsp;to&nbsp;execute&nbsp;a&nbsp;file.</tt></dd></dl>
 
 <dl><dt><a name="ScriptConfig-get_arguments_from_config"><strong>get_arguments_from_config</strong></a>(arguments_section: str, configuration: Dict[str, Dict[str, ~JsonValue]]) -&gt; List[Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;arguments&nbsp;list&nbsp;of&nbsp;script.</tt></dd></dl>
 
@@ -330,7 +330,9 @@ Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamesp
 
 <dl><dt><a name="ScriptConfig-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="ScriptConfig-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+<dl><dt><a name="ScriptConfig-build_type"><strong>build_type</strong></a>(self, attribut: str, value: Any, type_: type = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="ScriptConfig-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
 
 <dl><dt><a name="ScriptConfig-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
 if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
@@ -489,7 +491,9 @@ Methods inherited from <a href="utils.html#DefaultNamespace">utils.DefaultNamesp
 
 <dl><dt><a name="User-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="User-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+<dl><dt><a name="User-build_type"><strong>build_type</strong></a>(self, attribut: str, value: Any, type_: type = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="User-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
 
 <dl><dt><a name="User-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
 if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
@@ -571,7 +575,6 @@ Data and other attributes inherited from <a href="types.html#SimpleNamespace">ty
 <td width="100%"><strong>JsonValue</strong> = ~JsonValue<br>
 <strong>ServerConfiguration</strong> = ~ServerConfiguration<br>
 <strong>__all__</strong> = ['User', 'Session', 'Argument', 'JsonValue', 'TokenCSRF', 'Blacklist', 'ScriptConfig', 'CallableFile', 'ServerConfiguration']<br>
-<strong>__annotations__</strong> = {'logger_critical': &lt;class 'collections.abc.Callable'&gt;, 'logger_debug': &lt;class 'collections.abc.Callable'&gt;, 'logger_error': &lt;class 'collections.abc.Callable'&gt;, 'logger_info': &lt;class 'collections.abc.Callable'&gt;, 'logger_warning': &lt;class 'collections.abc.Callable'&gt;}<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
 <strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...mons functions and class for WebScripts package.<font color="#c040c0">\n</font>'<br>

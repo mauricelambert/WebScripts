@@ -22,10 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implements a Content-Security-Policy debug page.
+This module adds notifications on WebScripts pages.
 """
 
-__version__ = "1.0.0"
+__version__ = "0.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implements a Content-Security-Policy debug page.
+This module adds notifications on WebScripts pages.
 """
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
@@ -47,54 +47,50 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-from typing import Tuple, Dict, List, TypeVar
-from json.decoder import JSONDecodeError
-from error_pages import Request
-from json import dumps, loads
-from os import _Environ
+__all__ = ["add"]
 
-global csp_report
+from typing import TypeVar, List, Tuple, Dict
+from html import escape
+from os import _Environ
 
 Server = TypeVar("Server")
 User = TypeVar("User")
 
-csp_report = {"report": "No CSP report yet."}
+notification_id: int = 0
+NEW_LINE: str = "\n"
 
 
-def debug(
+def add(
     environ: _Environ,
     user: User,
     server: Server,
-    code: str,
-    arguments: Dict[str, Dict[str, str]],
+    filename: str,
+    arguments: List[str],
     inputs: List[str],
     csrf_token: str = None,
 ) -> Tuple[str, Dict[str, str], str]:
 
     """
-    This function implements a debug page.
+    This function adds a new notification
+    in WebScripts pages.
     """
 
-    global csp_report
-
-    if isinstance(arguments, bytes):
-        try:
-            csp_report = loads(arguments)
-        except JSONDecodeError:
-            pass
-        else:
-            Request.send_mail(
-                server.configuration, dumps(csp_report, indent=4)
-            )
+    server.CommonsClasses.CallableFile.template_header_path += f"""
+        <p id="notification{notification_id}" class="notification">
+            <span class="notification_user">{escape(user.name)}: </span>
+            {escape(NEW_LINE.join(inputs))}
+            <button class="notification_close">
+                X
+            </button>
+        </p>
+        <!--
+            <p>.hidden=true;
+            use SessionStorage to close automatically notifications
+        -->
+    """
 
     return (
         "200 OK",
-        {
-            "Content-Security-Policy": (
-                "default-src 'self'; form-action 'none'; "
-                "frame-ancestors 'none'"
-            ),
-            "Content-Type": "application/json; charset=utf-8",
-        },
-        dumps(csp_report, indent=4),
+        {"Content-Type": "text/plain"},
+        "OK: notification is added.",
     )
