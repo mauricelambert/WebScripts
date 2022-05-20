@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.4"
+__version__ = "1.1.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -62,18 +62,15 @@ from os.path import (
     isabs,
 )
 from os import getcwd, listdir, stat, stat_result, scandir
+from sys import prefix, base_prefix, modules, executable
+from tempfile import TemporaryFile, _get_default_tempdir
 from typing import TypeVar, List, Set, Dict, Tuple
-from sys import prefix, base_prefix, modules
 from time import sleep, strftime, localtime
 from io import open, DEFAULT_BUFFER_SIZE
-from email.message import EmailMessage
-from collections.abc import Callable
 from collections.abc import Iterator
 from json import load, dumps, loads
-from smtplib import SMTP, SMTP_SSL
 from urllib.request import urlopen
 from hashlib import new as newhash
-from tempfile import TemporaryFile
 from urllib.error import URLError
 from dataclasses import dataclass
 from zipimport import zipimporter
@@ -163,11 +160,10 @@ class Report:
         rules: List[Rule],
         file_integrity: List[Dict[str, str]],
         server: Server,
-        logs: Logs,
     ):
         self.rules = rules
         self.server = server
-        self.logs = logs
+        self.logs = server.logs
         self.reports_json: str = None
         self.reports_dict: str = None
         self.reports_text: str = None
@@ -188,7 +184,7 @@ class Report:
 
         length_string = len(string)
 
-        if length_string > 13:
+        if length_string > length:
             string = f"{string[:length - len(end)]}{end}{separator}"
         else:
             string = f"{string}{separator}{' ' * (length - length_string)}"
@@ -634,70 +630,50 @@ scoring[f"{SEVERITY.INFORMATION.value} total"]:0>4},  Fail:\
         if self.reports_text is None:
             self.as_text()
 
-        server_name = getattr(self.server.configuration, "smtp_server", None)
-        starttls = getattr(self.server.configuration, "smtp_starttls", None)
-        password = getattr(self.server.configuration, "smtp_password", None)
+        notification = (
+            '<html><head><meta charset="utf-8">'
+            "<title>WebScripts Hardening Report</title></head><body><pre>"
+            f"<code>{self.reports_text}</code></pre></body></html>"
+        )
 
-        if not server_name:
-            return
+        attachments = []
+
+        if self.reports_html is not None:
+            attachments.append(
+                (
+                    [self.reports_html.encode()],
+                    {
+                        "maintype": "text",
+                        "subtype": "html",
+                        "filename": "audit.html",
+                    },
+                )
+            )
+
+        if self.reports_json is not None:
+            attachments.append(
+                (
+                    [self.reports_json.encode()],
+                    {
+                        "maintype": "application",
+                        "subtype": "json",
+                        "filename": "audit.json",
+                    },
+                )
+            )
 
         sleep(
             60
         )  # Wait 1 minutes (else "SmtpError: to many connections" is raised)
 
-        try:
-            if starttls:
-                server = SMTP(
-                    server_name,
-                    getattr(self.server.configuration, "smtp_port", 587),
-                )
-            elif getattr(self.server.configuration, "smtp_ssl", None):
-                server = SMTP_SSL(
-                    server_name,
-                    getattr(self.server.configuration, "smtp_port", 465),
-                )
-            else:
-                server = SMTP(
-                    server_name,
-                    getattr(self.server.configuration, "smtp_port", 25),
-                )
-        except TimeoutError:
-            self.logs.error("Connection error with SMTP server")
-            return
-
-        if password:
-            server.login(self.server.configuration.email, password)
-
-        msg = EmailMessage()
-        msg.set_content(
-            '<html><head><meta charset="utf-8">'
-            "<title>WebScripts Hardening Report</title></head><body><pre>"
-            f"<code>{self.reports_text}</code></pre></body></html>"
+        server = self.server
+        server.send_mail(
+            server.configuration,
+            notification,
+            title="[! WebScripts Hardening Report ]",
+            content_type="text/html; charset=utf-8",
+            attachments=attachments,
         )
-        msg.replace_header("Content-Type", "text/html; charset=utf-8")
-
-        msg["From"] = self.server.configuration.notification_address
-        msg["To"] = ", ".join(self.server.configuration.admin_adresses)
-        msg["Subject"] = "[! WebScripts Hardening Report ]"
-
-        if self.reports_html is not None:
-            msg.add_attachment(
-                self.reports_html.encode(),
-                maintype="text",
-                subtype="html",
-                filename="audit.html",
-            )
-
-        if self.reports_json is not None:
-            msg.add_attachment(
-                self.reports_json.encode(),
-                maintype="application",
-                subtype="json",
-                filename="audit.json",
-            )
-
-        server.send_message(msg)
-        server.quit()
 
 
 class Audit:
@@ -1238,7 +1214,7 @@ class Audit:
 
         default_password = False
 
-        with open(join(server_path, "data", "users.csv")) as file:
+        with open(join(server.configuration.data_dir, "users.csv")) as file:
             line = file.readline()
 
             while line:
@@ -1309,7 +1285,7 @@ class Audit:
         important_filenames.append(join(current_dir, "config", "server.json"))
 
         important_filenames += listdir("logs")
-        important_filenames += listdir(join(server_path, "data"))
+        important_filenames += listdir(server.configuration.data_dir)
 
         # for dirname_ in (server_path, current_dir):
 
@@ -1448,7 +1424,7 @@ class Audit:
 
         current_dir = Audit.current_dir
 
-        rw_filenames = listdir(join(server_path, "data")) + listdir(
+        rw_filenames = listdir(server.configuration.data_dir) + listdir(
             join(current_dir, "logs")
         )
 
@@ -1589,13 +1565,15 @@ class Audit:
         elif SEVERITY.CRITICAL.value == rule.severity:
             logs.critical(log)
 
-    def run(server: Server, logs: Logs) -> List[Rule]:
+    def run(server: Server) -> List[Rule]:
 
         """
         This function run audit and checks.
         """
 
         rules = []
+        logs = server.logs
+
         for audit in dir(Audit):
             if audit.startswith("audit_"):
                 rule = getattr(Audit, audit)(server)
@@ -1626,10 +1604,8 @@ class Audit:
                 from __init__ import __version__ as str_version
             except ImportError:
                 from .__init__ import __version__ as str_version
-        
-        version = [
-            int(i) for i in str_version.split(".")
-        ]
+
+        version = [int(i) for i in str_version.split(".")]
 
         def get_latest() -> str:
 
@@ -1653,7 +1629,6 @@ class Audit:
             except URLError:
                 logs.critical("Network error: updates are not checked.")
                 Audit.network_up = False
-                return ""
 
             if version < latest and latest != latest_:
                 logs.critical(
@@ -1669,49 +1644,125 @@ class Audit:
         return ""
 
 
-class FilesIntegity:
+class FilesIntegrity:
 
     """
     This class checks the file integrity.
     """
 
-    def __init__(self, server, logs):
-        directory = Audit.current_dir
-        webscripts_filenames = (
-            join(directory, "webscripts_file_integrity.json"),
-            join(server_path, "webscripts_file_integrity.json"),
-        )
-        for path in webscripts_filenames:
-            if exists(path):
-                self.webscripts_filename = path
-                break
+    def __init__(self, server: Server):
+        # temp = environ.get("TEMP") or environ.get("TMP") or environ.get("TMPDIR") or (r"C:\temp" if exists(r"C:\temp") else r"C:\tmp") if Audit.is_windows else ("/tmp" if exists("/tmp") else '/var/tmp')
+        # /usr/tmp
 
-        uploads_filenames = (
-            join(directory, "uploads_file_integrity.json"),
-            join(server_path, "uploads_file_integrity.json"),
-        )
-        for path in uploads_filenames:
-            if exists(path):
-                self.uploads_filename = path
-                break
+        self.temp = _get_default_tempdir()
 
-        logs_filenames = (
-            join(directory, "logs_checks.json"),
-            join(server_path, "logs_checks.json"),
+        self.webscripts_filename = self.get_checks_filename(
+            "webscripts_file_integrity.json"
         )
-        for path in logs_filenames:
-            if exists(path):
-                self.logs_filename = path
-                break
+        # webscripts_filenames = (
+        #     join(directory, ),
+        #     join(server_path, "webscripts_file_integrity.json"),
+        # )
+        # for path in webscripts_filenames:
+        #     if exists(path):
+        #          = path
+        #         break
+        # else:
+        #     logs.critical(
+        #         "webscripts_file_integrity.json not found ! "
+        #         "Build it in temp file, is not recommended !"
+        #         " Install is not secure !"
+        #     )
+        #     filename = self.webscripts_filename = join(temp, "webscripts_file_integrity.json")
+        #     if not exists(filename):
+        #         with open(filename, 'wb') as file:
+        #             file.write(b'{}')
+
+        self.uploads_filename = self.get_checks_filename(
+            "uploads_file_integrity.json"
+        )
+        # uploads_filenames = (
+        #     join(directory, "uploads_file_integrity.json"),
+        #     join(server_path, "uploads_file_integrity.json"),
+        # )
+        # for path in uploads_filenames:
+        #     if exists(path):
+        #         self.uploads_filename = path
+        #         break
+        # else:
+        #     logs.critical(
+        #         "uploads_file_integrity.json not found ! "
+        #         "Build it in temp file, is not recommended !"
+        #         " Install is not secure !"
+        #     )
+        #     filename = self.uploads_filename = join(temp, "uploads_file_integrity.json")
+        #     if not exists(filename):
+        #         with open(filename, 'wb') as file:
+        #             file.write(b'{}')
+
+        self.logs_filename = self.get_checks_filename("logs_checks.json")
+
+        # logs_filenames = (
+        #     join(directory, "logs_checks.json"),
+        #     join(server_path, "logs_checks.json"),
+        # )
+        # for path in logs_filenames:
+        #     if exists(path):
+        #         self.logs_filename = path
+        #         break
+        # else:
+        #     logs.critical(
+        #         "logs_checks.json not found ! "
+        #         "Build it in temp file, is not recommended !"
+        #         " Install is not secure !"
+        #     )
+        #     filename = self.logs_filename = join(temp, "logs_checks.json")
+        #     if not exists(filename):
+        #         with open(filename, 'wb') as file:
+        #             file.write(b'{}')
 
         self.temp_logs_files = {}
         self.server = server
-        self.logs = logs
+        self.logs = server.logs
         self.hashes = {}
+
+    def get_checks_filename(self, filename: str) -> str:
+
+        """
+        This function returns the path of the filename.
+        """
+
+        filenames = (
+            join(Audit.current_dir, filename),
+            join(server_path, "integrity", filename),
+        )
+
+        for path in filenames:
+            if exists(path):
+                _filename = path
+                break
+        else:
+            self.logs.critical(
+                f"{filename} not found ! "
+                "Build it in temp file, is not recommended !"
+                " Install is not secure !"
+            )
+
+            try:
+                _filename = filenames[0]
+                with open(_filename, "wb") as file:
+                    file.write(b"{}")
+            except PermissionError:
+                _filename = join(self.temp, filename)
+                if not exists(_filename):
+                    with open(_filename, "wb") as file:
+                        file.write(b"{}")
+
+        return _filename
 
     def get_old_files(
         self, filename: str, hash_: str
-    ) -> Dict[str, Dict[str, str]]:
+    ) -> Tuple[Dict[str, str], Dict[str, Dict[str, str]]]:
 
         """
         This function returns file data to check integrity
@@ -1767,6 +1818,7 @@ class FilesIntegity:
 
         server = self.server
         pages = server.pages
+        configuration = server.configuration
         self.webscripts_new_files = files = {}
         self.logs.info("Get hash and metadata from code files...")
 
@@ -1811,7 +1863,7 @@ class FilesIntegity:
                     path
                 )
 
-        for path in server.configuration.configuration_files:
+        for path in configuration.configuration_files:
             files[f"script configuration {basename(path)}"] = build_file(path)
 
         for template in templates:
@@ -1835,11 +1887,24 @@ class FilesIntegity:
                     module._webscripts_filepath
                 )
 
-        for script in scandir(join(prefix, "Scripts" if Audit.is_windows else "bin")):
+        for script in scandir(dirname(executable)):
             if script.is_file():
                 files[f"venv scripts/bin {script.name}"] = build_file(
                     script.path
                 )
+
+        for base in (server_path, "."):
+            for directory in configuration.cgi_path:
+
+                full_path = join(base, directory)
+                if not exists(full_path):
+                    continue
+
+                for bin_ in scandir(full_path):
+                    if not bin_.is_file():
+                        continue
+
+                    files[f"cgi-bin {bin_.name}"] = build_file(bin_.path)
 
         return files
 
@@ -1907,7 +1972,7 @@ class FilesIntegity:
         (uploads can not be changed from WebScripts Server).
         """
 
-        data_files = join(server_path, "data")
+        data_files = self.server.configuration.data_dir
         uploads_files = join(data_files, "uploads")
         self.new_data_files = new_data_files = {}
         to_yield, old_files = self.get_old_files(
@@ -2036,28 +2101,24 @@ class FilesIntegity:
         if to_yield:
             yield to_yield
 
-        server_log_path = join(server_path, "logs")
-        if isdir(server_log_path):
-            files = [*scandir(server_log_path)]
-        else:
-            files = []
+        # files = [logfile for path in environ["WEBSCRIPTS_LOGS_PATH"].split(":") if isdir(path) for logfile in scandir(path)]
+        files = [logfile for logfile in self.server.configuration.log_files]
 
-        if isdir("logs"):
-            self.logs.info("Current logs directory found...")
-            files.extend(scandir("logs"))
+        # if isdir("logs"):
+        #     self.logs.info("Current logs directory found...")
+        #     files.extend(scandir("logs"))
 
-        for file in files:
-            filename = file.name
+        for filename in files:
+            # basefilename = basename(filename)
             if (
-                file.is_file()
-                and len(filename) > 3
-                and filename[:2].isdigit()
-                and filename[2] == "-"
-                and filename.endswith(".logs")
+                isfile(filename)
+                # and len(basefilename) > 3
+                # and basefilename[:2].isdigit()
+                # and basefilename[2] == "-"
+                # and basefilename.endswith(".logs")
             ):
                 self.logs.debug(f"Check log file: '{filename}'...")
-                path = file.path
-                metadata = file.stat()
+                metadata = stat(filename)
                 size = metadata.st_size
                 modification = strftime(
                     "%Y-%m-%d %H:%M:%S", localtime(metadata.st_mtime)
@@ -2065,21 +2126,21 @@ class FilesIntegity:
                 creation = strftime(
                     "%Y-%m-%d %H:%M:%S", localtime(metadata.st_ctime)
                 )
-                temp_file = temp_logs_files.get(path)
+                temp_file = temp_logs_files.get(filename)
 
                 if temp_file is None:
-                    temp_file = temp_logs_files[path] = TemporaryFile()
+                    temp_file = temp_logs_files[filename] = TemporaryFile()
 
-                if not check_logs_ok(path, temp_file, metadata):
-                    file_checks = logs_checks.get(file, {})
+                if not check_logs_ok(filename, temp_file, metadata):
+                    file_checks = logs_checks.get(filename, {})
                     self.logs.warning(
                         "A log file has lost logs (check log rotation "
                         "otherwise your server is compromised)."
                     )
                     yield {
-                        "File": f"Logs {file}",
+                        "File": f"Logs {filename}",
                         "Reason": (
-                            f"{path}: logs has been modified. "
+                            f"{filename}: logs has been modified. "
                             f"Last size: {file_checks.get('size')},"
                             f" new size: {size}. Last creation: "
                             f"{file_checks.get('created')}, last modification:"
@@ -2093,7 +2154,7 @@ class FilesIntegity:
                         # logs file rotation
                     }
 
-                logs_checks[path] = {
+                logs_checks[filename] = {
                     "modification": modification,
                     "created": creation,
                     "size": size,
@@ -2139,7 +2200,7 @@ class FilesIntegity:
             with open(path, "rb+") as log_file:
                 log_file.seek(0)
                 copyfileobj(log_file, temp_file)
-            
+
             temp_file.truncate()
 
         return_value: bool = True
@@ -2149,7 +2210,8 @@ class FilesIntegity:
         write_check_log = temp_file.write
 
         if (
-            temp_metadata.st_size > metadata.st_size
+            temp_metadata.st_size
+            > metadata.st_size
             # or temp_metadata.st_mtime > metadata.st_mtime
             # or temp_metadata.st_ctime < metadata.st_ctime
         ):
@@ -2199,9 +2261,7 @@ def sha512sum(path: str, length: int = DEFAULT_BUFFER_SIZE) -> str:
 
 def daemon_func(
     server: Server,
-    file_integrity: FilesIntegity,
-    logs: Logs,
-    send_mail: Callable,
+    file_integrity: FilesIntegrity,
 ) -> None:
 
     """
@@ -2210,16 +2270,35 @@ def daemon_func(
     """
 
     sleep(120)  # No SMTP error: "SmtpError: to many connections"
+    logs = server.logs
     files = []
     text = ""
+    content_type = None
+    new_line = "\n"
 
     while True:
-        text += Audit.check_for_updates(logs)
+        text = (
+            Audit.check_for_updates(logs)
+            if not text
+            else text.replace(
+                "<!--update-->",
+                "<p>"
+                + Audit.check_for_updates(logs).replace(new_line, "<br>")
+                + "</p>",
+            )
+        )
 
         if text:
-            send_mail(server.configuration, text)
+            server.send_mail(
+                server.configuration,
+                text,
+                title="[! WebScripts Alerts ]",
+                content_type=content_type,
+            )
+            content_type = None
 
         sleep(3600)
+
         files += [
             *file_integrity.check_webscripts_file_integrity(),
             *file_integrity.check_logs_files(),
@@ -2231,22 +2310,37 @@ def daemon_func(
         # if [file for file in files if file["Score"] == 10]:
         if any([file["Score"] >= 5 for file in files]):
             lengths = {
-                "File": {"length": 12},
-                "Reason": {"length": 50},
-                "Score": {"length": 5, "separator": ",\n"},
+                "File": {"length": 24},
+                "Reason": {"length": 75},
+                "Score": {"length": 5},
             }
-            text = "\n".join(
-                [
-                    Report.truncate_string(key, **lengths[key])
-                    for key in files[0].keys()
-                ]
-                + [
-                    Report.truncate_string(value, **lengths[key])
-                    for file in files
-                    for key, value in file.items()
-                ]
+            text = (
+                "<html><head></head><body><!--update--><pre><code>"
+                + "\n".join(
+                    [
+                        "".join(
+                            [
+                                Report.truncate_string(key, **lengths[key])
+                                for key in files[0].keys()
+                            ]
+                        ),
+                        *[
+                            "".join(
+                                [
+                                    Report.truncate_string(
+                                        value, **lengths[key]
+                                    )
+                                    for key, value in file.items()
+                                ]
+                            )
+                            for file in files
+                        ],
+                    ]
+                )
+                + "</code></pre></body></html>"
             )
             files = []
+            content_type = "text/html; charset=utf-8"
         else:
             text = ""
 
@@ -2267,13 +2361,15 @@ def get_files_recursive(path: str) -> Iterator[Tuple[str, str]]:
             yield from get_files_recursive(join(path, file))
 
 
-def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
+def main(server: Server) -> Report:
 
     """
     The main function to perform WebScripts Server hardening audit.
     """
 
-    file_integrity = FilesIntegity(server, logs)
+    logs: Logs = server.logs
+
+    file_integrity = FilesIntegrity(server)
 
     files = [
         *file_integrity.check_webscripts_file_integrity(),
@@ -2283,8 +2379,8 @@ def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
 
     file_integrity.save()
 
-    rules = Audit.run(server, logs)
-    report = Report(rules, files, server, logs)
+    rules = Audit.run(server)
+    report = Report(rules, files, server)
     report.as_json()
     report.get_pourcent()
     report.as_html()
@@ -2308,8 +2404,6 @@ def main(server: Server, logs: Logs, send_mail: Callable) -> Report:
         args=(
             server,
             file_integrity,
-            logs,
-            send_mail,
         ),
         daemon=True,
     )

@@ -18,8 +18,11 @@
 		"session_max_time": 3600,
 		"csrf_max_time": 300,
 
+		"urls_section": "urls",
+
 		"scripts_path": [
-			"./scripts/account", 
+			"./scripts/rss",
+			"./scripts/account",
 			"./scripts/passwords", 
 			"./scripts/uploads"
 		],
@@ -32,7 +35,7 @@
 		"documentations_path": [
 			"./doc/*.html"
 		],
-		"modules": ["error_pages", "share"],
+		"modules": ["error_pages", "JsonRpc", "share", "cgi", "notification"],
 		"modules_path": ["./modules"],
 		"js_path": [
 			"./static/js/*.js"
@@ -60,7 +63,17 @@
 			"admin1@webscripts.local",
 			"admin2@webscripts.local"
 		],
-		"notification_address": "notification@webscripts.local"
+		"notification_address": "notification@webscripts.local",
+
+		"data_dir": "data",
+		"cgi_path": ["cgi-bin"]
+	},
+
+	"urls": {
+		"/authentication/": "/web/auth/",
+		"/cgi-bin/": "/cgi/bin/",
+		"/bin/": "/cgi/bin/",
+		"/cgi/": "/cgi/bin/"
 	},
 
 	"scripts": {

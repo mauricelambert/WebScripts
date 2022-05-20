@@ -22,11 +22,11 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement some tools for WebScripts server
+This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "0.1.5"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -35,7 +35,7 @@ __description__ = """
 This tool run scripts and display the result in a Web
 Interface.
 
-This file implement some tools for WebScripts server
+This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 license = "GPL-3.0 License"
@@ -65,19 +65,33 @@ __all__ = [
     # "doRollover",
     # "rotator",
     # "namer",
+    "logger_debug",
+    "logger_info",
+    "logger_access",
+    "logger_response",
+    "logger_warning",
+    "logger_error",
+    "logger_critical",
 ]
 
-from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
+from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _SpecialGenericAlias,
+    _GenericAlias,
+    Any,
+)
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
 from os import path, _Environ, device_encoding, remove
 from subprocess import check_call, DEVNULL  # nosec
+from logging import Logger, getLogger
 from configparser import ConfigParser
 from collections.abc import Callable
-from contextlib import suppress
 from platform import system
 from functools import wraps
 from os.path import abspath
-from logging import Logger
+from sys import _getframe
 import logging.handlers
 import logging
 import locale
@@ -103,30 +117,33 @@ else:
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
+logging.currentframe = lambda: _getframe(5)
 system = system()
 
 
 class _Logs:
 
     """
-    This class implement basic python logs.
+    This class implements basic python logs.
     """
 
-    console: Logger = logging.getLogger("WebScripts.console")
-    file: Logger = logging.getLogger("WebScripts.file")
+    console: Logger = getLogger("WebScripts.console")
+    file: Logger = getLogger("WebScripts.file")
 
-    log_debug: Logger = logging.getLogger("WebScripts.debug")
-    log_info: Logger = logging.getLogger("WebScripts.info")
-    log_warning: Logger = logging.getLogger("WebScripts.warning")
-    log_error: Logger = logging.getLogger("WebScripts.error")
-    log_critical: Logger = logging.getLogger("WebScripts.critical")
+    log_debug: Logger = getLogger("WebScripts.debug")
+    log_info: Logger = getLogger("WebScripts.info")
+    log_warning: Logger = getLogger("WebScripts.warning")
+    log_error: Logger = getLogger("WebScripts.error")
+    log_critical: Logger = getLogger("WebScripts.critical")
 
-    log_trace: Logger = logging.getLogger("WebScripts.trace")
+    log_trace: Logger = getLogger("WebScripts.trace")
+    log_access: Logger = getLogger("WebScripts.access")
+    log_response: Logger = getLogger("WebScripts.response")
 
     def debug(log: str) -> None:
 
         """
-        This function implement basic python debug logs for WebScripts.
+        This function implements basic python debug logs for WebScripts.
         """
 
         Logs.log_debug.debug(log)
@@ -137,7 +154,7 @@ class _Logs:
     def info(log: str) -> None:
 
         """
-        This function implement basic python info logs for WebScripts.
+        This function implements basic python info logs for WebScripts.
         """
 
         Logs.log_info.info(log)
@@ -148,7 +165,7 @@ class _Logs:
     def warning(log: str) -> None:
 
         """
-        This function implement basic python warning logs for WebScripts.
+        This function implements basic python warning logs for WebScripts.
         """
 
         Logs.log_warning.warning(log)
@@ -159,7 +176,7 @@ class _Logs:
     def error(log: str) -> None:
 
         """
-        This function implement basic python error logs for WebScripts.
+        This function implements basic python error logs for WebScripts.
         """
 
         Logs.log_error.error(log)
@@ -170,7 +187,7 @@ class _Logs:
     def critical(log: str) -> None:
 
         """
-        This function implement basic python critical logs for WebScripts.
+        This function implements basic python critical logs for WebScripts.
         """
 
         Logs.log_critical.critical(log)
@@ -181,7 +198,7 @@ class _Logs:
     def exception(log: str) -> None:
 
         """
-        This function implement basic python exception (error) logs for
+        This function implements basic python exception (error) logs for
         WebScripts.
         """
 
@@ -193,11 +210,35 @@ class _Logs:
     def trace(log: str) -> None:
 
         """
-        This function implement trace logs for WebScripts.
+        This function implements trace logs for WebScripts.
         """
 
         Logs.log_trace.log(5, log)
         logging.log(5, log)
+
+    def access(log: str) -> None:
+
+        """
+        This function implements access logs for WebScripts.
+        """
+
+        Logs.log_debug.debug(log)
+        Logs.log_access.log(25, log)
+        Logs.console.log(25, f"\x1b[36m{log}\x1b[0m")
+        Logs.file.log(25, log)
+        logging.log(25, log)
+
+    def response(log: str) -> None:
+
+        """
+        This function implements response logs for WebScripts.
+        """
+
+        Logs.log_debug.debug(log)
+        Logs.log_response.log(26, log)
+        Logs.console.log(26, f"\x1b[36m{log}\x1b[0m")
+        Logs.file.log(26, log)
+        logging.log(26, log)
 
     def config(*args, **kwargs):
 
@@ -214,12 +255,42 @@ class WindowsLogs(_Logs):
     This class log on Windows.
     """
 
-    app: str = "WebScripts"
+    app: str = __package__ or "WebScripts"
+
+    def access(log: str) -> None:
+
+        """
+        This function logs access on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).access(log)
+        if WINDOWS_LOGS:
+            ReportEvent(
+                WindowsLogs.app,
+                0x9C4,
+                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
+                strings=[log],
+            )
+
+    def response(log: str) -> None:
+
+        """
+        This function logs response on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).response(log)
+        if WINDOWS_LOGS:
+            ReportEvent(
+                WindowsLogs.app,
+                0xA28,
+                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
+                strings=[log],
+            )
 
     def debug(log: str) -> None:
 
         """
-        This function log debugs on Windows.
+        This function logs debugs on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).debug(log)
@@ -234,7 +305,7 @@ class WindowsLogs(_Logs):
     def info(log: str) -> None:
 
         """
-        This function log infos on Windows.
+        This function logs infos on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).info(log)
@@ -249,7 +320,7 @@ class WindowsLogs(_Logs):
     def warning(log: str) -> None:
 
         """
-        This function log warnings on Windows.
+        This function logs warnings on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).warning(log)
@@ -264,7 +335,7 @@ class WindowsLogs(_Logs):
     def error(log: str) -> None:
 
         """
-        This function log errors on Windows.
+        This function logs errors on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).error(log)
@@ -279,7 +350,7 @@ class WindowsLogs(_Logs):
     def critical(log: str) -> None:
 
         """
-        This function log criticals on Windows.
+        This function logs criticals on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).critical(log)
@@ -295,13 +366,31 @@ class WindowsLogs(_Logs):
 class LinuxLogs(_Logs):
 
     """
-    This class log on Linux.
+    This class logs on Linux.
     """
+
+    def access(log: str) -> None:
+
+        """
+        This function logs access on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).access(log)
+        ReportEvent(syslog.LOG_INFO, log)
+
+    def response(log: str) -> None:
+
+        """
+        This function logs response on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).response(log)
+        ReportEvent(syslog.LOG_INFO, log)
 
     def debug(log: str) -> None:
 
         """
-        This function log debugs on Linux.
+        This function logs debugs on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).debug(log)
@@ -310,7 +399,7 @@ class LinuxLogs(_Logs):
     def info(log: str) -> None:
 
         """
-        This function log infos on Linux.
+        This function logs infos on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).info(log)
@@ -319,7 +408,7 @@ class LinuxLogs(_Logs):
     def warning(log: str) -> None:
 
         """
-        This function log warnings on Linux.
+        This function logs warnings on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).warning(log)
@@ -328,7 +417,7 @@ class LinuxLogs(_Logs):
     def error(log: str) -> None:
 
         """
-        This function log errors on Linux.
+        This function logs errors on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).error(log)
@@ -337,7 +426,7 @@ class LinuxLogs(_Logs):
     def critical(log: str) -> None:
 
         """
-        This function log criticals on Linux.
+        This function logs criticals on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).critical(log)
@@ -347,7 +436,7 @@ class LinuxLogs(_Logs):
 def log_trace(function: FunctionType) -> FunctionType:
 
     """
-    This decorator trace functions (start and end).
+    This decorator traces functions (start and end).
     """
 
     @wraps(function)
@@ -541,7 +630,7 @@ class DefaultNamespace(SimpleNamespace):
                 unexpecteds.append(attribut)
 
                 if log:
-                    Logs.warning(
+                    logger_warning(
                         f"{attribut} is an unexpected argument "
                         f"in {self.__class__.__name__}"
                     )
@@ -589,7 +678,7 @@ class DefaultNamespace(SimpleNamespace):
     def build_types(self) -> None:
 
         """
-        This function build type from configuration values.
+        This function builds type from configuration values.
         """
 
         for attribut, type_ in self.__types__.items():
@@ -598,48 +687,85 @@ class DefaultNamespace(SimpleNamespace):
             if value is None:
                 continue
 
-            if isinstance(type_, _GenericAlias) or isinstance(
-                type_, _SpecialGenericAlias
-            ):
-                if isinstance(value, type_.__origin__):
-                    continue
+            self.build_type(attribut, value, type_)
+
+    @log_trace
+    def build_type(
+        self, attribut: str, value: Any, type_: type = None
+    ) -> None:
+
+        """
+        This function builds type from configuration value.
+        """
+
+        if type_ is None:
+            type_ = self.__types__.get(attribut)
+            print(type_)
+
+            if type_ is None or type_ is str:
+                setattr(self, attribut, str(value))
+                return None
+
+        if isinstance(type_, _GenericAlias) or isinstance(
+            type_, _SpecialGenericAlias
+        ):
+            if isinstance(value, type_.__origin__):
+                setattr(self, attribut, value)
+                return None
+        else:
+            if isinstance(value, type_):
+                setattr(self, attribut, value)
+                return None
+
+        if type_ is bool:
+            if value == "true":
+                setattr(self, attribut, True)
+            elif value == "false":
+                setattr(self, attribut, False)
             else:
-                if isinstance(value, type_):
-                    continue
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be boolean (true or false)"
+                    f" but is {value}"
+                )
 
-            if type_ is bool:
-                if value == "true":
-                    setattr(self, attribut, True)
-                elif value == "false":
-                    setattr(self, attribut, False)
-                else:
-                    raise WebScriptsConfigurationError(
-                        f"{attribut} must be boolean (true or false)"
-                        f" but is {value}"
-                    )
+        elif type_ is int or type_ is float:
+            value_ = value.replace(".", "")
+            if value_.isdigit():
+                setattr(self, attribut, type_(value))
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut!r} must be an integer but is {value!r}"
+                )
 
-            if type_ is int:
-                if value.isdigit():
-                    setattr(self, attribut, int(value))
-                else:
-                    raise WebScriptsConfigurationError(
-                        f"{attribut} must be an integer but is {value}"
-                    )
-
-            if type_ is List[str] or type_ is list:
+        elif type_ is List[str] or type_ is list or type_ is List:
+            if isinstance(value, str):
                 setattr(self, attribut, value.split(","))
+            else:
+                setattr(self, attribut, str(value))
 
-            if type_ is List[int]:
-                int_list = []
-                for digit in value.split(","):
-                    if digit.isdigit():
-                        int_list.append(int(digit))
+        elif type_ is List[int] or type_ is List[float]:
+            functype = type_.__args__[0]
+            type_list = []
+
+            if isinstance(value, str):
+                for typed in value.split(","):
+                    typed_ = typed.replace(".", "")
+                    if typed_.isdigit():
+                        type_list.append(functype(typed))
                     else:
                         raise WebScriptsConfigurationError(
                             f"{attribut} must be a list of "
-                            f"integer but contain {digit}"
+                            f"integer but contain {typed!r}"
                         )
-                setattr(self, attribut, int_list)
+            elif isinstance(value, (int, float)):
+                type_list.append(functype(value))
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be a list of "
+                    f"integer but contain {value!r}"
+                )
+
+            setattr(self, attribut, type_list)
 
     @log_trace
     def set_defaults(self) -> None:
@@ -705,6 +831,7 @@ def get_encodings():
     yield "utf-8"  # Default for Linux
     yield "cp1252"  # Default for Windows
     yield "latin-1"  # Can read all files
+    yield None
 
 
 @log_trace
@@ -735,11 +862,16 @@ def get_ip(environ: _Environ) -> str:
 
 
 @log_trace
-def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
+def get_file_content(
+    file_path, *args, as_iterator: bool = False, **kwargs
+) -> StrOrBytes:
 
     """
     This function return the file content.
     """
+
+    if as_iterator:
+        return open(get_real_path(file_path), "rb", *args, **kwargs)
 
     if "encoding" in kwargs or "rb" in args or "rb" in kwargs.values():
         with open(get_real_path(file_path), *args, **kwargs) as file:
@@ -747,15 +879,21 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
         return content
 
     errors = []
-    for encoding in get_encodings():
+    encodings = get_encodings()
+    encoding = next(encodings)
+
+    while encoding is not None:
         try:
-            with open(
+            file = open(
                 get_real_path(file_path), *args, encoding=encoding, **kwargs
-            ) as file:
-                content = file.read()
+            )
+            content = file.read()
+            file.close()
             return content
         except UnicodeDecodeError as e:
             errors.append(e)
+
+        encoding = next(encodings)
 
     raise Exception(errors)
 
@@ -790,7 +928,9 @@ def get_arguments_count(object_: Callable):
 
 
 @log_trace
-def get_real_path(file_path: str, is_dir: bool = False) -> str:
+def get_real_path(
+    file_path: str, is_dir: bool = False, no_error: bool = False
+) -> str:
 
     """
     This function return the real path for files.
@@ -824,6 +964,8 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
         and check(server_file_path)
     ):
         return abspath(server_file_path)
+    elif no_error:
+        return None
 
     raise FileNotFoundError(
         f"[WebScripts] No such file or directory: '{file_path}'"
@@ -834,3 +976,13 @@ server_path = path.dirname(__file__)
 
 date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
+logging.addLevelName(25, "ACCESS")
+logging.addLevelName(26, "RESPONSE")
+
+logger_debug: Callable = Logs.debug
+logger_info: Callable = Logs.info
+logger_access: Callable = Logs.access
+logger_response: Callable = Logs.response
+logger_warning: Callable = Logs.warning
+logger_error: Callable = Logs.error
+logger_critical: Callable = Logs.critical

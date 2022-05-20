@@ -9,7 +9,8 @@
 		"delete_group.py": "config_delete_group",
 		"api_view_users.py": "config_api_view_users",
 		"api_view_groups.py": "config_api_view_groups",
-		"change_user_password.py": "config_change_user_password"
+		"change_user_password.py": "config_change_user_password",
+		"my_user_informations.py": "config_my_user_informations"
 	},
 
 	"config_change_user_password": {
@@ -252,5 +253,14 @@
 
 	"args_get_apikey": {
 		"password": "arg_password"
+	},
+
+	"config_my_user_informations": {
+		"timeout": 15,
+		"minimum_access": 50,
+		"launcher": "python",
+		"category": "My Account",
+		"description": "This script prints user informations.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	}
 }

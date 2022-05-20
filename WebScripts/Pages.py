@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "1.0.3"
+__version__ = "2.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -51,8 +51,8 @@ __copyright__ = copyright
 
 __all__ = ["Pages"]
 
+from typing import Tuple, List, Dict, TypeVar, Iterable, Union
 from subprocess import Popen, PIPE, TimeoutExpired  # nosec
-from typing import Tuple, List, Dict
 from base64 import urlsafe_b64encode
 from contextlib import suppress
 from secrets import token_bytes
@@ -62,6 +62,8 @@ from fnmatch import fnmatch
 from threading import Timer
 from html import escape
 from time import time
+
+Server = TypeVar("Server")
 
 try:
     from .commons import (
@@ -91,6 +93,13 @@ try:
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_warning,
+        logger_error,
+        logger_critical,
     )
 except ImportError:
     from commons import (
@@ -120,6 +129,13 @@ except ImportError:
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_warning,
+        logger_error,
+        logger_critical,
     )
 
 
@@ -186,7 +202,7 @@ def start_process(
         key = urlsafe_b64encode(token_bytes(40)).decode()
         process_ = Pages.processes[key] = Process(process, script, user, key)
         process_.send_inputs(inputs)
-        Logs.debug(
+        logger_debug(
             "Create key and process, sent inputs and get the first line."
         )
         return b"", b"", key, None, None
@@ -197,7 +213,7 @@ def start_process(
             timeout=script.timeout,
         )
     except TimeoutExpired:
-        Logs.error(f"TimeoutExpired on {script.name} for {user.name}")
+        logger_error(f"TimeoutExpired on {script.name} for {user.name}")
         process.kill()
 
         stdout, stderr = process.communicate()
@@ -242,15 +258,15 @@ def execution_logs(
     """
 
     if script.no_password:
-        Logs.info(f"Command: {process.args}")
+        logger_info(f"Command: {process.args}")
 
     if process.returncode or stderr:
-        Logs.error(
+        logger_error(
             f"SCRIPT ERROR: script {script.name} user {user.name} code "
             f"{process.returncode} STDERR {decode_output(stderr)}"
         )
     else:
-        Logs.debug(
+        logger_debug(
             f'SCRIPT "{script.name}" executed without error for '
             f'user named "{user.name}".'
         )
@@ -337,7 +353,7 @@ def check_right(user: User, configuration: ScriptConfig) -> bool:
     ):
         return check_categories_scripts_access(user, configuration)
     else:
-        Logs.error(
+        logger_error(
             f"HTTP 403: Access denied for {user.name} on {configuration.name}"
         )
         return False
@@ -355,19 +371,19 @@ def check_categories_scripts_access(
     if any(
         [fnmatch(configuration.category, access) for access in user.categories]
     ):
-        Logs.info(
+        logger_info(
             f"{user.name} get access to category {configuration.category}"
             f" ({user.categories})"
         )
         return True
     elif any([fnmatch(configuration.name, access) for access in user.scripts]):
-        Logs.info(
+        logger_info(
             f"{user.name} get access to script {configuration.name}"
             f" ({user.scripts})"
         )
         return True
     else:
-        Logs.error(
+        logger_error(
             f"HTTP 403: {user.name} doesn't match with category "
             f"({configuration.category}) and script ({configuration.name})"
         )
@@ -382,10 +398,15 @@ def decode_output(data: bytes) -> str:
     """
 
     output = None
-    for encoding in get_encodings():
+    encodings = get_encodings()
+    encoding = next(encodings)
+
+    while encoding is not None:
         with suppress(UnicodeDecodeError):
             output = data.decode(encoding)
             return output
+
+        encoding = next(encodings)
 
 
 class Process:
@@ -397,7 +418,7 @@ class Process:
     def __init__(
         self, process: Popen, script: ScriptConfig, user: User, key: str
     ):
-        Logs.debug("Process creation...")
+        logger_debug("Process creation...")
         self.process = process
         self.script = script
         self.user = user
@@ -408,7 +429,7 @@ class Process:
         self.error = "No errors"
 
         if script.timeout is not None:
-            Logs.info("Timeout detected, make timer and start it.")
+            logger_info("Timeout detected, make timer and start it.")
             self.timer = Timer(script.timeout, self.get_line, args=(False,))
             self.stop_max_time = self.start_time + self.timeout
             self.timer.start()
@@ -426,27 +447,40 @@ class Process:
 
             self.timer.cancel()
 
+            stdout = self.process.stdout
+            stderr = self.process.stderr
+
+            out = stdout.read()
+            error = stderr.read()
+
+            stdout.close()
+            stderr.close()
+
             return (
-                self.process.stdout.read(),
-                self.process.stderr.read(),
+                out,
+                error,
                 self.error,
             )
 
         elif self.timeout is None or time() <= self.stop_max_time:
             data = self.process.stdout.readline()
-            Logs.debug(
+            logger_debug(
                 f"Get new line on {self.script.name} for {self.user.name}"
             )
             return data, b"", ""
         else:
-            Logs.error(
+            logger_error(
                 f"TimeoutExpired on {self.script.name} for {self.user.name}"
             )
             self.process.kill()
 
             if read:
-                stdout = self.process.stdout.read()
-                stderr = self.process.stderr.read()
+                fdout = self.process.stdout
+                fderr = self.process.stderr
+                stdout = fdout.read()
+                stderr = fderr.read()
+                fdout.close()
+                fderr.close()
                 del Pages.processes[self.key]
             else:
                 self.timer = Timer(300, self.get_line)
@@ -456,7 +490,7 @@ class Process:
                 stderr = b""
 
             self.error = "TimeoutError"
-            Logs.debug("Get the stdout and the stderr of the killed process")
+            logger_debug("Get the stdout and the stderr of the killed process")
 
             return stdout, stderr, self.error
 
@@ -472,7 +506,7 @@ class Process:
             self.process.stdin.flush()
 
         self.process.stdin.close()
-        Logs.debug(
+        logger_debug(
             "Inputs are sent to the child process and the stdin is closed."
         )
 
@@ -488,12 +522,12 @@ class Script:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
 
         """
         This method send a new line of script execution in API response.
@@ -502,13 +536,13 @@ class Script:
         process = Pages.processes.get(filename)
 
         if process is None:
-            Logs.error(
+            logger_error(
                 f"HTTP 404 for {user.name} on " f"/api/script/get/{filename}"
             )
             return "404", {}, b""
 
         if process.user.id != user.id:
-            Logs.error(
+            logger_error(
                 f"HTTP 403 for {user.name} on "
                 f"/api/script/get/{process.script.name}"
             )
@@ -549,7 +583,7 @@ class Api:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
@@ -560,6 +594,8 @@ class Api:
         This function return a json string with script informations and
         arguments.
         """
+
+        server_configuration = server.configuration
 
         if (
             server_configuration.auth_script
@@ -608,12 +644,12 @@ class Api:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
 
         """
         This function execute scripts with command line,
@@ -621,8 +657,10 @@ class Api:
         and return it as json.
         """
 
+        server_configuration = server.configuration
+
         if filename == server_configuration.auth_script:
-            Logs.error(
+            logger_error(
                 f"HTTP 404 for {user.name} on /api/scripts/{filename}"
                 " (auth script)"
             )
@@ -633,7 +671,7 @@ class Api:
             csrf_token,
             getattr(server_configuration, "csrf_max_time", 300),
         ):
-            Logs.error(
+            logger_error(
                 f"HTTP 403 for {user.name} on /api/scripts/{filename}"
                 " (CSRF Token invalid)"
             )
@@ -645,7 +683,7 @@ class Api:
 
         if stdout is None:
             error_HTTP = stderr.decode()
-            Logs.error(
+            logger_error(
                 f"HTTP {error_HTTP} for {user.name} on "
                 f"/api/scripts/{filename}"
             )
@@ -686,7 +724,7 @@ class Web:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
@@ -719,12 +757,12 @@ class Web:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[str, bytes, Iterable[bytes]]]:
 
         """
         This function return Web Page with scripts documentation.
@@ -733,11 +771,11 @@ class Web:
         script = Pages.scripts.get(filename)
 
         if script is None:
-            Logs.error(f"HTTP 404 for {user.name} on /web/doc/{filename}")
+            logger_error(f"HTTP 404 for {user.name} on /web/doc/{filename}")
             return "404", {}, b""
 
         if not check_right(user, script):
-            Logs.error(
+            logger_error(
                 f"HTTP 403: Access denied for {user.name} on {filename} "
                 "(/web/doc/ request)"
             )
@@ -745,7 +783,7 @@ class Web:
 
         if script.command_generate_documentation is not None:
             command = script.command_generate_documentation % script.get_dict()
-            Logs.info(f"Command for documentation: {command}")
+            logger_info(f"Command for documentation: {command}")
             process = Popen(  # nosec # nosemgrep
                 command,
                 env=get_environ(environ, user, script),
@@ -761,9 +799,10 @@ class Web:
                     "Content-Type": f"{script.documentation_content_type};"
                     " charset=utf-8"
                 },
-                get_file_content(script.documentation_file),
+                get_file_content(script.documentation_file, as_iterator=True),
             )
         else:
+            server_configuration = server.configuration
             doc = ScriptConfig.get_docfile_from_configuration(
                 server_configuration, filename
             )
@@ -775,10 +814,10 @@ class Web:
                         "Content-Type": f"{script.documentation_content_type};"
                         " charset=utf-8"
                     },
-                    get_file_content(doc),
+                    get_file_content(doc, as_iterator=True),
                 )
 
-        Logs.error(f"HTTP 404 for {user.name} on /web/doc/{filename}")
+        logger_error(f"HTTP 404 for {user.name} on /web/doc/{filename}")
         return "404", {}, b""
 
     @log_trace
@@ -786,19 +825,23 @@ class Web:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[bytes, str, Iterable[bytes]]]:
 
-        """This function return Web (HTML) response
+        """
+        This function return Web (HTML) response
         (error code, headers and page) to call script
-        and print script output"""
+        and print script output
+        """
+
+        server_configuration = server.configuration
 
         if filename == server_configuration.auth_script:
-            Logs.error(
+            logger_error(
                 f"HTTP 404 for {user.name} on /web/scripts/{filename}"
                 " (auth script)"
             )
@@ -807,11 +850,13 @@ class Web:
         script = Pages.scripts.get(filename)
 
         if script is None:
-            Logs.error(f"HTTP 404 for {user.name} on /web/scripts/{filename}")
+            logger_error(
+                f"HTTP 404 for {user.name} on /web/scripts/{filename}"
+            )
             return "404", {}, b""
 
         if not check_right(user, script):
-            Logs.error(
+            logger_error(
                 f"HTTP 403: Access denied for {user.name} on {filename}"
                 " (/web/scripts/ request)"
             )
@@ -822,7 +867,7 @@ class Web:
         if callable_file is not None:
             return callable_file(user)
 
-        Logs.error(f"HTTP 404 for {user.name} on /web/scripts/{filename}")
+        logger_error(f"HTTP 404 for {user.name} on /web/scripts/{filename}")
         return "404", {}, b""
 
     @log_trace
@@ -830,14 +875,18 @@ class Web:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
 
-        """This function return authentication page."""
+        """
+        This function return authentication page.
+        """
+
+        server_configuration = server.configuration
 
         if server_configuration.active_auth:
             callable_file = CallableFile(
@@ -845,7 +894,7 @@ class Web:
             )
             return callable_file(user)
         else:
-            Logs.error(
+            logger_error(
                 f"HTTP 403 for {user.name} on /web/auth/ (active_auth"
                 " configuration is not True)"
             )
@@ -854,7 +903,9 @@ class Web:
 
 class Pages:
 
-    """This class implement Web Pages for WebScripts server."""
+    """
+    This class implement Web Pages for WebScripts server.
+    """
 
     packages: DefaultNamespace
     scripts: Dict[str, ScriptConfig]
@@ -871,12 +922,12 @@ class Pages:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], bytes]:
 
         """
         A redirect page (Error code 301, javascript redirect and redirect
@@ -886,9 +937,9 @@ class Pages:
         return (
             "301 Moved Permanently",
             {"Location": "/web/"},
-            "<!-- To use API go to this URL: /api/ --><html><body><h1>"
-            'Index page is /web/</h1><a href="/web/">Please click here'
-            '</a><script>window.location="/web/"</script></html>',
+            b"<!-- To use API go to this URL: /api/ --><html><body><h1>"
+            b'Index page is /web/</h1><a href="/web/">Please click here'
+            b'</a><script>window.location="/web/"</script></html>',
         )
 
     @log_trace
@@ -896,21 +947,23 @@ class Pages:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
 
-        """This function get Javascripts Scripts and send it."""
+        """
+        This function get Javascripts Scripts and send it.
+        """
 
         callable_file = Pages.js_paths.get(filename, None)
 
         if callable_file is not None:
             return callable_file(user)
 
-        Logs.error(f"HTTP 404 for {user.name} on /js/{filename}")
+        logger_error(f"HTTP 404 for {user.name} on /js/{filename}")
         return "404", {}, b""
 
     @log_trace
@@ -918,21 +971,23 @@ class Pages:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
 
-        """This function get static file and send it."""
+        """
+        This function get static file and send it.
+        """
 
         callable_file = Pages.statics_paths.get(filename, None)
 
         if callable_file is not None:
             return callable_file(user)
 
-        Logs.error(f"HTTP 404 for {user.name} on /static/{filename}")
+        logger_error(f"HTTP 404 for {user.name} on /static/{filename}")
         return "404", {}, b""
 
     @log_trace
@@ -940,27 +995,28 @@ class Pages:
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], bytes]:
 
         """
         This function return check auth and return headers, error and page.
         """
 
         ip = get_ip(environ)
+        server_configuration = server.configuration
 
         if not server_configuration.active_auth:
-            Logs.error(
+            logger_error(
                 f"HTTP 403: Access denied for {user.name} on /auth/ "
                 "(active_auth configuration is not True)"
             )
             return "403", {}, b""
 
-        Logs.info("Run authentication script.")
+        logger_info("Run authentication script.")
         stdout, stderr, key, code, error = execute_scripts(
             server_configuration.auth_script,
             user,
@@ -971,10 +1027,10 @@ class Pages:
         )
 
         if len(stderr) == 3:
-            return stderr.decode(), {}, ""
+            return stderr.decode(), {}, b""
 
         if code or stdout is None or stderr:
-            return "500", {}, ""
+            return "500", {}, b""
 
         user = User.default_build(**anti_XSS(loads(stdout)))
 
@@ -1002,21 +1058,23 @@ class Pages:
                     'session_max_time',
                     3600)}; Secure; HttpOnly""",
             },
-            "",
+            b"",
         )
 
     def reload(
         self,
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         commande: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
-        """This function is a simple URL to reload scripts
-        (useful for developpers to add/modify a script)."""
+        """
+        This function is a simple URL to reload scripts
+        (useful for developpers to add/modify a script).
+        """
 
         pass

@@ -22,7 +22,7 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package.
+This file implements commons functions and class for WebScripts package.
 """
 
 __version__ = "0.1.3"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package.
+This file implements commons functions and class for WebScripts package.
 """
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
@@ -61,6 +61,7 @@ __all__ = [
 
 
 from typing import TypeVar, Tuple, List, Dict
+from secrets import token_bytes, token_hex
 from configparser import ConfigParser
 from collections.abc import Callable
 from subprocess import Popen, PIPE  # nosec
@@ -71,8 +72,7 @@ from platform import system
 from re import fullmatch
 from glob import iglob
 from time import time
-import secrets
-import json
+from json import load
 
 if __package__:
     from .utils import (
@@ -94,6 +94,13 @@ if __package__:
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
         WebScriptsSecurityError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_warning,
+        logger_error,
+        logger_critical,
     )
 else:
     from utils import (
@@ -115,6 +122,13 @@ else:
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
         WebScriptsSecurityError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_warning,
+        logger_error,
+        logger_critical,
     )
 
 JsonValue = TypeVar("JsonValue", str, int, bool, None, List[str], List[int])
@@ -124,12 +138,6 @@ Blacklist = TypeVar("Blacklist")
 Pages = TypeVar("Pages")
 
 Configuration = TypeVar("Configuration", ServerConfiguration, SimpleNamespace)
-
-logger_debug: Callable = Logs.debug
-logger_info: Callable = Logs.info
-logger_warning: Callable = Logs.warning
-logger_error: Callable = Logs.error
-logger_critical: Callable = Logs.critical
 
 
 class Argument(DefaultNamespace):
@@ -358,7 +366,7 @@ class ScriptConfig(DefaultNamespace):
                     configuration = DefaultNamespace()
 
                     with open(config_filename) as file:
-                        temp_configurations = json.load(file)
+                        temp_configurations = load(file)
                         configuration.update(**temp_configurations)
 
                     scripts_config.update(
@@ -452,11 +460,11 @@ class ScriptConfig(DefaultNamespace):
     ) -> str:
 
         """
-        This function get the Windows default launcher to execute a file.
+        This function gets the Windows default launcher to execute a file.
         """
 
         if system() != "Windows":
-            return
+            return None
 
         logger_info(
             f"Research default launcher for script {script_config['name']}"
@@ -489,7 +497,7 @@ class ScriptConfig(DefaultNamespace):
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            return
+            return None
         filetype = stdout.split("=")[1] if "=" in stdout else ""
 
         process = Popen(
@@ -501,7 +509,7 @@ class ScriptConfig(DefaultNamespace):
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            return
+            return None
         launcher = (
             stdout.split()[0].split("=")[1].replace('"', "")
             if "=" in stdout
@@ -625,9 +633,9 @@ class ScriptConfig(DefaultNamespace):
 
         if configuration_file is not None:
             if configuration_file.endswith(".json"):
-                configuration = json.loads(
-                    get_file_content(configuration_file)
-                )
+                file = get_file_content(configuration_file, as_iterator=True)
+                configuration = load(file)
+                file.close()
             else:
                 config = ConfigParser(
                     allow_no_value=True, inline_comment_prefixes="#"
@@ -781,95 +789,95 @@ class CallableFile(Callable):
             return (
                 "200 OK",
                 {"Content-Type": "text/javascript; charset=utf-8"},
-                get_file_content(self.path, "rb"),
+                get_file_content(self.path, as_iterator=True),
             )
         elif self.type == "static":
             if self.is_html():
                 return (
                     "200 OK",
                     {"Content-Type": "text/html; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".css":
                 return (
                     "200 OK",
                     {"Content-Type": "text/css; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".ico":
                 return (
                     "200 OK",
                     {"Content-Type": "image/x-icon"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".png":
                 return (
                     "200 OK",
                     {"Content-Type": "image/png"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_jpeg():
                 return (
                     "200 OK",
                     {"Content-Type": "image/jpeg"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".gif":
                 return (
                     "200 OK",
                     {"Content-Type": "image/gif"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".json":
                 return (
                     "200 OK",
                     {"Content-Type": "application/json; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".txt":
                 return (
                     "200 OK",
                     {"Content-Type": "text/plain; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".pdf":
                 return (
                     "200 OK",
                     {"Content-Type": "application/pdf; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".csv":
                 return (
                     "200 OK",
                     {"Content-Type": "text/csv; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_tiff():
                 return (
                     "200 OK",
                     {"Content-Type": "image/tiff"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_xml():
                 return (
                     "200 OK",
                     {"Content-Type": "application/xml; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".svg":
                 return (
                     "200 OK",
                     {"Content-Type": "image/svg+xml"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             else:
                 return (
                     "200 OK",
                     {"Content-Type": "application/octet-stream"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
         elif self.type == "script":
-            nonce = secrets.token_hex(20)
+            nonce = token_hex(20)
             return (
                 "200 OK",
                 {
@@ -1039,7 +1047,8 @@ class TokenCSRF:
         This function build a CSRF token for a user.
         """
 
-        token = b64encode(secrets.token_bytes(48)).decode()
+        token = b64encode(token_bytes(48)).decode()
+        print(token)
         user.csrf[token] = time()
         return token
 
@@ -1060,6 +1069,10 @@ class TokenCSRF:
         max_time = time() - csrf_max_time
 
         if referer and baseurl and not referer.startswith(baseurl):
+            logger_error(
+                f"Referrer error: referer ({referer!r}) "
+                f"do not start with baseurl ({baseurl!r})."
+            )
             TokenCSRF.clean(user, max_time)
             return False
 
@@ -1068,6 +1081,9 @@ class TokenCSRF:
         if timestamp >= max_time:
             return True
         else:
+            logger_warning(
+                f"CSRF Token has expired ({timestamp} >= {max_time})"
+            )
             TokenCSRF.clean(user, max_time)
             return False
 
@@ -1097,7 +1113,7 @@ class Session:
     """
 
     def __init__(self, user: User, ip: str):
-        self.cookie = secrets.token_hex(64)
+        self.cookie = token_hex(64)
         self.time = time()
         self.user = user
         self.ip = ip
@@ -1142,19 +1158,23 @@ class Session:
         if cookie.startswith("SessionID="):
             cookie = cookie[10:]
         else:
+            logger_error("Session cookie do not start with 'SessionID='.")
             return default_user
 
         if ":" in cookie:
             user_id, cookie_session = cookie.split(":", 1)
         else:
+            logger_error("Invalid session cookie: ':' not in cookie")
             return default_user
 
         if user_id.isdigit():
             session = pages.sessions.get(int(user_id), None)
         else:
+            logger_error("Cookie: UserID is not digit.")
             return default_user
 
         if session is None:
+            logger_info("Session not found.")
             return default_user
 
         if (
@@ -1164,4 +1184,5 @@ class Session:
         ):
             return session.user
         else:
+            logger_warning("Session: Bad IP or session expired or bad cookie.")
             return default_user

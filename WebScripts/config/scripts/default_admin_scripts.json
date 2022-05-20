@@ -9,7 +9,8 @@
 		"delete_group.py": "config_delete_group",
 		"api_view_users.py": "config_api_view_users",
 		"api_view_groups.py": "config_api_view_groups",
-		"change_user_password.py": "config_change_user_password"
+		"change_user_password.py": "config_change_user_password",
+		"my_user_informations.py": "config_my_user_informations"
 	},
 
 	"config_change_user_password": {
@@ -231,7 +232,7 @@
 		"args": "view_groups_args",
 		"content_type": "text/plain",
 		"category": "Administration",
-		"description": "This script list all groups to get IDs, access level and names.",
+		"description": "This script lists all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
@@ -242,15 +243,24 @@
 
 	"config_get_apikey": {
 		"timeout": 15,
-		"launcher": "python3",
 		"minimum_access": 50,
+		"launcher": "python3",
 		"category": "My Account",
 		"args": "args_get_apikey",
-		"description": "This script print the API key of the current user.",
+		"description": "This script prints the API key of the current user.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
 
 	"args_get_apikey": {
 		"password": "arg_password"
+	},
+
+	"config_my_user_informations": {
+		"timeout": 15,
+		"minimum_access": 50,
+		"launcher": "python3",
+		"category": "My Account",
+		"description": "This script prints user informations.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	}
 }
