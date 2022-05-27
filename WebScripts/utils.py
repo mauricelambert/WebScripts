@@ -727,10 +727,10 @@ def get_ip(environ: _Environ) -> str:
     """
 
     return (
-        environ.get("X_REAL_IP")
-        or environ.get("X_FORWARDED_FOR")
-        or environ.get("X_FORWARDED_HOST")
-        or environ.get("REMOTE_ADDR")
+        environ.get("X_REAL_IP", "") +
+        environ.get("X_FORWARDED_FOR", "") +
+        environ.get("X_FORWARDED_HOST", "") +
+        environ.get("REMOTE_ADDR", "")
     )
 
 
