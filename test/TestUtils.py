@@ -450,11 +450,11 @@ class TestFunctions(TestCase):
             "REMOTE_ADDR": "ip4",
         }
 
-        self.assertEqual(get_ip(env), "ip1")
+        self.assertEqual(get_ip(env), "ip1ip2ip3ip4")
         env.pop("X_REAL_IP")
-        self.assertEqual(get_ip(env), "ip2")
+        self.assertEqual(get_ip(env), "ip2ip3ip4")
         env.pop("X_FORWARDED_FOR")
-        self.assertEqual(get_ip(env), "ip3")
+        self.assertEqual(get_ip(env), "ip3ip4")
         env.pop("X_FORWARDED_HOST")
         self.assertEqual(get_ip(env), "ip4")
 
