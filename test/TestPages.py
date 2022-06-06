@@ -24,11 +24,12 @@
 This file tests the Pages.py file
 """
 
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch, Mock, call
 from subprocess import TimeoutExpired
 from unittest import TestCase, main
 from subprocess import PIPE
 from html import unescape
+from time import time
 from os import path
 import locale
 import sys
@@ -244,6 +245,7 @@ class TestFunctions(TestCase):
         self.assertNotIn('"', test)
         self.assertNotIn("'", test)
         self.assertEqual(value, unescape(test))
+        self.assertIsNone(anti_XSS(None))
 
         self.assertEqual(8, anti_XSS(8))
 
@@ -251,6 +253,11 @@ class TestFunctions(TestCase):
         tests = anti_XSS(values)
         self.assertIsNot(values, test)
         self.assertNotEqual(values, test)
+
+        values = {value, value}
+
+        with self.assertRaises(NotImplementedError):
+            tests = anti_XSS(values)
 
         for test in tests:
             self.assertNotEqual(value, test)
@@ -407,6 +414,92 @@ class TestFunctions(TestCase):
             self.assertEqual("\u2588", decode_output(b"\xe2\x96\x88"))
             self.assertEqual("\xff\xfe\xef", decode_output(b"\xff\xfe\xef"))
             self.assertEqual("€", decode_output(b"\x80"))
+
+
+class TestProcess(TestCase):
+    def setUp(self):
+        popen = self.popen = Mock()
+        process = self.process = Process(
+            popen, Mock(timeout=10), Mock(), Mock()
+        )
+        process.timer.cancel()
+        Pages.processes.clear()
+
+    def test_get_line(self):
+        self.process.key = 0
+        Pages.processes[0] = 0
+        out, error, code = self.process.get_line()
+
+        self.assertIs(
+            error._mock_new_parent._mock_new_parent._mock_new_parent,
+            self.popen,
+        )
+        self.assertIs(
+            out._mock_new_parent._mock_new_parent._mock_new_parent, self.popen
+        )
+        self.assertEqual(code, "No errors")
+        self.assertDictEqual(Pages.processes, {})
+
+        self.process.process.poll = lambda: None
+        self.process.stop_max_time = time() + 100
+
+        out, error, code = self.process.get_line()
+
+        self.assertEqual(error, b"")
+        self.assertEqual(code, "")
+        self.assertIs(
+            out._mock_new_parent._mock_new_parent._mock_new_parent, self.popen
+        )
+
+        self.process.timeout = None
+
+        out, error, code = self.process.get_line()
+
+        self.assertEqual(error, b"")
+        self.assertEqual(code, "")
+        self.assertIs(
+            out._mock_new_parent._mock_new_parent._mock_new_parent, self.popen
+        )
+
+        self.process.timeout = 0
+        self.process.stop_max_time = 0
+        Pages.processes[0] = 0
+
+        self.process.process.kill.assert_not_called()
+        out, error, code = self.process.get_line(True)
+
+        self.assertDictEqual(Pages.processes, {})
+        self.process.process.kill.assert_called_once_with()
+
+        self.assertEqual(code, "TimeoutError")
+        self.assertIs(
+            out._mock_new_parent._mock_new_parent._mock_new_parent, self.popen
+        )
+        self.assertIs(
+            error._mock_new_parent._mock_new_parent._mock_new_parent,
+            self.popen,
+        )
+        self.assertEqual(self.process.error, "TimeoutError")
+
+        Pages.processes[0] = 0
+
+        out, error, code = self.process.get_line(False)
+
+        self.assertDictEqual(Pages.processes, {0: 0})
+        self.process.process.kill.assert_has_calls((), ())
+
+        self.assertEqual(code, "TimeoutError")
+        self.assertIs(b"", out)
+        self.assertIs(b"", error)
+        self.assertEqual(self.process.error, "TimeoutError")
+        self.process.timer.cancel()
+
+    def test_send_inputs(self):
+        self.process.send_inputs(["test", "test2"])
+        self.process.process.stdin.write.assert_has_calls(
+            [call(b"test\n"), call(b"test2\n")]
+        )
+        self.process.process.stdin.close.assert_called_once_with()
 
 
 if __name__ == "__main__":
