@@ -31,6 +31,7 @@ from contextlib import suppress
 from importlib import reload
 from platform import system
 import logging.config
+import subprocess
 import logging
 import sys
 
@@ -240,14 +241,30 @@ sys.modules["win32evtlogutil"] = ModuleTest()
 _exec(utils.__spec__, utils)
 
 sys.modules["syslog"] = Mock(syslog=object)
-sys.modules["platform"].system = (
-    lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
-)
-utils.get_real_path("/test/whynot", no_error=True)
-_exec(utils.__spec__, utils)
+# sys.modules["platform"].system = (
+#     lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
+# )
 
-sys.modules["platform"].system = system
-_exec(utils.__spec__, utils)
+with patch.object(
+    sys.modules["platform"],
+    "system",
+    return_value=("Linux" if system() == "Windows" else "Windows"),
+):
+    utils.get_real_path("/test/whynot", no_error=True)
+    _exec(utils.__spec__, utils)
+
+# sys.modules["platform"].system = system
+
+with patch.object(
+    sys.modules["subprocess"],
+    "check_call",
+    return_value=0,
+):
+    _exec(utils.__spec__, utils)
 
 sys.argv = ["exe", "--test-running"]
-__import__("WebScripts", {"__name__": "__main__"})
+__import__(
+    "WebScripts",
+    {"__name__": "__main__"},
+    {"__name__": "__main__"},
+)

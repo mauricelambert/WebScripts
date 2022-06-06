@@ -30,10 +30,10 @@ from unittest import TestCase, main
 from types import MethodType
 from importlib import reload
 from os.path import abspath
+from platform import system
 from typing import List
 from io import StringIO
 from json import load
-import platform
 import locale
 import json
 import gzip
@@ -475,7 +475,7 @@ class TestFunctions(TestCase):
             get_real_path("static/html/utils.html").lower(),
         )
 
-        if platform.system() == "Windows":
+        if system() == "Windows":
             self.assertEqual(
                 r"C:\WINDOWS\system32\cmd.exe".lower(),
                 get_real_path(r"C:\WINDOWS\system32\cmd.exe").lower(),
@@ -492,7 +492,7 @@ class TestFunctions(TestCase):
         os.remove("test.json")
 
         WebScripts.utils.system = (
-            "Linux" if platform.system() == "Windows" else "Windows"
+            "Linux" if system() == "Windows" else "Windows"
         )
         WebScripts.utils.IS_WINDOWS = (
             False if WebScripts.utils.IS_WINDOWS else True
