@@ -1,50 +1,76 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Python: module rss</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head><body bgcolor="#f0f0f8">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module rss</title>
+</head><body>
 
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
-<tr bgcolor="#9286C2">
-<td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>rss</strong></big></big> (version 0.0.1)</font></td
-><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="rss.py">rss.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">rss</strong> (version 0.0.1)</td>
+<td class="extra"><a href=".">index</a><br><a href="rss.py">rss.py</a></td></tr></table>
+    <p><span class="code">This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;implements&nbsp;a&nbsp;RSS&nbsp;feed.</tt></p>
+This&nbsp;file&nbsp;implements&nbsp;a&nbsp;RSS&nbsp;feed.</span></p>
 <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#C89B48">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
     
-<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
-</font></dt><dd>
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="rss.html#Feed">Feed</a>
-</font></dt></dl>
+<dt class="heading-text"><a href="rss.html#Feed">Feed</a>
+</dt></dl>
 </dd>
-<dt><font face="helvetica, arial"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
-</font></dt><dd>
+<dt class="heading-text"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
+</dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="rss.html#FIELDS">FIELDS</a>
-</font></dt></dl>
+<dt class="heading-text"><a href="rss.html#FIELDS">FIELDS</a>
+</dt></dl>
 </dd>
 </dl>
  <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#EEC477">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="FIELDS">class <strong>FIELDS</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="FIELDS">class <strong>FIELDS</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</td></tr>
     
-<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#FIELDS">FIELDS</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#FIELDS">FIELDS</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1,&nbsp;boundary=None)<br>
 &nbsp;<br>
-An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+A&nbsp;collection&nbsp;of&nbsp;name/value&nbsp;pairs.<br>
+&nbsp;<br>
+Access&nbsp;them&nbsp;by:<br>
+&nbsp;<br>
+-&nbsp;attribute&nbsp;access::<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;<a href="#FIELDS">FIELDS</a>.guid<br>
+&lt;<a href="#FIELDS">FIELDS</a>.guid:&nbsp;0&gt;<br>
+&nbsp;<br>
+-&nbsp;value&nbsp;lookup:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;<a href="#FIELDS">FIELDS</a>(0)<br>
+&lt;<a href="#FIELDS">FIELDS</a>.guid:&nbsp;0&gt;<br>
+&nbsp;<br>
+-&nbsp;name&nbsp;lookup:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;<a href="#FIELDS">FIELDS</a>['guid']<br>
+&lt;<a href="#FIELDS">FIELDS</a>.guid:&nbsp;0&gt;<br>
+&nbsp;<br>
+Enumerations&nbsp;can&nbsp;be&nbsp;iterated&nbsp;over,&nbsp;and&nbsp;know&nbsp;how&nbsp;many&nbsp;members&nbsp;they&nbsp;have:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;len(<a href="#FIELDS">FIELDS</a>)<br>
+8<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;list(<a href="#FIELDS">FIELDS</a>)[:3]<br>
+[&lt;<a href="#FIELDS">FIELDS</a>.guid:&nbsp;0&gt;,&nbsp;&lt;<a href="#FIELDS">FIELDS</a>.author:&nbsp;1&gt;,&nbsp;&lt;<a href="#FIELDS">FIELDS</a>.title:&nbsp;2&gt;]<br>
+&nbsp;<br>
+Methods&nbsp;can&nbsp;be&nbsp;added&nbsp;to&nbsp;enumerations,&nbsp;and&nbsp;members&nbsp;can&nbsp;have&nbsp;their&nbsp;own<br>
+attributes&nbsp;--&nbsp;see&nbsp;the&nbsp;documentation&nbsp;for&nbsp;details.<br>&nbsp;</span></td></tr>
 <tr><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
+<td class="singlecolumn"><dl><dt>Method resolution order:</dt>
 <dd><a href="rss.html#FIELDS">FIELDS</a></dd>
 <dd><a href="enum.html#Enum">enum.Enum</a></dd>
 <dd><a href="builtins.html#object">builtins.object</a></dd>
@@ -70,48 +96,61 @@ Data and other attributes defined here:<br>
 <hr>
 Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
 <dl><dt><strong>name</strong></dt>
-<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+<dd><span class="code">The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</span></dd>
 </dl>
 <dl><dt><strong>value</strong></dt>
-<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+<dd><span class="code">The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</span></dd>
 </dl>
 <hr>
-Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+Methods inherited from <a href="enum.html#EnumType">enum.EnumType</a>:<br>
+<dl><dt><a name="FIELDS-__contains__"><strong>__contains__</strong></a>(member)<span class="grey"><span class="heading-text"> from <a href="enum.html#EnumType">enum.EnumType</a></span></span></dt><dd><span class="code">Return&nbsp;True&nbsp;if&nbsp;member&nbsp;is&nbsp;a&nbsp;member&nbsp;of&nbsp;this&nbsp;enum<br>
+raises&nbsp;TypeError&nbsp;if&nbsp;member&nbsp;is&nbsp;not&nbsp;an&nbsp;enum&nbsp;member<br>
+&nbsp;<br>
+note:&nbsp;in&nbsp;3.12&nbsp;TypeError&nbsp;will&nbsp;no&nbsp;longer&nbsp;be&nbsp;raised,&nbsp;and&nbsp;True&nbsp;will&nbsp;also&nbsp;be<br>
+returned&nbsp;if&nbsp;member&nbsp;is&nbsp;the&nbsp;value&nbsp;of&nbsp;a&nbsp;member&nbsp;in&nbsp;this&nbsp;enum</span></dd></dl>
+
+<dl><dt><a name="FIELDS-__getitem__"><strong>__getitem__</strong></a>(name)<span class="grey"><span class="heading-text"> from <a href="enum.html#EnumType">enum.EnumType</a></span></span></dt><dd><span class="code">Return&nbsp;the&nbsp;member&nbsp;matching&nbsp;`name`.</span></dd></dl>
+
+<dl><dt><a name="FIELDS-__iter__"><strong>__iter__</strong></a>()<span class="grey"><span class="heading-text"> from <a href="enum.html#EnumType">enum.EnumType</a></span></span></dt><dd><span class="code">Return&nbsp;members&nbsp;in&nbsp;definition&nbsp;order.</span></dd></dl>
+
+<dl><dt><a name="FIELDS-__len__"><strong>__len__</strong></a>()<span class="grey"><span class="heading-text"> from <a href="enum.html#EnumType">enum.EnumType</a></span></span></dt><dd><span class="code">Return&nbsp;the&nbsp;number&nbsp;of&nbsp;members&nbsp;(no&nbsp;aliases)</span></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumType">enum.EnumType</a>:<br>
 <dl><dt><strong>__members__</strong></dt>
-<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+<dd><span class="code">Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
 &nbsp;<br>
 This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
-is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</span></dd>
 </dl>
 </td></tr></table> <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#EEC477">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="Feed">class <strong>Feed</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Feed">class <strong>Feed</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
     
-<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Feed">Feed</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;category:&nbsp;str,&nbsp;arguments:&nbsp;Dict[str,&nbsp;Dict[str,&nbsp;str]],&nbsp;inputs:&nbsp;List[str],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;collections.abc.Iterable[bytes]]<br>
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Feed">Feed</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;category:&nbsp;str,&nbsp;arguments:&nbsp;Dict[str,&nbsp;Dict[str,&nbsp;str]],&nbsp;inputs:&nbsp;List[str],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;collections.abc.Iterable[bytes]]<br>
 &nbsp;<br>
-This&nbsp;class&nbsp;implements&nbsp;the&nbsp;RSS&nbsp;feed.<br>&nbsp;</tt></td></tr>
+This&nbsp;class&nbsp;implements&nbsp;the&nbsp;RSS&nbsp;feed.<br>&nbsp;</span></td></tr>
 <tr><td>&nbsp;</td>
-<td width="100%">Class methods defined here:<br>
-<dl><dt><a name="Feed-csv"><strong>csv</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;CSV.</tt></dd></dl>
+<td class="singlecolumn">Class methods defined here:<br>
+<dl><dt><a name="Feed-csv"><strong>csv</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<span class="grey"><span class="heading-text"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><span class="code">This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;CSV.</span></dd></dl>
 
-<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str) -&gt; collections.abc.Iterable<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</tt></dd></dl>
+<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str) -&gt; collections.abc.Iterable[bytes]<span class="grey"><span class="heading-text"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><span class="code">This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</span></dd></dl>
 
-<dl><dt><a name="Feed-json"><strong>json</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;JSON.</tt></dd></dl>
+<dl><dt><a name="Feed-json"><strong>json</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<span class="grey"><span class="heading-text"> from <a href="builtins.html#type">builtins.type</a></span></span></dt><dd><span class="code">This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;JSON.</span></dd></dl>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="Feed-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], collections.abc.Iterable[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed.</tt></dd></dl>
+<dl><dt><a name="Feed-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], collections.abc.Iterable[bytes]]</dt><dd><span class="code">This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed.</span></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
 <dl><dt><strong>__dict__</strong></dt>
-<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
 </dl>
 <dl><dt><strong>__weakref__</strong></dt>
-<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
 </dl>
 <hr>
 Data and other attributes defined here:<br>
@@ -126,20 +165,19 @@ Data and other attributes defined here:<br>
 <dl><dt><strong>rss_path</strong> = None</dl>
 
 </td></tr></table></td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#A57927">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
     
-<tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_rss_path"><strong>get_rss_path</strong></a>(server: ~Server) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;rss&nbsp;path.</tt></dd></dl>
- <dl><dt><a name="-mktime"><strong>mktime</strong></a>(...)</dt><dd><tt><a href="#-mktime">mktime</a>(tuple)&nbsp;-&gt;&nbsp;floating&nbsp;point&nbsp;number<br>
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-get_rss_path"><strong>get_rss_path</strong></a>(server: ~Server) -&gt; str</dt><dd><span class="code">This&nbsp;function&nbsp;returns&nbsp;the&nbsp;rss&nbsp;path.</span></dd></dl>
+ <dl><dt><a name="-mktime"><strong>mktime</strong></a>(...)</dt><dd><span class="code"><a href="#-mktime">mktime</a>(tuple)&nbsp;-&gt;&nbsp;floating&nbsp;point&nbsp;number<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;time&nbsp;tuple&nbsp;in&nbsp;local&nbsp;time&nbsp;to&nbsp;seconds&nbsp;since&nbsp;the&nbsp;Epoch.<br>
 Note&nbsp;that&nbsp;<a href="#-mktime">mktime</a>(gmtime(0))&nbsp;will&nbsp;not&nbsp;generally&nbsp;return&nbsp;zero&nbsp;for&nbsp;most<br>
 time&nbsp;zones;&nbsp;instead&nbsp;the&nbsp;returned&nbsp;value&nbsp;will&nbsp;either&nbsp;be&nbsp;equal&nbsp;to&nbsp;that<br>
-of&nbsp;the&nbsp;timezone&nbsp;or&nbsp;altzone&nbsp;attributes&nbsp;on&nbsp;the&nbsp;time&nbsp;module.</tt></dd></dl>
- <dl><dt><a name="-strftime"><strong>strftime</strong></a>(...)</dt><dd><tt><a href="#-strftime">strftime</a>(format[,&nbsp;tuple])&nbsp;-&gt;&nbsp;string<br>
+of&nbsp;the&nbsp;timezone&nbsp;or&nbsp;altzone&nbsp;attributes&nbsp;on&nbsp;the&nbsp;time&nbsp;module.</span></dd></dl>
+ <dl><dt><a name="-strftime"><strong>strftime</strong></a>(...)</dt><dd><span class="code"><a href="#-strftime">strftime</a>(format[,&nbsp;tuple])&nbsp;-&gt;&nbsp;string<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;time&nbsp;tuple&nbsp;to&nbsp;a&nbsp;string&nbsp;according&nbsp;to&nbsp;a&nbsp;format&nbsp;specification.<br>
 See&nbsp;the&nbsp;library&nbsp;reference&nbsp;manual&nbsp;for&nbsp;formatting&nbsp;codes.&nbsp;When&nbsp;the&nbsp;time&nbsp;tuple<br>
@@ -163,8 +201,8 @@ Commonly&nbsp;used&nbsp;format&nbsp;codes:<br>
 %p&nbsp;&nbsp;Locale's&nbsp;equivalent&nbsp;of&nbsp;either&nbsp;AM&nbsp;or&nbsp;PM.<br>
 &nbsp;<br>
 Other&nbsp;codes&nbsp;may&nbsp;be&nbsp;available&nbsp;on&nbsp;your&nbsp;platform.&nbsp;&nbsp;See&nbsp;documentation&nbsp;for<br>
-the&nbsp;C&nbsp;library&nbsp;strftime&nbsp;function.</tt></dd></dl>
- <dl><dt><a name="-writer"><strong>writer</strong></a>(...)</dt><dd><tt>csv_writer&nbsp;=&nbsp;csv.<a href="#-writer">writer</a>(fileobj&nbsp;[,&nbsp;dialect='excel']<br>
+the&nbsp;C&nbsp;library&nbsp;strftime&nbsp;function.</span></dd></dl>
+ <dl><dt><a name="-writer"><strong>writer</strong></a>(...)</dt><dd><span class="code">csv_writer&nbsp;=&nbsp;csv.<a href="#-writer">writer</a>(fileobj&nbsp;[,&nbsp;dialect='excel']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[optional&nbsp;keyword&nbsp;args])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;row&nbsp;in&nbsp;sequence:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;csv_writer.writerow(row)<br>
@@ -175,34 +213,32 @@ the&nbsp;C&nbsp;library&nbsp;strftime&nbsp;function.</tt></dd></dl>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[optional&nbsp;keyword&nbsp;args])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;csv_writer.writerows(rows)<br>
 &nbsp;<br>
-The&nbsp;"fileobj"&nbsp;argument&nbsp;can&nbsp;be&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;supports&nbsp;the&nbsp;file&nbsp;API.</tt></dd></dl>
+The&nbsp;"fileobj"&nbsp;argument&nbsp;can&nbsp;be&nbsp;any&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;supports&nbsp;the&nbsp;file&nbsp;API.</span></dd></dl>
 </td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#18675F">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
     
-<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>Dict</strong> = typing.Dict<br>
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>Dict</strong> = typing.Dict<br>
 <strong>List</strong> = typing.List<br>
 <strong>QUOTE_ALL</strong> = 1<br>
 <strong>Server</strong> = ~Server<br>
 <strong>Tuple</strong> = typing.Tuple<br>
 <strong>User</strong> = ~User<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in a Web Interface.<font color="#c040c0">\n\n</font>This file implements a RSS feed.<font color="#c040c0">\n</font>'<br>
+<strong>__copyright__</strong> = '<span class="repr">\n</span>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<span class="repr">\n</span>under certain conditions.<span class="repr">\n</span>'<br>
+<strong>__description__</strong> = '<span class="repr">\n</span>This tool run scripts and display the result in a Web Interface.<span class="repr">\n\n</span>This file implements a RSS feed.<span class="repr">\n</span>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
-<strong>copyright</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>copyright</strong> = '<span class="repr">\n</span>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<span class="repr">\n</span>under certain conditions.<span class="repr">\n</span>'<br>
 <strong>license</strong> = 'GPL-3.0 License'</td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#9286C2">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+<table class="section">
+<tr class="decor author-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Author</strong></td></tr>
     
-<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+<tr><td class="decor author-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn">Maurice&nbsp;Lambert</td></tr></table>
 </body></html>

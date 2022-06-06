@@ -1629,6 +1629,7 @@ class Audit:
             except URLError:
                 logs.critical("Network error: updates are not checked.")
                 Audit.network_up = False
+                return ""
 
             if version < latest and latest != latest_:
                 logs.critical(

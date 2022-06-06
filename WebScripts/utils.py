@@ -54,7 +54,7 @@ __all__ = [
     "Logs",
     "DefaultNamespace",
     "log_trace",
-    "get_ip",
+    "get_ip_protected",
     "get_arguments_count",
     "get_file_content",
     "get_real_path",
@@ -81,6 +81,7 @@ from typing import (
     _SpecialGenericAlias,
     _GenericAlias,
     Any,
+    Union,
 )
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
 from os import path, _Environ, device_encoding, remove
@@ -118,7 +119,15 @@ else:
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
 logging.currentframe = lambda: _getframe(5)
-system = system()
+
+IS_WINDOWS = system() == "Windows"
+IP_HEADERS = [
+    "X_FORWARDED_FOR",
+    "X_REAL_IP",
+    "X_FORWARDED_HOST",
+    "CLIENT_IP",
+    "REMOTE_ADDR",
+]
 
 
 class _Logs:
@@ -511,7 +520,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 logging.handlers.CustomLogHandler = CustomLogHandler
 
 
-if system == "Windows":
+if IS_WINDOWS:
     try:
         from win32evtlogutil import ReportEvent
         import win32evtlog
@@ -698,9 +707,23 @@ class DefaultNamespace(SimpleNamespace):
         This function builds type from configuration value.
         """
 
+        def get_number(
+            functype: type, value: str, attribut: str
+        ) -> Union[int, float]:
+            if functype is float:
+                typed = value.replace(".", "")
+            else:
+                typed = value
+            if typed.isdigit():
+                return functype(value)
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be a list of number ("
+                    f"{functype.__name__}) but contain {value!r}"
+                )
+
         if type_ is None:
             type_ = self.__types__.get(attribut)
-            print(type_)
 
             if type_ is None or type_ is str:
                 setattr(self, attribut, str(value))
@@ -711,7 +734,7 @@ class DefaultNamespace(SimpleNamespace):
         ):
             if isinstance(value, type_.__origin__):
                 setattr(self, attribut, value)
-                return None
+                # return None
         else:
             if isinstance(value, type_):
                 setattr(self, attribut, value)
@@ -729,9 +752,10 @@ class DefaultNamespace(SimpleNamespace):
                 )
 
         elif type_ is int or type_ is float:
-            value_ = value.replace(".", "")
-            if value_.isdigit():
-                setattr(self, attribut, type_(value))
+            if isinstance(value, str):
+                setattr(self, attribut, get_number(type_, value, attribut))
+            elif type_ is float and isinstance(value, int):
+                setattr(self, attribut, float(value))
             else:
                 raise WebScriptsConfigurationError(
                     f"{attribut!r} must be an integer but is {value!r}"
@@ -740,8 +764,17 @@ class DefaultNamespace(SimpleNamespace):
         elif type_ is List[str] or type_ is list or type_ is List:
             if isinstance(value, str):
                 setattr(self, attribut, value.split(","))
-            else:
-                setattr(self, attribut, str(value))
+            elif isinstance(value, list):
+                type_list = []
+                for element in value:
+                    if isinstance(element, str):
+                        type_list.append(element)
+                    else:
+                        raise WebScriptsConfigurationError(
+                            f"{attribut} must be a list of strings"
+                            f" but contain {element!r}"
+                        )
+                setattr(self, attribut, type_list)
 
         elif type_ is List[int] or type_ is List[float]:
             functype = type_.__args__[0]
@@ -749,20 +782,30 @@ class DefaultNamespace(SimpleNamespace):
 
             if isinstance(value, str):
                 for typed in value.split(","):
-                    typed_ = typed.replace(".", "")
-                    if typed_.isdigit():
-                        type_list.append(functype(typed))
+                    type_list.append(get_number(functype, typed, attribut))
+            elif isinstance(value, functype) or (
+                functype is float and isinstance(value, int)
+            ):
+                type_list.append(functype(value))
+            elif isinstance(value, list):
+                for element in value:
+                    if isinstance(element, str):
+                        type_list.append(
+                            get_number(functype, element, attribut)
+                        )
+                    elif isinstance(element, functype) or (
+                        functype is float and isinstance(element, int)
+                    ):
+                        type_list.append(functype(element))
                     else:
                         raise WebScriptsConfigurationError(
-                            f"{attribut} must be a list of "
-                            f"integer but contain {typed!r}"
+                            f"{attribut} must be a list of number ("
+                            f"{functype.__name__}) but contain {element!r}"
                         )
-            elif isinstance(value, (int, float)):
-                type_list.append(functype(value))
             else:
                 raise WebScriptsConfigurationError(
-                    f"{attribut} must be a list of "
-                    f"integer but contain {value!r}"
+                    f"{attribut} must be a list of number ("
+                    f"{functype.__name__}) but is {value!r}"
                 )
 
             setattr(self, attribut, type_list)
@@ -847,18 +890,27 @@ def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 
 
 @log_trace
-def get_ip(environ: _Environ) -> str:
+def get_ip(environ: _Environ, protected: bool = True) -> str:
 
     """
     This function return the real IP.
     """
 
-    return (
-        environ.get("X_REAL_IP")
-        or environ.get("X_FORWARDED_FOR")
-        or environ.get("X_FORWARDED_HOST")
-        or environ.get("REMOTE_ADDR")
-    )
+    ips = None
+
+    for ip_header in IP_HEADERS:
+        ip = environ.get(ip_header)
+        if ip is not None:
+            if protected:
+                if ips:
+                    ips += ", " + ip
+                else:
+                    ips = ip
+            else:
+                ips = ip
+                break
+
+    return ips
 
 
 @log_trace
@@ -881,17 +933,24 @@ def get_file_content(
     errors = []
     encodings = get_encodings()
     encoding = next(encodings)
+    content = None
 
     while encoding is not None:
+        file = open(
+            get_real_path(file_path), *args, encoding=encoding, **kwargs
+        )
         try:
-            file = open(
-                get_real_path(file_path), *args, encoding=encoding, **kwargs
-            )
             content = file.read()
-            file.close()
-            return content
         except UnicodeDecodeError as e:
             errors.append(e)
+        else:
+            success = True
+        finally:
+            success = False if content is None else True
+            file.close()
+
+        if success:
+            return content
 
         encoding = next(encodings)
 
@@ -939,7 +998,7 @@ def get_real_path(
     if file_path is None:
         return file_path
 
-    if system == "Windows":
+    if IS_WINDOWS:
         length = 2
         index = 1
         character = ":"

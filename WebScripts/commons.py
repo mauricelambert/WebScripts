@@ -1048,7 +1048,6 @@ class TokenCSRF:
         """
 
         token = b64encode(token_bytes(48)).decode()
-        print(token)
         user.csrf[token] = time()
         return token
 

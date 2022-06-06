@@ -53,8 +53,8 @@ __copyright__ = copyright
 __all__ = ["Configuration", "Server", "main"]
 
 from os.path import basename, abspath, join, dirname, normpath, exists, isdir
+from types import SimpleNamespace, ModuleType, FunctionType, MethodType
 from typing import TypeVar, Tuple, List, Dict, Union, Set, Iterable
-from types import SimpleNamespace, ModuleType, FunctionType
 from sys import exit, modules as sys_modules, argv
 from os import _Environ, getcwd, mkdir, environ
 from collections.abc import Iterator, Callable
@@ -726,9 +726,10 @@ class Server:
         del path[0]
         filename = path[-1]
         path = tuple(path[:-1])
+        cache = self.pages_cache
 
         logger_debug("Trying to get function page from cache...")
-        function, is_not_package = self.pages_cache[path]
+        function, is_not_package = cache[path]
 
         if function:
             return function, filename, is_not_package
@@ -747,7 +748,7 @@ class Server:
                 pages.packages, path, False
             )
 
-        self.pages_cache[path] = (function, is_not_package)
+        cache[path] = (function, is_not_package)
         return function, filename, is_not_package
 
     @log_trace
@@ -795,6 +796,20 @@ class Server:
         This function get recursive attribute from object.
         """
 
+        def check_argument_count():
+            if isinstance(object_, FunctionType):
+                if arg_count == 7:
+                    logger_info(f"Function page found {object_}.")
+                    return object_, is_not_package
+                else:
+                    return ValueError
+            elif isinstance(object_, MethodType):
+                if arg_count == 8:
+                    logger_info(f"Method page found {object_}.")
+                    return object_, is_not_package
+                else:
+                    return ValueError
+
         for attribute in attributes:
             logger_debug(f"Trying to get {attribute} from {object_}")
             object_ = getattr(object_, attribute, None)
@@ -805,18 +820,21 @@ class Server:
         logger_debug("Get arguments length and check it...")
         arg_count = get_arguments_count(object_)
 
-        if isinstance(object_, Callable) and (
-            arg_count == 7 or arg_count == 8
-        ):
-            logger_info(f"Function page found {object_}.")
-            return object_, is_not_package
-        else:
-            logger_warning(
-                "The function cannot be called with 7 "
-                "arguments or the method cannot be called "
-                "with 8 arguments."
-            )
-            return None, is_not_package
+        function = check_argument_count()
+        if function is None:
+            if isinstance(object_, Callable):
+                object_ = object_.__call__
+                function = check_argument_count()
+
+        if function is not None and function is not ValueError:
+            return function
+
+        logger_warning(
+            "The function cannot be called with 7 "
+            "arguments or the method cannot be called "
+            "with 8 arguments."
+        )
+        return None, is_not_package
 
     @staticmethod
     @log_trace
@@ -929,7 +947,8 @@ class Server:
         Link: https://peps.python.org/pep-3333/
         """
 
-        url = environ["wsgi.url_scheme"] + "://"
+        scheme = environ["wsgi.url_scheme"]
+        url = scheme + "://"
 
         host = environ.get("HTTP_HOST")
         query = environ.get("QUERY_STRING")
@@ -939,7 +958,7 @@ class Server:
         else:
             url += environ["SERVER_NAME"]
 
-            if environ["wsgi.url_scheme"] == "https":
+            if scheme == "https":
                 if environ["SERVER_PORT"] != "443":
                     url += ":" + environ["SERVER_PORT"]
             else:
@@ -1037,7 +1056,7 @@ class Server:
         return [], None, True
 
     @log_trace
-    def app(self, environ_: _Environ, respond: FunctionType) -> List[bytes]:
+    def app(self, environ_: _Environ, respond: MethodType) -> List[bytes]:
 
         """
         This function get function page,
@@ -1063,7 +1082,7 @@ class Server:
         method = environ["REQUEST_METHOD"]
         port = environ.setdefault("REMOTE_PORT", "0")
         ip = environ["REMOTE_IP"] = get_ip(environ)
-        logger_access(f"Request ({method}) from {ip}:{port} on {path_info}.")
+        logger_access(f"Request ({method}) from {ip!r}:{port} on {path_info}.")
 
         path_info_startswith = path_info.startswith
         configuration = self.configuration
@@ -1256,7 +1275,7 @@ class Server:
     def send_headers(
         self,
         environ: _Environ,
-        respond: FunctionType,
+        respond: MethodType,
         error: str = None,
         headers: Dict[str, str] = None,
     ) -> None:
@@ -1277,14 +1296,14 @@ class Server:
             _headers.update(headers)
 
         logger_response(
-            f"Response {environ['REMOTE_IP']}:{environ['REMOTE_PORT']} "
+            f"Response {environ['REMOTE_IP']!r}:{environ['REMOTE_PORT']} "
             f"{environ['REQUEST_METHOD']} {environ['PATH_INFO']} {error!r}"
         )
         respond(error, [(k, v) for k, v in _headers.items()])
 
     @log_trace
     def page_500(
-        self, environ: _Environ, error: str, respond: FunctionType
+        self, environ: _Environ, error: str, respond: MethodType
     ) -> List[bytes]:
 
         """
@@ -1298,7 +1317,7 @@ class Server:
         )
 
     @log_trace
-    def page_404(self, environ: _Environ, url: str, respond: FunctionType):
+    def page_404(self, environ: _Environ, url: str, respond: MethodType):
 
         """
         This function return error 404 web page.
@@ -1318,7 +1337,7 @@ class Server:
         )
 
     @log_trace
-    def page_400(self, environ: _Environ, method: str, respond: FunctionType):
+    def page_400(self, environ: _Environ, method: str, respond: MethodType):
 
         """
         This function return error 403 web page.
@@ -1334,7 +1353,7 @@ class Server:
 
     @log_trace
     def page_401(
-        self, environ: _Environ, error_description: str, respond: FunctionType
+        self, environ: _Environ, error_description: str, respond: MethodType
     ):
 
         """
@@ -1348,7 +1367,7 @@ class Server:
 
     @log_trace
     def page_403(
-        self, environ: _Environ, error_description: str, respond: FunctionType
+        self, environ: _Environ, error_description: str, respond: MethodType
     ):
 
         """
@@ -1362,7 +1381,7 @@ class Server:
 
     @log_trace
     def page_406(
-        self, environ: _Environ, error_description: str, respond: FunctionType
+        self, environ: _Environ, error_description: str, respond: MethodType
     ):
 
         """
@@ -1378,7 +1397,7 @@ class Server:
 
     @log_trace
     def send_error_page(
-        self, environ: _Environ, error: str, data: bytes, respond: FunctionType
+        self, environ: _Environ, error: str, data: bytes, respond: MethodType
     ) -> List[bytes]:
 
         """
@@ -1436,6 +1455,15 @@ class Server:
         """
 
         logger_debug("Search custom error in packages...")
+
+        cache = self.pages_cache
+        function_name = "page_" + code
+        function, _ = cache[function_name]
+
+        if function is not None:
+            logger_debug("Get custom error page (function) from cache.")
+            return function(error)
+
         packages = self.pages.packages
         # for package in self.pages.packages.__dict__.values():
         for package in dir(packages):
@@ -1443,19 +1471,20 @@ class Server:
 
             if isinstance(package, ModuleType):
                 logger_debug(f"Check in {package}...")
-                page = package.__dict__.get("page_" + code)
+                page = getattr(package, function_name, None)
 
                 if page is not None:
                     logger_info(
                         f"Found the custom error page: {package}.page_{code}"
                     )
+                    cache[function_name] = page, False
                     return page(
                         error,
                     )
 
 
 @log_trace
-def parse_args() -> Namespace:
+def parse_args(argv: List[str] = argv) -> Namespace:
 
     """
     This function parse command line arguments.
@@ -1680,7 +1709,7 @@ def parse_args() -> Namespace:
         "--n-adr",
         help="The email address to send notifications.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv[1:])
 
 
 @log_trace
@@ -1929,7 +1958,7 @@ def send_mail(*args, **kwargs) -> int:
     return 1
 
 
-def default_configuration() -> Configuration:
+def default_configuration(argv: List[str] = argv) -> Configuration:
 
     """
     This function builds the default configuration.
@@ -1937,7 +1966,7 @@ def default_configuration() -> Configuration:
 
     log_paths, log_files = configure_logs_system()
     environ["WEBSCRIPTS_PATH"] = server_path
-    args = parse_args()
+    args = parse_args(argv)
 
     logger_debug("Load configurations...")
 
@@ -2005,7 +2034,7 @@ def main() -> int:
     else:
         NO_START = False
 
-    configuration = default_configuration()
+    configuration = default_configuration(argv)
     debug = getattr(configuration, "debug", None)
 
     if debug:
