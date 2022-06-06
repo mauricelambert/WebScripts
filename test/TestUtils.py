@@ -90,6 +90,12 @@ class TestLinuxLogs(TestCase):  # Code coverage, no tests on Logs functions
     def test_critical(self):
         self.logs.critical("test")
 
+    def test_access(self):
+        self.logs.access("test")
+
+    def test_response(self):
+        self.logs.response("test")
+
 
 class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
     def setUp(self):
@@ -116,6 +122,12 @@ class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
 
     def test_critical(self):
         self.logs.critical("test")
+
+    def test_access(self):
+        self.logs.access("test")
+
+    def test_response(self):
+        self.logs.response("test")
 
 
 class TestLogs(TestCase):  # Code coverage, no tests on Logs functions
@@ -272,6 +284,50 @@ class TestDefaultNamespace(TestCase):
         with self.assertRaises(WebScriptsConfigurationError):
             self.default_namespace.build_types()
 
+    def test_build_type(self):
+
+        self.default_namespace.__types__ = {
+            "ListInt": List[int],
+            "ListStr": List[str],
+            "ListFloat": List[float],
+            "ListError": List[int],
+            "List": List[int],
+            "float": float,
+            "error": int,
+            "none": None,
+            "int": int,
+        }
+
+        self.default_namespace.build_type("int", 1)
+        self.default_namespace.build_type("float", 1)
+        self.default_namespace.build_type("none", None)
+        self.default_namespace.build_type("other", None)
+        self.default_namespace.build_type("ListInt", 1)
+        self.assertEqual(self.default_namespace.ListInt, [1])
+        self.default_namespace.build_type("ListInt", ["1", "2"])
+        self.default_namespace.build_type("ListFloat", "0.2,0.3")
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type(
+                "ListError", 1 + 2j
+            )  # complex(1,0)
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("error", 1 + 2j)
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("List", [1, "1", 1 + 2j])
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("ListStr", ["1", 1 + 2j])
+
+        self.assertEqual(self.default_namespace.int, 1)
+        self.assertEqual(self.default_namespace.float, 1.0)
+        self.assertEqual(self.default_namespace.ListInt, [1, 2])
+        self.assertEqual(self.default_namespace.ListFloat, [0.2, 0.3])
+        self.assertEqual(self.default_namespace.none, "None")
+        self.assertEqual(self.default_namespace.other, "None")
+
     def test_set_default(self):
         self.default_namespace.__defaults__ = {
             "test": "value",
@@ -370,7 +426,7 @@ class TestFunctions(TestCase):
         # self.assertFalse(WebScripts.utils.WINDOWS_LOGS)
 
     def test_get_encodings(self):
-        encodings = ["utf-8", "cp1252", "latin-1"]
+        encodings = ["utf-8", "cp1252", "latin-1", None]
 
         if device_encoding(0) is not None:
             encodings.insert(0, device_encoding(0))
@@ -392,16 +448,16 @@ class TestFunctions(TestCase):
                 json.load(file),
             )
 
-        def generator():
-            yield "ascii"
+        with patch.object(
+            WebScripts.utils,
+            "get_encodings",
+            return_value=(x for x in ["ascii", None]),
+        ) as mock_method:
+            with open("test.txt", "wb") as file:
+                file.write(bytes(range(256)))
 
-        WebScripts.utils.get_encodings = generator
-
-        with open("test.txt", "wb") as file:
-            file.write(bytes(range(256)))
-
-        with self.assertRaises(Exception):
-            get_file_content("test.txt")
+            with self.assertRaises(Exception):
+                get_file_content("test.txt")
 
         os.remove("test.txt")
         os.remove("test.json")
@@ -438,25 +494,38 @@ class TestFunctions(TestCase):
         WebScripts.utils.system = (
             "Linux" if platform.system() == "Windows" else "Windows"
         )
+        WebScripts.utils.IS_WINDOWS = (
+            False if WebScripts.utils.IS_WINDOWS else True
+        )
 
         with self.assertRaises(FileNotFoundError):
             get_real_path("test.test")
 
+        self.assertIsNone(get_real_path("test.test", no_error=True))
+
     def test_get_ip(self):
         env = {
-            "X_REAL_IP": "ip1",
-            "X_FORWARDED_FOR": "ip2",
+            "X_FORWARDED_FOR": "ip1",
+            "X_REAL_IP": "ip2",
             "X_FORWARDED_HOST": "ip3",
-            "REMOTE_ADDR": "ip4",
+            "CLIENT_IP": "ip4",
+            "REMOTE_ADDR": "ip5",
         }
 
-        self.assertEqual(get_ip(env), "ip1")
-        env.pop("X_REAL_IP")
-        self.assertEqual(get_ip(env), "ip2")
+        self.assertEqual(get_ip(env), "ip1, ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, False), "ip1")
         env.pop("X_FORWARDED_FOR")
-        self.assertEqual(get_ip(env), "ip3")
+        self.assertEqual(get_ip(env), "ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, False), "ip2")
+        env.pop("X_REAL_IP")
+        self.assertEqual(get_ip(env), "ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, False), "ip3")
         env.pop("X_FORWARDED_HOST")
-        self.assertEqual(get_ip(env), "ip4")
+        self.assertEqual(get_ip(env), "ip4, ip5")
+        self.assertEqual(get_ip(env, False), "ip4")
+        env.pop("CLIENT_IP")
+        self.assertEqual(get_ip(env), "ip5")
+        self.assertEqual(get_ip(env, False), "ip5")
 
     def test_get_ini_dict(self):
 
@@ -488,11 +557,22 @@ class TestFunctions(TestCase):
         def methodTest6(a, b, c, *, d=0, e="", f=None):
             pass
 
+        class Test:
+            def __call__(self):
+                pass
+
+            def test(self):
+                pass
+
         self.assertEqual(0, get_arguments_count(methodTest0))
         self.assertEqual(2, get_arguments_count(methodTest2))
         self.assertEqual(6, get_arguments_count(methodTest6))
         self.assertEqual(3, get_arguments_count(methodTest3))
         self.assertEqual(5, get_arguments_count(methodTest5))
+        self.assertEqual(1, get_arguments_count(Test()))
+        self.assertEqual(1, get_arguments_count(Test().test))
+        self.assertEqual(1, get_arguments_count(Test.test))
+        self.assertEqual(1, get_arguments_count(lambda x: x))
 
 
 if __name__ == "__main__":

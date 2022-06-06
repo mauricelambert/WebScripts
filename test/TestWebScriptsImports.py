@@ -26,6 +26,10 @@ variables values.
 """
 
 from os import path, rename, chdir, getcwd, mkdir, remove
+from unittest.mock import MagicMock, patch, Mock
+from contextlib import suppress
+from importlib import reload
+from platform import system
 import logging.config
 import logging
 import sys
@@ -155,7 +159,64 @@ def import_without_package():
 disable_logs()
 import_without_package()
 
+from importlib.util import spec_from_file_location, module_from_spec
+from os.path import basename, splitext, split, join
+from importlib._bootstrap import _exec
+from types import ModuleType
+
+
+def import_from_filename(filename: str) -> ModuleType:
+
+    """
+    This function returns a module from path/filename.
+    """
+
+    spec = spec_from_file_location(splitext(basename(filename))[0], filename)
+    module = module_from_spec(spec)
+    module.__spec__ = spec
+    spec.loader.exec_module(module)
+
+    return module
+
+
+class OsModule:
+    def __new__(cls):
+        import os
+
+        return type("OsModule", (), os.__dict__)
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def mkdir():
+        raise PermissionError
+
+    class path:
+        def __new__(cls):
+            import os.path
+
+            return type("PathModule", (), os.path.__dict__)
+
+        def __init__(self):
+            pass
+
+        @staticmethod
+        def isdir(directory):
+            return False
+
+
+sys.modules["os"] = OsModule()
+sys.modules["path"] = OsModule.path()
+sys.modules["os.path"] = OsModule.path()
+
 import WebScripts
+
+WebScripts.configure_logs_system()
+
+sys.modules["utils"] = utils = import_from_filename(
+    join(split(WebScripts.__file__)[0], "utils.py")
+)
 
 sys.argv = ["WebScripts", "--debug"]
 WebScripts.main()
@@ -163,3 +224,30 @@ sys.argv = argv
 
 for file in to_remove:
     remove(file)
+
+sys.modules["win32evtlogutil"] = Mock(ReportEvent=object)
+sys.modules["win32evtlog"] = Mock()
+_exec(utils.__spec__, utils)
+
+
+class ModuleTest:
+    @property
+    def ReportEvent(self):
+        raise ImportError
+
+
+sys.modules["win32evtlogutil"] = ModuleTest()
+_exec(utils.__spec__, utils)
+
+sys.modules["syslog"] = Mock(syslog=object)
+sys.modules["platform"].system = (
+    lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
+)
+utils.get_real_path("/test/whynot", no_error=True)
+_exec(utils.__spec__, utils)
+
+sys.modules["platform"].system = system
+_exec(utils.__spec__, utils)
+
+sys.argv = ["exe", "--test-running"]
+__import__("WebScripts", {"__name__": "__main__"})

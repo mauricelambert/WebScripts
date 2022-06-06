@@ -89,7 +89,7 @@ class TestArgument(TestCase):
         self.assertListEqual([], Argument.get_command("-t", {"value": ""}))
         self.assertListEqual([], Argument.get_command("-t", {"value": False}))
         self.assertListEqual(
-            [], Argument.get_command("-t", {"value": ["", "", ""]})
+            [], Argument.get_command("-t", {"value": ["", "", "", None]})
         )
 
         with self.assertRaises(WebScriptsArgumentError):
@@ -248,10 +248,13 @@ class TestScriptConfig(TestCase):
                     {"path": "abc.command injection", "name": ""}
                 )
 
-            with patch.object(WebScripts.commons, "Popen") as mock_process:
-                mock_process.return_value = Mock(
+            with patch.object(
+                WebScripts.commons,
+                "Popen",
+                return_value=Mock(
                     returncode=1, communicate=Mock(return_value=("", ""))
-                )
+                ),
+            ) as mock_process:
                 self.assertIsNone(
                     ScriptConfig.get_Windows_default_script_launcher(
                         {"path": "abc.py", "name": ""}
