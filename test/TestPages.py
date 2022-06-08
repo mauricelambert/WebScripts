@@ -29,6 +29,7 @@ from subprocess import TimeoutExpired
 from unittest import TestCase, main
 from subprocess import PIPE
 from html import unescape
+from json import loads
 from time import time
 from os import path
 import locale
@@ -49,10 +50,14 @@ from WebScripts.Pages import (
     get_environ,
     anti_XSS,
     Process,
+    Script,
     Pages,
+    Web,
+    Api,
 )
 
 from WebScripts import Pages as Module
+import WebScripts.Pages as Module
 import WebScripts.utils
 
 
@@ -500,6 +505,249 @@ class TestProcess(TestCase):
             [call(b"test\n"), call(b"test2\n")]
         )
         self.process.process.stdin.close.assert_called_once_with()
+
+
+class TestScript(TestCase):
+    def test_get(self):
+        Pages.processes.clear()
+        code, headers, data = Script.get(
+            Mock(), Mock(), Mock(), Mock(), 0, Mock(), Mock(), Mock()
+        )
+        self.assertEqual("404", code)
+        self.assertEqual(b"", data)
+        self.assertDictEqual({}, headers)
+
+        Pages.processes[0] = Mock()
+        code, headers, data = Script.get(
+            Mock(), Mock(), Mock(), Mock(), 0, Mock(), Mock(), Mock()
+        )
+        self.assertEqual("403", code)
+        self.assertEqual(b"", data)
+        self.assertDictEqual({}, headers)
+
+        Pages.processes[0] = Mock(
+            user=Mock(id=0),
+            get_line=lambda: (b"", b"", "No Error"),
+            process=Mock(returncode=None),
+            script=Mock(content_type="html", stderr_content_type="text"),
+        )
+        code, headers, data = Script.get(
+            Mock(), Mock(), Mock(id=0), Mock(), 0, Mock(), Mock(), Mock()
+        )
+        self.assertEqual("200 OK", code)
+        self.assertDictEqual(
+            loads(data),
+            {
+                "stdout": "",
+                "stderr": "",
+                "code": None,
+                "Content-Type": "html",
+                "Stderr-Content-Type": "text",
+                "error": "No Error",
+                "key": 0,
+            },
+        )
+        self.assertDictEqual(
+            {"Content-Type": "application/json; charset=utf-8"}, headers
+        )
+
+
+class TestApi(TestCase):
+    def setUp(self):
+        self.api = Api()
+
+    def test___call__(self):
+        server = Mock(
+            configuration=Mock(auth_script="test.go", active_auth=True)
+        )
+
+        Pages.scripts = {}
+        Pages.scripts["test.go"] = Mock(
+            get_JSON_API=lambda: {"script": "auth"}
+        )
+        Pages.scripts["other.sh"] = Mock(
+            get_JSON_API=lambda: {"script": "test"}
+        )
+
+        with patch.object(Module, "check_right", return_value=False):
+            code, headers, data = self.api(
+                Mock(), Mock(), server, Mock(), Mock(), Mock(), Mock()
+            )
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(
+            headers, {"Content-Type": "application/json; charset=utf-8"}
+        )
+        self.assertDictEqual(
+            loads(data),
+            {
+                "/auth/": {
+                    "script": "auth",
+                    "name": "/auth/",
+                    "category": "Authentication",
+                }
+            },
+        )
+
+        server = Mock(
+            configuration=Mock(auth_script="test.go", active_auth=False)
+        )
+
+        server.configuration.accept_unknow_user = False
+        user = Mock(id=1)
+
+        code, headers, data = self.api(
+            Mock(), user, server, Mock(), Mock(), Mock(), Mock()
+        )
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(
+            headers, {"Content-Type": "application/json; charset=utf-8"}
+        )
+        self.assertDictEqual(loads(data), {})
+
+        server = Mock(configuration=Mock(auth_script=None, active_auth=True))
+
+        server.configuration.accept_unknow_user = True
+        server.configuration.accept_unauthenticated_user = False
+        user.id = 0
+
+        code, headers, data = self.api(
+            Mock(), user, server, Mock(), Mock(), Mock(), Mock()
+        )
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(
+            headers, {"Content-Type": "application/json; charset=utf-8"}
+        )
+        self.assertDictEqual(loads(data), {})
+
+        server = Mock(
+            configuration=Mock(auth_script="test.go", active_auth=False)
+        )
+        user.id = 1000
+
+        with patch.object(Module, "check_right", return_value=True):
+            code, headers, data = self.api(
+                Mock(), user, server, Mock(), Mock(), Mock(), Mock()
+            )
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(
+            headers, {"Content-Type": "application/json; charset=utf-8"}
+        )
+        self.assertDictEqual(loads(data), {"other.sh": {"script": "test"}})
+
+        Pages.scripts = {}
+
+    def test_scripts(self):
+        server = Mock(configuration=Mock(auth_script="test.go"))
+
+        code, headers, data = self.api.scripts(
+            Mock(), Mock(), server, "test.go", Mock(), Mock()
+        )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("404", code)
+        self.assertDictEqual({}, headers)
+
+        user = Mock(check_csrf=True)
+        server.configuration.csrf_max_time = 0
+
+        with patch.object(
+            Module.TokenCSRF, "check_csrf", return_value=False
+        ) as mock:
+            code, headers, data = self.api.scripts(
+                Mock(), user, server, "other.sh", Mock(), Mock(), "token"
+            )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("403", code)
+        self.assertDictEqual({}, headers)
+
+        mock.assert_called_once_with(user, "token", 0)
+
+        user.check_csrf = False
+
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(None, b"error", None, None, None),
+        ) as mock:
+            code, headers, data = self.api.scripts(
+                Mock(), user, server, "other.sh", Mock(), Mock(), "token"
+            )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("error", code)
+        self.assertDictEqual({}, headers)
+
+        Pages.scripts["other.sh"] = Mock(
+            content_type="html", stderr_content_type="text"
+        )
+        user.check_csrf = True
+
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(b"result", b"error", "key", 0, "TimeoutError"),
+        ) as mock, patch.object(
+            Module.TokenCSRF, "check_csrf", return_value=True
+        ), patch.object(
+            Module.TokenCSRF, "build_token", return_value="token"
+        ):
+            code, headers, data = self.api.scripts(
+                Mock(), user, server, "other.sh", Mock(), Mock(), "token"
+            )
+
+        self.assertDictEqual(
+            loads(data),
+            {
+                "stdout": "result",
+                "stderr": "error",
+                "code": 0,
+                "Content-Type": "html",
+                "Stderr-Content-Type": "text",
+                "error": "TimeoutError",
+                "key": "key",
+                "csrf": "token",
+            },
+        )
+        self.assertEqual("200 OK", code)
+        self.assertDictEqual(
+            {"Content-Type": "application/json; charset=utf-8"}, headers
+        )
+
+        Pages.scripts.clear()
+
+
+class TestWeb(TestCase):
+    def setUp(self):
+        self.web = Web()
+
+    def test___call__(self):
+        Module.CallableFile.template_index = "test %(header)s %(footer)s"
+        Module.CallableFile.template_footer = "footer"
+        Module.CallableFile.template_header = "header"
+
+        code, headers, data = self.web(*[Mock()] * 7)
+
+        self.assertEqual(code, "200 OK")
+        self.assertEqual(
+            headers,
+            {
+                "Content-Security-Policy": (
+                    "default-src 'self'; form-action 'none'; frame-ancestors"
+                    " 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBG"
+                    "ESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHs"
+                    "MYpCdGdSryg=='"
+                )
+            },
+        )
+        self.assertEqual(data, "test header footer")
+
+    def test_scripts(self):
+        ...
 
 
 if __name__ == "__main__":
