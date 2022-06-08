@@ -597,10 +597,18 @@ class Api:
 
         server_configuration = server.configuration
 
-        if (
+        has_auth = (
             server_configuration.auth_script
             and server_configuration.active_auth
-        ):
+        )
+        unauthenticated_not_accepted = (
+            not server_configuration.accept_unknow_user and user.id == 1
+        ) or (
+            not server_configuration.accept_unauthenticated_user
+            and user.id == 0
+        )
+
+        if has_auth:
             auth_script = Pages.scripts[
                 server_configuration.auth_script
             ].get_JSON_API()
@@ -611,27 +619,19 @@ class Api:
         else:
             scripts = {}
 
+        if unauthenticated_not_accepted:
+            return (
+                "200 OK",
+                {"Content-Type": "application/json; charset=utf-8"},
+                dumps(scripts),
+            )
+
         for name, script in Pages.scripts.items():
             if name == server_configuration.auth_script:
                 continue
 
             if check_right(user, script):
                 scripts[name] = script.get_JSON_API()
-
-        if (
-            (not server_configuration.accept_unknow_user and user.id == 1)
-            or (
-                not server_configuration.accept_unauthenticated_user
-                and user.id == 0
-            )
-        ) and server_configuration.active_auth:
-            auth_script = Pages.scripts[
-                server_configuration.auth_script
-            ].get_JSON_API()
-            auth_script["name"] = "/auth/"
-            auth_script["category"] = "Authentication"
-
-            scripts = {"/auth/": auth_script}
 
         return (
             "200 OK",
@@ -689,14 +689,14 @@ class Api:
             )
             return error_HTTP, {}, b""
 
+        script = Pages.scripts[filename]
+
         response_object = {
             "stdout": decode_output(stdout) if stdout else "",
             "stderr": decode_output(stderr) if stderr else "",
             "code": code,
-            "Content-Type": Pages.scripts[filename].content_type,
-            "Stderr-Content-Type": (
-                Pages.scripts[filename].stderr_content_type
-            ),
+            "Content-Type": script.content_type,
+            "Stderr-Content-Type": (script.stderr_content_type),
             "error": error,
         }
 
