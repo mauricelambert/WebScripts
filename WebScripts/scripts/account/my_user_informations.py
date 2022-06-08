@@ -68,11 +68,15 @@ def main() -> int:
         f"""
 Username: {user['name']!r}
 ID: {user['ID']!r}
-Groups (defined permissions): {[f'{groups.get(str(group), "UNKNOWN")!r} ({group})' for group in user['groups']]}
+Groups (defined permissions): \
+{
+    [f'{groups.get(str(group), "UNKNOWN")!r} ({group})'
+    for group in user['groups']]
+}
 IP adresses (allowed for authentication): {user['IPs']!r}
 Categories (defined access): {', '.join(user['categories'])}
 Scripts (defined access): {', '.join(user['scripts'])}
-		"""
+        """
     )
 
     return 0

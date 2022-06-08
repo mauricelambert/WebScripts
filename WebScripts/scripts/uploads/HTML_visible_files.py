@@ -71,7 +71,8 @@ def main() -> int:
         "delete_permission",
     ]
     print(
-        f"<table><thead><tr><th>{'</th><th>'.join(fields)}</th></tr></thead><tbody>"
+        f"<table><thead><tr><th>{'</th><th>'.join(fields)}"
+        "</th></tr></thead><tbody>"
     )
 
     try:

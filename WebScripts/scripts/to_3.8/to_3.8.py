@@ -35,7 +35,7 @@ The new package is named WebScripts38.
 Impact: "log_encoding" configuration is not use.
 """
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -129,9 +129,23 @@ def change_utils(filename: str):
     with open(filename, "w") as file:
         file.write(
             content.replace(
-                "from typing import TypeVar, List, Dict,"
-                " _SpecialGenericAlias, _GenericAlias",
-                "from typing import TypeVar, List, Dict, _GenericAlias",
+                """from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _SpecialGenericAlias,
+    _GenericAlias,
+    Any,
+    Union,
+)""",
+                """from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _GenericAlias,
+    Any,
+    Union,
+)""",
             ).replace(
                 """ or isinstance(
                 type_, _SpecialGenericAlias
