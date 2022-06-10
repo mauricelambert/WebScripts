@@ -108,6 +108,7 @@ if __package__:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -145,6 +146,7 @@ else:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -1232,7 +1234,7 @@ class Server:
 
     @staticmethod
     @log_trace
-    def return_page(page: Union[bytes, str, list]) -> List[bytes]:
+    def return_page(page: Union[bytes, str, Iterable[bytes]]) -> List[bytes]:
 
         """
         This function returns response as a list of bytes.
@@ -1303,7 +1305,10 @@ class Server:
 
     @log_trace
     def page_500(
-        self, environ: _Environ, error: str, respond: MethodType
+        self,
+        environ: _Environ,
+        error: Union[str, bytes, Iterable[bytes]],
+        respond: MethodType,
     ) -> List[bytes]:
 
         """
@@ -1313,7 +1318,7 @@ class Server:
         error_code = "500 Internal Error"
         logger_debug("Send 500 Internal Error...")
         return self.send_error_page(
-            environ, error_code, error.encode(), respond
+            environ, error_code, b"".join(self.return_page(error)), respond
         )
 
     @log_trace

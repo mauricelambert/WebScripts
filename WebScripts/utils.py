@@ -69,6 +69,7 @@ __all__ = [
     "logger_info",
     "logger_access",
     "logger_response",
+    "logger_command",
     "logger_warning",
     "logger_error",
     "logger_critical",
@@ -148,6 +149,7 @@ class _Logs:
     log_trace: Logger = getLogger("WebScripts.trace")
     log_access: Logger = getLogger("WebScripts.access")
     log_response: Logger = getLogger("WebScripts.response")
+    log_command: Logger = getLogger("WebScripts.command")
 
     def debug(log: str) -> None:
 
@@ -249,6 +251,18 @@ class _Logs:
         Logs.file.log(26, log)
         logging.log(26, log)
 
+    def command(log: str) -> None:
+
+        """
+        This function implements response logs for WebScripts.
+        """
+
+        Logs.log_info.info(log)
+        Logs.log_command.log(27, log)
+        Logs.console.log(27, f"\x1b[36m{log}\x1b[0m")
+        Logs.file.log(27, log)
+        logging.log(27, log)
+
     def config(*args, **kwargs):
 
         """
@@ -273,13 +287,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).access(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x9C4,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x9C4,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def response(log: str) -> None:
 
@@ -288,13 +304,32 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).response(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0xA28,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0xA28,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
+
+    def command(log: str) -> None:
+
+        """
+        This function logs commands on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).command(log)
+        ReportEvent(
+            WindowsLogs.app,
+            0xA8C,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def debug(log: str) -> None:
 
@@ -303,13 +338,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).debug(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x3E8,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x3E8,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def info(log: str) -> None:
 
@@ -318,13 +355,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).info(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x7D0,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x7D0,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def warning(log: str) -> None:
 
@@ -333,13 +372,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).warning(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0xBB8,
-                eventCategory=win32evtlog.EVENTLOG_WARNING_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0xBB8,
+            eventCategory=1,
+            eventType=EVENTLOG_WARNING_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def error(log: str) -> None:
 
@@ -348,13 +389,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).error(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0xFA0,
-                eventCategory=win32evtlog.EVENTLOG_ERROR_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0xFA0,
+            eventCategory=1,
+            eventType=EVENTLOG_ERROR_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def critical(log: str) -> None:
 
@@ -363,13 +406,15 @@ class WindowsLogs(_Logs):
         """
 
         super(WindowsLogs, WindowsLogs).critical(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x1388,
-                eventCategory=win32evtlog.EVENTLOG_ERROR_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x1388,
+            eventCategory=1,
+            eventType=EVENTLOG_ERROR_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
 
 class LinuxLogs(_Logs):
@@ -385,7 +430,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).access(log)
-        ReportEvent(syslog.LOG_INFO, log)
+        ReportEvent(LOG_INFO, log)
 
     def response(log: str) -> None:
 
@@ -394,7 +439,16 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).response(log)
-        ReportEvent(syslog.LOG_INFO, log)
+        ReportEvent(LOG_INFO, log)
+
+    def command(log: str) -> None:
+
+        """
+        This function logs command on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).command(log)
+        ReportEvent(LOG_INFO, log)
 
     def debug(log: str) -> None:
 
@@ -403,7 +457,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).debug(log)
-        ReportEvent(syslog.LOG_DEBUG, log)
+        ReportEvent(LOG_DEBUG, log)
 
     def info(log: str) -> None:
 
@@ -412,7 +466,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).info(log)
-        ReportEvent(syslog.LOG_INFO, log)
+        ReportEvent(LOG_INFO, log)
 
     def warning(log: str) -> None:
 
@@ -421,7 +475,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).warning(log)
-        ReportEvent(syslog.LOG_WARNING, log)
+        ReportEvent(LOG_WARNING, log)
 
     def error(log: str) -> None:
 
@@ -430,7 +484,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).error(log)
-        ReportEvent(syslog.LOG_ERR, log)
+        ReportEvent(LOG_ERR, log)
 
     def critical(log: str) -> None:
 
@@ -439,7 +493,7 @@ class LinuxLogs(_Logs):
         """
 
         super(LinuxLogs, LinuxLogs).critical(log)
-        ReportEvent(syslog.LOG_CRIT, log)
+        ReportEvent(LOG_CRIT, log)
 
 
 def log_trace(function: FunctionType) -> FunctionType:
@@ -522,12 +576,26 @@ logging.handlers.CustomLogHandler = CustomLogHandler
 
 if IS_WINDOWS:
     try:
+        from win32con import TOKEN_READ
+        from win32api import GetCurrentProcess
         from win32evtlogutil import ReportEvent
-        import win32evtlog
+        from win32security import (
+            OpenProcessToken,
+            GetTokenInformation,
+            TokenUser,
+        )
+        from win32evtlog import (
+            EVENTLOG_INFORMATION_TYPE,
+            EVENTLOG_WARNING_TYPE,
+            EVENTLOG_ERROR_TYPE,
+        )
     except ImportError:
         WINDOWS_LOGS = False
     else:
         WINDOWS_LOGS = True
+        SID = GetTokenInformation(
+            OpenProcessToken(GetCurrentProcess(), TOKEN_READ), TokenUser
+        )[0]
 
     check_call(
         [
@@ -546,12 +614,20 @@ if IS_WINDOWS:
         stderr=DEVNULL,
     )  # Active colors in console (for logs) # nosec
 
-    Logs = WindowsLogs
     if not WINDOWS_LOGS:
+        Logs = _Logs
         Logs.error("PyWin32 is not installed, no Windows Event Logs.")
+    else:
+        Logs = WindowsLogs
 else:
-    from syslog import syslog as ReportEvent
-    import syslog
+    from syslog import (
+        syslog as ReportEvent,
+        LOG_DEBUG,
+        LOG_INFO,
+        LOG_WARNING,
+        LOG_ERR,
+        LOG_CRIT,
+    )
 
     Logs = LinuxLogs
 
@@ -1037,11 +1113,13 @@ date_format = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
 logging.addLevelName(25, "ACCESS")
 logging.addLevelName(26, "RESPONSE")
+logging.addLevelName(27, "COMMAND")
 
 logger_debug: Callable = Logs.debug
 logger_info: Callable = Logs.info
 logger_access: Callable = Logs.access
 logger_response: Callable = Logs.response
+logger_command: Callable = Logs.command
 logger_warning: Callable = Logs.warning
 logger_error: Callable = Logs.error
 logger_critical: Callable = Logs.critical

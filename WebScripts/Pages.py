@@ -97,6 +97,7 @@ try:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -133,6 +134,7 @@ except ImportError:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -258,17 +260,17 @@ def execution_logs(
     """
 
     if script.no_password:
-        logger_info(f"Command: {process.args}")
+        logger_command(f"Command: {process.args}")
 
     if process.returncode or stderr:
         logger_error(
-            f"SCRIPT ERROR: script {script.name} user {user.name} code "
+            f"SCRIPT ERROR: script {script.name!r} user {user.name!r} code "
             f"{process.returncode} STDERR {decode_output(stderr)}"
         )
     else:
         logger_debug(
-            f'SCRIPT "{script.name}" executed without error for '
-            f'user named "{user.name}".'
+            f"SCRIPT {script.name!r} executed without error for "
+            f"user named {user.name!r}."
         )
 
 
@@ -781,9 +783,10 @@ class Web:
             )
             return "403", {}, b""
 
-        if script.command_generate_documentation is not None:
-            command = script.command_generate_documentation % script.get_dict()
-            logger_info(f"Command for documentation: {command}")
+        command_template = script.command_generate_documentation
+        if command_template is not None:
+            command = command_template % script.get_dict()
+            logger_command(f"Command for documentation: {command!r}")
             process = Popen(  # nosec # nosemgrep
                 command,
                 env=get_environ(environ, user, script),
@@ -792,19 +795,18 @@ class Web:
             process.communicate()
 
         docfile = get_real_path(script.documentation_file)
-        if script.documentation_file is not None and path.isfile(docfile):
+        if docfile is not None and path.isfile(docfile):
             return (
                 "200 OK",
                 {
                     "Content-Type": f"{script.documentation_content_type};"
                     " charset=utf-8"
                 },
-                get_file_content(script.documentation_file, as_iterator=True),
+                get_file_content(docfile, as_iterator=True),
             )
         else:
-            server_configuration = server.configuration
             doc = ScriptConfig.get_docfile_from_configuration(
-                server_configuration, filename
+                server.configuration, filename
             )
 
             if doc is not None:
@@ -942,6 +944,24 @@ class Pages:
             b'</a><script>window.location="/web/"</script></html>',
         )
 
+    @staticmethod
+    @log_trace
+    def webfile(
+        files: Dict[str, CallableFile], user: User, filename: str, base: str
+    ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
+
+        """
+        This function builds response for Web files.
+        """
+
+        callable_file = files.get(filename, None)
+
+        if callable_file is not None:
+            return callable_file(user)
+
+        logger_error(f"HTTP 404 for {user.name!r} on /{base}/{filename}")
+        return "404", {}, b""
+
     @log_trace
     def js(
         self,
@@ -958,13 +978,7 @@ class Pages:
         This function get Javascripts Scripts and send it.
         """
 
-        callable_file = Pages.js_paths.get(filename, None)
-
-        if callable_file is not None:
-            return callable_file(user)
-
-        logger_error(f"HTTP 404 for {user.name} on /js/{filename}")
-        return "404", {}, b""
+        return self.webfile(Pages.js_paths, user, filename, "js")
 
     @log_trace
     def static(
@@ -982,13 +996,7 @@ class Pages:
         This function get static file and send it.
         """
 
-        callable_file = Pages.statics_paths.get(filename, None)
-
-        if callable_file is not None:
-            return callable_file(user)
-
-        logger_error(f"HTTP 404 for {user.name} on /static/{filename}")
-        return "404", {}, b""
+        return self.webfile(Pages.statics_paths, user, filename, "static")
 
     @log_trace
     def auth(
@@ -1046,7 +1054,7 @@ class Pages:
                     Pages.user_blacklist.pop(username, None),
                 )
 
-        cookie = Session.build_session(user, get_ip(environ), Pages)
+        cookie = Session.build_session(user, ip, Pages)
 
         return (
             "302 Found",

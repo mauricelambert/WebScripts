@@ -98,6 +98,7 @@ if __package__:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -126,6 +127,7 @@ else:
         logger_info,
         logger_access,
         logger_response,
+        logger_command,
         logger_warning,
         logger_error,
         logger_critical,
@@ -483,13 +485,16 @@ class ScriptConfig(DefaultNamespace):
                 "reason this extension is blocked)"
             )
 
+        command = [
+            r"C:\WINDOWS\system32\cmd.exe",
+            "/c",
+            "assoc",
+            extension,
+        ]
+        logger_command("Get launcher from extension: " + repr(command))
+
         process = Popen(
-            [
-                r"C:\WINDOWS\system32\cmd.exe",
-                "/c",
-                "assoc",
-                extension,
-            ],  # protection against command injection
+            command,  # protection against command injection
             stdout=PIPE,
             stderr=PIPE,
             text=True,
@@ -500,8 +505,11 @@ class ScriptConfig(DefaultNamespace):
             return None
         filetype = stdout.split("=")[1] if "=" in stdout else ""
 
+        command = [r"C:\WINDOWS\system32\cmd", "/c", "ftype", filetype]
+        logger_command("Get launcher from extension: " + repr(command))
+
         process = Popen(
-            [r"C:\WINDOWS\system32\cmd", "/c", "ftype", filetype],
+            command,
             stdout=PIPE,
             stderr=PIPE,
             text=True,
