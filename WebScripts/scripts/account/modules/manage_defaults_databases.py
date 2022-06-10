@@ -367,7 +367,7 @@ def auth_apikey(apikey: str) -> User:
 
 
 def auth(
-    username: str = None, password: str = None, apikey: str = None
+    username: str = None, password: str = None, api_key: str = None
 ) -> User:
 
     """
@@ -375,10 +375,10 @@ def auth(
     (username and password) or an api key.
     """
 
-    if apikey is None:
+    if api_key is None:
         return auth_username_password(username, password)
     else:
-        return auth_apikey(apikey)
+        return auth_apikey(api_key)
 
 
 def add_group(name: str, id_: int) -> Group:

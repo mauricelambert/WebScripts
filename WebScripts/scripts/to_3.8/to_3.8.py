@@ -148,8 +148,8 @@ def change_utils(filename: str):
 )""",
             ).replace(
                 """ or isinstance(
-                type_, _SpecialGenericAlias
-            )""",
+            type_, _SpecialGenericAlias
+        )""",
                 "",
             )
         )

@@ -56,6 +56,10 @@ title)&nbsp;to&nbsp;/web/&nbsp;or&nbsp;/api/.</span></dd></dl>
 <dl><dt><a name="Pages-static"><strong>static</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><span class="code">This&nbsp;function&nbsp;get&nbsp;static&nbsp;file&nbsp;and&nbsp;send&nbsp;it.</span></dd></dl>
 
 <hr>
+Static methods defined here:<br>
+<dl><dt><a name="Pages-webfile"><strong>webfile</strong></a>(files: Dict[str, commons.CallableFile], user: commons.User, filename: str, base: str) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><span class="code">This&nbsp;function&nbsp;builds&nbsp;response&nbsp;for&nbsp;Web&nbsp;files.</span></dd></dl>
+
+<hr>
 Data descriptors defined here:<br>
 <dl><dt><strong>__dict__</strong></dt>
 <dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
