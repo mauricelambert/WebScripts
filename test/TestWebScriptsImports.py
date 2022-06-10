@@ -32,6 +32,7 @@ from importlib import reload
 from platform import system
 import logging.config
 import subprocess
+import builtins
 import logging
 import sys
 
@@ -190,7 +191,7 @@ class OsModule:
         pass
 
     @staticmethod
-    def mkdir():
+    def mkdir(file):
         raise PermissionError
 
     class path:
@@ -207,11 +208,19 @@ class OsModule:
             return False
 
 
+import os
+import os.path
+
 sys.modules["os"] = OsModule()
 sys.modules["path"] = OsModule.path()
 sys.modules["os.path"] = OsModule.path()
 
-import WebScripts
+sys.modules["os"].mkdir = OsModule.mkdir
+
+with patch.object(
+    sys.modules["os.path"], "isdir", return_value=False
+), patch.object(sys.modules["path"], "isdir", return_value=False):
+    import WebScripts
 
 WebScripts.configure_logs_system()
 
@@ -220,27 +229,96 @@ sys.modules["utils"] = utils = import_from_filename(
 )
 
 sys.argv = ["WebScripts", "--debug"]
-WebScripts.main()
+
+# print("", *dir(WebScripts), sep="\n")
+# print(WebScripts.isdir)
+# print(WebScripts.mkdir)
+
+WebScripts.mkdir = OsModule.mkdir
+# print(WebScripts.mkdir)
+with patch.object(WebScripts, "isdir", return_value=False):
+    WebScripts.main()
+
 sys.argv = argv
 
-for file in to_remove:
-    remove(file)
-
-sys.modules["win32evtlogutil"] = Mock(ReportEvent=object)
-sys.modules["win32evtlog"] = Mock()
+sys.modules["win32evtlogutil"] = Mock(ReportEvent=Mock())
+sys.modules["win32security"] = Mock(
+    OpenProcessToken=Mock(),
+    GetTokenInformation=Mock(return_value=[Mock()]),
+    TokenUser=Mock(),
+)
+sys.modules["win32api"] = Mock(GetCurrentProcess=Mock())
+sys.modules["win32con"] = Mock(TOKEN_READ=Mock())
+sys.modules["win32evtlog"] = Mock(
+    EVENTLOG_INFORMATION_TYPE=Mock(),
+    EVENTLOG_WARNING_TYPE=Mock(),
+    EVENTLOG_ERROR_TYPE=Mock(),
+)
 _exec(utils.__spec__, utils)
 
 
 class ModuleTest:
     @property
     def ReportEvent(self):
-        raise ImportError
+        raise ImportError("test")
+
+    def __getattr__(self):
+        raise ImportError("test")
+
+    def __getattribute__(self):
+        raise ImportError("test")
+
+
+from inspect import stack
+
+
+def change_WINDOWS_LOGS(*args):
+    module_caller_globals = stack()[1].frame.f_globals
+    print("*" * 150)
+    print(module_caller_globals)
+    print("*" * 150)
+    module_caller_globals["WINDOWS_LOGS"] = False
 
 
 sys.modules["win32evtlogutil"] = ModuleTest()
-_exec(utils.__spec__, utils)
+# from win32evtlogutil import ReportEvent
+del sys.modules["win32con"]
+del sys.modules["win32api"]
+del sys.modules["win32evtlog"]
+sys.modules["win32security"] = Mock()
+sys.modules["win32security"].GetTokenInformation = change_WINDOWS_LOGS
+# sys_path = sys.path
+# path_importer = sys.path_importer_cache.copy()
+# path_hooks = sys.path_hooks
+# meta_path = sys.meta_path
 
-sys.modules["syslog"] = Mock(syslog=object)
+# def clear_path():
+#     sys.path = []
+#     sys.path_importer_cache.clear()
+#     sys.path_hooks = []
+#     sys.modules = {k: v for k, v in sys.modules.items() if "win" not in k}
+#     sys.meta_path = []
+#     return "Windows"
+
+# sys.modules["platform"].system = clear_path
+_exec(utils.__spec__, utils)
+exec(open(utils.__file__).read())
+
+# sys.path = sys_path
+# sys.path_importer_cache = path_importer
+# sys.path_hooks = path_hooks
+# sys.meta_path = meta_path
+
+# print(sys.path, list(sys.modules.keys()))
+
+sys.modules["syslog"] = Mock(
+    syslog=Mock(),
+    LOG_DEBUG=Mock(),
+    LOG_INFO=Mock(),
+    LOG_WARNING=Mock(),
+    LOG_ERR=Mock(),
+    LOG_CRIT=Mock(),
+)
 # sys.modules["platform"].system = (
 #     lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
 # )
@@ -249,6 +327,10 @@ with patch.object(
     sys.modules["platform"],
     "system",
     return_value=("Linux" if system() == "Windows" else "Windows"),
+), patch.object(
+    sys.modules["subprocess"],
+    "check_call",
+    return_value=0,
 ):
     utils.get_real_path("/test/whynot", no_error=True)
     _exec(utils.__spec__, utils)
@@ -268,3 +350,11 @@ __import__(
     {"__name__": "__main__"},
     {"__name__": "__main__"},
 )
+
+global_ = globals().copy()
+local_ = locals().copy()
+
+local_["__name__"] = "__main__"
+global_["__name__"] = "__main__"
+
+# exec(open(WebScripts.__file__).read(), locals=local_, globals=global_)

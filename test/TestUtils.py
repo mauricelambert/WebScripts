@@ -69,9 +69,11 @@ import WebScripts.utils
 
 class TestLinuxLogs(TestCase):  # Code coverage, no tests on Logs functions
     def setUp(self):
-        WebScripts.utils.syslog = Mock(
-            LOG_DEBUG=10, LOG_INFO=20, LOG_WARNING=30, LOG_ERR=40, LOG_CRIT=50
-        )
+        WebScripts.utils.LOG_DEBUG = 10
+        WebScripts.utils.LOG_INFO = 20
+        WebScripts.utils.LOG_WARNING = 30
+        WebScripts.utils.LOG_ERR = 40
+        WebScripts.utils.LOG_CRIT = 50
         WebScripts.utils.ReportEvent = Mock()
         self.logs = LinuxLogs
 
@@ -96,16 +98,18 @@ class TestLinuxLogs(TestCase):  # Code coverage, no tests on Logs functions
     def test_response(self):
         self.logs.response("test")
 
+    def test_command(self):
+        self.logs.command("test")
+
 
 class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
     def setUp(self):
-        WebScripts.utils.win32evtlog = Mock(
-            EVENTLOG_INFORMATION_TYPE=10,
-            EVENTLOG_WARNING_TYPE=20,
-            EVENTLOG_ERROR_TYPE=30,
-        )
+        WebScripts.utils.EVENTLOG_INFORMATION_TYPE = 10
+        WebScripts.utils.EVENTLOG_WARNING_TYPE = 20
+        WebScripts.utils.EVENTLOG_ERROR_TYPE = 30
         WebScripts.utils.ReportEvent = Mock()
         WebScripts.utils.WINDOWS_LOGS = True
+        WebScripts.utils.SID = "test"
         self.logs = WindowsLogs
 
     def test_debug(self):
@@ -128,6 +132,9 @@ class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
 
     def test_response(self):
         self.logs.response("test")
+
+    def test_command(self):
+        self.logs.command("test")
 
 
 class TestLogs(TestCase):  # Code coverage, no tests on Logs functions

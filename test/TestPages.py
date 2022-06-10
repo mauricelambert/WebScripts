@@ -48,6 +48,7 @@ from WebScripts.Pages import (
     start_process,
     check_right,
     get_environ,
+    Blacklist,
     anti_XSS,
     Process,
     Script,
@@ -746,8 +747,412 @@ class TestWeb(TestCase):
         )
         self.assertEqual(data, "test header footer")
 
+    def test_doc(self):
+        Pages.scripts = {}
+
+        code, headers, data = self.web.doc(
+            Mock(), Mock(), Mock(), "test.go", Mock(), Mock(), Mock()
+        )
+
+        self.assertEqual(code, "404")
+        self.assertDictEqual(headers, {})
+        self.assertEqual(data, b"")
+
+        user = Mock()
+        script = Pages.scripts["test.go"] = Mock(
+            command_generate_documentation="%(test)s",
+            get_dict=lambda *x: {"test": "test"},
+            documentation_file="test.html",
+            documentation_content_type="html",
+        )
+
+        with patch.object(
+            Module,
+            "check_right",
+            return_value=False,
+        ) as mock:
+            code, headers, data = self.web.doc(
+                Mock(), user, Mock(), "test.go", Mock(), Mock(), Mock()
+            )
+
+        mock.assert_called_once_with(user, script)
+
+        self.assertEqual(code, "403")
+        self.assertDictEqual(headers, {})
+        self.assertEqual(data, b"")
+
+        server = Mock()
+        env = Mock()
+
+        with patch.object(
+            Module,
+            "check_right",
+            return_value=True,
+        ) as rigth, patch.object(
+            Module,
+            "Popen",
+            return_value=Mock(),
+        ) as popen, patch.object(
+            Module, "get_environ", return_value={"env": "env"}
+        ) as getenv, patch.object(
+            Module.ScriptConfig,
+            "get_docfile_from_configuration",
+            return_value=None,
+        ) as get_docfile, patch.object(
+            Module,
+            "get_real_path",
+            return_value="file.txt",
+        ) as get_file:
+            code, headers, data = self.web.doc(
+                env, user, server, "test.go", Mock(), Mock(), Mock()
+            )
+
+        rigth.assert_called_once_with(user, script)
+        popen.assert_called_once_with("test", env={"env": "env"}, shell=True)
+        get_docfile.assert_called_once_with(server.configuration, "test.go")
+        getenv.assert_called_once_with(env, user, script)
+        get_file.assert_called_once_with("test.html")
+
+        self.assertEqual(code, "404")
+        self.assertDictEqual(headers, {})
+        self.assertEqual(data, b"")
+
+        script.command_generate_documentation = None
+        script.get_dict = None
+
+        with patch.object(
+            Module,
+            "check_right",
+            return_value=True,
+        ) as rigth, patch.object(
+            Module.path,
+            "isfile",
+            return_value=True,
+        ) as isfile, patch.object(
+            Module,
+            "get_file_content",
+            return_value=b"data",
+        ) as getcontent, patch.object(
+            Module,
+            "get_real_path",
+            return_value="file.txt",
+        ) as get_file:
+            code, headers, data = self.web.doc(
+                env, user, server, "test.go", Mock(), Mock(), Mock()
+            )
+
+        rigth.assert_called_once_with(user, script)
+        isfile.assert_called_once_with("file.txt")
+        getcontent.assert_called_once_with("file.txt", as_iterator=True)
+        get_file.assert_called_once_with("test.html")
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(headers, {"Content-Type": "html; charset=utf-8"})
+        self.assertEqual(data, b"data")
+
+        with patch.object(
+            Module,
+            "check_right",
+            return_value=True,
+        ) as rigth, patch.object(
+            Module.ScriptConfig,
+            "get_docfile_from_configuration",
+            return_value="file.txt",
+        ) as get_docfile, patch.object(
+            Module,
+            "get_file_content",
+            return_value=b"data",
+        ) as getcontent, patch.object(
+            Module,
+            "get_real_path",
+            return_value="file.txt",
+        ) as get_file:
+            code, headers, data = self.web.doc(
+                env, user, server, "test.go", Mock(), Mock(), Mock()
+            )
+
+        rigth.assert_called_once_with(user, script)
+        get_docfile.assert_called_once_with(server.configuration, "test.go")
+        getcontent.assert_called_once_with("file.txt", as_iterator=True)
+        get_file.assert_called_once_with("test.html")
+
+        self.assertEqual(code, "200 OK")
+        self.assertDictEqual(headers, {"Content-Type": "html; charset=utf-8"})
+        self.assertEqual(data, b"data")
+
+    def test_auth(self):
+        server = Mock(
+            configuration=Mock(active_auth=True, auth_script="test.go")
+        )
+        function = Mock()
+        user = Mock()
+
+        with patch.object(
+            Module, "CallableFile", return_value=function
+        ) as file:
+            self.web.auth(Mock(), user, server, Mock(), Mock(), Mock())
+
+        function.assert_called_once_with(user)
+        file.assert_called_once_with("script", "test.go", "/auth/")
+
+        server.configuration.active_auth = False
+
+        code, headers, data = self.web.auth(
+            Mock(), user, server, Mock(), Mock(), Mock()
+        )
+
+        self.assertEqual(data, b"")
+        self.assertEqual(code, "403")
+        self.assertDictEqual(headers, {})
+
     def test_scripts(self):
-        ...
+        server = Mock(
+            configuration=Mock(active_auth=True, auth_script="test.go")
+        )
+        code, headers, data = self.web.scripts(
+            Mock(), Mock(), server, "test.go", Mock(), Mock()
+        )
+
+        self.assertEqual(code, "404")
+        self.assertDictEqual({}, headers)
+        self.assertEqual(data, b"")
+
+        Pages.scripts = {}
+
+        code, headers, data = self.web.scripts(
+            Mock(), Mock(), server, "other.sh", Mock(), Mock()
+        )
+
+        self.assertEqual(code, "404")
+        self.assertDictEqual({}, headers)
+        self.assertEqual(data, b"")
+
+        Pages.scripts["other.sh"] = "other"
+
+        with patch.object(
+            Module, "check_right", return_value=True
+        ), patch.object(Module, "CallableFile", return_value=None):
+            code, headers, data = self.web.scripts(
+                Mock(), Mock(), server, "other.sh", Mock(), Mock()
+            )
+
+        self.assertEqual(code, "404")
+        self.assertDictEqual({}, headers)
+        self.assertEqual(data, b"")
+
+        with patch.object(Module, "check_right", return_value=False):
+            code, headers, data = self.web.scripts(
+                Mock(), Mock(), server, "other.sh", Mock(), Mock()
+            )
+
+        self.assertEqual(code, "403")
+        self.assertDictEqual({}, headers)
+        self.assertEqual(data, b"")
+
+        with patch.object(
+            Module, "check_right", return_value=True
+        ), patch.object(
+            Module, "CallableFile", return_value=Mock(return_value="test")
+        ):
+            self.assertEqual(
+                "test",
+                self.web.scripts(
+                    Mock(), Mock(), server, "other.sh", Mock(), Mock()
+                ),
+            )
+
+
+class TestPages(TestCase):
+    def setUp(self):
+        self.pages = Pages()
+
+    def test___call__(self):
+        code, headers, data = self.pages(
+            Mock(), Mock(), Mock(), Mock(), Mock(), Mock()
+        )
+
+        self.assertEqual("301 Moved Permanently", code)
+        self.assertDictEqual({"Location": "/web/"}, headers)
+        self.assertEqual(
+            (
+                b"<!-- To use API go to this URL: /api/ --><html><body><h1>"
+                b'Index page is /web/</h1><a href="/web/">Please click here'
+                b'</a><script>window.location="/web/"</script></html>'
+            ),
+            data,
+        )
+
+    def test_auth(self):
+        Pages.js_paths = {}
+        code, headers, data = self.pages.js(
+            Mock(), Mock(), Mock(), "test", Mock(), Mock()
+        )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("404", code)
+        self.assertDictEqual({}, headers)
+
+        Pages.js_paths["test"] = Mock(return_value="whynot")
+        self.assertEqual(
+            "whynot",
+            self.pages.js(Mock(), Mock(), Mock(), "test", Mock(), Mock()),
+        )
+
+    def test_static(self):
+        Pages.statics_paths = {}
+        code, headers, data = self.pages.static(
+            Mock(), Mock(), Mock(), "test", Mock(), Mock()
+        )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("404", code)
+        self.assertDictEqual({}, headers)
+
+        Pages.statics_paths["test"] = Mock(return_value="whynot")
+        self.assertEqual(
+            "whynot",
+            self.pages.static(Mock(), Mock(), Mock(), "test", Mock(), Mock()),
+        )
+
+    def test_js(self):
+        Pages.js_paths = {}
+        code, headers, data = self.pages.js(
+            Mock(), Mock(), Mock(), "test", Mock(), Mock()
+        )
+
+        self.assertEqual(b"", data)
+        self.assertEqual("404", code)
+        self.assertDictEqual({}, headers)
+
+        Pages.js_paths["test"] = Mock(return_value="whynot")
+        self.assertEqual(
+            "whynot",
+            self.pages.js(Mock(), Mock(), Mock(), "test", Mock(), Mock()),
+        )
+
+    def test_auth(self):
+        env = Mock()
+        server = Mock(
+            configuration=Mock(
+                active_auth=None, auth_script="test.go", session_max_time=0
+            )
+        )
+        user = Mock()
+        script = "other.sh"
+        command = ["--username", "test"]
+        inputs = Mock()
+
+        with patch.object(Module, "get_ip", return_value="0.0.0.0") as getip:
+            self.pages.auth(env, user, server, script, command, inputs)
+            getip.assert_called_once_with(env)
+
+            server.configuration.active_auth = "test.go"
+
+            with patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(b"out", b"err", "key", 0, "TimeoutError"),
+            ) as mock:
+                code, headers, data = self.pages.auth(
+                    env, user, server, script, command, inputs
+                )
+                self.assertEqual(b"", data)
+                self.assertEqual(code, "err")
+                self.assertDictEqual({}, headers)
+                mock.assert_called_once_with(
+                    "test.go", user, env, command, inputs, is_auth=True
+                )
+
+            with patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(b"out", b"error", "key", 1, "TimeoutError"),
+            ) as mock:
+                code, headers, data = self.pages.auth(
+                    env, user, server, script, command, inputs
+                )
+                self.assertEqual(b"", data)
+                self.assertEqual(code, "500")
+                self.assertDictEqual({}, headers)
+                mock.assert_called_once_with(
+                    "test.go", user, env, command, inputs, is_auth=True
+                )
+
+            with patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(None, b"error", "key", 0, "TimeoutError"),
+            ) as mock:
+                code, headers, data = self.pages.auth(
+                    env, user, server, script, command, inputs
+                )
+                self.assertEqual(b"", data)
+                self.assertEqual(code, "500")
+                self.assertDictEqual({}, headers)
+                mock.assert_called_once_with(
+                    "test.go", user, env, command, inputs, is_auth=True
+                )
+
+            with patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(b"", b"error", "key", 0, "TimeoutError"),
+            ) as mock:
+                code, headers, data = self.pages.auth(
+                    env, user, server, script, command, inputs
+                )
+                self.assertEqual(b"", data)
+                self.assertEqual(code, "500")
+                self.assertDictEqual({}, headers)
+                mock.assert_called_once_with(
+                    "test.go", user, env, command, inputs, is_auth=True
+                )
+
+            user_session = Mock(id=1)
+            with patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(
+                    b'{"data":"data"}',
+                    b"",
+                    "key",
+                    0,
+                    "TimeoutError",
+                ),
+            ) as mock, patch.object(
+                Module.User, "default_build", return_value=user_session
+            ) as getuser, patch.object(
+                Module.Session, "build_session", return_value="cookie"
+            ) as session:
+                code, headers, data = self.pages.auth(
+                    env, user, server, script, command, inputs
+                )
+                self.assertIsInstance(
+                    self.pages.ip_blacklist.get("0.0.0.0"), Blacklist
+                )
+                self.assertIsInstance(
+                    self.pages.user_blacklist.get("test"), Blacklist
+                )
+                self.assertEqual(b"", data)
+                self.assertEqual(code, "302 Found")
+                self.assertDictEqual(
+                    {
+                        "Set-Cookie": (
+                            "SessionID=cookie; Path=/; SameSite=Strict;"
+                            " Max-Age=0; Secure; HttpOnly"
+                        ),
+                    },
+                    headers,
+                )
+
+                getuser.assert_called_once_with(data="data")
+                session.assert_called_once_with(user_session, "0.0.0.0", Pages)
+                mock.assert_called_once_with(
+                    "test.go", user, env, command, inputs, is_auth=True
+                )
+
+    def test_reload(self):
+        self.assertIsNone(self.pages.reload(*[Mock()] * 6))
 
 
 if __name__ == "__main__":
