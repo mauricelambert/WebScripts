@@ -507,7 +507,7 @@ class ScriptConfig(DefaultNamespace):
             return None
         filetype = stdout.split("=")[1] if "=" in stdout else ""
 
-        command = [r"C:\WINDOWS\system32\cmd", "/c", "ftype", filetype]
+        command = [r"C:\WINDOWS\system32\cmd.exe", "/c", "ftype", filetype]
         logger_command("Get launcher from extension: " + repr(command))
 
         process = Popen(

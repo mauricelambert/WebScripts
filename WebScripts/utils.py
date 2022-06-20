@@ -496,7 +496,7 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_CRIT, log)
 
 
-def log_trace(function: FunctionType) -> FunctionType:
+def log_trace(function: Union[FunctionType, MethodType]) -> FunctionType:
 
     """
     This decorator traces functions (start and end).
