@@ -393,6 +393,7 @@ class TestServer(TestCase):
             "HTTP_HOST": "webscripts.local",
             "HTTP_ORIGIN": "http://webscripts.local",
             "SERVER_PORT": "80",
+            "REMOTE_IP": "ip",
         }
 
         session = Mock()
@@ -402,7 +403,7 @@ class TestServer(TestCase):
         session.user = Mock(name="abc", id=1)
         self.server.pages.sessions[1] = session
 
-        user, not_blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
+        user, not_blacklisted = self.server.check_auth({"REMOTE_IP": "ip"})
         self.assertEqual(user.id, 0)
         self.assertEqual(user.name, "Not Authenticated")
         self.assertListEqual(user.groups, [0])
@@ -865,6 +866,13 @@ class TestServer(TestCase):
         self.server.get_function_page = MagicMock(
             return_value=(Mock(), None, True)
         )
+
+        self.server.configuration.webproxy_number = 0
+
+        response = self.server.app(environ, Mock())
+        self.assertEqual("403", response)
+
+        self.server.configuration.webproxy_number = None
 
         with patch.object(
             self.server,

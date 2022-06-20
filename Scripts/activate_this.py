@@ -16,7 +16,7 @@ import os
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 site_packages = os.path.join(
-    base, "lib", "python%s" % sys.version[:3], "site-packages"
+    base, "lib", "python%s" % ".".join(sys.version.split(".", 2)[:2]), "site-packages"
 )
 prev_sys_path = list(sys.path)
 import site

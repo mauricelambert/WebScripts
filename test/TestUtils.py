@@ -512,27 +512,34 @@ class TestFunctions(TestCase):
 
     def test_get_ip(self):
         env = {
-            "X_FORWARDED_FOR": "ip1",
-            "X_REAL_IP": "ip2",
-            "X_FORWARDED_HOST": "ip3",
-            "CLIENT_IP": "ip4",
+            "HTTP_X_FORWARDED_FOR": "ip1, ipX",
+            "HTTP_X_REAL_IP": "ip2",
+            "HTTP_X_FORWARDED_HOST": "ip3",
+            "HTTP_CLIENT_IP": "ip4",
             "REMOTE_ADDR": "ip5",
         }
 
-        self.assertEqual(get_ip(env), "ip1, ip2, ip3, ip4, ip5")
-        self.assertEqual(get_ip(env, False), "ip1")
-        env.pop("X_FORWARDED_FOR")
-        self.assertEqual(get_ip(env), "ip2, ip3, ip4, ip5")
-        self.assertEqual(get_ip(env, False), "ip2")
-        env.pop("X_REAL_IP")
-        self.assertEqual(get_ip(env), "ip3, ip4, ip5")
-        self.assertEqual(get_ip(env, False), "ip3")
-        env.pop("X_FORWARDED_HOST")
-        self.assertEqual(get_ip(env), "ip4, ip5")
-        self.assertEqual(get_ip(env, False), "ip4")
-        env.pop("CLIENT_IP")
-        self.assertEqual(get_ip(env), "ip5")
-        self.assertEqual(get_ip(env, False), "ip5")
+        self.assertIsNone(get_ip(env, 5))
+
+        env["HTTP_X_FORWARDED_FOR"] = "ip1"
+
+        self.assertIsNone(get_ip(env, 2))
+        self.assertIsNotNone(get_ip(env, 5))
+
+        self.assertEqual(get_ip(env, None), "ip1, ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip1")
+        env.pop("HTTP_X_FORWARDED_FOR")
+        self.assertEqual(get_ip(env, None), "ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip2")
+        env.pop("HTTP_X_REAL_IP")
+        self.assertEqual(get_ip(env, None), "ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip3")
+        env.pop("HTTP_X_FORWARDED_HOST")
+        self.assertEqual(get_ip(env, 2), "ip4, ip5")
+        self.assertEqual(get_ip(env, 2, False), "ip4")
+        env.pop("HTTP_CLIENT_IP")
+        self.assertEqual(get_ip(env, 1), "ip5")
+        self.assertEqual(get_ip(env, 1, False), "ip5")
 
     def test_get_ini_dict(self):
 

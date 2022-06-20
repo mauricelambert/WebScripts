@@ -1031,7 +1031,7 @@ class TestPages(TestCase):
         )
 
     def test_auth(self):
-        env = Mock()
+        env = {"REMOTE_IP": "0.0.0.0"}
         server = Mock(
             configuration=Mock(
                 active_auth=None, auth_script="test.go", session_max_time=0
@@ -1042,114 +1042,112 @@ class TestPages(TestCase):
         command = ["--username", "test"]
         inputs = Mock()
 
-        with patch.object(Module, "get_ip", return_value="0.0.0.0") as getip:
-            self.pages.auth(env, user, server, script, command, inputs)
-            getip.assert_called_once_with(env)
+        self.pages.auth(env, user, server, script, command, inputs)
 
-            server.configuration.active_auth = "test.go"
+        server.configuration.active_auth = "test.go"
 
-            with patch.object(
-                Module,
-                "execute_scripts",
-                return_value=(b"out", b"err", "key", 0, "TimeoutError"),
-            ) as mock:
-                code, headers, data = self.pages.auth(
-                    env, user, server, script, command, inputs
-                )
-                self.assertEqual(b"", data)
-                self.assertEqual(code, "err")
-                self.assertDictEqual({}, headers)
-                mock.assert_called_once_with(
-                    "test.go", user, env, command, inputs, is_auth=True
-                )
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(b"out", b"err", "key", 0, "TimeoutError"),
+        ) as mock:
+            code, headers, data = self.pages.auth(
+                env, user, server, script, command, inputs
+            )
+            self.assertEqual(b"", data)
+            self.assertEqual(code, "err")
+            self.assertDictEqual({}, headers)
+            mock.assert_called_once_with(
+                "test.go", user, env, command, inputs, is_auth=True
+            )
 
-            with patch.object(
-                Module,
-                "execute_scripts",
-                return_value=(b"out", b"error", "key", 1, "TimeoutError"),
-            ) as mock:
-                code, headers, data = self.pages.auth(
-                    env, user, server, script, command, inputs
-                )
-                self.assertEqual(b"", data)
-                self.assertEqual(code, "500")
-                self.assertDictEqual({}, headers)
-                mock.assert_called_once_with(
-                    "test.go", user, env, command, inputs, is_auth=True
-                )
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(b"out", b"error", "key", 1, "TimeoutError"),
+        ) as mock:
+            code, headers, data = self.pages.auth(
+                env, user, server, script, command, inputs
+            )
+            self.assertEqual(b"", data)
+            self.assertEqual(code, "500")
+            self.assertDictEqual({}, headers)
+            mock.assert_called_once_with(
+                "test.go", user, env, command, inputs, is_auth=True
+            )
 
-            with patch.object(
-                Module,
-                "execute_scripts",
-                return_value=(None, b"error", "key", 0, "TimeoutError"),
-            ) as mock:
-                code, headers, data = self.pages.auth(
-                    env, user, server, script, command, inputs
-                )
-                self.assertEqual(b"", data)
-                self.assertEqual(code, "500")
-                self.assertDictEqual({}, headers)
-                mock.assert_called_once_with(
-                    "test.go", user, env, command, inputs, is_auth=True
-                )
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(None, b"error", "key", 0, "TimeoutError"),
+        ) as mock:
+            code, headers, data = self.pages.auth(
+                env, user, server, script, command, inputs
+            )
+            self.assertEqual(b"", data)
+            self.assertEqual(code, "500")
+            self.assertDictEqual({}, headers)
+            mock.assert_called_once_with(
+                "test.go", user, env, command, inputs, is_auth=True
+            )
 
-            with patch.object(
-                Module,
-                "execute_scripts",
-                return_value=(b"", b"error", "key", 0, "TimeoutError"),
-            ) as mock:
-                code, headers, data = self.pages.auth(
-                    env, user, server, script, command, inputs
-                )
-                self.assertEqual(b"", data)
-                self.assertEqual(code, "500")
-                self.assertDictEqual({}, headers)
-                mock.assert_called_once_with(
-                    "test.go", user, env, command, inputs, is_auth=True
-                )
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(b"", b"error", "key", 0, "TimeoutError"),
+        ) as mock:
+            code, headers, data = self.pages.auth(
+                env, user, server, script, command, inputs
+            )
+            self.assertEqual(b"", data)
+            self.assertEqual(code, "500")
+            self.assertDictEqual({}, headers)
+            mock.assert_called_once_with(
+                "test.go", user, env, command, inputs, is_auth=True
+            )
 
-            user_session = Mock(id=1)
-            with patch.object(
-                Module,
-                "execute_scripts",
-                return_value=(
-                    b'{"data":"data"}',
-                    b"",
-                    "key",
-                    0,
-                    "TimeoutError",
-                ),
-            ) as mock, patch.object(
-                Module.User, "default_build", return_value=user_session
-            ) as getuser, patch.object(
-                Module.Session, "build_session", return_value="cookie"
-            ) as session:
-                code, headers, data = self.pages.auth(
-                    env, user, server, script, command, inputs
-                )
-                self.assertIsInstance(
-                    self.pages.ip_blacklist.get("0.0.0.0"), Blacklist
-                )
-                self.assertIsInstance(
-                    self.pages.user_blacklist.get("test"), Blacklist
-                )
-                self.assertEqual(b"", data)
-                self.assertEqual(code, "302 Found")
-                self.assertDictEqual(
-                    {
-                        "Set-Cookie": (
-                            "SessionID=cookie; Path=/; SameSite=Strict;"
-                            " Max-Age=0; Secure; HttpOnly"
-                        ),
-                    },
-                    headers,
-                )
+        user_session = Mock(id=1)
+        with patch.object(
+            Module,
+            "execute_scripts",
+            return_value=(
+                b'{"data":"data"}',
+                b"",
+                "key",
+                0,
+                "TimeoutError",
+            ),
+        ) as mock, patch.object(
+            Module.User, "default_build", return_value=user_session
+        ) as getuser, patch.object(
+            Module.Session, "build_session", return_value="cookie"
+        ) as session:
+            code, headers, data = self.pages.auth(
+                env, user, server, script, command, inputs
+            )
+            self.assertIsInstance(
+                self.pages.ip_blacklist.get("0.0.0.0"), Blacklist
+            )
+            self.assertIsInstance(
+                self.pages.user_blacklist.get("test"), Blacklist
+            )
+            self.assertEqual(b"", data)
+            self.assertEqual(code, "302 Found")
+            self.assertDictEqual(
+                {
+                    "Set-Cookie": (
+                        "SessionID=cookie; Path=/; SameSite=Strict;"
+                        " Max-Age=0; Secure; HttpOnly"
+                    ),
+                },
+                headers,
+            )
 
-                getuser.assert_called_once_with(data="data")
-                session.assert_called_once_with(user_session, "0.0.0.0", Pages)
-                mock.assert_called_once_with(
-                    "test.go", user, env, command, inputs, is_auth=True
-                )
+            getuser.assert_called_once_with(data="data")
+            session.assert_called_once_with(user_session, "0.0.0.0", Pages)
+            mock.assert_called_once_with(
+                "test.go", user, env, command, inputs, is_auth=True
+            )
 
     def test_reload(self):
         self.assertIsNone(self.pages.reload(*[Mock()] * 6))

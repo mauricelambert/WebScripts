@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from os.path import join, dirname
 from typing import List
-from os import name
 import atexit
 
-activator = (
-    r"Scripts\activate_this.py" if name == "nt" else "bin/activate_this.py"
-)
+activator = join(dirname(__file__), "activate_this.py")
+
 with open(activator) as f:
     exec(f.read(), {"__file__": activator})  # nosec # nosemgrep
 
@@ -57,7 +56,7 @@ atexit.register(
 )
 
 logger_info("Check hardening of the WebScripts server...")
-hardening(server, Logs, send_mail)
+hardening(server)
 
 logger_warning("Starting server...")
 application = server.app

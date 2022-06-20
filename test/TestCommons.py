@@ -52,6 +52,7 @@ from WebScripts.commons import (
     TokenCSRF,
     Session,
 )
+from WebScripts import commons
 import WebScripts.commons
 
 
@@ -234,51 +235,57 @@ class TestScriptConfig(TestCase):
         os.remove("test.py")
 
     def test_get_Windows_default_script_launcher(self):
-        with patch.object(WebScripts.commons, "system") as mock_system:
-            mock_system.return_value = "Linux"
-            self.assertIsNone(
-                ScriptConfig.get_Windows_default_script_launcher(None)
+        # with patch.object(WebScripts.commons, "system") as mock_system:
+        #     mock_system.return_value = "Linux"
+        WebScripts.commons.IS_WINDOWS = False
+        WebScripts.utils.IS_WINDOWS = False
+        commons.IS_WINDOWS = False
+        self.assertIsNone(
+            ScriptConfig.get_Windows_default_script_launcher(None)
+        )
+
+        # with patch.object(WebScripts.commons, "system") as mock_system:
+        #     mock_system.return_value = "Windows"
+
+        WebScripts.commons.IS_WINDOWS = True
+        WebScripts.utils.IS_WINDOWS = True
+        commons.IS_WINDOWS = True
+        with self.assertRaises(WebScriptsSecurityError):
+            ScriptConfig.get_Windows_default_script_launcher(
+                {"path": "abc.command injection", "name": ""}
             )
 
-        with patch.object(WebScripts.commons, "system") as mock_system:
-            mock_system.return_value = "Windows"
-
-            with self.assertRaises(WebScriptsSecurityError):
+        with patch.object(
+            WebScripts.commons,
+            "Popen",
+            return_value=Mock(
+                returncode=1, communicate=Mock(return_value=("", ""))
+            ),
+        ) as mock_process:
+            self.assertIsNone(
                 ScriptConfig.get_Windows_default_script_launcher(
-                    {"path": "abc.command injection", "name": ""}
+                    {"path": "abc.py", "name": ""}
                 )
+            )
 
-            with patch.object(
-                WebScripts.commons,
-                "Popen",
-                return_value=Mock(
-                    returncode=1, communicate=Mock(return_value=("", ""))
+            mock_process.return_value = Mock(
+                returncode=0, communicate=Mock(return_value=("", ""))
+            )
+            self.assertIsNone(
+                ScriptConfig.get_Windows_default_script_launcher(
+                    {"path": "abc.py", "name": ""}
+                )
+            )
+
+            mock_process.return_value = Mock(
+                returncode=0, communicate=Mock(return_value=('="abc', ""))
+            )
+            self.assertEqual(
+                ScriptConfig.get_Windows_default_script_launcher(
+                    {"path": "abc.py", "name": ""}
                 ),
-            ) as mock_process:
-                self.assertIsNone(
-                    ScriptConfig.get_Windows_default_script_launcher(
-                        {"path": "abc.py", "name": ""}
-                    )
-                )
-
-                mock_process.return_value = Mock(
-                    returncode=0, communicate=Mock(return_value=("", ""))
-                )
-                self.assertIsNone(
-                    ScriptConfig.get_Windows_default_script_launcher(
-                        {"path": "abc.py", "name": ""}
-                    )
-                )
-
-                mock_process.return_value = Mock(
-                    returncode=0, communicate=Mock(return_value=('="abc', ""))
-                )
-                self.assertEqual(
-                    ScriptConfig.get_Windows_default_script_launcher(
-                        {"path": "abc.py", "name": ""}
-                    ),
-                    "abc",
-                )
+                "abc",
+            )
 
     def test_get_script_path(self):
         server_config = DefaultNamespace()
