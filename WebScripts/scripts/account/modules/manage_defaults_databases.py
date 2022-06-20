@@ -68,10 +68,10 @@ from secrets import randbelow, token_bytes
 from csv import reader, writer, QUOTE_ALL
 from base64 import b64encode, b64decode
 from collections.abc import Iterator
+from typing import List, Dict, Union
 from collections import namedtuple
 from hmac import compare_digest
 from hashlib import pbkdf2_hmac
-from typing import List, Dict
 from fnmatch import fnmatch
 from os.path import join
 from html import escape
@@ -323,6 +323,21 @@ def add_user(
     return user
 
 
+def check_ip(user: User) -> Union[User, None]:
+
+    """
+    This function performs an IP address
+    filtering for authentication.
+    """
+
+    ip_addresses = environ["REMOTE_IP"].split(", ")
+
+    for glob_ip in user.IPs.split(","):
+        for ip in ip_addresses:
+            if fnmatch(ip, glob_ip):
+                return anti_XSS(user)
+
+
 def auth_username_password(name: str, password: str) -> User:
 
     """
@@ -345,11 +360,7 @@ def auth_username_password(name: str, password: str) -> User:
                 b64decode(user.password),
             )
         ):
-            for glob_ip in user.IPs.split(","):
-                if fnmatch(environ["REMOTE_ADDR"], glob_ip):
-                    return anti_XSS(user)
-
-    return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
+            return check_ip(user)
 
 
 def auth_apikey(apikey: str) -> User:
@@ -361,9 +372,7 @@ def auth_apikey(apikey: str) -> User:
 
     for user in get_users():
         if apikey == user.apikey:
-            return anti_XSS(user)
-
-    return User("0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*")
+            return check_ip(user)
 
 
 def auth(
@@ -376,9 +385,14 @@ def auth(
     """
 
     if api_key is None:
-        return auth_username_password(username, password)
+        user = auth_username_password(username, password)
     else:
-        return auth_apikey(api_key)
+        user = auth_apikey(api_key)
+
+    if user is None:
+        return User(
+            "0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*"
+        )
 
 
 def add_group(name: str, id_: int) -> Group:

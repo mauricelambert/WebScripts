@@ -7,13 +7,11 @@
 
 <table class="heading">
 <tr class="heading-text decor">
-<td class="title">&nbsp;<br><strong class="title">Errors</strong> (version 0.0.1)</td>
+<td class="title">&nbsp;<br><strong class="title">Errors</strong> (version 0.0.2)</td>
 <td class="extra"><a href=".">index</a><br><a href="errors.py">errors.py</a></td></tr></table>
-    <p><span class="code">This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or<br>
-executables&nbsp;from&nbsp;the&nbsp;command&nbsp;line&nbsp;and&nbsp;display&nbsp;the&nbsp;result<br>
-in&nbsp;a&nbsp;web&nbsp;interface.<br>
+    <p><span class="code">This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;contains&nbsp;all&nbsp;WebScripts&nbsp;errors&nbsp;class.</span></p>
+This&nbsp;file&nbsp;contains&nbsp;WebScripts&nbsp;exception&nbsp;classes.</span></p>
 <p>
 <table class="section">
 <tr class="decor index-decor heading-text">
@@ -28,12 +26,12 @@ This&nbsp;file&nbsp;contains&nbsp;all&nbsp;WebScripts&nbsp;errors&nbsp;class.</s
 </dt><dd>
 <dl>
 <dt class="heading-text"><a href="Errors.html#MissingAttributesError">MissingAttributesError</a>
-</dt><dt class="heading-text"><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a>
 </dt><dt class="heading-text"><a href="Errors.html#WebScriptsArgumentError">WebScriptsArgumentError</a>
 </dt><dt class="heading-text"><a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a>
 </dt><dd>
 <dl>
-<dt class="heading-text"><a href="Errors.html#WebScriptsConfigurationTypeError">WebScriptsConfigurationTypeError</a>
+<dt class="heading-text"><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a>
+</dt><dt class="heading-text"><a href="Errors.html#WebScriptsConfigurationTypeError">WebScriptsConfigurationTypeError</a>
 </dt></dl>
 </dd>
 <dt class="heading-text"><a href="Errors.html#WebScriptsSecurityError">WebScriptsSecurityError</a>
@@ -111,13 +109,14 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 </td></tr></table> <p>
 <table class="section">
 <tr class="decor title-decor heading-text">
-<td class="section-title" colspan=3>&nbsp;<br><a name="ScriptConfigurationError">class <strong>ScriptConfigurationError</strong></a>(<a href="Errors.html#WebScriptsError">WebScriptsError</a>)</td></tr>
+<td class="section-title" colspan=3>&nbsp;<br><a name="ScriptConfigurationError">class <strong>ScriptConfigurationError</strong></a>(<a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a>)</td></tr>
     
 <tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
 <td class="decor title-decor" colspan=2><span class="code">To&nbsp;raise&nbsp;Script&nbsp;Configuration&nbsp;Error.<br>&nbsp;</span></td></tr>
 <tr><td>&nbsp;</td>
 <td class="singlecolumn"><dl><dt>Method resolution order:</dt>
 <dd><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a></dd>
+<dd><a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a></dd>
 <dd><a href="Errors.html#WebScriptsError">WebScriptsError</a></dd>
 <dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
 <dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
@@ -513,7 +512,7 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <td class="singlecolumn"><strong>__all__</strong> = ['WebScriptsError', 'WebScriptsConfigurationError', 'WebScriptsArgumentError', 'ScriptConfigurationError', 'MissingAttributesError', 'WebScriptsConfigurationTypeError', 'WebScriptsSecurityError']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<span class="repr">\n</span>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<span class="repr">\n</span>under certain conditions.<span class="repr">\n</span>'<br>
-<strong>__description__</strong> = 'This package implements a web server to run scri...<span class="repr">\n\n</span>This file contains all WebScripts errors class.'<br>
+<strong>__description__</strong> = '<span class="repr">\n</span>This tool run scripts and display the result in...This file contains WebScripts exception classes.<span class="repr">\n</span>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>

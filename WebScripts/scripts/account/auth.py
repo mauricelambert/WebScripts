@@ -104,10 +104,7 @@ def main() -> None:
             {
                 "id": user.ID,
                 "name": user.name,
-                "ip": environ.get("X_REAL_IP")
-                or environ.get("X_FORWARDED_FOR")
-                or environ.get("X_FORWARDED_HOST")
-                or environ["REMOTE_ADDR"],
+                "ip": environ["REMOTE_IP"],
                 "groups": user.groups,
                 "categories": user.categories,
                 "scripts": user.scripts,
