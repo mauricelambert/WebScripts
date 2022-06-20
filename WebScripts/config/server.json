@@ -65,6 +65,8 @@
 		],
 		"notification_address": "notification@webscripts.local",
 
+		"webproxy_number": 1,
+
 		"data_dir": "data",
 		"cgi_path": ["cgi-bin"]
 	},
