@@ -1,0 +1,75 @@
+{
+	"script": {
+		"timeout": 25,
+		"args": "arguments",
+		"no_password": true,
+		"launcher": "python3",
+		"path": "./scripts/py/test_config.py",
+		"description": "This script test interrface, arguments and script configurations.",
+		"print_real_time": true
+	},
+
+	"arguments": {
+		"select": "select",
+		"--timeout": "timeout",
+		"password": "password",
+		"--test-date": "--test-date",
+		"test_file": "test_file",
+		"test_input": "test_input",
+		"test_number": "test_number",
+		"select-input": "select-input"
+	},
+
+	"timeout": {
+		"html_type": "checkbox",
+		"description": "Test checkbox and the process timeout and optional argument without value."
+	},
+
+	"select": {
+		"example": "password",
+		"html_type": "password",
+		"description": "Test select (listbox).",
+		"default_value": "select",
+		"predefined_values": ["", "test", "select", "arguments"]
+	},
+
+	"password": {
+		"list": true,
+		"example": "password",
+		"html_type": "password",
+		"description": "Test password and list of values for one argument."
+	},
+
+	"test_input": {
+		"example": "input",
+		"description": "Test HTML input as argument."
+	},
+
+	"--test-date": {
+		"html_type": "date",
+		"description": "Test HTML input type date and optional argument with value."
+	},
+
+	"test_file": {
+		"html_type": "file",
+		"input": true,
+		"description": "Test HTML input type file."
+	},
+
+	"test_number": {
+		"html_type": "number",
+		"description": "Test HTML input type number with specific javascript configurations.",
+		"javascript_section": "js_section_number"
+	},
+
+	"js_section_number": {
+		"step": "0.002"
+	},
+
+	"select-input": {
+		"list": true,
+		"input": true,
+		"predefined_values": ["", "test", "select", "arguments"],
+		"description": "Test select with multiples selected values as input."
+	}
+}

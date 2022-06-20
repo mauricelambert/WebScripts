@@ -1,0 +1,53 @@
+{
+	"scripts": {
+		"get_request.py": "config_get_request",
+		"get_requests.py": "config_get_requests",
+		"delete_request.py": "config_delete_request"
+	},
+
+	"config_get_request": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "python3",
+		"access_groups": [1000],
+		"args": "args_requests",
+		"category": "User Requests",
+		"path": "./scripts/request/get_request.py",
+		"description": "This script prints a user request.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"config_get_requests": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "python3",
+		"access_groups": [1000],
+		"content_type": "text/html",
+		"category": "User Requests",
+		"path": "./scripts/request/get_requests.py",
+		"description": "This script prints a HTML table of user requests.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"args_requests": {
+		"ID": "arg_ID"
+	},
+
+	"arg_ID": {
+		"description": "ID of the request.",
+		"html_type": "number",
+		"example": "25"
+	},
+
+	"config_delete_request": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "python3",
+		"access_groups": [1000],
+		"args": "args_requests",
+		"category": "User Requests",
+		"path": "./scripts/request/delete_request.py",
+		"description": "This script deletes and prints a user request.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	}
+}
