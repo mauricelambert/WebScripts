@@ -1655,6 +1655,7 @@ class FilesIntegrity:
         # temp = environ.get("TEMP") or environ.get("TMP") or environ.get("TMPDIR") or (r"C:\temp" if exists(r"C:\temp") else r"C:\tmp") if Audit.is_windows else ("/tmp" if exists("/tmp") else '/var/tmp')
         # /usr/tmp
 
+        self.logs = server.logs
         self.temp = _get_default_tempdir()
 
         self.webscripts_filename = self.get_checks_filename(
@@ -1724,7 +1725,6 @@ class FilesIntegrity:
 
         self.temp_logs_files = {}
         self.server = server
-        self.logs = server.logs
         self.hashes = {}
 
     def get_checks_filename(self, filename: str) -> str:

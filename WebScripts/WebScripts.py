@@ -183,6 +183,7 @@ class Configuration(DefaultNamespace):
         "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
         "auth_script": None,
         "active_auth": False,
+        "webproxy_number": None,
         "documentations_path": [],
         "accept_unknow_user": True,
         "accept_unauthenticated_user": True,
@@ -213,6 +214,7 @@ class Configuration(DefaultNamespace):
         "log_encoding",
         "auth_failures_to_blacklist",
         "blacklist_time",
+        "webproxy_number",
         "smtp_server",
         "smtp_starttls",
         "smtp_password",
@@ -339,6 +341,11 @@ class Server:
         self.pages = Pages()
         self.logs = Logs
         self.routing_url = configuration.urls
+
+        self.send_mail = send_mail
+
+        if configuration.webproxy_number is not None:
+            configuration.webproxy_number += 1
 
         version = self.version = (
             sys_modules[__package__].__version__
@@ -545,7 +552,7 @@ class Server:
         api_key = environ_get("HTTP_API_KEY")
         cookies = environ_get("HTTP_COOKIE")
         token = environ_get("HTTP_API_TOKEN")
-        ip = get_ip(environ)
+        ip = environ_get("REMOTE_IP")
 
         pages = self.pages
         configuration = self.configuration
@@ -1082,12 +1089,18 @@ class Server:
 
         path_info = environ["PATH_INFO"]
         method = environ["REQUEST_METHOD"]
+        configuration = self.configuration
         port = environ.setdefault("REMOTE_PORT", "0")
-        ip = environ["REMOTE_IP"] = get_ip(environ)
+        ip = environ["REMOTE_IP"] = get_ip(
+            environ, configuration.webproxy_number
+        )
         logger_access(f"Request ({method}) from {ip!r}:{port} on {path_info}.")
 
+        if ip is None:
+            logger_critical("IP Spoofing: Error 403.")
+            return self.page_403(environ, None, respond)
+
         path_info_startswith = path_info.startswith
-        configuration = self.configuration
         is_head_method = method == "HEAD"
 
         new_url = self.routing_url.get(path_info)
@@ -2050,7 +2063,6 @@ def main() -> int:
 
     logger_debug("Build server with configurations...")
     server = Server(configuration)
-    server.send_mail = send_mail
 
     httpd = simple_server.make_server(
         server.interface, server.port, server.app

@@ -1014,7 +1014,7 @@ class Pages:
         This function return check auth and return headers, error and page.
         """
 
-        ip = get_ip(environ)
+        ip = environ["REMOTE_IP"]
         server_configuration = server.configuration
 
         if not server_configuration.active_auth:

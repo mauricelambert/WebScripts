@@ -60,6 +60,7 @@ __all__ = [
 ]
 
 
+from os.path import join, normcase, isfile, dirname, splitext, basename, split
 from typing import TypeVar, Tuple, List, Dict
 from secrets import token_bytes, token_hex
 from configparser import ConfigParser
@@ -67,9 +68,8 @@ from collections.abc import Callable
 from subprocess import Popen, PIPE  # nosec
 from types import SimpleNamespace
 from base64 import b64encode
-from os import path, getcwd
-from platform import system
 from re import fullmatch
+from os import getcwd
 from glob import iglob
 from time import time
 from json import load
@@ -102,6 +102,7 @@ if __package__:
         logger_warning,
         logger_error,
         logger_critical,
+        IS_WINDOWS,
     )
 else:
     from utils import (
@@ -131,6 +132,7 @@ else:
         logger_warning,
         logger_error,
         logger_critical,
+        IS_WINDOWS,
     )
 
 JsonValue = TypeVar("JsonValue", str, int, bool, None, List[str], List[int])
@@ -345,7 +347,7 @@ class ScriptConfig(DefaultNamespace):
         for dirname in (lib_directory, current_directory):
 
             for config_path in ini_scripts_config:
-                config_path = path.join(dirname, path.normcase(config_path))
+                config_path = join(dirname, normcase(config_path))
 
                 for config_filename in iglob(config_path):
                     configuration = DefaultNamespace()
@@ -362,7 +364,7 @@ class ScriptConfig(DefaultNamespace):
                     ] = temp_configurations
 
             for config_path in json_scripts_config:
-                config_path = path.join(dirname, path.normcase(config_path))
+                config_path = join(dirname, normcase(config_path))
 
                 for config_filename in iglob(config_path):
                     configuration = DefaultNamespace()
@@ -432,7 +434,7 @@ class ScriptConfig(DefaultNamespace):
                 script_section["path"] = cls.get_script_path(
                     server_configuration, script_section
                 )
-            elif not path.isfile(script_path):
+            elif not isfile(script_path):
                 raise WebScriptsConfigurationError(
                     f"Location for script named {script_section['name']} "
                     f"({script_path}) doesn't exist."
@@ -443,7 +445,7 @@ class ScriptConfig(DefaultNamespace):
                     "launcher"
                 ] = cls.get_Windows_default_script_launcher(script_section)
 
-            script_section["dirname"] = path.dirname(script_section["path"])
+            script_section["dirname"] = dirname(script_section["path"])
 
             scripts_config[name] = cls.default_build(**script_section)
             scripts_config[name].build_args(script_configuration)
@@ -465,13 +467,13 @@ class ScriptConfig(DefaultNamespace):
         This function gets the Windows default launcher to execute a file.
         """
 
-        if system() != "Windows":
+        if not IS_WINDOWS:
             return None
 
         logger_info(
             f"Research default launcher for script {script_config['name']}"
         )
-        extension = path.splitext(script_config["path"])[1]
+        extension = splitext(script_config["path"])[1]
 
         if (
             fullmatch(r"[.]\w+", extension) is None
@@ -546,10 +548,10 @@ class ScriptConfig(DefaultNamespace):
 
         for dirname in (lib_directory, current_directory):
             for directory in server_configuration.scripts_path:
-                script_path = path.join(
-                    dirname, path.normcase(directory), script_config["name"]
+                script_path = join(
+                    dirname, normcase(directory), script_config["name"]
                 )
-                if path.isfile(script_path):
+                if isfile(script_path):
                     logger_info(
                         f"Found script named: {script_config['name']} in "
                         f"location: {script_path}"
@@ -575,9 +577,7 @@ class ScriptConfig(DefaultNamespace):
 
         if doc_file is None:
             for path_ in paths:
-                doc_files = path.join(
-                    path_, f"{path.splitext(path.basename(name))[0]}.*"
-                )
+                doc_files = join(path_, f"{splitext(basename(name))[0]}.*")
                 for doc_file in iglob(doc_files):
                     logger_debug(f"Documentation file found for {name}")
                     break
@@ -719,16 +719,13 @@ class ScriptConfig(DefaultNamespace):
         for dirname in (lib_directory, current_directory):
             for doc_glob in configuration.documentations_path:
 
-                doc_glob = path.join(dirname, path.normcase(doc_glob))
+                doc_glob = join(dirname, normcase(doc_glob))
                 for doc in iglob(doc_glob):
 
-                    doc_dirname, doc_filename = path.split(doc)
-                    no_extension, extension = path.splitext(doc_filename)
+                    doc_dirname, doc_filename = split(doc)
+                    no_extension, extension = splitext(doc_filename)
 
-                    if (
-                        no_extension
-                        == path.splitext(path.basename(filename))[0]
-                    ):
+                    if no_extension == splitext(basename(filename))[0]:
                         return doc
 
 
@@ -789,7 +786,7 @@ class CallableFile(Callable):
         self.type = type_
         self.config = config
         self.filename = filename
-        self.extension = path.splitext(path_)[1].lower()
+        self.extension = splitext(path_)[1].lower()
 
     @log_trace
     def __call__(self, user: User) -> Tuple[str, Dict[str, str], List[bytes]]:

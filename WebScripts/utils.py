@@ -123,10 +123,10 @@ logging.currentframe = lambda: _getframe(5)
 
 IS_WINDOWS = system() == "Windows"
 IP_HEADERS = [
-    "X_FORWARDED_FOR",
-    "X_REAL_IP",
-    "X_FORWARDED_HOST",
-    "CLIENT_IP",
+    "HTTP_X_FORWARDED_FOR",
+    "HTTP_X_REAL_IP",
+    "HTTP_X_FORWARDED_HOST",
+    "HTTP_CLIENT_IP",
     "REMOTE_ADDR",
 ]
 
@@ -966,22 +966,35 @@ def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 
 
 @log_trace
-def get_ip(environ: _Environ, protected: bool = True) -> str:
+def get_ip(
+    environ: _Environ, ip_number: int = None, protected: bool = True
+) -> str:
 
     """
     This function return the real IP.
     """
 
     ips = None
+    counter = 0
+    check_number = ip_number is not None
 
     for ip_header in IP_HEADERS:
         ip = environ.get(ip_header)
         if ip is not None:
+            ip_length = len(ip.split(", "))
             if protected:
+                counter += ip_length
+
+                if check_number and counter > ip_number:
+                    logger_critical(f"IP Spoofing detected: {ips}, {ip}.")
+                    return None
+
                 if ips:
                     ips += ", " + ip
                 else:
                     ips = ip
+
+                logger_debug(f"Header: {ip_header!r} found with ip: {ip!r}")
             else:
                 ips = ip
                 break
