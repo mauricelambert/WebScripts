@@ -287,6 +287,10 @@ class TestScriptConfig(TestCase):
                 "abc",
             )
 
+        WebScripts.commons.IS_WINDOWS = False
+        WebScripts.utils.IS_WINDOWS = False
+        commons.IS_WINDOWS = False
+
     def test_get_script_path(self):
         server_config = DefaultNamespace()
         server_config.scripts_path = "."
