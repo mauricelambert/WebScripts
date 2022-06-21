@@ -720,20 +720,19 @@ class Audit:
             if Audit.is_windows
             else join(server_path, "config", "server.json"),
         ]
-        compteur = 0
 
-        for file in files:
-            if isfile(file):
-                compteur += 1
+        files = [file for file in files if isfile(file)]
+        length = len(files)
 
         return Rule(
             "Configurations files",
             31,
-            compteur <= 1,
+            length <= 1,
             5,
             SEVERITY.MEDIUM.value,
             "Installation",
-            "WebScripts should be configured by only one configuration file.",
+            "WebScripts should be configured by only one configuration file "
+            f"({length} found: {', '.join(files)}).",
         )
 
     def audit_venv_modules(server: Server) -> Rule:
@@ -752,6 +751,7 @@ class Audit:
                 and not package.startswith("setuptools==")
                 and not package.startswith("pywin32==")
                 and not package.startswith("WebScripts==")
+                and not package.startswith("WebScriptsTools==")
                 and not package.startswith("pkg-resources==")
             ]
             return Rule(
@@ -762,7 +762,9 @@ class Audit:
                 SEVERITY.LOW.value,
                 "Installation",
                 "WebScripts should be install in empty virtualenv (except "
-                f"pywin32 on Windows), modules found: {modules}.",
+                "WebScriptsTools and pywin32), modules found: "
+                + ", ".join(modules)
+                + ".",
             )
         elif PIP and not Audit.is_windows:
             modules = [
@@ -771,6 +773,7 @@ class Audit:
                 if not package.startswith("pip==")
                 and not package.startswith("setuptools==")
                 and not package.startswith("WebScripts==")
+                and not package.startswith("WebScriptsTools==")
                 and not package.startswith("pkg-resources==")
             ]
             return Rule(
@@ -781,7 +784,7 @@ class Audit:
                 SEVERITY.LOW.value,
                 "Installation",
                 "WebScripts should be install in empty virtualenv (except "
-                f"pywin32 on Windows), modules found: {modules}.",
+                "WebScriptsTools), modules found: " + ", ".join(modules) + ".",
             )
 
         if Audit.is_windows:
@@ -792,6 +795,7 @@ class Audit:
                 "pywin32_testall",
                 "wsgi",
                 "WebScripts",
+                "WebScriptsTools",
                 "adodbapi",
                 "easy_install",
                 "isapi",
@@ -880,6 +884,7 @@ class Audit:
                 "pkg_resources",
                 "setuptools",
                 "WebScripts",
+                "WebScriptsTools",
                 "activate_this",
                 "wsgi",
                 "distutils",
@@ -914,7 +919,9 @@ class Audit:
             SEVERITY.LOW.value,
             "Installation",
             "WebScripts should be install in empty virtualenv (except "
-            f"pywin32 on Windows), modules found: {venv_modules}.",
+            "WebScriptsTools pywin32 on Windows), modules found: "
+            + ",".join(venv_modules)
+            + ".",
         )
 
     def audit_system_user(server: Server) -> Rule:
@@ -1010,6 +1017,22 @@ class Audit:
             SEVERITY.MEDIUM.value,
             "Configuration",
             "Authentication exclusions is not restricted.",
+        )
+
+    def audit_webproxy_number(server: Server) -> Rule:
+
+        """
+        This function checks exclusions for authentication.
+        """
+
+        return Rule(
+            "WebProxy number",
+            36,
+            server.configuration.webproxy_number is not None,
+            7,
+            SEVERITY.HIGH.value,
+            "Configuration",
+            "WebProxy number is not defined.",
         )
 
     def audit_security(server: Server) -> Rule:
@@ -1111,7 +1134,7 @@ class Audit:
                 5,
                 SEVERITY.MEDIUM.value,
                 "Configuration",
-                f"Module path {module_path} is not absolute.",
+                f"Module path {module_path!r} is not absolute.",
             )
 
     def audits_scripts_logs(server: Server) -> Iterator[Rule]:
@@ -1128,7 +1151,7 @@ class Audit:
                 1,
                 SEVERITY.INFORMATION.value,
                 "Script Configuration",
-                f"Script command is not logged for {script.name}.",
+                f"Script command is not logged for {script.name!r}.",
             )
 
     def audits_scripts_stderr_content_type(server: Server) -> Iterator[Rule]:
@@ -1147,7 +1170,7 @@ class Audit:
                 SEVERITY.HIGH.value,
                 "Script Configuration",
                 "The content type of the stderr for "
-                f"{script.name} is not text/plain.",
+                f"{script.name!r} is not text/plain.",
             )
 
     def audits_scripts_content_type(server: Server) -> Iterator[Rule]:
@@ -1165,7 +1188,7 @@ class Audit:
                 SEVERITY.INFORMATION.value,
                 "Script Configuration",
                 "The content type of the script named "
-                f"{script.name} is not text/plain.",
+                f"{script.name!r} is not text/plain.",
             )
 
     def audits_scripts_path(server: Server) -> Iterator[Rule]:
@@ -1182,7 +1205,7 @@ class Audit:
                 7,
                 SEVERITY.HIGH.value,
                 "Script Configuration",
-                f"The path of {script.name} is not defined in configuration"
+                f"The path of {script.name!r} is not defined in configuration"
                 " files or is not absolute.",
             )
 
@@ -1202,7 +1225,7 @@ class Audit:
                 7,
                 SEVERITY.HIGH.value,
                 "Script Configuration",
-                f"The path of {script.name} launcher is not defined in"
+                f"The path of {script.name!r} launcher is not defined in"
                 " configuration files or is not absolute.",
             )
 
@@ -1313,7 +1336,7 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File owner is not {user} for {filename}.",
+                    f"File owner is not {user!r} for {filename!r}.",
                 )
 
         for filename in simple_filenames:
@@ -1325,7 +1348,7 @@ class Audit:
                     4,
                     SEVERITY.MEDIUM.value,
                     "Files",
-                    f"File owner is not {user} for {filename}.",
+                    f"File owner is not {user!r} for {filename!r}.",
                 )
 
     def get_permissions(filename: str) -> str:
@@ -1374,7 +1397,7 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"Directory owner for {path_} is not root.",
+                f"Directory owner for {path_!r} is not root.",
             )
 
             yield Rule(
@@ -1384,7 +1407,8 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"Directory permissions for {path_} is not 755 (drwxr-xr-x).",
+                f"Directory permissions for {path_!r}"
+                " is not 755 (drwxr-xr-x).",
             )
 
     def audits_timeout(server: Server) -> Iterator[Rule]:
@@ -1401,7 +1425,7 @@ class Audit:
                 5,
                 SEVERITY.MEDIUM.value,
                 "Script Configuration",
-                f"The {script.name} timeout is not defined.",
+                f"The {script.name!r} timeout is not defined.",
             )
 
     def audits_file_rights(server: Server) -> Iterator[Rule]:
@@ -1424,9 +1448,10 @@ class Audit:
 
         current_dir = Audit.current_dir
 
-        rw_filenames = listdir(server.configuration.data_dir) + listdir(
-            join(current_dir, "logs")
-        )
+        rw_filenames = [
+            listdir(server.configuration.data_dir)
+            + listdir(join(current_dir, "logs"))
+        ]
 
         server_logs = join(server_path, "logs")
         if exists(server_logs):
@@ -1483,11 +1508,11 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"File rights for {split(filename)[1]} is "
+                f"File rights for {split(filename)[1]!r} is "
                 "not 600 (rw- --- ---).",
             )
             for filename in rw_filenames
-            if exists(filename)
+            if isfile(filename)
         ]
 
         yield from [
@@ -1498,15 +1523,15 @@ class Audit:
                 10,
                 SEVERITY.CRITICAL.value,
                 "Files",
-                f"File rights for {split(filename)[1]} is "
+                f"File rights for {split(filename)[1]!r} is "
                 "not 400 (r-- --- ---).",
             )
             for filename in r_filenames
-            if exists(filename)
+            if isfile(filename)
         ]
 
         for filename in executable_filenames:
-            if exists(filename):
+            if isfile(filename):
                 permissions = Audit.get_permissions(filename)
 
                 yield Rule(
@@ -1516,7 +1541,7 @@ class Audit:
                     10,
                     SEVERITY.CRITICAL.value,
                     "Files",
-                    f"File rights for {split(filename)[1]} is not 0 "
+                    f"File rights for {split(filename)[1]!r} is not 0 "
                     "for group and 0 for other (xxx --- ---).",
                 )
 
