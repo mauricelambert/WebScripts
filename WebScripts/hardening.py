@@ -1448,10 +1448,9 @@ class Audit:
 
         current_dir = Audit.current_dir
 
-        rw_filenames = [
-            listdir(server.configuration.data_dir)
-            + listdir(join(current_dir, "logs"))
-        ]
+        rw_filenames = listdir(server.configuration.data_dir) + listdir(
+            join(current_dir, "logs")
+        )
 
         server_logs = join(server_path, "logs")
         if exists(server_logs):
