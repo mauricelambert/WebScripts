@@ -56,7 +56,7 @@ from os.path import basename, abspath, join, dirname, normpath, exists, isdir
 from types import SimpleNamespace, ModuleType, FunctionType, MethodType
 from typing import TypeVar, Tuple, List, Dict, Union, Set, Iterable
 from sys import exit, modules as sys_modules, argv
-from os import _Environ, getcwd, mkdir, environ
+from os import _Environ, mkdir, environ
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
 from traceback import print_exc, format_exc
@@ -90,6 +90,7 @@ if __package__:
         DefaultNamespace,
         get_ini_dict,
         lib_directory as server_path,
+        current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -112,6 +113,7 @@ if __package__:
         logger_warning,
         logger_error,
         logger_critical,
+        check_file_permission,
     )
 else:
     from hardening import main as hardening
@@ -128,6 +130,7 @@ else:
         DefaultNamespace,
         get_ini_dict,
         lib_directory as server_path,
+        current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -150,6 +153,7 @@ else:
         logger_warning,
         logger_error,
         logger_critical,
+        check_file_permission,
     )
 
 NameSpace = TypeVar("NameSpace", SimpleNamespace, Namespace)
@@ -158,7 +162,7 @@ Content = TypeVar(
     "Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes
 )
 
-current_directory: str = getcwd()
+# current_directory: str = getcwd()
 # log_path: str = join(current_directory, "logs")
 
 
@@ -186,6 +190,7 @@ class Configuration(DefaultNamespace):
         "webproxy_number": None,
         "documentations_path": [],
         "accept_unknow_user": True,
+        "force_file_permissions": True,
         "accept_unauthenticated_user": True,
     }
     __required__ = ("interface", "port")
@@ -657,8 +662,10 @@ class Server:
             logger_warning(f"Add package/module named: {package}")
 
             package = __import__(package)
-            package._webscripts_filepath = normpath(package.__file__)
-            setattr(packages, package.__name__, package)
+            path_ = package._webscripts_filepath = normpath(package.__file__)
+
+            if check_file_permission(configuration, path_, recursive=True):
+                setattr(packages, package.__name__, package)
 
         logger_info("Remove new paths...")
         for path_ in modules_path:
@@ -1744,6 +1751,9 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     ]
     insert = paths.insert
 
+    temp_config = Configuration()
+    temp_config.force_file_permissions = True
+
     if system() == "Windows":
         logger_debug("Add default server configuration for Windows...")
         insert(0, join(server_path, "config", "nt", "server.json"))
@@ -1756,7 +1766,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in paths:
         logger_debug(f"Check {filename}...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(f"Configuration file detected: {filename}")
             if filename.endswith(".json"):
                 yield loads(get_file_content(filename))
@@ -1768,7 +1778,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in arguments.config_cfg:
         logger_debug("Check configuration file (cfg) added in arguments...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(
                 f"Configuration file detected (type cfg): {filename}"
             )
@@ -1782,7 +1792,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in arguments.config_json:
         logger_debug("Check configuration file (json) added in arguments...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(
                 f"Configuration file detected (type json): {filename}"
             )
@@ -1922,6 +1932,7 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
         "log_trace",
         "log_response",
         "log_access",
+        "log_command",
         "log_debug",
         "log_info",
         "log_warning",
@@ -1938,12 +1949,12 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
                 logs_path_add(dirname(filepath))
                 log_files_add(
                     (logger_.split("_", 1)[1] if "_" in logger_ else "all")
-                    + "|"
+                    + "?"
                     + filepath
                 )
 
-    environ["WEBSCRIPTS_LOGS_PATH"] = ":".join(logs_path)
-    environ["WEBSCRIPTS_LOGS_FILES"] = ":".join(log_files)
+    environ["WEBSCRIPTS_LOGS_PATH"] = "|".join(logs_path)
+    environ["WEBSCRIPTS_LOGS_FILES"] = "|".join(log_files)
     return logs_path, log_files
 
     #     if logger.hasHandlers() and len(logger.handlers):

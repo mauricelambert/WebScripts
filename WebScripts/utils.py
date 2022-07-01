@@ -73,6 +73,7 @@ __all__ = [
     "logger_warning",
     "logger_error",
     "logger_critical",
+    "check_file_permission",
 ]
 
 from typing import (
@@ -84,16 +85,18 @@ from typing import (
     Any,
     Union,
 )
+from os.path import abspath, isdir, isfile, exists, dirname, normcase, join
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove
+from os import path, _Environ, device_encoding, remove, stat, getcwd
 from subprocess import check_call, DEVNULL  # nosec
 from logging import Logger, getLogger
 from configparser import ConfigParser
 from collections.abc import Callable
 from platform import system
+from getpass import getuser
 from functools import wraps
-from os.path import abspath
 from sys import _getframe
+from stat import filemode
 import logging.handlers
 import logging
 import locale
@@ -537,7 +540,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
             filename = self.baseFilename
             i = 0
-            while path.exists(filename):
+            while exists(filename):
                 i += 1
                 filename = self.rotation_filename(
                     "%s.%d" % (self.baseFilename, i)
@@ -620,6 +623,7 @@ if IS_WINDOWS:
     else:
         Logs = WindowsLogs
 else:
+    from pwd import getpwuid
     from syslog import (
         syslog as ReportEvent,
         LOG_DEBUG,
@@ -1096,13 +1100,13 @@ def get_real_path(
         index = 0
         character = "/"
 
-    file_path = path.normcase(file_path)
-    server_file_path = path.join(server_path, file_path)
+    file_path = normcase(file_path)
+    server_file_path = join(server_path, file_path)
 
     if is_dir:
-        check = path.isdir
+        check = isdir
     else:
-        check = path.isfile
+        check = isfile
 
     if check(file_path):
         return abspath(file_path)
@@ -1120,9 +1124,71 @@ def get_real_path(
     )
 
 
-server_path = path.dirname(__file__)
+@log_trace
+def check_file_permission(
+    configuration: DefaultNamespace,
+    filepath: str,
+    recursive: bool = False,
+    executable: bool = False,
+    dir_check: bool = True,
+) -> bool:
 
-date_format = "%Y-%m-%d %H:%M:%S"
+    """
+    This function checks files and directories permissions for security.
+    """
+
+    if not IS_WINDOWS and configuration.force_file_permissions:
+
+        metadata = stat(filepath)
+        mode = filemode(metadata.st_mode)
+        owner = getpwuid(metadata.st_uid).pw_name
+
+        if isfile(filepath):
+            mode1 = mode[1]
+            mode3 = mode[3]
+
+            return_value = (
+                mode[0] == "-"
+                and (mode1 == "r" or mode1 == "-")
+                and ((executable and mode3 == "x") or mode3 == "-")
+                and mode.endswith("------")
+                and owner == user
+            )
+
+            if return_value and dir_check:
+                return_value = check_file_permission(
+                    configuration, dirname(filepath)
+                )
+
+        elif isdir(filepath):
+            return_value = mode == "drwxr-xr-x" and owner == "root"
+
+            if recursive and return_value:
+                return_value = all(
+                    check_file_permission(
+                        configuration, x, recursive, executable, False
+                    )
+                    for x in listdir(filepath)
+                )
+
+        if not return_value:
+            logger_critical(
+                "File permissions are not secure: "
+                f"{filepath!r} (owner: {owner!r}, permissions: {mode})"
+            )
+
+        return return_value
+
+    else:
+        return True
+
+
+server_path: str = dirname(__file__)
+working_directory: str = getcwd()
+
+user: str = getuser()
+
+date_format: str = "%Y-%m-%d %H:%M:%S"
 logging.addLevelName(5, "TRACE")
 logging.addLevelName(25, "ACCESS")
 logging.addLevelName(26, "RESPONSE")

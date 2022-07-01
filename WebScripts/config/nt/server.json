@@ -5,6 +5,7 @@
 
 		"debug": false,
 		"security": true,
+		"force_file_permissions": true,
 		
 		"accept_unknow_user": false,
 		"accept_unauthenticated_user": false,

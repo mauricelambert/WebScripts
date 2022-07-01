@@ -1541,7 +1541,7 @@ class Audit:
                     SEVERITY.CRITICAL.value,
                     "Files",
                     f"File rights for {split(filename)[1]!r} is not 0 "
-                    "for group and 0 for other (xxx --- ---).",
+                    "for group and 0 for other (r-x --- ---).",
                 )
 
     def audit_export_configuration(server: Server) -> Iterator[Rule]:

@@ -69,7 +69,6 @@ from subprocess import Popen, PIPE  # nosec
 from types import SimpleNamespace
 from base64 import b64encode
 from re import fullmatch
-from os import getcwd
 from glob import iglob
 from time import time
 from json import load
@@ -79,6 +78,7 @@ if __package__:
         DefaultNamespace,
         get_ini_dict,
         server_path as lib_directory,
+        working_directory as current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -103,12 +103,14 @@ if __package__:
         logger_error,
         logger_critical,
         IS_WINDOWS,
+        check_file_permission,
     )
 else:
     from utils import (
         DefaultNamespace,
         get_ini_dict,
         server_path as lib_directory,
+        working_directory as current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -133,6 +135,7 @@ else:
         logger_error,
         logger_critical,
         IS_WINDOWS,
+        check_file_permission,
     )
 
 JsonValue = TypeVar("JsonValue", str, int, bool, None, List[str], List[int])
@@ -332,8 +335,6 @@ class ScriptConfig(DefaultNamespace):
             server_configuration, server_configuration
         )
 
-        current_directory = getcwd()
-
         json_scripts_config = getattr(
             server_configuration, "json_scripts_config", []
         )
@@ -350,6 +351,11 @@ class ScriptConfig(DefaultNamespace):
                 config_path = join(dirname, normcase(config_path))
 
                 for config_filename in iglob(config_path):
+                    if not check_file_permission(
+                        server_configuration, config_filename
+                    ):
+                        continue
+
                     configuration = DefaultNamespace()
                     temp_configurations = get_ini_dict(config_filename)
                     configuration.update(**temp_configurations)
@@ -367,6 +373,11 @@ class ScriptConfig(DefaultNamespace):
                 config_path = join(dirname, normcase(config_path))
 
                 for config_filename in iglob(config_path):
+                    if not check_file_permission(
+                        server_configuration, config_filename
+                    ):
+                        continue
+
                     configuration = DefaultNamespace()
 
                     with open(config_filename) as file:
@@ -399,12 +410,14 @@ class ScriptConfig(DefaultNamespace):
 
         for name, section_config in scripts.items():
             script_section = getattr(configuration, section_config, None)
-            logger_warning(f"Script found: {name} (section: {section_config})")
+            logger_warning(
+                f"Script found: {name!r} (section: {section_config!r})"
+            )
 
             if script_section is None:
                 raise WebScriptsConfigurationError(
-                    f"section {section_config} doesn't exist (to configure "
-                    f"script named {name})"
+                    f"section {section_config!r} doesn't exist (to configure "
+                    f"script named {name!r})"
                 )
             else:
                 script_section = script_section.copy()
@@ -431,13 +444,13 @@ class ScriptConfig(DefaultNamespace):
             path_ = script_section.get("path")
             script_section["path"] = script_path = get_real_path(path_)
             if script_path is None:
-                script_section["path"] = cls.get_script_path(
+                script_path = script_section["path"] = cls.get_script_path(
                     server_configuration, script_section
                 )
             elif not isfile(script_path):
                 raise WebScriptsConfigurationError(
-                    f"Location for script named {script_section['name']} "
-                    f"({script_path}) doesn't exist."
+                    f"Location for script named {name!r} "
+                    f"({script_path!r}) doesn't exist."
                 )
 
             if script_section.get("launcher") is None:
@@ -445,15 +458,20 @@ class ScriptConfig(DefaultNamespace):
                     "launcher"
                 ] = cls.get_Windows_default_script_launcher(script_section)
 
-            script_section["dirname"] = dirname(script_section["path"])
+            script_section["dirname"] = dirname(script_path)
 
-            scripts_config[name] = cls.default_build(**script_section)
-            scripts_config[name].build_args(script_configuration)
+            if not check_file_permission(
+                server_configuration, script_path, executable=True
+            ):
+                continue
+
+            build = scripts_config[name] = cls.default_build(**script_section)
+            build.build_args(script_configuration)
 
             if path_ is None:
-                scripts_config[name].path_is_defined = False
+                build.path_is_defined = False
             else:
-                scripts_config[name].path_is_defined = True
+                build.path_is_defined = True
 
         return scripts_config
 
@@ -543,8 +561,6 @@ class ScriptConfig(DefaultNamespace):
         """
         This function return a script path from configuration.
         """
-
-        current_directory = getcwd()
 
         for dirname in (lib_directory, current_directory):
             for directory in server_configuration.scripts_path:
@@ -713,8 +729,6 @@ class ScriptConfig(DefaultNamespace):
         This method returns the script documentation
         path if it exists.
         """
-
-        current_directory = getcwd()
 
         for dirname in (lib_directory, current_directory):
             for doc_glob in configuration.documentations_path:

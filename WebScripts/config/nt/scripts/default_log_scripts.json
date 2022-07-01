@@ -36,6 +36,7 @@
 		"ERROR": "arg_ERROR",
 		"TRACE": "arg_TRACE",
 		"ACCESS": "arg_ACCESS",
+		"COMMAND": "arg_COMMAND",
 		"WARNING": "arg_WARNING",
 		"RESPONSE": "arg_RESPONSE",
 		"CRITICAL": "arg_CRITICAL"
@@ -75,6 +76,11 @@
 	"arg_RESPONSE": {
 		"html_type": "checkbox",
 		"description": "View the latest RESPONSE logs."
+	},
+
+	"arg_COMMAND": {
+		"html_type": "checkbox",
+		"description": "View the latest COMMAND logs."
 	},
 
 	"arg_WARNING": {
