@@ -67,8 +67,8 @@ def main() -> int:
             "USAGE: log_viewer.py [length required int] [level1 required "
             "string] [levelX optional string]..."
             "\n\tPossible values for files:\n\t\t - all\n\t\t - DEBUG\n\t\t"
-            " - INFO\n\t\t - ACCESS\n\t\t - RESPONSE\n\t\t - WARNING"
-            "\n\t\t - ERROR\n\t\t - CRITICAL\n\t\t - TRACE",
+            " - INFO\n\t\t - ACCESS\n\t\t - RESPONSE\n\t\t - COMMAND"
+            "\n\t\t - WARNING\n\t\t - ERROR\n\t\t - CRITICAL\n\t\t - TRACE",
             file=stderr,
         )
         print(
@@ -83,22 +83,24 @@ def main() -> int:
     del argv[0]
 
     levels = {}
-    for level in environ["WEBSCRIPTS_LOGS_FILES"].split(":"):
-        level, filename = level.split("|", 1)
+    for level in environ["WEBSCRIPTS_LOGS_FILES"].split("|"):
+        level, filename = level.split("?", 1)
         levels[level.casefold()] = filename
+
+    unknow_argument = []
 
     for level in argv:
         filename = levels.get(level.casefold())
 
         if filename is None:
+            unknow_argument.append(filename)
             continue
 
-        argv.remove(level)
         with open(filename) as logfile:
             print("".join(deque(logfile, length)))
 
-    if len(argv) != 0:
-        print(f"ERROR: unexpected arguments {argv}", file=stderr)
+    if len(unknow_argument) != 0:
+        print(f"ERROR: unexpected arguments {unknow_argument}", file=stderr)
 
     return 0
 

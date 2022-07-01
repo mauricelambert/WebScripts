@@ -393,6 +393,8 @@ def auth(
         return User(
             "0", "Not Authenticated", "", "", "", "*", "0", "", "*", "*"
         )
+    else:
+        return user
 
 
 def add_group(name: str, id_: int) -> Group:

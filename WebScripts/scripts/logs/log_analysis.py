@@ -51,7 +51,8 @@ __all__ = ["get_line", "build_html_table", "main"]
 
 from collections import Counter
 from typing import Dict, List
-from os.apth import join
+from os.path import join
+from os import environ
 from sys import exit
 
 
@@ -111,12 +112,17 @@ def main() -> int:
     table = {}
     last_char = -1
 
-    with open(join("logs", "00-server.logs")) as logfile:
+    for level in environ["WEBSCRIPTS_LOGS_FILES"].split("|"):
+        level, filename = level.split("?", 1)
+
+        if level.casefold() == "all":
+            break
+
+    with open(filename) as logfile:
         readline = logfile.readline
-        tell = logfile.tell
         line = readline()
 
-        while last_char != logfile.tell():
+        while line != "":
             line = line.split(maxsplit=4)
 
             if len(line) == 5 and line[2] in (
@@ -124,6 +130,7 @@ def main() -> int:
                 "INFO",
                 "ACCESS",
                 "RESPONSE",
+                "COMMAND",
                 "WARNING",
                 "ERROR",
                 "CRITICAL",
@@ -131,13 +138,11 @@ def main() -> int:
                 date, time, level, level_no, log = line
             else:
                 line = readline()
-                last_char = tell()
                 continue
 
             table_level = table.setdefault(level, Counter())
             table_level[date] += 1
 
-            last_char = tell()
             line = readline()
 
     print(build_html_table(table))
