@@ -511,8 +511,34 @@ class TestServer(TestCase):
 
         default_path = sys.path.copy()
 
-        self.server.add_module_or_package()
-        self.assertListEqual(sys.path, default_path)
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ) as mock:
+            self.server.add_module_or_package()
+            self.assertListEqual(sys.path, default_path)
+            mock.assert_called_once_with(
+                self.server.configuration,
+                path.normpath(
+                    path.join(path.dirname(__file__), "modules", "test.py")
+                ),
+                recursive=True,
+            )
+
+        with self.assertRaises(AttributeError):
+            self.server.pages.packages.test.is_imported
+
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ) as mock:
+            self.server.add_module_or_package()
+            self.assertListEqual(sys.path, default_path)
+            mock.assert_called_once_with(
+                self.server.configuration,
+                path.normpath(
+                    path.join(path.dirname(__file__), "modules", "test.py")
+                ),
+                recursive=True,
+            )
 
         try:
             self.assertTrue(self.server.pages.packages.test.is_imported)
@@ -1393,6 +1419,8 @@ class TestFunctions(TestCase):
 
     def test_get_server_config(self):
         argv = sys.argv.copy()
+        argv_ = sys.argv = ["WebScripts"]
+        arguments_empty = parse_args(argv_)
         argv_ = sys.argv = [
             "WebScripts",
             "--config-cfg",
@@ -1412,19 +1440,30 @@ class TestFunctions(TestCase):
         with open("test.ini", "w") as f:
             f.write("[server]\n")
 
-        for configurations in get_server_config(arguments):
-            self.assertTrue(isinstance(configurations, dict))
-
-        arguments = parse_args(argv_)
         with patch.object(
-            WebScripts.WebScripts,
-            "system",
-            return_value="Linux"
-            if WebScripts.WebScripts.system() == "Windows"
-            else "Windows",
-        ) as mock_method:
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ):
+            for configurations in get_server_config(arguments_empty):
+                for config in configurations.values():
+                    if config:
+                        self.assertTrue(False)
+
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
             for configurations in get_server_config(arguments):
                 self.assertTrue(isinstance(configurations, dict))
+
+            arguments = parse_args(argv_)
+            with patch.object(
+                WebScripts.WebScripts,
+                "system",
+                return_value="Linux"
+                if WebScripts.WebScripts.system() == "Windows"
+                else "Windows",
+            ) as mock_method:
+                for configurations in get_server_config(arguments):
+                    self.assertTrue(isinstance(configurations, dict))
 
         sys.argv = argv
 

@@ -138,9 +138,20 @@ class TestScriptConfig(TestCase):
             ScriptConfig, "get_scripts_from_configuration"
         ) as config_mock:
             config_mock.return_value = {}
-            ScriptConfig.build_scripts_from_configuration(configuration)
 
-        self.assertEqual(len(config_mock.mock_calls), 3)
+            with patch.object(
+                WebScripts.commons, "check_file_permission", return_value=False
+            ):
+                ScriptConfig.build_scripts_from_configuration(configuration)
+                self.assertEqual(len(configuration.configuration_files), 0)
+                self.assertEqual(len(config_mock.mock_calls), 1)
+
+            with patch.object(
+                WebScripts.commons, "check_file_permission", return_value=True
+            ):
+                ScriptConfig.build_scripts_from_configuration(configuration)
+
+        self.assertEqual(len(config_mock.mock_calls), 4)
         self.assertListEqual(
             [
                 path.abspath(file).casefold()
@@ -164,27 +175,27 @@ class TestScriptConfig(TestCase):
             list(configuration.configuration_files.values())[1],
         )
 
-        self.assertEqual(len(config_mock.mock_calls[0].args), 2)
+        self.assertEqual(len(config_mock.mock_calls[1].args), 2)
         self.assertListEqual(
-            config_mock.mock_calls[0].args[0].ini_scripts_config,
+            config_mock.mock_calls[1].args[0].ini_scripts_config,
             ["./unittests_configuration.ini"],
         )
         self.assertListEqual(
-            config_mock.mock_calls[0].args[0].json_scripts_config,
+            config_mock.mock_calls[1].args[0].json_scripts_config,
             ["./unittests_configuration.json"],
         )
 
-        self.assertEqual(len(config_mock.mock_calls[1].args), 2)
-        self.assertDictEqual(
-            config_mock.mock_calls[1].args[0].scripts, {"test.py": "test"}
-        )
-        self.assertDictEqual(config_mock.mock_calls[1].args[0].test, {})
-
         self.assertEqual(len(config_mock.mock_calls[2].args), 2)
         self.assertDictEqual(
-            config_mock.mock_calls[2].args[0].scripts, {"test.sh": "test"}
+            config_mock.mock_calls[2].args[0].scripts, {"test.py": "test"}
         )
         self.assertDictEqual(config_mock.mock_calls[2].args[0].test, {})
+
+        self.assertEqual(len(config_mock.mock_calls[3].args), 2)
+        self.assertDictEqual(
+            config_mock.mock_calls[3].args[0].scripts, {"test.sh": "test"}
+        )
+        self.assertDictEqual(config_mock.mock_calls[3].args[0].test, {})
 
         os.remove("unittests_configuration.ini")
         os.remove("unittests_configuration.json")
@@ -192,13 +203,20 @@ class TestScriptConfig(TestCase):
     def test_get_scripts_from_configuration(self):
         configuration = DefaultNamespace()
         configuration.scripts = {"test.py": "test"}
+        configuration.force_file_permissions = True
 
-        with self.assertRaises(WebScriptsConfigurationError):
+        with self.assertRaises(WebScriptsConfigurationError), patch.object(
+            WebScripts.commons, "check_file_permission", return_value=True
+        ):
             ScriptConfig.get_scripts_from_configuration(configuration, None)
 
         configuration.test = {}
 
-        with patch.object(ScriptConfig, "get_script_path") as mock_config_path:
+        with patch.object(
+            ScriptConfig, "get_script_path"
+        ) as mock_config_path, patch.object(
+            WebScripts.commons, "check_file_permission", return_value=True
+        ):
             mock_config_path.return_value = "/fake/path/test.py"
             script_configs = ScriptConfig.get_scripts_from_configuration(
                 configuration, configuration
@@ -212,12 +230,15 @@ class TestScriptConfig(TestCase):
         configuration = DefaultNamespace()
         configuration.scripts = {"test.py": "test"}
         configuration.test = {"path": "/fake/path/test.py"}
+        configuration.force_file_permissions = True
 
         with patch.object(
             WebScripts.commons, "get_real_path"
         ) as mock_real_path:
             mock_real_path.return_value = "/fake/path/test.py"
-            with self.assertRaises(WebScriptsConfigurationError):
+            with self.assertRaises(WebScriptsConfigurationError), patch.object(
+                WebScripts.commons, "check_file_permission", return_value=True
+            ):
                 ScriptConfig.get_scripts_from_configuration(
                     configuration, configuration
                 )
@@ -227,10 +248,25 @@ class TestScriptConfig(TestCase):
         with open("test.py", "w") as file:
             file.write("# test")
 
-        script_configs = ScriptConfig.get_scripts_from_configuration(
-            configuration, configuration
-        )
-        self.assertTrue(script_configs["test.py"].path_is_defined)
+        with patch.object(
+            WebScripts.commons, "check_file_permission", return_value=False
+        ) as mock_permission:
+            self.assertDictEqual(
+                ScriptConfig.get_scripts_from_configuration(
+                    configuration, configuration
+                ),
+                {},
+            )
+            mock_permission.assert_called_once()
+
+        with patch.object(
+            WebScripts.commons, "check_file_permission", return_value=True
+        ) as mock_permission:
+            script_configs = ScriptConfig.get_scripts_from_configuration(
+                configuration, configuration
+            )
+            mock_permission.assert_called_once()
+            self.assertTrue(script_configs["test.py"].path_is_defined)
 
         os.remove("test.py")
 

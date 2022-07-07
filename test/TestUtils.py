@@ -25,7 +25,7 @@ This file tests the Utils.py file
 """
 
 from os import path, device_encoding, getcwd
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, call
 from unittest import TestCase, main
 from types import MethodType
 from importlib import reload
@@ -63,6 +63,7 @@ from WebScripts.utils import (
     CustomLogHandler,
     # namer,
     # rotator,
+    check_file_permission,
 )
 import WebScripts.utils
 
@@ -587,6 +588,141 @@ class TestFunctions(TestCase):
         self.assertEqual(1, get_arguments_count(Test().test))
         self.assertEqual(1, get_arguments_count(Test.test))
         self.assertEqual(1, get_arguments_count(lambda x: x))
+
+    def test_check_file_permission(self):
+        WebScripts.utils.IS_WINDOWS = True
+        self.assertTrue(
+            check_file_permission(None, "test", False, False, False)
+        )
+
+        WebScripts.utils.IS_WINDOWS = False
+        config = DefaultNamespace()
+        config.force_file_permissions = False
+
+        self.assertTrue(
+            check_file_permission(config, "test", False, False, False)
+        )
+
+        config = DefaultNamespace()
+        config.force_file_permissions = True
+
+        class SpecificMock(Mock):
+            first = True
+            st_uid = 0
+
+            @property
+            def st_mode(self):
+                first = self.first
+                self.first = False
+                return 33024 if first else 16877
+                16877  # 0o040755 = 0o0400 + 0o0200 + 0o100 + 0o0040 + 0o0010 + 0o0004 + 0o0001 + 0o040000
+                33024  # 0o100400 = 0o0400 + 0o100000
+
+        stat_response = SpecificMock()
+
+        user = WebScripts.utils.user
+        getpwuid = getattr(WebScripts.utils, "getpwuid", None)
+
+        WebScripts.utils.user = "root"
+        WebScripts.utils.getpwuid = (
+            lambda x: Mock(pw_name="root") if x == 0 else Mock()
+        )
+
+        class SpecialMock(Mock):
+            def __call__(self, file):
+                super().__call__(file)
+                return file == "test/test"
+
+        isfile = WebScripts.utils.isfile
+        mock = WebScripts.utils.isfile = SpecialMock()
+
+        with patch.object(
+            WebScripts.utils, "stat", return_value=stat_response
+        ) as file, patch.object(
+            WebScripts.utils, "isdir", return_value=True
+        ) as mock2:
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, False, True)
+            )
+            self.assertEqual(mock.call_count, 2)
+            self.assertListEqual(
+                mock.call_args_list, [call("test/test"), call("test")]
+            )
+            mock2.assert_called_once()
+
+            stat_response = DefaultNamespace()
+            stat_response.st_uid = 0
+            stat_response.st_mode = (
+                33088  # 0o100500 = 0o0400 + 0o100 + 0o100000
+            )
+
+            file.return_value = stat_response
+
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+            self.assertEqual(mock.call_count, 3)
+            self.assertListEqual(
+                mock.call_args_list,
+                [call("test/test"), call("test"), call("test/test")],
+            )
+            mock2.assert_called_once()
+
+            stat_response.st_mode = 32832  # 0o100100 = 0o100 + 0o100000
+
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+            self.assertEqual(mock.call_count, 4)
+            self.assertListEqual(
+                mock.call_args_list,
+                [
+                    call("test/test"),
+                    call("test"),
+                    call("test/test"),
+                    call("test/test"),
+                ],
+            )
+            mock2.assert_called_once()
+
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100200
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o040777
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100411
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100444
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100422
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 32832
+            stat_response.st_uid = 1
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+
+        WebScripts.utils.getpwuid = getpwuid
+        WebScripts.utils.isfile = isfile
+        WebScripts.utils.user = user
 
 
 if __name__ == "__main__":

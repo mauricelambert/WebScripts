@@ -319,6 +319,9 @@ sys.modules["syslog"] = Mock(
     LOG_ERR=Mock(),
     LOG_CRIT=Mock(),
 )
+sys.modules["pwd"] = Mock(
+    getpwuid=Mock(),
+)
 # sys.modules["platform"].system = (
 #     lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
 # )
