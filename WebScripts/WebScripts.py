@@ -102,6 +102,7 @@ if __package__:
         # namer,
         # Handler,
         get_real_path,
+        WebScriptsSecurityError,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -142,6 +143,7 @@ else:
         # namer,
         # Handler,
         get_real_path,
+        WebScriptsSecurityError,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
@@ -1903,8 +1905,19 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
         else:
             logger_info("./logs directory is created.")
 
+    log_file = join("config", "loggers.ini")
+
+    temp_config = Configuration()
+    temp_config.force_file_permissions = True
+
+    if not check_file_permission(temp_config, log_file):
+        raise WebScriptsSecurityError(
+            "Logs configuration file/directory permissions are"
+            " insecure. Remote code execution can be exploited."
+        )
+
     fileConfig(
-        get_real_path(join("config", "loggers.ini")),
+        get_real_path(log_file),
         disable_existing_loggers=False,
     )
 

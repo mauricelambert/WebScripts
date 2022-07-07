@@ -1150,6 +1150,7 @@ def check_file_permission(
             return_value = (
                 mode[0] == "-"
                 and (mode1 == "r" or mode1 == "-")
+                and mode[2] == "-"
                 and ((executable and mode3 == "x") or mode3 == "-")
                 and mode.endswith("------")
                 and owner == user
