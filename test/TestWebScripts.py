@@ -1387,7 +1387,7 @@ class TestFunctions(TestCase):
             )
         ),
     )
-    @patch("WebScripts.WebScripts.check_file_permission")
+    @patch("WebScripts.check_file_permission")
     def test_main(self):
         global WebScripts
 
@@ -1543,7 +1543,7 @@ class TestFunctions(TestCase):
         )
         self.assertEqual(send_mail(self.conf, "test"), 0)
 
-    @patch("WebScripts.WebScripts.check_file_permission")
+    @patch("WebScripts.check_file_permission")
     def test_default_configuration(self):
         with patch.object(
             WebScripts.WebScripts,
