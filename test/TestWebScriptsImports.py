@@ -222,6 +222,10 @@ with patch.object(
 ), patch.object(sys.modules["path"], "isdir", return_value=False):
     import WebScripts
 
+check_file_permission = WebScripts.check_file_permission
+
+WebScripts.check_file_permission = lambda *x, **y: True
+
 WebScripts.configure_logs_system()
 
 sys.modules["utils"] = utils = import_from_filename(
@@ -361,3 +365,5 @@ local_["__name__"] = "__main__"
 global_["__name__"] = "__main__"
 
 # exec(open(WebScripts.__file__).read(), locals=local_, globals=global_)
+
+WebScripts.check_file_permission = check_file_permission

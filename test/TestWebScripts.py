@@ -1387,8 +1387,8 @@ class TestFunctions(TestCase):
             )
         ),
     )
-    @patch("WebScripts.check_file_permission")
-    def test_main(self):
+    @patch("WebScripts.WebScripts.check_file_permission")
+    def test_main(self, *args):
         global WebScripts
 
         def raise_keyboard(self):
@@ -1543,8 +1543,8 @@ class TestFunctions(TestCase):
         )
         self.assertEqual(send_mail(self.conf, "test"), 0)
 
-    @patch("WebScripts.check_file_permission")
-    def test_default_configuration(self):
+    @patch("WebScripts.WebScripts.check_file_permission")
+    def test_default_configuration(self, *args):
         with patch.object(
             WebScripts.WebScripts,
             "get_server_config",
