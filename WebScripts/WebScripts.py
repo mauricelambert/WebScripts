@@ -1905,7 +1905,7 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
         else:
             logger_info("./logs directory is created.")
 
-    log_file = join("config", "loggers.ini")
+    log_file = get_real_path(join("config", "loggers.ini"))
 
     temp_config = Configuration()
     temp_config.force_file_permissions = True
@@ -1917,7 +1917,7 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
         )
 
     fileConfig(
-        get_real_path(log_file),
+        log_file,
         disable_existing_loggers=False,
     )
 
