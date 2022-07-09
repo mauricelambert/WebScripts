@@ -86,6 +86,7 @@ from WebScripts.WebScripts import (
     send_mail,
     main,
     default_configuration,
+    WebScriptsSecurityError,
 )
 from WebScripts.commons import Blacklist, Session
 import WebScripts
@@ -1486,13 +1487,24 @@ class TestFunctions(TestCase):
     def test_configure_logs_system(self):
         global WebScripts
 
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ), self.assertRaises(WebScriptsSecurityError):
+            configure_logs_system()
+            self.assertTrue(path.isdir("logs"))
+            self.assertFalse(path.isfile(path.join("logs", "root.logs")))
+
         def raise_permission(file):
             raise PermissionError
 
         if path.isdir("logs"):
             rmtree("logs", ignore_errors=True)
 
-        configure_logs_system()
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
+            configure_logs_system()
+
         disable_logs()
 
         self.assertTrue(path.isdir("logs"))
@@ -1505,7 +1517,11 @@ class TestFunctions(TestCase):
         sys.modules["os"].mkdir = raise_permission
         WebScripts.mkdir = Mock(side_effect=PermissionError())
 
-        configure_logs_system()
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
+            configure_logs_system()
+
         disable_logs()
 
     def test_add_configuration(self):
