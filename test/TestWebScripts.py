@@ -91,6 +91,13 @@ from WebScripts.WebScripts import (
 from WebScripts.commons import Blacklist, Session
 import WebScripts
 
+try:
+    WebScripts.WebScripts
+except AttributeError:
+    target = "WebScripts.check_file_permission"
+else:
+    target = "WebScripts.WebScripts.check_file_permission"
+
 
 class TestConfiguration(TestCase):
     def setUp(self):
@@ -1387,7 +1394,9 @@ class TestFunctions(TestCase):
             )
         ),
     )
-    @patch("WebScripts.WebScripts.check_file_permission")
+    @patch.object(
+        WebScripts.WebScripts, "check_file_permission", return_value=True
+    )
     def test_main(self, *args):
         global WebScripts
 
@@ -1543,7 +1552,9 @@ class TestFunctions(TestCase):
         )
         self.assertEqual(send_mail(self.conf, "test"), 0)
 
-    @patch("WebScripts.WebScripts.check_file_permission")
+    @patch.object(
+        WebScripts.WebScripts, "check_file_permission", return_value=True
+    )
     def test_default_configuration(self, *args):
         with patch.object(
             WebScripts.WebScripts,
