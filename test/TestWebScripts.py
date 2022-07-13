@@ -95,10 +95,10 @@ try:
     WebScripts.WebScripts
 except AttributeError:
     target = "WebScripts.check_file_permission"
-    WebScripts.check_file_permission = lamda *x, **y: True
+    WebScripts.check_file_permission = lambda *x, **y: True
 else:
     target = "WebScripts.WebScripts.check_file_permission"
-    WebScripts.WebScripts.check_file_permission = lamda *x, **y: True
+    WebScripts.WebScripts.check_file_permission = lambda *x, **y: True
 
 
 class TestConfiguration(TestCase):
