@@ -25,7 +25,6 @@ jobs:
           shopt -s globstar
           chmod 400 **/*.ini **/*.json
           chmod 755 **/config
-          chown root:root **/*.ini **/*.json **/*.py
           chown root:root **/config
           python -m WebScripts --test-running
           python -m pip install .
