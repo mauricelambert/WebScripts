@@ -158,7 +158,7 @@ def import_without_package():
         raise error
 
 
-disable_logs()
+# disable_logs()
 import_without_package()
 
 from importlib.util import spec_from_file_location, module_from_spec
@@ -222,7 +222,7 @@ with patch.object(
 ), patch.object(sys.modules["path"], "isdir", return_value=False):
     import WebScripts
 
-check_file_permission = WebScripts.check_file_permission
+real_check_file_permission = WebScripts.check_file_permission
 
 WebScripts.check_file_permission = lambda *x, **y: True
 
@@ -231,8 +231,32 @@ WebScripts.configure_logs_system()
 sys.modules["utils"] = utils = import_from_filename(
     join(split(WebScripts.__file__)[0], "utils.py")
 )
+# sys.modules["commons"] = commons = import_from_filename(
+#     join(split(WebScripts.__file__)[0], "commons.py")
+# )
+# sys.modules["hardening"] = hardening = import_from_filename(
+#     join(split(WebScripts.__file__)[0], "hardening.py")
+# )
 
-sys.argv = ["WebScripts", "--debug"]
+# utils2 = sys.modules.get("WebScripts.utils", utils)
+# commons2 = sys.modules.get("WebScripts.commons", commons)
+# hardening2 = sys.modules.get("WebScripts.hardening", hardening)
+
+# utils2.check_file_permission = commons2.check_file_permission = utils.check_file_permission = commons.check_file_permission = lambda *x, **y: True
+IS_WINDOWS = utils.IS_WINDOWS
+# utils2.IS_WINDOWS = utils.IS_WINDOWS = True
+
+
+def get_pourcent(self) -> None:
+    self.pourcent = {s.value: 0 for s in hardening2.SEVERITY}
+    self.pourcent["ALL"] = 0
+    print("*" * 50)
+
+
+# real_get_pourcent = hardening2.Report.get_pourcent
+# hardening2.Report.get_pourcent = hardening.Report.get_pourcent = get_pourcent
+
+WebScripts.argv = sys.argv = ["WebScripts", "--debug", "--active-auth"]
 
 # print("", *dir(WebScripts), sep="\n")
 # print(WebScripts.isdir)
@@ -240,10 +264,31 @@ sys.argv = ["WebScripts", "--debug"]
 
 WebScripts.mkdir = OsModule.mkdir
 # print(WebScripts.mkdir)
+WebScripts.main.__globals__["get_ip"].__globals__[
+    "check_file_permission"
+] = lambda *x, **y: True
+WebScripts.main.__globals__["get_ip"].__globals__["IS_WINDOWS"] = True
+daemon_func = WebScripts.main.__globals__["hardening"].__globals__[
+    "daemon_func"
+]
+WebScripts.main.__globals__["hardening"].__globals__["daemon_func"] = Mock()
+simple_server = WebScripts.main.__globals__["simple_server"]
+WebScripts.main.__globals__["simple_server"] = Mock()
 with patch.object(WebScripts, "isdir", return_value=False):
     WebScripts.main()
 
+# hardening2.Report.get_pourcent = hardening.Report.get_pourcent = real_get_pourcent
+# utils2.check_file_permission = commons2.check_file_permission = utils.check_file_permission = commons.check_file_permission = WebScripts.check_file_permission = real_check_file_permission
 sys.argv = argv
+# utils2.IS_WINDOWS = utils.IS_WINDOWS = IS_WINDOWS
+WebScripts.main.__globals__["get_ip"].__globals__[
+    "check_file_permission"
+] = real_check_file_permission
+WebScripts.main.__globals__["get_ip"].__globals__["IS_WINDOWS"] = IS_WINDOWS
+WebScripts.main.__globals__["hardening"].__globals__[
+    "daemon_func"
+] = daemon_func
+WebScripts.main.__globals__["simple_server"] = simple_server
 
 sys.modules["win32evtlogutil"] = Mock(ReportEvent=Mock())
 sys.modules["win32security"] = Mock(
@@ -365,5 +410,3 @@ local_["__name__"] = "__main__"
 global_["__name__"] = "__main__"
 
 # exec(open(WebScripts.__file__).read(), locals=local_, globals=global_)
-
-WebScripts.check_file_permission = check_file_permission

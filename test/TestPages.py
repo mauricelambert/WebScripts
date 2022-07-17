@@ -413,7 +413,7 @@ class TestFunctions(TestCase):
 
     def test_decode_output(self):
         with patch.object(
-            WebScripts.utils.locale, "getpreferredencoding", return_value=None
+            WebScripts.utils, "getpreferredencoding", return_value=None
         ) as m1, patch.object(
             WebScripts.utils, "device_encoding", return_value=None
         ) as m2:

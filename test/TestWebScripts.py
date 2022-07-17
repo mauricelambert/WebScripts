@@ -95,9 +95,13 @@ try:
     WebScripts.WebScripts
 except AttributeError:
     target = "WebScripts.check_file_permission"
+    real_check_file_permission = sys.modules["utils"].check_file_permission
+    locations = [sys.modules["utils"], sys.modules["commons"], WebScripts]
     WebScripts.check_file_permission = lambda *x, **y: True
 else:
     target = "WebScripts.WebScripts.check_file_permission"
+    real_check_file_permission = WebScripts.utils.check_file_permission
+    locations = [WebScripts.utils, WebScripts.commons, WebScripts.WebScripts]
     WebScripts.WebScripts.check_file_permission = lambda *x, **y: True
 
 
@@ -1402,6 +1406,11 @@ class TestFunctions(TestCase):
     def test_main(self, *args):
         global WebScripts
 
+        tuple(
+            setattr(l, "check_file_permission", lambda *x, **y: True)
+            for l in locations
+        )
+
         def raise_keyboard(self):
             raise KeyboardInterrupt
 
@@ -1413,9 +1422,17 @@ class TestFunctions(TestCase):
         ]
         WebScripts.main()
 
-        WebScripts.argv = ["WebScripts", "--test-running"]
+        WebScripts.WebScripts.argv = WebScripts.argv = sys.argv = [
+            "WebScripts",
+            "--test-running",
+        ]
         WebScripts.main()
-        sys.argv = argv
+        WebScripts.WebScripts.argv = WebScripts.argv = sys.argv = argv
+
+        tuple(
+            setattr(l, "check_file_permission", real_check_file_permission)
+            for l in locations
+        )
 
     def test_parse_args(self):
         argv = sys.argv.copy()
