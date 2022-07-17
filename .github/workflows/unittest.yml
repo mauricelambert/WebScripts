@@ -21,7 +21,7 @@ jobs:
       - name: Test WebScripts with unittest
         run: |
           python -m unittest discover -s test -p Test*.py -v
-          python -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d["force_file_permissions"]=False;j.dump(d,open(f,'w'))"
+          python -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
           python -m WebScripts --test-running
           python -m pip install .
           python -m pip install --force-reinstall --install-option "-pabc" --install-option "-d." .
