@@ -589,7 +589,6 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
 logging.handlers.CustomLogHandler = CustomLogHandler
 
-
 if IS_WINDOWS:
     try:
         from win32con import TOKEN_READ
@@ -629,12 +628,6 @@ if IS_WINDOWS:
         stdout=DEVNULL,
         stderr=DEVNULL,
     )  # Active colors in console (for logs) # nosec
-
-    if not WINDOWS_LOGS:
-        Logs = _Logs
-        Logs.error("PyWin32 is not installed, no Windows Event Logs.")
-    else:
-        Logs = WindowsLogs
 else:
     from pwd import getpwuid
     from syslog import (
@@ -649,19 +642,24 @@ else:
     Logs = LinuxLogs
 
 
+if IS_WINDOWS and WINDOWS_LOGS:
+    Logs = WindowsLogs
+elif IS_WINDOWS:
+    Logs = _Logs
+
 logs_log_debug_debug: Callable = Logs.log_debug.debug
 logs_console_debug: Callable = Logs.console.debug
 logs_file_debug: Callable = Logs.file.debug
-logs_log_info_info: Callable = Logs.log_debug.info
+logs_log_info_info: Callable = Logs.log_info.info
 logs_console_info: Callable = Logs.console.info
 logs_file_info: Callable = Logs.file.info
-logs_log_warning_warning: Callable = Logs.log_debug.warning
+logs_log_warning_warning: Callable = Logs.log_warning.warning
 logs_console_warning: Callable = Logs.console.warning
 logs_file_warning: Callable = Logs.file.warning
-logs_log_error_error: Callable = Logs.log_debug.error
+logs_log_error_error: Callable = Logs.log_error.error
 logs_console_error: Callable = Logs.console.error
 logs_file_error: Callable = Logs.file.error
-logs_log_critical_critical: Callable = Logs.log_debug.critical
+logs_log_critical_critical: Callable = Logs.log_critical.critical
 logs_console_critical: Callable = Logs.console.critical
 logs_file_critical: Callable = Logs.file.critical
 logs_log_error_exception: Callable = Logs.log_error.exception
@@ -673,6 +671,10 @@ logs_log_response_log: Callable = Logs.log_response.log
 logs_log_command_log: Callable = Logs.log_command.log
 logs_console_log: Callable = Logs.console.log
 logs_file_log: Callable = Logs.file.log
+
+
+if IS_WINDOWS and not WINDOWS_LOGS:
+    Logs.error("PyWin32 is not installed, no Windows Event Logs.")
 
 
 class DefaultNamespace(SimpleNamespace):
