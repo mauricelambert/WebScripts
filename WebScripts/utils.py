@@ -85,11 +85,24 @@ from typing import (
     Any,
     Union,
 )
+from logging import (
+    log as log_,
+    debug,
+    info,
+    warning,
+    error,
+    critical,
+    exception,
+    addLevelName,
+    basicConfig,
+    Logger,
+    getLogger,
+)
 from os.path import abspath, isdir, isfile, exists, dirname, normcase, join
 from types import SimpleNamespace, FunctionType, MethodType, CodeType
 from os import path, _Environ, device_encoding, remove, stat, getcwd
 from subprocess import check_call, DEVNULL  # nosec
-from logging import Logger, getLogger
+from locale import getpreferredencoding
 from configparser import ConfigParser
 from collections.abc import Callable
 from platform import system
@@ -97,11 +110,9 @@ from getpass import getuser
 from functools import wraps
 from sys import _getframe
 from stat import filemode
+from gzip import compress
+from json import dump
 import logging.handlers
-import logging
-import locale
-import json
-import gzip
 
 if __package__:
     from .Errors import (
@@ -160,10 +171,10 @@ class _Logs:
         This function implements basic python debug logs for WebScripts.
         """
 
-        Logs.log_debug.debug(log)
-        Logs.console.debug(f"\x1b[32m{log}\x1b[0m")
-        Logs.file.debug(log)
-        logging.debug(log)
+        logs_log_debug_debug(log)
+        logs_console_debug(f"\x1b[32m{log}\x1b[0m")
+        logs_file_debug(log)
+        debug(log)
 
     def info(log: str) -> None:
 
@@ -171,10 +182,10 @@ class _Logs:
         This function implements basic python info logs for WebScripts.
         """
 
-        Logs.log_info.info(log)
-        Logs.console.info(f"\x1b[34m{log}\x1b[0m")
-        Logs.file.info(log)
-        logging.info(log)
+        logs_log_info_info(log)
+        logs_console_info(f"\x1b[34m{log}\x1b[0m")
+        logs_file_info(log)
+        info(log)
 
     def warning(log: str) -> None:
 
@@ -182,10 +193,10 @@ class _Logs:
         This function implements basic python warning logs for WebScripts.
         """
 
-        Logs.log_warning.warning(log)
-        Logs.console.warning(f"\x1b[33m{log}\x1b[0m")
-        Logs.file.warning(log)
-        logging.warning(log)
+        logs_log_warning_warning(log)
+        logs_console_warning(f"\x1b[33m{log}\x1b[0m")
+        logs_file_warning(log)
+        warning(log)
 
     def error(log: str) -> None:
 
@@ -193,10 +204,10 @@ class _Logs:
         This function implements basic python error logs for WebScripts.
         """
 
-        Logs.log_error.error(log)
-        Logs.console.error(f"\x1b[35m{log}\x1b[0m")
-        Logs.file.error(log)
-        logging.error(log)
+        logs_log_error_error(log)
+        logs_console_error(f"\x1b[35m{log}\x1b[0m")
+        logs_file_error(log)
+        error(log)
 
     def critical(log: str) -> None:
 
@@ -204,10 +215,10 @@ class _Logs:
         This function implements basic python critical logs for WebScripts.
         """
 
-        Logs.log_critical.critical(log)
-        Logs.console.critical(f"\x1b[31m{log}\x1b[0m")
-        Logs.file.critical(log)
-        logging.critical(log)
+        logs_log_critical_critical(log)
+        logs_console_critical(f"\x1b[31m{log}\x1b[0m")
+        logs_file_critical(log)
+        critical(log)
 
     def exception(log: str) -> None:
 
@@ -216,10 +227,10 @@ class _Logs:
         WebScripts.
         """
 
-        Logs.log_error.exception(log)
-        Logs.console.exception(log)
-        Logs.file.exception(log)
-        logging.exception(log)
+        logs_log_error_exception(log)
+        logs_console_exception(log)
+        logs_file_exception(log)
+        exception(log)
 
     def trace(log: str) -> None:
 
@@ -227,8 +238,8 @@ class _Logs:
         This function implements trace logs for WebScripts.
         """
 
-        Logs.log_trace.log(5, log)
-        logging.log(5, log)
+        logs_log_trace_log(5, log)
+        log_(5, log)
 
     def access(log: str) -> None:
 
@@ -236,11 +247,11 @@ class _Logs:
         This function implements access logs for WebScripts.
         """
 
-        Logs.log_debug.debug(log)
-        Logs.log_access.log(25, log)
-        Logs.console.log(25, f"\x1b[36m{log}\x1b[0m")
-        Logs.file.log(25, log)
-        logging.log(25, log)
+        logs_log_debug_debug(log)
+        logs_log_access_log(25, log)
+        logs_console_log(25, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(25, log)
+        log_(25, log)
 
     def response(log: str) -> None:
 
@@ -248,11 +259,11 @@ class _Logs:
         This function implements response logs for WebScripts.
         """
 
-        Logs.log_debug.debug(log)
-        Logs.log_response.log(26, log)
-        Logs.console.log(26, f"\x1b[36m{log}\x1b[0m")
-        Logs.file.log(26, log)
-        logging.log(26, log)
+        logs_log_debug_debug(log)
+        logs_log_response_log(26, log)
+        logs_console_log(26, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(26, log)
+        log_(26, log)
 
     def command(log: str) -> None:
 
@@ -260,11 +271,11 @@ class _Logs:
         This function implements response logs for WebScripts.
         """
 
-        Logs.log_info.info(log)
-        Logs.log_command.log(27, log)
-        Logs.console.log(27, f"\x1b[36m{log}\x1b[0m")
-        Logs.file.log(27, log)
-        logging.log(27, log)
+        logs_log_info_info(log)
+        logs_log_command_log(27, log)
+        logs_console_log(27, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(27, log)
+        log_(27, log)
 
     def config(*args, **kwargs):
 
@@ -272,7 +283,7 @@ class _Logs:
         This function config ROOT logger.
         """
 
-        logging.basicConfig(*args, **kwargs)
+        basicConfig(*args, **kwargs)
 
 
 class WindowsLogs(_Logs):
@@ -499,7 +510,9 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_CRIT, log)
 
 
-def log_trace(function: Union[FunctionType, MethodType]) -> FunctionType:
+def log_trace(
+    function: Union[FunctionType, MethodType]
+) -> Union[FunctionType, MethodType]:
 
     """
     This decorator traces functions (start and end).
@@ -513,9 +526,9 @@ def log_trace(function: Union[FunctionType, MethodType]) -> FunctionType:
         # else:
         #    name = function.__name__
 
-        Logs.trace(f"Start {function.__name__}...")
+        logger_trace(f"Start {function.__name__}...")
         values = function(*args, **kwds)
-        Logs.trace(f"End of {function.__name__}.")
+        logger_trace(f"End of {function.__name__}.")
         return values
 
     return wrapper
@@ -566,7 +579,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
         with open(source, "rb") as source_file:
             data = source_file.read()
-            compressed = gzip.compress(data, 9)
+            compressed = compress(data, 9)
 
             with open(destination, "wb") as destination_file:
                 destination_file.write(compressed)
@@ -634,6 +647,32 @@ else:
     )
 
     Logs = LinuxLogs
+
+
+logs_log_debug_debug: Callable = Logs.log_debug.debug
+logs_console_debug: Callable = Logs.console.debug
+logs_file_debug: Callable = Logs.file.debug
+logs_log_info_info: Callable = Logs.log_debug.info
+logs_console_info: Callable = Logs.console.info
+logs_file_info: Callable = Logs.file.info
+logs_log_warning_warning: Callable = Logs.log_debug.warning
+logs_console_warning: Callable = Logs.console.warning
+logs_file_warning: Callable = Logs.file.warning
+logs_log_error_error: Callable = Logs.log_debug.error
+logs_console_error: Callable = Logs.console.error
+logs_file_error: Callable = Logs.file.error
+logs_log_critical_critical: Callable = Logs.log_debug.critical
+logs_console_critical: Callable = Logs.console.critical
+logs_file_critical: Callable = Logs.file.critical
+logs_log_error_exception: Callable = Logs.log_error.exception
+logs_console_exception: Callable = Logs.console.exception
+logs_file_exception: Callable = Logs.file.exception
+logs_log_trace_log: Callable = Logs.log_trace.log
+logs_log_access_log: Callable = Logs.log_access.log
+logs_log_response_log: Callable = Logs.log_response.log
+logs_log_command_log: Callable = Logs.log_command.log
+logs_console_log: Callable = Logs.console.log
+logs_file_log: Callable = Logs.file.log
 
 
 class DefaultNamespace(SimpleNamespace):
@@ -761,7 +800,7 @@ class DefaultNamespace(SimpleNamespace):
         export = self.get_dict()
 
         with open(name, "w") as file:
-            json.dump(export, file, indent=4)
+            dump(export, file, indent=4)
 
     @log_trace
     def build_types(self) -> None:
@@ -943,7 +982,7 @@ def get_encodings():
     This function returns the probable encodings.
     """
 
-    encoding = locale.getpreferredencoding()
+    encoding = getpreferredencoding()
     if encoding is not None:
         yield encoding
 
@@ -1143,6 +1182,19 @@ def check_file_permission(
         mode = filemode(metadata.st_mode)
         owner = getpwuid(metadata.st_uid).pw_name
 
+        # frame = _getframe(1)
+        # frame = frame.f_back
+        # code = frame.f_code
+
+        # print(
+        #     "\x1b[31m",
+        #     "*" * 50,
+        #     filepath + "\t-\t" + code.co_filename
+        #         + ":" + str(frame.f_lineno) + ":"
+        #         + code.co_name + "\x1b[0m",
+        #     sep="\n"
+        # )
+
         if isfile(filepath):
             mode1 = mode[1]
             mode3 = mode[3]
@@ -1190,11 +1242,12 @@ working_directory: str = getcwd()
 user: str = getuser()
 
 date_format: str = "%Y-%m-%d %H:%M:%S"
-logging.addLevelName(5, "TRACE")
-logging.addLevelName(25, "ACCESS")
-logging.addLevelName(26, "RESPONSE")
-logging.addLevelName(27, "COMMAND")
+addLevelName(5, "TRACE")
+addLevelName(25, "ACCESS")
+addLevelName(26, "RESPONSE")
+addLevelName(27, "COMMAND")
 
+logger_trace: Callable = Logs.trace
 logger_debug: Callable = Logs.debug
 logger_info: Callable = Logs.info
 logger_access: Callable = Logs.access
