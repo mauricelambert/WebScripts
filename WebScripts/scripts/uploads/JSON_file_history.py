@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 This file prints a JSON objects of uploaded file versions.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,8 +49,8 @@ __copyright__ = copyright
 __all__ = []
 
 from modules.uploads_management import get_file
-from sys import exit, argv, stderr
-from json import dumps
+from sys import exit, argv, stderr, stdout
+from json import dump
 
 
 def main() -> int:
@@ -60,7 +60,9 @@ def main() -> int:
     """
 
     if len(argv) != 2:
-        print("USAGE: api_get_history.py [FILENAME required string]")
+        print(
+            "USAGE: api_get_history.py [FILENAME required string]", file=stderr
+        )
         return 1
 
     filename = argv[1]
@@ -73,7 +75,7 @@ def main() -> int:
 
     versions = [file._asdict() for file in files]
 
-    print(dumps(versions, indent=4))
+    dump(versions, stdout)
 
     return 0
 

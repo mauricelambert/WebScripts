@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 This file prints a JSON object of uploaded files.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -50,8 +50,8 @@ __copyright__ = copyright
 __all__ = ["main"]
 
 from modules.uploads_management import get_visible_files
-from sys import exit, stderr
-from json import dumps
+from sys import exit, stderr, stdout
+from json import dump
 
 
 def main() -> int:
@@ -81,7 +81,7 @@ def main() -> int:
         if key in fields
     }
 
-    print(dumps(files, indent=4))
+    dump(files, stdout)
 
     return 0
 

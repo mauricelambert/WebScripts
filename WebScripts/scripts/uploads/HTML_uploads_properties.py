@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints uploaded files as a JSON object
+#    This file prints an HTML table of uploaded files sizes.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints a JSON object of uploaded files.
+This file prints an HTML table of uploaded files sizes.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints a JSON object of uploaded files"""
+This file prints an HTML table of uploaded files sizes.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -46,37 +47,54 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = []
+__all__ = ["main"]
 
-from modules.uploads_management import get_files
-from sys import exit, stdout, stderr
-from json import dump
+from modules.uploads_management import get_metadata
+from datetime import datetime
+from sys import exit, stdout
+from csv import writer
+
+fromtimestamp = datetime.fromtimestamp
 
 
 def main() -> int:
 
     """
-    Print the JSON object of uploaded files.
+    This function prints an HTML table of uploaded files sizes.
     """
 
-    fields = [
-        "name",
-        "read_permission",
-        "write_permission",
-        "delete_permission",
-        "user",
-    ]
+    csv_write = writer(stdout)
+    csv_write.writerow(
+        [
+            "Name",
+            "Full size (ko) (all versions)",
+            "Size (ko)",
+            "Number of version",
+            "Date modification",
+            "Date creation (OS)",
+            "Date creation (WebScripts)",
+            "Date acces",
+        ]
+    )
 
-    try:
-        files = {
-            file.name: {field: getattr(file, field) for field in fields}
-            for file in get_files()
-        }
-    except Exception as e:
-        print(f"{e.__class__.__name__}: {e}", file=stderr)
-        return 127
+    for name, metadata in get_metadata().items():
+        csv_write.writerow(
+            [
+                name,
+                str(metadata.full_size / 1000),
+                str(metadata.last_size / 1000),
+                metadata.version,
+                fromtimestamp(metadata.modification).strftime(
+                    "%Y-%d-%d %H:%M:%S"
+                ),
+                fromtimestamp(metadata.creation).strftime("%Y-%d-%d %H:%M:%S"),
+                fromtimestamp(metadata.webscripts_creation).strftime(
+                    "%Y-%d-%d %H:%M:%S"
+                ),
+                fromtimestamp(metadata.access).strftime("%Y-%d-%d %H:%M:%S"),
+            ]
+        )
 
-    dump(files, stdout)
     return 0
 
 

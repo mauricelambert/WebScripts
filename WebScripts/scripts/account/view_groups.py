@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints groups in a HTML table
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file prints groups in a HTML table."""
+This file prints groups in a HTML table.
+"""
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -36,7 +38,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -48,13 +50,15 @@ __all__ = []
 
 from modules.manage_defaults_databases import get_groups
 from argparse import ArgumentParser, Namespace
-import html
-import sys
+from sys import stdout, exit, stderr
+from csv import writer
 
 
 def parse_args() -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parse command line arguments.
+    """
 
     parser = ArgumentParser()
     parser.add_argument(
@@ -74,7 +78,7 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
+def main() -> int:
 
     """
     Main function to print users using default manager for group database.
@@ -85,12 +89,12 @@ def main() -> None:
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
             print(
-                f'ERROR: ids must be integer. "{html.escape(value)}"'
-                " is not digits."
+                f'ERROR: ids must be integer. "{value}"' " is not digits.",
+                file=stderr,
             )
-            sys.exit(3)
+            return 3
 
-    print("<table>")
+    csv_writer = writer(stdout)
 
     for group in get_groups():
         if (
@@ -98,14 +102,10 @@ def main() -> None:
             or (arguments.ids and group.ID in arguments.ids)
             or (arguments.names and group.name in arguments.names)
         ):
-            print(
-                f"<tr><td>{html.escape(group.ID)}</td>"
-                f"<td>{html.escape(group.name)}</td></tr>"
-            )
+            csv_writer.writerow([group.ID, group.name])
 
-    print("</table>")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

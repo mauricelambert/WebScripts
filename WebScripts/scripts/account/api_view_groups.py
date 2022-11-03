@@ -3,7 +3,7 @@
 
 ###################
 #    This file print groups in JSON objects
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file can print groups in JSON objects."""
+This file can print groups in JSON objects.
+"""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -36,7 +38,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -48,13 +50,15 @@ __all__ = []
 
 from modules.manage_defaults_databases import get_groups
 from argparse import ArgumentParser, Namespace
-import json
-import sys
+from sys import exit, stdout, stderr
+from json import dump
 
 
 def parse_args() -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parse command line arguments.
+    """
 
     parser = ArgumentParser()
     parser.add_argument(
@@ -74,7 +78,7 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
+def main() -> int:
 
     """
     Main function to print users using default manager for group database.
@@ -84,8 +88,11 @@ def main() -> None:
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
-            sys.exit(3)
+            print(
+                f'ERROR: ids must be integer. "{value}" is not digits.',
+                file=stderr,
+            )
+            return 3
 
     groups = []
 
@@ -97,9 +104,9 @@ def main() -> None:
         ):
             groups.append(group._asdict())
 
-    print(json.dumps(groups, indent=4))
+    dump(groups, stdout)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

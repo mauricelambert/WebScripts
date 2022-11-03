@@ -28,14 +28,12 @@
 		<link rel="stylesheet" type="text/css" href="/static/webscripts_script_style.css">
 		<script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
 		<script type="text/javascript" src="/js/webscripts_script_js_scripts.js"></script>
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s'">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; navigate-to 'self'; worker-src 'none'; style-src-elem 'self'; style-src-attr 'none'; style-src 'self'; script-src-attr 'none'; object-src 'none'; media-src 'none'; manifest-src 'none'; frame-ancestors 'none'; connect-src 'self'; font-src 'none'; img-src 'self'; base-uri 'none'; child-src 'none'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s' 'require-trusted-types-for'">
 	</head>
 
 	<body>
-		<div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div>
+		<noscript><div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div></noscript>
 		%(header)s
-
-		<div id="webscripts_border_left" class="border"></div>
 
 		<div id="webscripts_content">
 			<div id="script_presentation">
@@ -65,26 +63,17 @@
 				</div>
 			</div>
 
-			<div id="progress_bar">
-				<div id="bar">
-				</div>
-			</div>
+			<progress id="progressbar" max="100" value="0"></progress>
 
-			<div  id="script_outputs">
+			<div id="error"></div>
+
+			<div id="script_outputs">
 				
 			</div>
 		</div>
 
-		<div id="webscripts_border_right" class="border"></div>
-
 		%(footer)s
 
-		<script type="text/javascript" nonce="%(nonce)s">
-			document.getElementById("submit_button").onclick=start_script_execution;
-			document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";
-			script_name="%(name)s";
-			get_scripts(build_script_interface);
-			add_buttons();
-		</script>
+		<script type="text/javascript" nonce="%(nonce)s">script_name="%(name)s";</script>
 	</body>
 </html>

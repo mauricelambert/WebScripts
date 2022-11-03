@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file prints uploaded files as a JSON object
+#    This file prints a JSON object of uploaded files sizes.
 #    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints a JSON object of uploaded files.
+This file prints a JSON object of uploaded files sizes.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints a JSON object of uploaded files"""
+This file prints a JSON object of uploaded files
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -46,37 +47,35 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = []
+__all__ = ["main"]
 
-from modules.uploads_management import get_files
-from sys import exit, stdout, stderr
+from modules.uploads_management import get_metadata
+from sys import exit, stdout
 from json import dump
 
 
 def main() -> int:
 
     """
-    Print the JSON object of uploaded files.
+    This file prints a JSON object of uploaded files sizes.
     """
 
-    fields = [
-        "name",
-        "read_permission",
-        "write_permission",
-        "delete_permission",
-        "user",
-    ]
+    dump(
+        {
+            name: {
+                "full size": metadata.full_size,
+                "last size": metadata.last_size,
+                "versions": metadata.version,
+                "modification": metadata.modification,
+                "creation (OS)": metadata.creation,
+                "creation (WebScripts)": metadata.webscripts_creation,
+                "Access": metadata.access,
+            }
+            for name, metadata in get_metadata().items()
+        },
+        stdout,
+    )
 
-    try:
-        files = {
-            file.name: {field: getattr(file, field) for field in fields}
-            for file in get_files()
-        }
-    except Exception as e:
-        print(f"{e.__class__.__name__}: {e}", file=stderr)
-        return 127
-
-    dump(files, stdout)
     return 0
 
 

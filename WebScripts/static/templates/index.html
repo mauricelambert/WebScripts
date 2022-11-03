@@ -28,22 +28,19 @@
 		<link rel="stylesheet" type="text/css" href="/static/webscripts_index_style.css">
 		<script type="text/javascript" src="/js/webscripts_js_scripts.js"></script>
 		<script type="text/javascript" src="/js/webscripts_index_js_scripts.js"></script>
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='">
+		<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; form-action 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBGESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHsMYpCdGdSryg=='"> -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; navigate-to 'self'; worker-src 'none'; style-src-elem 'self'; style-src-attr 'none'; style-src 'self'; script-src-attr 'none'; object-src 'none'; media-src 'none'; manifest-src 'none'; frame-ancestors 'none'; connect-src 'self'; font-src 'none'; img-src 'self'; base-uri 'none'; child-src 'none'; form-action 'none'; script-src 'self' 'require-trusted-types-for'">
 	</head>
 	
 	<body>
-		<div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div>
+		<noscript><div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div></noscript>
 		%(header)s
-
-		<div id="webscripts_border_left" class="border"></div>
 
 		<div id="webscripts_content" class="content">
 		</div>
 
-		<div id="webscripts_border_right" class="border"></div>
-
 		%(footer)s
 
-		<script type="text/javascript">document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";get_scripts(build_categories);</script>
+		<!-- <script type="text/javascript">document.getElementById("webscripts_header_image").style.height = document.getElementById("webscripts_header_text_position").offsetHeight + "px";get_scripts(build_categories);</script> -->
 	</body>
 </html>
