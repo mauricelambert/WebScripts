@@ -126,7 +126,7 @@
 		"launcher": "python3",
 		"access_groups": [1000],
 		"args": "view_users_args",
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -138,7 +138,7 @@
 		"launcher": "python3",
 		"access_groups": [1000],
 		"args": "view_users_args",
-		"content_type": "text/plain",
+		"content_type": "text/json",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -218,7 +218,7 @@
 		"launcher": "python3",
 		"access_groups": [1000],
 		"args": "view_groups_args",
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -230,7 +230,7 @@
 		"launcher": "python3",
 		"access_groups": [1000],
 		"args": "view_groups_args",
-		"content_type": "text/plain",
+		"content_type": "text/json",
 		"category": "Administration",
 		"description": "This script lists all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""

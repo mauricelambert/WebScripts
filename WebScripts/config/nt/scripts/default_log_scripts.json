@@ -10,7 +10,7 @@
 		"launcher": "python",
 		"category": "Security",
 		"minimum_access": 1000,
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"path": "./scripts/logs/log_analysis.py",
 		"description": "This file displays an HTML table for log and activity analysis.",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""

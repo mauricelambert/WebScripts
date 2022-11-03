@@ -10,8 +10,8 @@
 		"JSON_visible_files.py": "config_api_get_files",
 		"JSON_all_files.py": "config_api_get_all_files",
 		"JSON_file_history.py": "config_api_get_history",
-		"HTML_uploads_size.py": "config_web_upload_size",
-		"JSON_uploads_size.py": "config_api_upload_size"
+		"HTML_uploads_properties.py": "config_web_upload_size",
+		"JSON_uploads_properties.py": "config_api_upload_size"
 	},
 
 	"config_get_file": {
@@ -156,6 +156,7 @@
 		"minimum_access": 50,
 		"launcher": "python3",
 		"category": "Upload",
+		"content_type": "text/json",
 		"description": "This script returns a JSON object of uploaded files.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
@@ -178,6 +179,7 @@
 		"category": "Upload",
 		"access_groups": [1000],
 		"args": "args_get_file",
+		"content_type": "text/json",
 		"description": "This script list all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
@@ -188,6 +190,7 @@
 		"launcher": "python3",
 		"category": "Upload",
 		"access_groups": [1000],
+		"content_type": "text/json",
 		"description": "This script list all versions for an uploaded file.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
@@ -226,7 +229,7 @@
 		"launcher": "python3",
 		"category": "Upload",
 		"access_groups": [1000],
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"description": "This script prints a HTML table of uploaded file metadata.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	},
@@ -237,6 +240,7 @@
 		"launcher": "python3",
 		"category": "Upload",
 		"access_groups": [1000],
+		"content_type": "text/json",
 		"description": "This script returns a JSON object of uploaded file metadata.",
 		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	}

@@ -902,9 +902,14 @@ class CallableFile(Callable):
                 {
                     "Content-Type": "text/html; charset=utf-8",
                     "Content-Security-Policy": (
-                        "default-src 'self'; form-action 'none'; "
-                        "frame-ancestors 'none'; script-src 'self' "
-                        f"'nonce-{nonce}'"
+                        "default-src 'self'; navigate-to 'self'; worker-src "
+                        "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                        " style-src 'self'; script-src-attr 'none'; object-src"
+                        " 'none'; media-src 'none'; manifest-src 'none'; "
+                        "frame-ancestors 'none'; connect-src 'self'; font-src"
+                        " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                        " 'none'; form-action 'none'; script-src 'self' "
+                        f"'nonce-{nonce}' 'require-trusted-types-for'"
                     ),
                 },
                 CallableFile.template_script
