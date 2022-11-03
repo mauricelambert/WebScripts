@@ -336,7 +336,14 @@ class TestServer(TestCase):
             "Strict-Transport-Security"
         ] = "max-age=63072000; includeSubDomains; preload"
         headers["Content-Security-Policy"] = (
-            "default-src 'self'; form-action 'none'; " "frame-ancestors 'none'"
+            "default-src 'self'; navigate-to 'self'; worker-src "
+            "'none'; style-src-elem 'self'; style-src-attr 'none';"
+            " style-src 'self'; script-src-attr 'none'; object-src"
+            " 'none'; media-src 'none'; manifest-src 'none'; "
+            "frame-ancestors 'none'; connect-src 'self'; font-src"
+            " 'none'; img-src 'self'; base-uri 'none'; child-src"
+            " 'none'; form-action 'none'; script-src 'self' "
+            "'require-trusted-types-for'"
         )
         headers["X-Frame-Options"] = "deny"
         headers["X-XSS-Protection"] = "1; mode=block"

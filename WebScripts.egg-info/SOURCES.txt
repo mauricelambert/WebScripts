@@ -103,11 +103,11 @@ WebScripts/scripts/rss/add_news.py
 WebScripts/scripts/to_3.8/to_3.8.py
 WebScripts/scripts/uploads/HTML_all_files.py
 WebScripts/scripts/uploads/HTML_file_history.py
-WebScripts/scripts/uploads/HTML_uploads_size.py
+WebScripts/scripts/uploads/HTML_uploads_properties.py
 WebScripts/scripts/uploads/HTML_visible_files.py
 WebScripts/scripts/uploads/JSON_all_files.py
 WebScripts/scripts/uploads/JSON_file_history.py
-WebScripts/scripts/uploads/JSON_uploads_size.py
+WebScripts/scripts/uploads/JSON_uploads_properties.py
 WebScripts/scripts/uploads/JSON_visible_files.py
 WebScripts/scripts/uploads/delete_file.py
 WebScripts/scripts/uploads/download_all_files.py

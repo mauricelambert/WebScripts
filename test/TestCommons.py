@@ -566,7 +566,14 @@ class TestCallableFile(TestCase):
             )
             self.assertRegex(
                 headers["Content-Security-Policy"],
-                r"default-src 'self'; form-action 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-[\da-fA-F]{20}",
+                "default-src 'self'; navigate-to 'self'; worker-src "
+                "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                " style-src 'self'; script-src-attr 'none'; object-src"
+                " 'none'; media-src 'none'; manifest-src 'none'; "
+                "frame-ancestors 'none'; connect-src 'self'; font-src"
+                " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                " 'none'; form-action 'none'; script-src 'self' "
+                r"'nonce-[\da-fA-F]{40}' 'require-trusted-types-for'",
             )
             self.assertRegex(
                 content, r"file\.py_test_[\w\d+/]+={0,2}_[\da-fA-F]{20}"

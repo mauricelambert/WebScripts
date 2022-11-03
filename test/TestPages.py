@@ -738,10 +738,13 @@ class TestWeb(TestCase):
             headers,
             {
                 "Content-Security-Policy": (
-                    "default-src 'self'; form-action 'none'; frame-ancestors"
-                    " 'none'; script-src 'self' 'sha512-PrdxK6oDVtJdo252hYBG"
-                    "ESefJT/X4juRfz9nEf9gFJ4JkLYYIkFqdmTUJ3Dj1Bbqt0yp5cwmUHs"
-                    "MYpCdGdSryg=='"
+                    "default-src 'self'; navigate-to 'self'; worker-src 'none'"
+                    "; style-src-elem 'self'; style-src-attr 'none'; style-src"
+                    " 'self'; script-src-attr 'none'; object-src 'none'; "
+                    "media-src 'none'; manifest-src 'none'; frame-ancestors "
+                    "'none'; connect-src 'self'; font-src 'none'; img-src "
+                    "'self'; base-uri 'none'; child-src 'none'; form-action "
+                    "'none'; script-src 'self' 'require-trusted-types-for'"
                 )
             },
         )
