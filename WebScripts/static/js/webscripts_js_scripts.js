@@ -445,7 +445,26 @@ class Menu {
         }
 
         navigator.clipboard.writeText(url.href);
-        alert("Copy");
+        this.toast("Copied");
+    }
+
+    /*
+    This function copy the full output.
+    */
+    copy_output () {
+        navigator.clipboard.writeText(download_text);
+        this.toast("Copied");
+    }
+
+    /*
+    This function creates a notify toast.
+    */
+    toast(text) {
+        let toast = document.createElement('div');
+        toast.classList.add("toast", "show");
+        toast.innerText = text;
+        document.body.appendChild(toast);
+        setTimeout(() => {document.body.removeChild(toast);}, 3000)
     }
 }
 

@@ -302,7 +302,6 @@ class ScriptInterface {
             dom_argument = (argument.predefined_values !== undefined && argument.predefined_values !== null) ? argument.build_select() : argument.build_input();
 
             dom_argument.addEventListener('keypress', (event) => {
-                console.log(event);
                 if (event.keyCode === 13) {
                     ScriptExecution.prototype.start();
                 }
@@ -341,6 +340,7 @@ window.onload = (first, script_onload=null, ...functions) => {
         let history = new History();
         document.getElementById("webscripts_copy_execution_button").onclick = menu.get_execution_url.bind(menu);
         document.getElementById("webscripts_menu_button_right").onclick = history.change_display.bind(history);
+        document.getElementById("webscripts_copy_output_button").onclick = menu.copy_output.bind(menu);
         document.getElementById("webscripts_download_button").onclick = menu.download.bind(menu);
         document.getElementById("webscripts_index_button").onclick = menu.index.bind(menu);
         document.getElementById("webscripts_clear_button").onclick = menu.clear.bind(menu);
@@ -966,7 +966,7 @@ class OutputBuilder {
         }
 
         let add_text_output = (text) => {
-            this.text = this.make_new_output ? `\n${text}${this.text}` : `${this.output.stdout}${text}`;
+            this.text = this.make_new_output ? `\n${text}${this.text}` : `${this.text}${text}`;;
         }
 
         if (this.content_type.includes("text/html")) {
@@ -1087,7 +1087,6 @@ class ParserCSV {
     let csv_parser = new ParserCSV(...args);
     let arrays = csv_parser.parse(data);
 
-    console.log(arrays);
     headers = headers || arrays.shift();
 
     let table = document.createElement("table");
@@ -1296,7 +1295,6 @@ class TableSearch {
             header.appendChild(select);
             header.selected = false;
             header.select = select;
-            console.log("Pass");
 
             counter++;
         }
