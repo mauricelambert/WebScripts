@@ -737,7 +737,9 @@ class Server:
             )
 
     @log_trace
-    def get_function_page(self, path: str) -> Tuple[FunctionOrNone, str, bool]:
+    def get_function_page(
+        self, path: str, filename: str
+    ) -> Tuple[FunctionOrNone, str, bool]:
 
         """
         This function find function from URL path.
@@ -746,10 +748,7 @@ class Server:
         function, filename and False.
         """
 
-        path = path.split("/")
-        del path[0]
-        filename = path[-1]
-        path = tuple(path[:-1])
+        path = tuple(path.split("/")[1:-1])
         cache = self.pages_cache
 
         logger_debug("Trying to get function page from cache...")
@@ -821,7 +820,7 @@ class Server:
         """
 
         def check_argument_count():
-            if isinstance(object_, FunctionType):
+            if isinstance(object_, FunctionType) or type(object_) == type:
                 if arg_count == 7:
                     logger_info(f"Function page found {object_}.")
                     return object_, is_not_package
@@ -1113,19 +1112,21 @@ class Server:
 
         if ip is None:
             logger_critical("IP Spoofing: Error 403.")
-            return self.page_403(environ, None, respond)
+            return self.page_403(environ, self.unknow, "", None, respond)
 
         path_info_startswith = path_info.startswith
+        path, filename = path_info.rsplit("/", 1)
+        path += "/"
         is_head_method = method == "HEAD"
 
-        new_url = self.routing_url.get(path_info)
+        new_url = self.routing_url.get(path)
         if new_url is not None:
             logger_info(f"Routing URL: {path_info!r} to {new_url!r}.")
-            path_info = new_url
+            path = new_url
 
         logger_debug("Trying to get function page...")
         get_response, filename, is_not_package = self.get_function_page(
-            path_info
+            path, filename
         )
 
         logger_debug("Check authentication...")
@@ -1136,7 +1137,7 @@ class Server:
                 f'Blacklist: Error 403 on "{path_info}" for '
                 f'"{user.name}" (ID: {user.id}).'
             )
-            return self.page_403(environ, None, respond)
+            return self.page_403(environ, user, filename, None, respond)
 
         logger_info("User is not blacklisted.")
         logger_debug("Trying to get and parse body...")
@@ -1148,7 +1149,7 @@ class Server:
         elif method == "GET" or is_head_method:
             arguments, csrf_token, is_webscripts_request = [], None, True
         else:
-            return self.page_400(environ, method, respond)
+            return self.page_400(environ, user, filename, method, respond)
 
         arguments, inputs = self.return_inputs(
             arguments, is_webscripts_request
@@ -1190,11 +1191,11 @@ class Server:
 
         if get_response is None:
             logger_info("Page 404, cause: no function page.")
-            return self.page_404(environ, path_info, respond)
+            return self.page_404(environ, user, filename, path_info, respond)
 
         if error == "406":
             logger_debug("Send response (code 406).")
-            return self.page_406(environ, None, respond)
+            return self.page_406(environ, user, filename, None, respond)
 
         logger_debug("Trying to execute function page...")
         try:
@@ -1212,20 +1213,22 @@ class Server:
             error_text = format_exc()
             error = f"{error}\n{error_text}"
             Logs.error(error)
-            return self.page_500(environ, error_text, respond)
+            return self.page_500(environ, user, filename, error_text, respond)
 
-        if error == "404":
+        if error == "404" and not page:
             logger_debug("Send response 404, cause: function page return 404.")
-            return self.page_404(environ, path_info, respond)
-        elif error == "403":
+            return self.page_404(environ, user, filename, path_info, respond)
+        elif error == "403" and not page:
             logger_debug("Send response 403, cause: function page return 403.")
-            return self.page_403(environ, None, respond)
-        elif error == "500":
+            return self.page_403(environ, user, filename, None, respond)
+        elif error == "500" and not page:
             logger_debug("Send response 500, cause: function page return 500.")
-            return self.page_500(environ, page, respond)
-        else:
+            return self.page_500(environ, user, filename, page, respond)
+        elif not page:
             logger_debug(f"Get custom response for code {error}")
-            response = self.send_custom_error("", error)
+            response = self.send_custom_error(
+                environ, user, filename, "", error
+            )
             if response is not None:
                 logger_info(f"Get a response for code {error}")
                 error, headers, page = response
@@ -1335,6 +1338,8 @@ class Server:
     def page_500(
         self,
         environ: _Environ,
+        user: User,
+        filename: str,
         error: Union[str, bytes, Iterable[bytes]],
         respond: MethodType,
     ) -> List[bytes]:
@@ -1346,11 +1351,23 @@ class Server:
         error_code = "500 Internal Error"
         logger_debug("Send 500 Internal Error...")
         return self.send_error_page(
-            environ, error_code, b"".join(self.return_page(error)), respond
+            environ,
+            user,
+            filename,
+            error_code,
+            b"".join(self.return_page(error)),
+            respond,
         )
 
     @log_trace
-    def page_404(self, environ: _Environ, url: str, respond: MethodType):
+    def page_404(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        url: str,
+        respond: MethodType,
+    ):
 
         """
         This function return error 404 web page.
@@ -1366,14 +1383,21 @@ class Server:
         )
         logger_error(f"HTTP 404 on {url}")
         return self.send_error_page(
-            environ, error_code, error.encode(), respond
+            environ, user, filename, error_code, error.encode(), respond
         )
 
     @log_trace
-    def page_400(self, environ: _Environ, method: str, respond: MethodType):
+    def page_400(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        method: str,
+        respond: MethodType,
+    ):
 
         """
-        This function return error 403 web page.
+        This function return error 400 web page.
         """
 
         error_code = "400 Bad Request"
@@ -1382,11 +1406,18 @@ class Server:
             f"POST or HEAD not {method}".encode()
         )
         logger_debug("Send 400 Bad Request...")
-        return self.send_error_page(environ, error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
     def page_401(
-        self, environ: _Environ, error_description: str, respond: MethodType
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
     ):
 
         """
@@ -1396,11 +1427,18 @@ class Server:
         error_code = "401 Unauthorized"
         error = b"Unauthorized (You don't have permissions)"
         logger_debug("Send 401 Unauthorized...")
-        return self.send_error_page(environ, error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
     def page_403(
-        self, environ: _Environ, error_description: str, respond: MethodType
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
     ):
 
         """
@@ -1410,11 +1448,18 @@ class Server:
         error_code = "403 Forbidden"
         error = b"Forbidden (You don't have permissions)"
         logger_debug("Send 403 Forbidden...")
-        return self.send_error_page(environ, error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
     def page_406(
-        self, environ: _Environ, error_description: str, respond: MethodType
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
     ):
 
         """
@@ -1426,11 +1471,19 @@ class Server:
             b"Not Acceptable, your request is not a valid WebScripts request."
         )
         logger_debug("Send 406 Not Acceptable...")
-        return self.send_error_page(environ, error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
     def send_error_page(
-        self, environ: _Environ, error: str, data: bytes, respond: MethodType
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error: str,
+        data: bytes,
+        respond: MethodType,
     ) -> List[bytes]:
 
         """
@@ -1444,7 +1497,7 @@ class Server:
         logger_debug("Trying to get custom error response...")
         try:
             custom_error, custom_headers, custom_data = self.send_custom_error(
-                error, code
+                environ, user, filename, error, code
             )
         except Exception as exception:
             print_exc()
@@ -1480,7 +1533,12 @@ class Server:
         ]
 
     def send_custom_error(
-        self, error: str, code: str
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error: str,
+        code: str,
     ) -> Tuple[str, Dict[str, str], str]:
 
         """
@@ -1495,7 +1553,7 @@ class Server:
 
         if function is not None:
             logger_debug("Get custom error page (function) from cache.")
-            return function(error)
+            return function(environ, user, self, filename, error)
 
         packages = self.pages.packages
         # for package in self.pages.packages.__dict__.values():
@@ -1512,6 +1570,10 @@ class Server:
                     )
                     cache[function_name] = page, False
                     return page(
+                        environ,
+                        user,
+                        self,
+                        filename,
                         error,
                     )
 

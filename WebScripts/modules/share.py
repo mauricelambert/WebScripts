@@ -57,6 +57,7 @@ from sys import path as syspath, modules
 from tempfile import TemporaryFile
 from lzma import open as lzmaopen
 from gzip import open as gzipopen
+from types import MethodType
 from json import dumps
 
 # if "WebScripts" in sys.modules:
@@ -84,9 +85,12 @@ from uploads_management import (
 syspath.pop(0)
 Server = TypeVar("Server")
 
-check_right = modules.get(
-    "WebScripts.Pages" if modules.get("WebScripts") else "WebScripts38.Pages",
-    modules.get("Pages"),
+module_getter: MethodType = modules.get
+check_right = module_getter(
+    "WebScripts.Pages"
+    if module_getter("WebScripts")
+    else "WebScripts38.Pages",
+    module_getter("Pages"),
 ).check_right
 
 
@@ -144,20 +148,20 @@ class Download:
         This function get file and manage the compression.
         """
 
-        with open(
+        file_ = open(
             get_real_file_name(file.name, float(file.timestamp)), "rb"
-        ) as file_:
+        )
 
-            if file.is_binary == "binary" and not file.no_compression:
-                tempfile = TemporaryFile()
-                gzipfile = gzipopen(tempfile, "wb")
-                writer = gzipfile.write
-                [writer(line) for line in lzmaopen(file_)]
-                tempfile.seek(0)
-                gzipfile = gzipopen(tempfile)
-                data = gzipfile
-            else:
-                data = file_
+        if file.is_binary == "binary" and not file.no_compression:
+            tempfile = TemporaryFile()
+            gzipfile = gzipopen(tempfile, "wb")
+            writer = gzipfile.write
+            [writer(line) for line in lzmaopen(file_)]
+            tempfile.seek(0)
+            gzipfile = gzipopen(tempfile)
+            data = gzipfile
+        else:
+            data = file_
 
         return data
 
@@ -179,10 +183,8 @@ class Download:
         permissions = getattr(server.configuration, "admin_groups", None)
 
         if script and not check_right(user, script):
-            print("Script:", script, check_right(user, script))
             return "403", {}, b""
         elif permissions and not any(g in permissions for g in user["groups"]):
-            print("Permissions:", permissions, user["groups"])
             return "403", {}, b""
 
         headers = {

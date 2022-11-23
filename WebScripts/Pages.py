@@ -674,10 +674,13 @@ class Api:
             )
             return "404", {}, b""
 
+        environ_getter = environ.get
         if user.check_csrf and not TokenCSRF.check_csrf(
             user,
             csrf_token,
             getattr(server_configuration, "csrf_max_time", 300),
+            environ_getter("HTTP_REFERER"),
+            server.get_baseurl(environ_getter, environ),
         ):
             logger_error(
                 f"HTTP 403 for {user.name} on /api/scripts/{filename}"

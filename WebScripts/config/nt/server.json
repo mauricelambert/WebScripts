@@ -38,7 +38,7 @@
 		"documentations_path": [
 			"./doc/*.html"
 		],
-		"modules": ["error_pages", "JsonRpc", "share", "cgi", "notification"],
+		"modules": ["error_pages", "share", "cgi", "rss", "JsonRpc", "notification"],
 		"modules_path": ["./modules"],
 		"js_path": [
 			"./static/js/*.js"

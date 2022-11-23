@@ -18,6 +18,7 @@
 		"link": "arg_link",
 		"categories": "arg_categories",
 		"--comments": "arg_comments",
+		"--is-b64": "arg_is_b64",
 		"description": "arg_description"
 	},
 
@@ -40,6 +41,18 @@
 	"arg_comments": {
 		"example": "Article written for WebScripts administrators to understand changes in the version 3.0.0",
 		"description": "A comment for the news."
+	},
+
+	"arg_is_b64": {
+		"html_type": "checkbox",
+		"description": "Using base64 to upload the file.",
+		"javascript_section": "javascript_b64",
+		"is_advanced": true
+	},
+
+	"javascript_b64": {
+		"disabled": true,
+		"checked": true
 	},
 
 	"arg_description": {

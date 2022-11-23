@@ -98,8 +98,14 @@ from logging import (
     Logger,
     getLogger,
 )
+from types import (
+    SimpleNamespace,
+    FunctionType,
+    MethodType,
+    CodeType,
+    FrameType,
+)
 from os.path import abspath, isdir, isfile, exists, dirname, normcase, join
-from types import SimpleNamespace, FunctionType, MethodType, CodeType
 from os import path, _Environ, device_encoding, remove, stat, getcwd
 from subprocess import check_call, DEVNULL  # nosec
 from locale import getpreferredencoding
@@ -133,6 +139,35 @@ else:
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
+
+utils_filename: str = join("WebScripts", "utils.py")
+logging_filename: str = join("Lib", "logging")
+test_frame: Callable = (
+    lambda f, l: (f.endswith(utils_filename) and l < 703)
+    or logging_filename in f
+)
+
+
+def get_log_frame() -> FrameType:
+
+    """
+    This function returns the frame
+    to get file and line of the log call.
+    """
+
+    filename: str = utils_filename
+    counter: int = 4
+    line: int = 0
+
+    while test_frame(filename, line):
+        frame: FrameType = _getframe(counter)
+        filename: str = frame.f_code.co_filename
+        line: int = frame.f_lineno
+        counter += 1
+
+    return _getframe(counter)
+
+
 logging.currentframe = lambda: _getframe(5)
 
 IS_WINDOWS = system() == "Windows"

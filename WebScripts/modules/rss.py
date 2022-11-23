@@ -50,7 +50,7 @@ __copyright__ = copyright
 from typing import Tuple, Dict, List, TypeVar
 from csv import writer, DictReader, QUOTE_ALL
 from collections.abc import Iterable
-from time import strftime, mktime
+from time import strftime, localtime
 from os.path import join
 from os import _Environ
 from io import StringIO
@@ -127,8 +127,20 @@ class Feed:
         with open(
             join(server.configuration.data_dir, "rss.csv"), "r", newline=""
         ) as csvfile:
+            writerow(
+                [
+                    "guid",
+                    "author",
+                    "title",
+                    "description",
+                    "link",
+                    "categories",
+                    "pubDate",
+                    "comments",
+                ]
+            )
             [
-                writerow(row)
+                writerow(row.values())
                 for row in DictReader(csvfile)
                 if category in row["categories"].split(",")
             ]
@@ -164,13 +176,13 @@ class Feed:
                 [
                     row
                     for row in DictReader(file)
-                    if category in row["categories"].split(",")
+                    if not category or category in row["categories"].split(",")
                 ]
             )
 
         return (
             "200 OK",
-            {"Content-Type", "application/json; charset=utf-8"},
+            {"Content-Type": "application/json; charset=utf-8"},
             data,
         )
 
@@ -193,7 +205,7 @@ class Feed:
         base_url = server.get_baseurl(environ.get, environ)
         rss_path = cls.rss_path = cls.rss_path or get_rss_path(server)
 
-        data = cls.generator(full_url, base_url, rss_path)
+        data = cls.generator(full_url, base_url, rss_path, category)
 
         return (
             "200 OK",
@@ -203,7 +215,7 @@ class Feed:
 
     @classmethod
     def generator(
-        cls: type, full_url: str, base_url: str, rss_path: str
+        cls: type, full_url: str, base_url: str, rss_path: str, category: str
     ) -> Iterable[bytes]:
 
         """
@@ -211,7 +223,7 @@ class Feed:
         """
 
         def get_date(timestamp: str) -> str:
-            return strftime("%a, %d %b %Y %X %z", mktime(float(timestamp)))
+            return strftime("%a, %d %b %Y %X %z", localtime(float(timestamp)))
 
         file = open(rss_path, "r", newline="")
         csvreader = DictReader(file)
@@ -222,10 +234,10 @@ class Feed:
         last_time = get_date(item["pubDate"])
 
         file.seek(0)
-        csvreader.line_num = 0
+        csvreader = DictReader(file)
 
-        yield f"""
-<rss version="2.0">
+        yield f"""<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" version="2.0">
     <channel>
         <title>WebScripts</title>
         <atom:link href="{full_url}" rel="self" type="application/rss+xml"/>
@@ -239,8 +251,11 @@ class Feed:
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>""".encode()
 
-        for item in file:
-            yield f"""
+        for item in csvreader:
+            categories = item.pop("categories")
+            if not category or category in categories:
+                yield (
+                    f"""
         <item>
             <title>%(title)s</title>
             <author>%(author)s</author>
@@ -250,12 +265,16 @@ class Feed:
             <guid isPermaLink="true">%(guid)s</guid>
             <description>%(description)s</description>
             {
-                f'<category>{category}</category>'
-                for category in item.pop("categories").split(',')
+                ''.join(f'<category>{category}</category>'
+                for category in categories.split(','))
             }
         </item>
-            """.encode()
+                """
+                    % item
+                ).encode()
 
         yield """
     </channel>
 </rss>""".encode()
+
+        file.close()

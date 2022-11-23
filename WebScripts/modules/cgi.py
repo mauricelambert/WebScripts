@@ -152,5 +152,14 @@ def bin(
 
     stdout.close()
 
-    logs.info(f"Script exit code: {process.returncode}")
+    code = process.returncode
+    logs.info(f"Script exit code: {code}")
+
+    if code:
+        return (
+            "500 Internal Server Error",
+            headers,
+            b"There is an error in the script execution." + output,
+        )
+
     return "200 OK", headers, output

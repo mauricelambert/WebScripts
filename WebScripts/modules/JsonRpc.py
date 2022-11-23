@@ -58,22 +58,34 @@ Server = TypeVar("Server")
 User = TypeVar("User")
 
 
+def test_call() -> int:
+    return 0
+
+
+def test_argument_list(*args) -> str:
+    return str([repr(a) for a in args])
+
+
+def test_argument_dict(a: int = 1, b: int = 2) -> int:
+    return a + b
+
+
 class JsonRpc:
 
     """
     This class implements JSON RPC for the WebScripts Server.
     """
 
-    functions: Dict[str, Callable] = {}
+    functions: Dict[str, Callable] = {"call": test_call}
 
     @classmethod
-    def register_function(cls: type, function: Callable):
+    def register_function(cls: type, function: Callable, name: str = None):
 
         """
         This function adds a new function in the JSON RPC calls.
         """
 
-        cls.functions[function.__name__] = function
+        cls.functions[name or function.__name__] = function
 
     @classmethod
     def execute_call(cls: type, json: Dict[str, Any]) -> Dict[str, Any]:
@@ -85,6 +97,11 @@ class JsonRpc:
         id_ = json.get("id")
         params = json.get("params", [])
 
+        print(
+            isinstance(json, dict),
+            json.get("jsonrpc") == "2.0",
+            isinstance(id_, int),
+        )
         if (
             not isinstance(json, dict)
             or json.get("jsonrpc") != "2.0"
@@ -145,8 +162,8 @@ class JsonRpc:
         user: User,
         server: Server,
         filename: str,
-        arguments: List[str],
         calls: Union[List[Dict[str, Any]], Dict[str, Any]],
+        inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
 
@@ -180,3 +197,6 @@ class JsonRpc:
 
 
 # https://www.jsonrpc.org/specification
+
+JsonRpc.register_function(test_argument_list)
+JsonRpc.register_function(test_argument_dict, "test_args_dict")
