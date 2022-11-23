@@ -47,9 +47,8 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-from typing import Tuple, Dict, List, TypeVar
+from typing import Tuple, Dict, List, TypeVar, Iterable
 from csv import writer, DictReader, QUOTE_ALL
-from collections.abc import Iterable
 from time import strftime, localtime
 from os.path import join
 from os import _Environ
