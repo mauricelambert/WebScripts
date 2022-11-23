@@ -8,6 +8,7 @@
  - `data/id`: the last ID for temp passwords share
  - `data/uploads.csv`: versions and actions of uploaded files
  - `data/requests.csv`: user requests or reports
+ - `data/rss.csv`: rss feed data
 
 Delimiter is `,` and quote is `"`.
 
@@ -73,6 +74,19 @@ The requests database columns:
  7. Subject: subject of the request
  8. Reason: reason of the request
  9. Name: the name of the person creating the request
+
+## RSS
+
+The RSS database columns:
+
+ 1. guid: Article's ID
+ 2. author: Person who have written this article
+ 3. title: Article's title
+ 4. description: Article's description
+ 5. link: Link to read the full article
+ 6. categories: Categories for this article
+ 7. pubDate: Publication date
+ 8. comments: Comments for this article
 
 ## Default database
 

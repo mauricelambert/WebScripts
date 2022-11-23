@@ -594,21 +594,21 @@ class TestServer(TestCase):
 
     def test_get_function_page(self):
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/api/"
+            "/api/", ""
         )
         self.assertEqual("", filename)
         self.assertTrue(is_not_package)
         self.assertEqual(callable_, self.server.pages.api.__call__)
 
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/api/api.py"
+            "/api/", "api.py"
         )
         self.assertTrue(is_not_package)
         self.assertEqual("api.py", filename)
         self.assertEqual(callable_, self.server.pages.api.__call__)
 
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/this/url/doesn't/exist"
+            "/this/url/doesn't/", "exist"
         )
         self.assertFalse(is_not_package)
         self.assertEqual(filename, "exist")
@@ -963,7 +963,7 @@ class TestServer(TestCase):
 
         self.server.routing_url["/"] = "/web/"
         self.server.app(environ, Mock())
-        mock.assert_called_once_with("/web/")
+        mock.assert_called_once_with("/web/", "")
 
         del self.server.routing_url["/"]
 
@@ -1171,9 +1171,13 @@ class TestServer(TestCase):
             return_value=b"400",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_400(environ, "AUTH", a), b"400")
+            self.assertEqual(
+                self.server.page_400(environ, None, "", "AUTH", a), b"400"
+            )
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "400 Bad Request",
             b"Bad method, method should be GET, POST or HEAD not AUTH",
             a,
@@ -1189,9 +1193,13 @@ class TestServer(TestCase):
             return_value=b"500",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_500(environ, "500", a), b"500")
+            self.assertEqual(
+                self.server.page_500(environ, None, "", "500", a), b"500"
+            )
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "500 Internal Error",
             b"500",
             a,
@@ -1206,10 +1214,14 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"404",
         ) as mock_method:
-            self.assertEqual(self.server.page_404(environ, "404", a), b"404")
+            self.assertEqual(
+                self.server.page_404(environ, None, "", "404", a), b"404"
+            )
 
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "404 Not Found",
             b"This URL: 404, doesn't exist on this server.\nURLs:"
             b"\n\t - /api/\n\t - /web/",
@@ -1225,10 +1237,14 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"401",
         ) as mock_method:
-            self.assertEqual(self.server.page_401(environ, "401", a), b"401")
+            self.assertEqual(
+                self.server.page_401(environ, None, "", "401", a), b"401"
+            )
 
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "401 Unauthorized",
             b"Unauthorized (You don't have permissions)",
             a,
@@ -1244,9 +1260,13 @@ class TestServer(TestCase):
             return_value=b"403",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_403(environ, "403", a), b"403")
+            self.assertEqual(
+                self.server.page_403(environ, None, "", "403", a), b"403"
+            )
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "403 Forbidden",
             b"Forbidden (You don't have permissions)",
             a,
@@ -1262,9 +1282,13 @@ class TestServer(TestCase):
             return_value=b"406",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_406(environ, "406", a), b"406")
+            self.assertEqual(
+                self.server.page_406(environ, None, "", "406", a), b"406"
+            )
         mock_method.assert_called_once_with(
             environ,
+            None,
+            "",
             "406 Not Acceptable",
             b"Not Acceptable, your request is not a valid WebScripts request.",
             a,
@@ -1291,6 +1315,8 @@ class TestServer(TestCase):
             self.assertEqual(
                 self.server.send_error_page(
                     environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"",
                     a,
@@ -1320,6 +1346,8 @@ class TestServer(TestCase):
             self.assertEqual(
                 self.server.send_error_page(
                     environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"",
                     a,
@@ -1354,6 +1382,8 @@ class TestServer(TestCase):
             self.assertEqual(
                 self.server.send_error_page(
                     environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"403",
                     a,
@@ -1374,17 +1404,28 @@ class TestServer(TestCase):
 
         self.server.pages.packages.a = a
         self.assertIsInstance(
-            self.server.send_custom_error("403 Forbidden", "403"), Mock
+            self.server.send_custom_error(
+                {}, None, "", "403 Forbidden", "403"
+            ),
+            Mock,
         )
 
-        a.page_403.assert_called_once_with("403 Forbidden")
+        a.page_403.assert_called_once_with(
+            {}, None, self.server, "", "403 Forbidden"
+        )
 
         self.assertIsInstance(
-            self.server.send_custom_error("403 Forbidden", "403"), Mock
+            self.server.send_custom_error(
+                {}, None, "", "403 Forbidden", "403"
+            ),
+            Mock,
         )
 
         a.page_403.assert_has_calls(
-            [call("403 Forbidden"), call("403 Forbidden")]
+            [
+                call({}, None, self.server, "", "403 Forbidden"),
+                call({}, None, self.server, "", "403 Forbidden"),
+            ]
         )
 
 

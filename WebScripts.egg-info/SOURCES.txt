@@ -58,6 +58,7 @@ WebScripts/data/groups.csv
 WebScripts/data/id
 WebScripts/data/passwords.csv
 WebScripts/data/requests.csv
+WebScripts/data/rss - Copie.csv
 WebScripts/data/rss.csv
 WebScripts/data/uploads.csv
 WebScripts/data/users.csv

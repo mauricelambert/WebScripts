@@ -37,7 +37,7 @@ An example of deployment for production is available [here](https://webscripts.r
 
 ### Debugging
 
- - The `debug` configuration should be `false`, if set to `true` some code and configuration information will no longer be protected.
+ - The `debug` configuration should be `false`, if set to `true` some scripts, modules and configurations will no longer be protected.
 
 ### Bruteforce
 

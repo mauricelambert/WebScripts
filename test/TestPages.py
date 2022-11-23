@@ -658,15 +658,18 @@ class TestApi(TestCase):
         with patch.object(
             Module.TokenCSRF, "check_csrf", return_value=False
         ) as mock:
+            env = Mock()
             code, headers, data = self.api.scripts(
-                Mock(), user, server, "other.sh", Mock(), Mock(), "token"
+                env, user, server, "other.sh", Mock(), Mock(), "token"
             )
 
         self.assertEqual(b"", data)
         self.assertEqual("403", code)
         self.assertDictEqual({}, headers)
 
-        mock.assert_called_once_with(user, "token", 0)
+        mock.assert_called_once_with(
+            user, "token", 0, env.get(), server.get_baseurl()
+        )
 
         user.check_csrf = False
 
