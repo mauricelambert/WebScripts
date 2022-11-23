@@ -34,18 +34,18 @@ This&nbsp;module&nbsp;implements&nbsp;JSON&nbsp;RPC&nbsp;on&nbsp;WebScripts.</tt
 <font color="#000000" face="helvetica, arial"><a name="JsonRpc">class <strong>JsonRpc</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#JsonRpc">JsonRpc</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;filename:&nbsp;str,&nbsp;arguments:&nbsp;List[str],&nbsp;calls:&nbsp;Union[List[Dict[str,&nbsp;Any]],&nbsp;Dict[str,&nbsp;Any]],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;str]<br>
+<td colspan=2><tt><a href="#JsonRpc">JsonRpc</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;filename:&nbsp;str,&nbsp;calls:&nbsp;Union[List[Dict[str,&nbsp;Any]],&nbsp;Dict[str,&nbsp;Any]],&nbsp;inputs:&nbsp;List[str],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;str]<br>
 &nbsp;<br>
 This&nbsp;class&nbsp;implements&nbsp;JSON&nbsp;RPC&nbsp;for&nbsp;the&nbsp;WebScripts&nbsp;Server.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Class methods defined here:<br>
 <dl><dt><a name="JsonRpc-execute_call"><strong>execute_call</strong></a>(json: Dict[str, Any]) -&gt; Dict[str, Any]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;performs&nbsp;a&nbsp;JSON&nbsp;RPC&nbsp;call.</tt></dd></dl>
 
-<dl><dt><a name="JsonRpc-register_function"><strong>register_function</strong></a>(function: collections.abc.Callable)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;adds&nbsp;a&nbsp;new&nbsp;function&nbsp;in&nbsp;the&nbsp;JSON&nbsp;RPC&nbsp;calls.</tt></dd></dl>
+<dl><dt><a name="JsonRpc-register_function"><strong>register_function</strong></a>(function: collections.abc.Callable, name: str = None)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;adds&nbsp;a&nbsp;new&nbsp;function&nbsp;in&nbsp;the&nbsp;JSON&nbsp;RPC&nbsp;calls.</tt></dd></dl>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="JsonRpc-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, filename: str, arguments: List[str], calls: Union[List[Dict[str, Any]], Dict[str, Any]], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="JsonRpc-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, filename: str, calls: Union[List[Dict[str, Any]], Dict[str, Any]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -59,7 +59,7 @@ Data descriptors defined here:<br>
 Data and other attributes defined here:<br>
 <dl><dt><strong>__annotations__</strong> = {'functions': typing.Dict[str, collections.abc.Callable]}</dl>
 
-<dl><dt><strong>functions</strong> = {}</dl>
+<dl><dt><strong>functions</strong> = {'call': &lt;function test_call&gt;, 'test_args_dict': &lt;function test_argument_dict&gt;, 'test_argument_list': &lt;function test_argument_list&gt;}</dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

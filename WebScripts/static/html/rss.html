@@ -97,7 +97,7 @@ This&nbsp;class&nbsp;implements&nbsp;the&nbsp;RSS&nbsp;feed.<br>&nbsp;</tt></td>
 <td width="100%">Class methods defined here:<br>
 <dl><dt><a name="Feed-csv"><strong>csv</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;CSV.</tt></dd></dl>
 
-<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str) -&gt; collections.abc.Iterable[bytes]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</tt></dd></dl>
+<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str, category: str) -&gt; collections.abc.Iterable[bytes]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</tt></dd></dl>
 
 <dl><dt><a name="Feed-json"><strong>json</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;JSON.</tt></dd></dl>
 
@@ -133,17 +133,16 @@ Data and other attributes defined here:<br>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-get_rss_path"><strong>get_rss_path</strong></a>(server: ~Server) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;rss&nbsp;path.</tt></dd></dl>
- <dl><dt><a name="-mktime"><strong>mktime</strong></a>(...)</dt><dd><tt><a href="#-mktime">mktime</a>(tuple)&nbsp;-&gt;&nbsp;floating&nbsp;point&nbsp;number<br>
+ <dl><dt><a name="-localtime"><strong>localtime</strong></a>(...)</dt><dd><tt><a href="#-localtime">localtime</a>([seconds])&nbsp;-&gt;&nbsp;(tm_year,tm_mon,tm_mday,tm_hour,tm_min,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tm_sec,tm_wday,tm_yday,tm_isdst)<br>
 &nbsp;<br>
-Convert&nbsp;a&nbsp;time&nbsp;tuple&nbsp;in&nbsp;local&nbsp;time&nbsp;to&nbsp;seconds&nbsp;since&nbsp;the&nbsp;Epoch.<br>
-Note&nbsp;that&nbsp;<a href="#-mktime">mktime</a>(gmtime(0))&nbsp;will&nbsp;not&nbsp;generally&nbsp;return&nbsp;zero&nbsp;for&nbsp;most<br>
-time&nbsp;zones;&nbsp;instead&nbsp;the&nbsp;returned&nbsp;value&nbsp;will&nbsp;either&nbsp;be&nbsp;equal&nbsp;to&nbsp;that<br>
-of&nbsp;the&nbsp;timezone&nbsp;or&nbsp;altzone&nbsp;attributes&nbsp;on&nbsp;the&nbsp;time&nbsp;module.</tt></dd></dl>
+Convert&nbsp;seconds&nbsp;since&nbsp;the&nbsp;Epoch&nbsp;to&nbsp;a&nbsp;time&nbsp;tuple&nbsp;expressing&nbsp;local&nbsp;time.<br>
+When&nbsp;'seconds'&nbsp;is&nbsp;not&nbsp;passed&nbsp;in,&nbsp;convert&nbsp;the&nbsp;current&nbsp;time&nbsp;instead.</tt></dd></dl>
  <dl><dt><a name="-strftime"><strong>strftime</strong></a>(...)</dt><dd><tt><a href="#-strftime">strftime</a>(format[,&nbsp;tuple])&nbsp;-&gt;&nbsp;string<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;time&nbsp;tuple&nbsp;to&nbsp;a&nbsp;string&nbsp;according&nbsp;to&nbsp;a&nbsp;format&nbsp;specification.<br>
 See&nbsp;the&nbsp;library&nbsp;reference&nbsp;manual&nbsp;for&nbsp;formatting&nbsp;codes.&nbsp;When&nbsp;the&nbsp;time&nbsp;tuple<br>
-is&nbsp;not&nbsp;present,&nbsp;current&nbsp;time&nbsp;as&nbsp;returned&nbsp;by&nbsp;localtime()&nbsp;is&nbsp;used.<br>
+is&nbsp;not&nbsp;present,&nbsp;current&nbsp;time&nbsp;as&nbsp;returned&nbsp;by&nbsp;<a href="#-localtime">localtime</a>()&nbsp;is&nbsp;used.<br>
 &nbsp;<br>
 Commonly&nbsp;used&nbsp;format&nbsp;codes:<br>
 &nbsp;<br>

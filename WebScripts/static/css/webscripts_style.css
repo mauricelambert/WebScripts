@@ -111,6 +111,34 @@ button {
 	border-radius: 10px;
 }
 
+.notification {
+	width: 17%;
+	display: inline-block;
+	color: #DDAD12;
+	text-align: center;
+	border: 1px solid #333333;
+	border-radius: 4px;
+}
+
+.notification_user {
+	font-style: italic;
+	color: #FFDC6A;
+	font-weight: 400;
+}
+
+.notification_close {
+	padding: 1%;
+	width: auto;
+	font-size: 10px;
+	border: 1px solid #333333;
+	float: right;
+	border-radius: 4px;
+}
+
+.notification_close:hover {
+	background-color: #333333;
+}
+
 .border {
 	color: #ffc26a;
 }

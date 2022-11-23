@@ -1,7 +1,10 @@
-from sys import argv, stdin, stderr
+from sys import argv, stdin, stderr, exit
 from functools import partial
 from time import sleep
 from os import environ
+
+# print("Only error...", file=stderr)
+# exit(1)
 
 print = partial(print, flush=True)
 

@@ -37,6 +37,7 @@ class Argument {
         this.label = document.createElement("label");
         this.default_value = argument.default_value;
         this.description = argument.description;
+        this.is_advanced = argument.is_advanced;
         this.html_type = argument.html_type;
         this.name = argument.name;
         this.list = argument.list;
@@ -153,7 +154,7 @@ class Argument {
 
         if (this.list) {
             input.id = name + document.getElementsByName(name).length;
-            input.onchange = this.onchange_input_list;
+            input.onkeyup = this.onchange_input_list.bind(input);
         }
 
         return input;
@@ -191,7 +192,7 @@ class Argument {
             let new_element = source.cloneNode();
             new_element.id = id;
             source.parentNode.appendChild(new_element);
-            new_element.onchange = this.onchange_input_list;
+            new_element.onkeyup = this.onkeyup.bind(new_element);
             new_element.value = "";
         }
     }

@@ -133,6 +133,7 @@ class Script {
                 }
 
                 if (search_value) {
+                    console.log(script.search_button);
                     result_container_appendChild(script.search_button);
                 }
             }
@@ -468,22 +469,62 @@ class Menu {
     }
 }
 
+class Notification {
+    close () {
+        this.style.display = "none";
+        let notifications = JSON.parse(localStorage.getItem('notifications_closed'));
+
+        if (notifications) {
+            notifications.push(this.id);
+        } else {
+            notifications = [this.id];
+        }
+
+        localStorage.setItem('notifications_closed', JSON.stringify(notifications));
+    }
+}
+
 /*
 This function is performed when the Web page is loaded.
 */
 window.onload = (first, script_onload=null, ...functions) => {
+    let getById = document.getElementById.bind(document);
+
     let theme = new Theme();
     get_scripts(script_onload, theme.load.bind(theme));
 
     let header_sticker = new HeaderSticker();
 
-    document.getElementById("webscripts_search_bar").onkeyup = Script.prototype.search;
+    getById("webscripts_search_bar").onkeyup = Script.prototype.search;
 
     let menu = new Menu();
-    document.getElementById("webscripts_menu_button_left").onclick = menu.change_display.bind(menu);
-    document.getElementById("webscripts_theme_button").onclick = theme.reverse.bind(theme);
+    getById("webscripts_menu_button_left").onclick = menu.change_display.bind(menu);
+    getById("webscripts_theme_button").onclick = theme.reverse.bind(theme);
 
     for (let func of functions) {
         func();
+    }
+
+    let notifications = new Set(JSON.parse(localStorage.getItem('notifications_closed')));
+
+    if (notifications) {
+        for (let notification of notifications) {
+            let div = getById(notification)
+
+            if (div) {
+                div.style.display = "none";
+            } else {
+                notifications.delete(notification);
+            }
+            
+        }
+    }
+
+    localStorage.setItem('notifications_closed', JSON.stringify([...notifications]));
+
+    notifications = document.getElementsByClassName('notification_close');
+
+    for (let notification of notifications) {
+        notification.onclick = Notification.prototype.close.bind(notification.parentNode);
     }
 }

@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 This file adds a news in the RSS feed
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -53,6 +53,7 @@ from argparse import ArgumentParser, Namespace
 from csv import writer, reader, QUOTE_ALL
 from sys import exit, stdin, stderr
 from os.path import join, exists
+from base64 import b64decode
 from os import environ
 from json import loads
 from enum import Enum
@@ -91,6 +92,14 @@ def parse_args() -> Namespace:
     )
 
     add_argument("-c", "--comments", help="The news comments", default="")
+    add_argument(
+        "--is-base64",
+        "--is-b64",
+        "-i",
+        help="Using base64 to upload description",
+        action="store_true",
+        default=False,
+    )
 
     return parser.parse_args()
 
@@ -124,6 +133,11 @@ def main() -> int:
         print("FileNotFoundError: WEBSCRIPTS_DATA_PATH/rss.csv", file=stderr)
         return 2
 
+    if arguments.is_base64:
+        description = b64decode(stdin.buffer.read())
+    else:
+        description = stdin.read()
+
     with open(csvpath, "a", newline="") as file:
         csvwriter = writer(file, quoting=QUOTE_ALL)
         csvwriter.writerow(
@@ -131,7 +145,7 @@ def main() -> int:
                 get_guid(csvpath),
                 loads(environ["USER"])["name"],
                 arguments.title,
-                stdin.read(),
+                description,
                 arguments.link,
                 ",".join(arguments.categories),
                 str(time()),
@@ -139,6 +153,7 @@ def main() -> int:
             )
         )
 
+    print("New content added successfully !")
     return 0
 
 
