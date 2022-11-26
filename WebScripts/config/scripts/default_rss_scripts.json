@@ -1,0 +1,63 @@
+{
+	"scripts": {
+		"add_news.py": "config_add_news"
+	},
+
+	"config_add_news": {
+		"timeout": 10,
+		"launcher": "python3",
+		"access_groups": [500, 750, 1000],
+		"category": "RSS Feed",
+		"args": "args_add_news",
+		"description": "This script adds a news in the RSS feed",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
+	},
+
+	"args_add_news": {
+		"title": "arg_title",
+		"link": "arg_link",
+		"categories": "arg_categories",
+		"--comments": "arg_comments",
+		"--is-b64": "arg_is_b64",
+		"description": "arg_description"
+	},
+
+	"arg_title": {
+		"example": "What's new in WebScripts 3.0.0 ?",
+		"description": "The news title"
+	},
+
+	"arg_link": {
+		"example": "https://webscripts.local/static/WebScripts3.0.0New.html",
+		"description": "Link to read the full article"
+	},
+
+	"arg_categories": {
+		"list": true,
+		"example": "WebScripts",
+		"description": "The news categories"
+	},
+
+	"arg_comments": {
+		"example": "Article written for WebScripts administrators to understand changes in the version 3.0.0",
+		"description": "A comment for the news."
+	},
+
+	"arg_is_b64": {
+		"html_type": "checkbox",
+		"description": "Using base64 to upload the file.",
+		"javascript_section": "javascript_b64",
+		"is_advanced": true
+	},
+
+	"javascript_b64": {
+		"disabled": true,
+		"checked": true
+	},
+
+	"arg_description": {
+		"input": true,
+		"html_type": "file",
+		"description": "The news content (article or description)."
+	}
+}

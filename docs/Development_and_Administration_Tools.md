@@ -24,10 +24,12 @@ python -m unittest discover -s test -p Test*.py -v
 
 | File          | Statements | missing | coverage |
 |---------------|------------|---------|----------|
-| WebScripts.py | 762        | 3       | 99%      |
-| commons.py    | 412        | 2       | 99%      |
-| utils.py      | 336        | 6       | 98%      |
+| WebScripts.py | 887        | 3       | 99%      |
+| commons.py    | 422        | 1       | 99%      |
+| utils.py      | 477        | 1       | 99%      |
+| Pages.py      | 338        | 0       | 100%     |
 | Errors.py     | 27         | 0       | 100%     |
+| TOTAL         | 2151       | 5       | 99.76%   |
 
 
 ### Hardening audit
@@ -51,7 +53,7 @@ HTML report examples:
 
 ### File integrity
 
-The WebScripts file integrity is checked hourly since version *2.5.0* (location, size, modification/creation date and content).
+The WebScripts file integrity is checked hourly since version *2.5.0* (location, size, modification/creation date and content), since version *3.0.0* modules, cgi scripts and logs are checked too.
 
  - [+] Scripts are checked
  - [+] Static files are checked

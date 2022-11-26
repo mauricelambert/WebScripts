@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints users in JSON objects
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file prints users in JSON objects."""
+This file prints users in JSON objects.
+"""
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file prints users in JSON objects."""
+This file prints users in JSON objects.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,13 +51,15 @@ __all__ = []
 
 from modules.manage_defaults_databases import get_users
 from argparse import ArgumentParser, Namespace
-import json
-import sys
+from sys import exit, stdout, stderr
+from json import dump
 
 
 def parse_args() -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parse command line arguments.
+    """
 
     parser = ArgumentParser()
     parser.add_argument(
@@ -74,16 +79,21 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
+def main() -> int:
 
-    """Main function to print users using default manager for user database."""
+    """
+    Main function to print users using default manager for user database.
+    """
 
     arguments = parse_args()
 
     for i, value in enumerate(arguments.ids):
         if not value.isdigit():
-            print(f'ERROR: ids must be integer. "{value}" is not digits.')
-            sys.exit(3)
+            print(
+                f'ERROR: ids must be integer. "{value}" is not digits.',
+                file=stderr,
+            )
+            return 3
 
     users = []
 
@@ -95,9 +105,9 @@ def main() -> None:
         ):
             users.append(user._asdict())
 
-    print(json.dumps(users, indent=4))
+    dump(users, stdout)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

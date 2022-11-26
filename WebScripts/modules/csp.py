@@ -22,10 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement a Content-Security-Policy debug page.
+This file implements a Content-Security-Policy debug page.
 """
 
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -33,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement a Content-Security-Policy debug page."""
+This file implements a Content-Security-Policy debug page.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -47,13 +48,14 @@ license = __license__
 __copyright__ = copyright
 
 from typing import Tuple, Dict, List, TypeVar
+from json.decoder import JSONDecodeError
 from error_pages import Request
+from json import dumps, loads
 from os import _Environ
-import json
 
 global csp_report
 
-ServerConfiguration = TypeVar("ServerConfiguration")
+Server = TypeVar("Server")
 User = TypeVar("User")
 
 csp_report = {"report": "No CSP report yet."}
@@ -62,20 +64,28 @@ csp_report = {"report": "No CSP report yet."}
 def debug(
     environ: _Environ,
     user: User,
-    configuration: ServerConfiguration,
+    server: Server,
     code: str,
     arguments: Dict[str, Dict[str, str]],
     inputs: List[str],
     csrf_token: str = None,
 ) -> Tuple[str, Dict[str, str], str]:
 
-    """This function implement a debug page."""
+    """
+    This function implements a debug page.
+    """
 
     global csp_report
 
-    if isinstance(arguments, dict):
-        csp_report = arguments
-        Request.send_mail(configuration, json.dumps(csp_report, indent=4))
+    if isinstance(arguments, bytes):
+        try:
+            csp_report = loads(arguments)
+        except JSONDecodeError:
+            pass
+        else:
+            Request.send_mail(
+                server.configuration, dumps(csp_report, indent=4)
+            )
 
     return (
         "200 OK",
@@ -86,5 +96,5 @@ def debug(
             ),
             "Content-Type": "application/json; charset=utf-8",
         },
-        json.dumps(csp_report, indent=4),
+        dumps(csp_report, indent=4),
     )

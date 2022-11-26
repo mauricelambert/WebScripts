@@ -1,7 +1,7 @@
 /*
 
     Style for index page
-    Copyright (C) 2021  Maurice Lambert
+    Copyright (C) 2021, 2022  Maurice Lambert
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,4 +24,14 @@
 	display: inline-block;
     margin-bottom: 2%;
     margin-right: 2%;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.category_content:hover {
+    background-color: rgb(51, 51, 51);
+}
+
+.category_content.light:hover {
+    background-color: rgb(221, 221, 221);
 }

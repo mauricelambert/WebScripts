@@ -22,11 +22,11 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement some tools for WebScripts server
+This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "0.1.5"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -35,7 +35,7 @@ __description__ = """
 This tool run scripts and display the result in a Web
 Interface.
 
-This file implement some tools for WebScripts server
+This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 license = "GPL-3.0 License"
@@ -65,24 +65,60 @@ __all__ = [
     # "doRollover",
     # "rotator",
     # "namer",
+    "logger_debug",
+    "logger_info",
+    "logger_access",
+    "logger_response",
+    "logger_command",
+    "logger_warning",
+    "logger_error",
+    "logger_critical",
+    "check_file_permission",
 ]
 
-from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias
-from types import SimpleNamespace, FunctionType, MethodType, CodeType
-from os import path, _Environ, device_encoding, remove
+from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _SpecialGenericAlias,
+    _GenericAlias,
+    Any,
+    Union,
+)
+from logging import (
+    log as log_,
+    debug,
+    info,
+    warning,
+    error,
+    critical,
+    exception,
+    addLevelName,
+    basicConfig,
+    Logger,
+    getLogger,
+)
+from types import (
+    SimpleNamespace,
+    FunctionType,
+    MethodType,
+    CodeType,
+    FrameType,
+)
+from os import path, _Environ, device_encoding, remove, stat, getcwd, listdir
+from os.path import abspath, isdir, isfile, exists, dirname, normcase, join
 from subprocess import check_call, DEVNULL  # nosec
+from locale import getpreferredencoding
 from configparser import ConfigParser
 from collections.abc import Callable
-from contextlib import suppress
 from platform import system
+from getpass import getuser
 from functools import wraps
-from os.path import abspath
-from logging import Logger
+from sys import _getframe
+from stat import filemode
+from gzip import compress
+from json import dump
 import logging.handlers
-import logging
-import locale
-import json
-import gzip
 
 if __package__:
     from .Errors import (
@@ -103,101 +139,178 @@ else:
 
 StrOrBytes = TypeVar("StrOrBytes", str, bytes)
 DefaultNamespace = TypeVar("DefaultNamespace")
-system = system()
+
+utils_filename: str = join("WebScripts", "utils.py")
+logging_filename: str = join("Lib", "logging")
+test_frame: Callable = (
+    lambda f, l: (f.endswith(utils_filename) and l < 703)
+    or logging_filename in f
+)
+
+
+def get_log_frame() -> FrameType:
+
+    """
+    This function returns the frame
+    to get file and line of the log call.
+    """
+
+    filename: str = utils_filename
+    counter: int = 4
+    line: int = 0
+
+    while test_frame(filename, line):
+        frame: FrameType = _getframe(counter)
+        filename: str = frame.f_code.co_filename
+        line: int = frame.f_lineno
+        counter += 1
+
+    return _getframe(counter)
+
+
+logging.currentframe = lambda: _getframe(5)
+
+IS_WINDOWS = system() == "Windows"
+IP_HEADERS = [
+    "HTTP_X_FORWARDED_FOR",
+    "HTTP_X_REAL_IP",
+    "HTTP_X_FORWARDED_HOST",
+    "HTTP_CLIENT_IP",
+    "REMOTE_ADDR",
+]
 
 
 class _Logs:
 
     """
-    This class implement basic python logs.
+    This class implements basic python logs.
     """
 
-    console: Logger = logging.getLogger("WebScripts.console")
-    file: Logger = logging.getLogger("WebScripts.file")
+    console: Logger = getLogger("WebScripts.console")
+    file: Logger = getLogger("WebScripts.file")
 
-    log_debug: Logger = logging.getLogger("WebScripts.debug")
-    log_info: Logger = logging.getLogger("WebScripts.info")
-    log_warning: Logger = logging.getLogger("WebScripts.warning")
-    log_error: Logger = logging.getLogger("WebScripts.error")
-    log_critical: Logger = logging.getLogger("WebScripts.critical")
+    log_debug: Logger = getLogger("WebScripts.debug")
+    log_info: Logger = getLogger("WebScripts.info")
+    log_warning: Logger = getLogger("WebScripts.warning")
+    log_error: Logger = getLogger("WebScripts.error")
+    log_critical: Logger = getLogger("WebScripts.critical")
 
-    log_trace: Logger = logging.getLogger("WebScripts.trace")
+    log_trace: Logger = getLogger("WebScripts.trace")
+    log_access: Logger = getLogger("WebScripts.access")
+    log_response: Logger = getLogger("WebScripts.response")
+    log_command: Logger = getLogger("WebScripts.command")
 
     def debug(log: str) -> None:
 
         """
-        This function implement basic python debug logs for WebScripts.
+        This function implements basic python debug logs for WebScripts.
         """
 
-        Logs.log_debug.debug(log)
-        Logs.console.debug(f"\x1b[32m{log}\x1b[0m")
-        Logs.file.debug(log)
-        logging.debug(log)
+        logs_log_debug_debug(log)
+        logs_console_debug(f"\x1b[32m{log}\x1b[0m")
+        logs_file_debug(log)
+        debug(log)
 
     def info(log: str) -> None:
 
         """
-        This function implement basic python info logs for WebScripts.
+        This function implements basic python info logs for WebScripts.
         """
 
-        Logs.log_info.info(log)
-        Logs.console.info(f"\x1b[34m{log}\x1b[0m")
-        Logs.file.info(log)
-        logging.info(log)
+        logs_log_info_info(log)
+        logs_console_info(f"\x1b[34m{log}\x1b[0m")
+        logs_file_info(log)
+        info(log)
 
     def warning(log: str) -> None:
 
         """
-        This function implement basic python warning logs for WebScripts.
+        This function implements basic python warning logs for WebScripts.
         """
 
-        Logs.log_warning.warning(log)
-        Logs.console.warning(f"\x1b[33m{log}\x1b[0m")
-        Logs.file.warning(log)
-        logging.warning(log)
+        logs_log_warning_warning(log)
+        logs_console_warning(f"\x1b[33m{log}\x1b[0m")
+        logs_file_warning(log)
+        warning(log)
 
     def error(log: str) -> None:
 
         """
-        This function implement basic python error logs for WebScripts.
+        This function implements basic python error logs for WebScripts.
         """
 
-        Logs.log_error.error(log)
-        Logs.console.error(f"\x1b[35m{log}\x1b[0m")
-        Logs.file.error(log)
-        logging.error(log)
+        logs_log_error_error(log)
+        logs_console_error(f"\x1b[35m{log}\x1b[0m")
+        logs_file_error(log)
+        error(log)
 
     def critical(log: str) -> None:
 
         """
-        This function implement basic python critical logs for WebScripts.
+        This function implements basic python critical logs for WebScripts.
         """
 
-        Logs.log_critical.critical(log)
-        Logs.console.critical(f"\x1b[31m{log}\x1b[0m")
-        Logs.file.critical(log)
-        logging.critical(log)
+        logs_log_critical_critical(log)
+        logs_console_critical(f"\x1b[31m{log}\x1b[0m")
+        logs_file_critical(log)
+        critical(log)
 
     def exception(log: str) -> None:
 
         """
-        This function implement basic python exception (error) logs for
+        This function implements basic python exception (error) logs for
         WebScripts.
         """
 
-        Logs.log_error.exception(log)
-        Logs.console.exception(log)
-        Logs.file.exception(log)
-        logging.exception(log)
+        logs_log_error_exception(log)
+        logs_console_exception(log)
+        logs_file_exception(log)
+        exception(log)
 
     def trace(log: str) -> None:
 
         """
-        This function implement trace logs for WebScripts.
+        This function implements trace logs for WebScripts.
         """
 
-        Logs.log_trace.log(5, log)
-        logging.log(5, log)
+        logs_log_trace_log(5, log)
+        log_(5, log)
+
+    def access(log: str) -> None:
+
+        """
+        This function implements access logs for WebScripts.
+        """
+
+        logs_log_debug_debug(log)
+        logs_log_access_log(25, log)
+        logs_console_log(25, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(25, log)
+        log_(25, log)
+
+    def response(log: str) -> None:
+
+        """
+        This function implements response logs for WebScripts.
+        """
+
+        logs_log_debug_debug(log)
+        logs_log_response_log(26, log)
+        logs_console_log(26, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(26, log)
+        log_(26, log)
+
+    def command(log: str) -> None:
+
+        """
+        This function implements response logs for WebScripts.
+        """
+
+        logs_log_info_info(log)
+        logs_log_command_log(27, log)
+        logs_console_log(27, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(27, log)
+        log_(27, log)
 
     def config(*args, **kwargs):
 
@@ -205,7 +318,7 @@ class _Logs:
         This function config ROOT logger.
         """
 
-        logging.basicConfig(*args, **kwargs)
+        basicConfig(*args, **kwargs)
 
 
 class WindowsLogs(_Logs):
@@ -214,140 +327,230 @@ class WindowsLogs(_Logs):
     This class log on Windows.
     """
 
-    app: str = "WebScripts"
+    app: str = __package__ or "WebScripts"
+
+    def access(log: str) -> None:
+
+        """
+        This function logs access on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).access(log)
+        ReportEvent(
+            WindowsLogs.app,
+            0x9C4,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
+
+    def response(log: str) -> None:
+
+        """
+        This function logs response on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).response(log)
+        ReportEvent(
+            WindowsLogs.app,
+            0xA28,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
+
+    def command(log: str) -> None:
+
+        """
+        This function logs commands on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).command(log)
+        ReportEvent(
+            WindowsLogs.app,
+            0xA8C,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def debug(log: str) -> None:
 
         """
-        This function log debugs on Windows.
+        This function logs debugs on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).debug(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x3E8,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x3E8,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def info(log: str) -> None:
 
         """
-        This function log infos on Windows.
+        This function logs infos on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).info(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x7D0,
-                eventCategory=win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x7D0,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def warning(log: str) -> None:
 
         """
-        This function log warnings on Windows.
+        This function logs warnings on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).warning(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0xBB8,
-                eventCategory=win32evtlog.EVENTLOG_WARNING_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0xBB8,
+            eventCategory=1,
+            eventType=EVENTLOG_WARNING_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def error(log: str) -> None:
 
         """
-        This function log errors on Windows.
+        This function logs errors on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).error(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0xFA0,
-                eventCategory=win32evtlog.EVENTLOG_ERROR_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0xFA0,
+            eventCategory=1,
+            eventType=EVENTLOG_ERROR_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def critical(log: str) -> None:
 
         """
-        This function log criticals on Windows.
+        This function logs criticals on Windows.
         """
 
         super(WindowsLogs, WindowsLogs).critical(log)
-        if WINDOWS_LOGS:
-            ReportEvent(
-                WindowsLogs.app,
-                0x1388,
-                eventCategory=win32evtlog.EVENTLOG_ERROR_TYPE,
-                strings=[log],
-            )
+        ReportEvent(
+            WindowsLogs.app,
+            0x1388,
+            eventCategory=1,
+            eventType=EVENTLOG_ERROR_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
 
 class LinuxLogs(_Logs):
 
     """
-    This class log on Linux.
+    This class logs on Linux.
     """
+
+    def access(log: str) -> None:
+
+        """
+        This function logs access on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).access(log)
+        ReportEvent(LOG_INFO, log)
+
+    def response(log: str) -> None:
+
+        """
+        This function logs response on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).response(log)
+        ReportEvent(LOG_INFO, log)
+
+    def command(log: str) -> None:
+
+        """
+        This function logs command on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).command(log)
+        ReportEvent(LOG_INFO, log)
 
     def debug(log: str) -> None:
 
         """
-        This function log debugs on Linux.
+        This function logs debugs on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).debug(log)
-        ReportEvent(syslog.LOG_DEBUG, log)
+        ReportEvent(LOG_DEBUG, log)
 
     def info(log: str) -> None:
 
         """
-        This function log infos on Linux.
+        This function logs infos on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).info(log)
-        ReportEvent(syslog.LOG_INFO, log)
+        ReportEvent(LOG_INFO, log)
 
     def warning(log: str) -> None:
 
         """
-        This function log warnings on Linux.
+        This function logs warnings on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).warning(log)
-        ReportEvent(syslog.LOG_WARNING, log)
+        ReportEvent(LOG_WARNING, log)
 
     def error(log: str) -> None:
 
         """
-        This function log errors on Linux.
+        This function logs errors on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).error(log)
-        ReportEvent(syslog.LOG_ERR, log)
+        ReportEvent(LOG_ERR, log)
 
     def critical(log: str) -> None:
 
         """
-        This function log criticals on Linux.
+        This function logs criticals on Linux.
         """
 
         super(LinuxLogs, LinuxLogs).critical(log)
-        ReportEvent(syslog.LOG_CRIT, log)
+        ReportEvent(LOG_CRIT, log)
 
 
-def log_trace(function: FunctionType) -> FunctionType:
+def log_trace(
+    function: Union[FunctionType, MethodType]
+) -> Union[FunctionType, MethodType]:
 
     """
-    This decorator trace functions (start and end).
+    This decorator traces functions (start and end).
     """
 
     @wraps(function)
@@ -358,9 +561,9 @@ def log_trace(function: FunctionType) -> FunctionType:
         # else:
         #    name = function.__name__
 
-        Logs.trace(f"Start {function.__name__}...")
+        logger_trace(f"Start {function.__name__}...")
         values = function(*args, **kwds)
-        Logs.trace(f"End of {function.__name__}.")
+        logger_trace(f"End of {function.__name__}.")
         return values
 
     return wrapper
@@ -385,7 +588,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
             filename = self.baseFilename
             i = 0
-            while path.exists(filename):
+            while exists(filename):
                 i += 1
                 filename = self.rotation_filename(
                     "%s.%d" % (self.baseFilename, i)
@@ -411,7 +614,7 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
         with open(source, "rb") as source_file:
             data = source_file.read()
-            compressed = gzip.compress(data, 9)
+            compressed = compress(data, 9)
 
             with open(destination, "wb") as destination_file:
                 destination_file.write(compressed)
@@ -421,15 +624,28 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
 
 logging.handlers.CustomLogHandler = CustomLogHandler
 
-
-if system == "Windows":
+if IS_WINDOWS:
     try:
+        from win32con import TOKEN_READ
+        from win32api import GetCurrentProcess
         from win32evtlogutil import ReportEvent
-        import win32evtlog
+        from win32security import (
+            OpenProcessToken,
+            GetTokenInformation,
+            TokenUser,
+        )
+        from win32evtlog import (
+            EVENTLOG_INFORMATION_TYPE,
+            EVENTLOG_WARNING_TYPE,
+            EVENTLOG_ERROR_TYPE,
+        )
     except ImportError:
         WINDOWS_LOGS = False
     else:
         WINDOWS_LOGS = True
+        SID = GetTokenInformation(
+            OpenProcessToken(GetCurrentProcess(), TOKEN_READ), TokenUser
+        )[0]
 
     check_call(
         [
@@ -447,15 +663,53 @@ if system == "Windows":
         stdout=DEVNULL,
         stderr=DEVNULL,
     )  # Active colors in console (for logs) # nosec
-
-    Logs = WindowsLogs
-    if not WINDOWS_LOGS:
-        Logs.error("PyWin32 is not installed, no Windows Event Logs.")
 else:
-    from syslog import syslog as ReportEvent
-    import syslog
+    from pwd import getpwuid
+    from syslog import (
+        syslog as ReportEvent,
+        LOG_DEBUG,
+        LOG_INFO,
+        LOG_WARNING,
+        LOG_ERR,
+        LOG_CRIT,
+    )
 
     Logs = LinuxLogs
+
+
+if IS_WINDOWS and WINDOWS_LOGS:
+    Logs = WindowsLogs
+elif IS_WINDOWS:
+    Logs = _Logs
+
+logs_log_debug_debug: Callable = Logs.log_debug.debug
+logs_console_debug: Callable = Logs.console.debug
+logs_file_debug: Callable = Logs.file.debug
+logs_log_info_info: Callable = Logs.log_info.info
+logs_console_info: Callable = Logs.console.info
+logs_file_info: Callable = Logs.file.info
+logs_log_warning_warning: Callable = Logs.log_warning.warning
+logs_console_warning: Callable = Logs.console.warning
+logs_file_warning: Callable = Logs.file.warning
+logs_log_error_error: Callable = Logs.log_error.error
+logs_console_error: Callable = Logs.console.error
+logs_file_error: Callable = Logs.file.error
+logs_log_critical_critical: Callable = Logs.log_critical.critical
+logs_console_critical: Callable = Logs.console.critical
+logs_file_critical: Callable = Logs.file.critical
+logs_log_error_exception: Callable = Logs.log_error.exception
+logs_console_exception: Callable = Logs.console.exception
+logs_file_exception: Callable = Logs.file.exception
+logs_log_trace_log: Callable = Logs.log_trace.log
+logs_log_access_log: Callable = Logs.log_access.log
+logs_log_response_log: Callable = Logs.log_response.log
+logs_log_command_log: Callable = Logs.log_command.log
+logs_console_log: Callable = Logs.console.log
+logs_file_log: Callable = Logs.file.log
+
+
+if IS_WINDOWS and not WINDOWS_LOGS:
+    Logs.error("PyWin32 is not installed, no Windows Event Logs.")
 
 
 class DefaultNamespace(SimpleNamespace):
@@ -541,7 +795,7 @@ class DefaultNamespace(SimpleNamespace):
                 unexpecteds.append(attribut)
 
                 if log:
-                    Logs.warning(
+                    logger_warning(
                         f"{attribut} is an unexpected argument "
                         f"in {self.__class__.__name__}"
                     )
@@ -583,13 +837,13 @@ class DefaultNamespace(SimpleNamespace):
         export = self.get_dict()
 
         with open(name, "w") as file:
-            json.dump(export, file, indent=4)
+            dump(export, file, indent=4)
 
     @log_trace
     def build_types(self) -> None:
 
         """
-        This function build type from configuration values.
+        This function builds type from configuration values.
         """
 
         for attribut, type_ in self.__types__.items():
@@ -598,48 +852,119 @@ class DefaultNamespace(SimpleNamespace):
             if value is None:
                 continue
 
-            if isinstance(type_, _GenericAlias) or isinstance(
-                type_, _SpecialGenericAlias
-            ):
-                if isinstance(value, type_.__origin__):
-                    continue
+            self.build_type(attribut, value, type_)
+
+    @log_trace
+    def build_type(
+        self, attribut: str, value: Any, type_: type = None
+    ) -> None:
+
+        """
+        This function builds type from configuration value.
+        """
+
+        def get_number(
+            functype: type, value: str, attribut: str
+        ) -> Union[int, float]:
+            if functype is float:
+                typed = value.replace(".", "")
             else:
-                if isinstance(value, type_):
-                    continue
+                typed = value
+            if typed.isdigit():
+                return functype(value)
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be a list of number ("
+                    f"{functype.__name__}) but contain {value!r}"
+                )
 
-            if type_ is bool:
-                if value == "true":
-                    setattr(self, attribut, True)
-                elif value == "false":
-                    setattr(self, attribut, False)
-                else:
-                    raise WebScriptsConfigurationError(
-                        f"{attribut} must be boolean (true or false)"
-                        f" but is {value}"
-                    )
+        if type_ is None:
+            type_ = self.__types__.get(attribut)
 
-            if type_ is int:
-                if value.isdigit():
-                    setattr(self, attribut, int(value))
-                else:
-                    raise WebScriptsConfigurationError(
-                        f"{attribut} must be an integer but is {value}"
-                    )
+            if type_ is None or type_ is str:
+                setattr(self, attribut, str(value))
+                return None
 
-            if type_ is List[str] or type_ is list:
+        if isinstance(type_, _GenericAlias) or isinstance(
+            type_, _SpecialGenericAlias
+        ):
+            if isinstance(value, type_.__origin__):
+                setattr(self, attribut, value)
+                # return None
+        else:
+            if isinstance(value, type_):
+                setattr(self, attribut, value)
+                return None
+
+        if type_ is bool:
+            if value == "true":
+                setattr(self, attribut, True)
+            elif value == "false":
+                setattr(self, attribut, False)
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be boolean (true or false)"
+                    f" but is {value}"
+                )
+
+        elif type_ is int or type_ is float:
+            if isinstance(value, str):
+                setattr(self, attribut, get_number(type_, value, attribut))
+            elif type_ is float and isinstance(value, int):
+                setattr(self, attribut, float(value))
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut!r} must be an integer but is {value!r}"
+                )
+
+        elif type_ is List[str] or type_ is list or type_ is List:
+            if isinstance(value, str):
                 setattr(self, attribut, value.split(","))
-
-            if type_ is List[int]:
-                int_list = []
-                for digit in value.split(","):
-                    if digit.isdigit():
-                        int_list.append(int(digit))
+            elif isinstance(value, list):
+                type_list = []
+                for element in value:
+                    if isinstance(element, str):
+                        type_list.append(element)
                     else:
                         raise WebScriptsConfigurationError(
-                            f"{attribut} must be a list of "
-                            f"integer but contain {digit}"
+                            f"{attribut} must be a list of strings"
+                            f" but contain {element!r}"
                         )
-                setattr(self, attribut, int_list)
+                setattr(self, attribut, type_list)
+
+        elif type_ is List[int] or type_ is List[float]:
+            functype = type_.__args__[0]
+            type_list = []
+
+            if isinstance(value, str):
+                for typed in value.split(","):
+                    type_list.append(get_number(functype, typed, attribut))
+            elif isinstance(value, functype) or (
+                functype is float and isinstance(value, int)
+            ):
+                type_list.append(functype(value))
+            elif isinstance(value, list):
+                for element in value:
+                    if isinstance(element, str):
+                        type_list.append(
+                            get_number(functype, element, attribut)
+                        )
+                    elif isinstance(element, functype) or (
+                        functype is float and isinstance(element, int)
+                    ):
+                        type_list.append(functype(element))
+                    else:
+                        raise WebScriptsConfigurationError(
+                            f"{attribut} must be a list of number ("
+                            f"{functype.__name__}) but contain {element!r}"
+                        )
+            else:
+                raise WebScriptsConfigurationError(
+                    f"{attribut} must be a list of number ("
+                    f"{functype.__name__}) but is {value!r}"
+                )
+
+            setattr(self, attribut, type_list)
 
     @log_trace
     def set_defaults(self) -> None:
@@ -694,7 +1019,7 @@ def get_encodings():
     This function returns the probable encodings.
     """
 
-    encoding = locale.getpreferredencoding()
+    encoding = getpreferredencoding()
     if encoding is not None:
         yield encoding
 
@@ -705,6 +1030,7 @@ def get_encodings():
     yield "utf-8"  # Default for Linux
     yield "cp1252"  # Default for Windows
     yield "latin-1"  # Can read all files
+    yield None
 
 
 @log_trace
@@ -720,26 +1046,53 @@ def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 
 
 @log_trace
-def get_ip(environ: _Environ) -> str:
+def get_ip(
+    environ: _Environ, ip_number: int = None, protected: bool = True
+) -> str:
 
     """
     This function return the real IP.
     """
 
-    return (
-        environ.get("X_REAL_IP", "") +
-        environ.get("X_FORWARDED_FOR", "") +
-        environ.get("X_FORWARDED_HOST", "") +
-        environ.get("REMOTE_ADDR", "")
-    )
+    ips = None
+    counter = 0
+    check_number = ip_number is not None
+
+    for ip_header in IP_HEADERS:
+        ip = environ.get(ip_header)
+        if ip is not None:
+            ip_length = len(ip.split(", "))
+            if protected:
+                counter += ip_length
+
+                if check_number and counter > ip_number:
+                    logger_critical(f"IP Spoofing detected: {ips}, {ip}.")
+                    return None
+
+                if ips:
+                    ips += ", " + ip
+                else:
+                    ips = ip
+
+                logger_debug(f"Header: {ip_header!r} found with ip: {ip!r}")
+            else:
+                ips = ip
+                break
+
+    return ips
 
 
 @log_trace
-def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
+def get_file_content(
+    file_path, *args, as_iterator: bool = False, **kwargs
+) -> StrOrBytes:
 
     """
     This function return the file content.
     """
+
+    if as_iterator:
+        return open(get_real_path(file_path), "rb", *args, **kwargs)
 
     if "encoding" in kwargs or "rb" in args or "rb" in kwargs.values():
         with open(get_real_path(file_path), *args, **kwargs) as file:
@@ -747,15 +1100,28 @@ def get_file_content(file_path, *args, **kwargs) -> StrOrBytes:
         return content
 
     errors = []
-    for encoding in get_encodings():
+    encodings = get_encodings()
+    encoding = next(encodings)
+    content = None
+
+    while encoding is not None:
+        file = open(
+            get_real_path(file_path), *args, encoding=encoding, **kwargs
+        )
         try:
-            with open(
-                get_real_path(file_path), *args, encoding=encoding, **kwargs
-            ) as file:
-                content = file.read()
-            return content
+            content = file.read()
         except UnicodeDecodeError as e:
             errors.append(e)
+        else:
+            success = True
+        finally:
+            success = False if content is None else True
+            file.close()
+
+        if success:
+            return content
+
+        encoding = next(encodings)
 
     raise Exception(errors)
 
@@ -790,7 +1156,9 @@ def get_arguments_count(object_: Callable):
 
 
 @log_trace
-def get_real_path(file_path: str, is_dir: bool = False) -> str:
+def get_real_path(
+    file_path: str, is_dir: bool = False, no_error: bool = False
+) -> str:
 
     """
     This function return the real path for files.
@@ -799,7 +1167,7 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
     if file_path is None:
         return file_path
 
-    if system == "Windows":
+    if IS_WINDOWS:
         length = 2
         index = 1
         character = ":"
@@ -808,13 +1176,13 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
         index = 0
         character = "/"
 
-    file_path = path.normcase(file_path)
-    server_file_path = path.join(server_path, file_path)
+    file_path = normcase(file_path)
+    server_file_path = join(server_path, file_path)
 
     if is_dir:
-        check = path.isdir
+        check = isdir
     else:
-        check = path.isfile
+        check = isfile
 
     if check(file_path):
         return abspath(file_path)
@@ -824,13 +1192,104 @@ def get_real_path(file_path: str, is_dir: bool = False) -> str:
         and check(server_file_path)
     ):
         return abspath(server_file_path)
+    elif no_error:
+        return None
 
     raise FileNotFoundError(
         f"[WebScripts] No such file or directory: '{file_path}'"
     )
 
 
-server_path = path.dirname(__file__)
+@log_trace
+def check_file_permission(
+    configuration: DefaultNamespace,
+    filepath: str,
+    recursive: bool = False,
+    executable: bool = False,
+    dir_check: bool = True,
+) -> bool:
 
-date_format = "%Y-%m-%d %H:%M:%S"
-logging.addLevelName(5, "TRACE")
+    """
+    This function checks files and directories permissions for security.
+    """
+
+    if not IS_WINDOWS and configuration.force_file_permissions:
+
+        metadata = stat(filepath)
+        mode = filemode(metadata.st_mode)
+        owner = getpwuid(metadata.st_uid).pw_name
+
+        # frame = _getframe(1)
+        # frame = frame.f_back
+        # code = frame.f_code
+
+        # print(
+        #     "\x1b[31m",
+        #     "*" * 50,
+        #     filepath + "\t-\t" + code.co_filename
+        #         + ":" + str(frame.f_lineno) + ":"
+        #         + code.co_name + "\x1b[0m",
+        #     sep="\n"
+        # )
+
+        if isfile(filepath):
+            mode1 = mode[1]
+            mode3 = mode[3]
+
+            return_value = (
+                mode[0] == "-"
+                and (mode1 == "r" or mode1 == "-")
+                and mode[2] == "-"
+                and ((executable and mode3 == "x") or mode3 == "-")
+                and mode.endswith("------")
+                and owner == user
+            )
+
+            if return_value and dir_check:
+                return_value = check_file_permission(
+                    configuration, dirname(filepath)
+                )
+
+        elif isdir(filepath):
+            return_value = mode == "drwxr-xr-x" and owner == "root"
+
+            if recursive and return_value:
+                return_value = all(
+                    check_file_permission(
+                        configuration, x, recursive, executable, False
+                    )
+                    for x in listdir(filepath)
+                )
+
+        if not return_value:
+            logger_critical(
+                "File permissions are not secure: "
+                f"{filepath!r} (owner: {owner!r}, permissions: {mode})"
+            )
+
+        return return_value
+
+    else:
+        return True
+
+
+server_path: str = dirname(__file__)
+working_directory: str = getcwd()
+
+user: str = getuser()
+
+date_format: str = "%Y-%m-%d %H:%M:%S"
+addLevelName(5, "TRACE")
+addLevelName(25, "ACCESS")
+addLevelName(26, "RESPONSE")
+addLevelName(27, "COMMAND")
+
+logger_trace: Callable = Logs.trace
+logger_debug: Callable = Logs.debug
+logger_info: Callable = Logs.info
+logger_access: Callable = Logs.access
+logger_response: Callable = Logs.response
+logger_command: Callable = Logs.command
+logger_warning: Callable = Logs.warning
+logger_error: Callable = Logs.error
+logger_critical: Callable = Logs.critical

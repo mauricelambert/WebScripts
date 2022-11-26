@@ -24,8 +24,9 @@
 This file tests the WebScripts.py file
 """
 
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch, Mock, call
 from os import path, getcwd, chdir, rename
+from collections import defaultdict
 from unittest import TestCase, main
 from argparse import Namespace
 from importlib import reload
@@ -84,9 +85,24 @@ from WebScripts.WebScripts import (
     add_configuration,
     send_mail,
     main,
+    default_configuration,
+    WebScriptsSecurityError,
 )
 from WebScripts.commons import Blacklist, Session
 import WebScripts
+
+try:
+    WebScripts.WebScripts
+except AttributeError:
+    target = "WebScripts.check_file_permission"
+    real_check_file_permission = sys.modules["utils"].check_file_permission
+    locations = [sys.modules["utils"], sys.modules["commons"], WebScripts]
+    WebScripts.check_file_permission = lambda *x, **y: True
+else:
+    target = "WebScripts.WebScripts.check_file_permission"
+    real_check_file_permission = WebScripts.utils.check_file_permission
+    locations = [WebScripts.utils, WebScripts.commons, WebScripts.WebScripts]
+    WebScripts.WebScripts.check_file_permission = lambda *x, **y: True
 
 
 class TestConfiguration(TestCase):
@@ -148,9 +164,12 @@ class TestServer(TestCase):
             self.server_unsecure.headers[
                 "Content-Security-Policy-Report-Only"
             ],
-            "default-src 'self'; form-action 'none'; frame-ancestors 'none'; report-uri /csp/debug/",
+            "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
+            "; report-uri /csp/debug/",
         )
-        self.assertListEqual(self.conf_unsecure.modules, ["csp"])
+        self.assertListEqual(
+            self.conf_unsecure.modules, ["csp", "Configurations"]
+        )
         self.assertListEqual(self.conf_unsecure.modules_path, ["modules"])
         self.assertListEqual(
             self.conf_unsecure.exclude_auth_pages,
@@ -160,6 +179,7 @@ class TestServer(TestCase):
         self.conf_unsecure.modules = []
         self.conf_unsecure.modules_path = []
         delattr(self.server_unsecure.pages.packages, "csp")
+        delattr(self.server_unsecure.pages.packages, "Configurations")
 
     def test_check_blacklist(self):
         self.assertTrue(self.server.check_blacklist(None, ""))
@@ -316,7 +336,14 @@ class TestServer(TestCase):
             "Strict-Transport-Security"
         ] = "max-age=63072000; includeSubDomains; preload"
         headers["Content-Security-Policy"] = (
-            "default-src 'self'; form-action 'none'; " "frame-ancestors 'none'"
+            "default-src 'self'; navigate-to 'self'; worker-src "
+            "'none'; style-src-elem 'self'; style-src-attr 'none';"
+            " style-src 'self'; script-src-attr 'none'; object-src"
+            " 'none'; media-src 'none'; manifest-src 'none'; "
+            "frame-ancestors 'none'; connect-src 'self'; font-src"
+            " 'none'; img-src 'self'; base-uri 'none'; child-src"
+            " 'none'; form-action 'none'; script-src 'self' "
+            "'require-trusted-types-for'"
         )
         headers["X-Frame-Options"] = "deny"
         headers["X-XSS-Protection"] = "1; mode=block"
@@ -353,7 +380,7 @@ class TestServer(TestCase):
                 )
             },
         )
-        self.assertListEqual(c.modules, ["csp"])
+        self.assertListEqual(c.modules, ["csp", "Configurations"])
         self.assertListEqual(c.modules_path, ["modules"])
         self.assertListEqual(c.exclude_auth_pages, ["/csp/debug/"])
 
@@ -387,6 +414,7 @@ class TestServer(TestCase):
             "HTTP_HOST": "webscripts.local",
             "HTTP_ORIGIN": "http://webscripts.local",
             "SERVER_PORT": "80",
+            "REMOTE_IP": "ip",
         }
 
         session = Mock()
@@ -396,7 +424,7 @@ class TestServer(TestCase):
         session.user = Mock(name="abc", id=1)
         self.server.pages.sessions[1] = session
 
-        user, not_blacklisted = self.server.check_auth({"REMOTE_ADDR": "ip"})
+        user, not_blacklisted = self.server.check_auth({"REMOTE_IP": "ip"})
         self.assertEqual(user.id, 0)
         self.assertEqual(user.name, "Not Authenticated")
         self.assertListEqual(user.groups, [0])
@@ -504,8 +532,34 @@ class TestServer(TestCase):
 
         default_path = sys.path.copy()
 
-        self.server.add_module_or_package()
-        self.assertListEqual(sys.path, default_path)
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ) as mock:
+            self.server.add_module_or_package()
+            self.assertListEqual(sys.path, default_path)
+            mock.assert_called_once_with(
+                self.server.configuration,
+                path.normpath(
+                    path.join(path.dirname(__file__), "modules", "test.py")
+                ),
+                recursive=True,
+            )
+
+        with self.assertRaises(AttributeError):
+            self.server.pages.packages.test.is_imported
+
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ) as mock:
+            self.server.add_module_or_package()
+            self.assertListEqual(sys.path, default_path)
+            mock.assert_called_once_with(
+                self.server.configuration,
+                path.normpath(
+                    path.join(path.dirname(__file__), "modules", "test.py")
+                ),
+                recursive=True,
+            )
 
         try:
             self.assertTrue(self.server.pages.packages.test.is_imported)
@@ -540,24 +594,24 @@ class TestServer(TestCase):
 
     def test_get_function_page(self):
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/api/"
+            "/api/", ""
         )
         self.assertEqual("", filename)
         self.assertTrue(is_not_package)
-        self.assertEqual(callable_, self.server.pages.api)
+        self.assertEqual(callable_, self.server.pages.api.__call__)
 
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/api/api.py"
+            "/api/", "api.py"
         )
         self.assertTrue(is_not_package)
         self.assertEqual("api.py", filename)
-        self.assertEqual(callable_, self.server.pages.api)
+        self.assertEqual(callable_, self.server.pages.api.__call__)
 
         callable_, filename, is_not_package = self.server.get_function_page(
-            "/this/url/doesn't/exist"
+            "/this/url/doesn't/", "exist"
         )
         self.assertFalse(is_not_package)
-        self.assertIsNone(filename)
+        self.assertEqual(filename, "exist")
         self.assertIsNone(callable_)
 
     def test_get_URLs(self):
@@ -586,6 +640,39 @@ class TestServer(TestCase):
         self.assertIn("/js/1", urls)
         self.assertIn("/test/...", urls)
 
+    def test_get_fullurl(self):
+        env = {
+            "wsgi.url_scheme": "http",
+            "HTTP_HOST": "test",
+            "QUERY_STRING": "query",
+            "SERVER_NAME": "test",
+            "SERVER_PORT": "80",
+            "SCRIPT_NAME": "/script",
+            "PATH_INFO": "/path/",
+        }
+
+        self.assertEqual(
+            self.server.get_fullurl(env),
+            "http://test/script/path/?query",
+        )
+
+        del env["HTTP_HOST"]
+
+        env["SERVER_PORT"] = "8080"
+
+        self.assertEqual(
+            self.server.get_fullurl(env),
+            "http://test:8080/script/path/?query",
+        )
+
+        env["wsgi.url_scheme"] = "https"
+        env["SERVER_PORT"] = "4433"
+
+        self.assertEqual(
+            self.server.get_fullurl(env),
+            "https://test:4433/script/path/?query",
+        )
+
     def test_get_attributes(self):
         class CodeTest:
             def __init__(self):
@@ -601,56 +688,76 @@ class TestServer(TestCase):
             def methodTest3(a, b, c, d, e, f, g):
                 pass
 
-        object_ = Mock(a=Mock(b=object))
-        callable_, filename, bool_ = self.server.get_attributes(
-            object_, ["a", "b", "test"], True
+            def methodTest4(a, b, c, d, e, f, g):
+                pass
+
+            functionTest = lambda: None
+
+        object_ = Mock(a=Mock(b=object()))
+        callable_, bool_ = self.server.get_attributes(
+            object_, ["a", "b"], True
         )
 
         self.assertTrue(bool_)
-        self.assertIs(callable_, object)
-        self.assertEqual(filename, "test")
+        self.assertIsNone(callable_)
 
         object_ = CodeTest()
-        callable_, filename, bool_ = self.server.get_attributes(
-            object_, ["methodTest2", "test"], False
+        callable_, bool_ = self.server.get_attributes(
+            object_, ["methodTest2"], False
         )
 
         self.assertFalse(bool_)
         self.assertEqual(callable_.__name__, object_.methodTest2.__name__)
-        self.assertEqual(filename, "test")
 
-        callable_, filename, bool_ = self.server.get_attributes(
-            object_, ["methodTest3", "test"], False
+        callable_, bool_ = self.server.get_attributes(
+            object_, ["methodTest3"], False
         )
 
         self.assertFalse(bool_)
         self.assertEqual(callable_.__name__, object_.methodTest3.__name__)
-        self.assertEqual(filename, "test")
 
-        callable_, filename, bool_ = self.server.get_attributes(
-            object_, ["methodTest1", "test"], True
+        callable_, bool_ = self.server.get_attributes(
+            CodeTest, ["methodTest4"], False
+        )
+
+        self.assertFalse(bool_)
+        self.assertEqual(callable_.__name__, object_.methodTest4.__name__)
+
+        callable_, bool_ = self.server.get_attributes(
+            object_, ["methodTest1"], True
         )
 
         self.assertTrue(bool_)
         self.assertIsNone(callable_)
-        self.assertIsNone(filename)
 
-        callable_, filename, bool_ = self.server.get_attributes(
-            "test", ["test"], False
+        callable_, bool_ = self.server.get_attributes(
+            CodeTest, ["functionTest"], True
+        )
+
+        self.assertTrue(bool_)
+        self.assertIsNone(callable_)
+
+        object_.functionTest1 = lambda: None
+
+        callable_, bool_ = self.server.get_attributes(
+            object_, ["functionTest1"], True
+        )
+
+        self.assertTrue(bool_)
+        self.assertIsNone(callable_)
+
+        callable_, bool_ = self.server.get_attributes(
+            "test", ["why not ?"], False
         )
 
         self.assertFalse(bool_)
         self.assertIsNone(callable_)
-        self.assertIsNone(filename)
 
         object_ = object()
-        callable_, filename, bool_ = self.server.get_attributes(
-            object_, ["a", "bc", "test"]
-        )
+        callable_, bool_ = self.server.get_attributes(object_, ["a", "bc"])
 
         self.assertTrue(bool_)
         self.assertIsNone(callable_)
-        self.assertIsNone(filename)
 
     def test_get_inputs(self):
         arguments = [
@@ -807,6 +914,13 @@ class TestServer(TestCase):
             return_value=(Mock(), None, True)
         )
 
+        self.server.configuration.webproxy_number = 0
+
+        response = self.server.app(environ, Mock())
+        self.assertEqual("403", response)
+
+        self.server.configuration.webproxy_number = None
+
         with patch.object(
             self.server,
             "check_auth",
@@ -841,6 +955,17 @@ class TestServer(TestCase):
 
         self.assertEqual(self.server.app(environ, Mock()), "406")
         self.server.parse_body = MagicMock(return_value=([], None, True))
+
+        environ["PATH_INFO"] = "/"
+        mock = self.server.get_function_page = MagicMock(
+            return_value=(None, None, True)
+        )
+
+        self.server.routing_url["/"] = "/web/"
+        self.server.app(environ, Mock())
+        mock.assert_called_once_with("/web/", "")
+
+        del self.server.routing_url["/"]
 
         environ["PATH_INFO"] = "/web/scripts/view_users.py"
         self.server.get_function_page = MagicMock(
@@ -916,14 +1041,14 @@ class TestServer(TestCase):
         self.assertEqual("500", response)
 
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, b"")), None, True)
+            return_value=(MagicMock(return_value=("", {}, b"")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
 
         environ["REQUEST_METHOD"] = "GET"
         self.server.get_function_page = MagicMock(
-            return_value=(MagicMock(return_value=(None, {}, "")), None, True)
+            return_value=(MagicMock(return_value=("", {}, "")), None, True)
         )
         response = self.server.app(environ, Mock())
         self.assertListEqual([b""], response)
@@ -1014,14 +1139,17 @@ class TestServer(TestCase):
         self.assertListEqual([b""], response)
 
     def test_send_headers(self):
+        environ = defaultdict(str)
+
         start_response = Mock()
-        self.server.send_headers(start_response)
+        self.server.send_headers(environ, start_response)
         start_response.assert_called_once_with(
             self.server.error, [(k, v) for k, v in self.server.headers.items()]
         )
 
         start_response = Mock()
         self.server.send_headers(
+            environ,
             start_response,
             error="500 Internal Server Error",
             headers={"Test": "Test"},
@@ -1035,6 +1163,7 @@ class TestServer(TestCase):
 
     def test_page_400(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
@@ -1042,8 +1171,13 @@ class TestServer(TestCase):
             return_value=b"400",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_400("AUTH", a), b"400")
+            self.assertEqual(
+                self.server.page_400(environ, None, "", "AUTH", a), b"400"
+            )
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "400 Bad Request",
             b"Bad method, method should be GET, POST or HEAD not AUTH",
             a,
@@ -1051,6 +1185,7 @@ class TestServer(TestCase):
 
     def test_page_500(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
@@ -1058,8 +1193,13 @@ class TestServer(TestCase):
             return_value=b"500",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_500("500", a), b"500")
+            self.assertEqual(
+                self.server.page_500(environ, None, "", "500", a), b"500"
+            )
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "500 Internal Error",
             b"500",
             a,
@@ -1067,31 +1207,44 @@ class TestServer(TestCase):
 
     def test_page_404(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
             "send_error_page",
             return_value=b"404",
         ) as mock_method:
+            self.assertEqual(
+                self.server.page_404(environ, None, "", "404", a), b"404"
+            )
 
-            self.assertEqual(self.server.page_404("404", a), b"404")
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "404 Not Found",
-            b"This URL: 404, doesn't exist on this server.\nURLs:\n\t - /api/\n\t - /web/",
+            b"This URL: 404, doesn't exist on this server.\nURLs:"
+            b"\n\t - /api/\n\t - /web/",
             a,
         )
 
     def test_page_401(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
             "send_error_page",
             return_value=b"401",
         ) as mock_method:
+            self.assertEqual(
+                self.server.page_401(environ, None, "", "401", a), b"401"
+            )
 
-            self.assertEqual(self.server.page_401("401", a), b"401")
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "401 Unauthorized",
             b"Unauthorized (You don't have permissions)",
             a,
@@ -1099,6 +1252,7 @@ class TestServer(TestCase):
 
     def test_page_403(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
@@ -1106,8 +1260,13 @@ class TestServer(TestCase):
             return_value=b"403",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_403("403", a), b"403")
+            self.assertEqual(
+                self.server.page_403(environ, None, "", "403", a), b"403"
+            )
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "403 Forbidden",
             b"Forbidden (You don't have permissions)",
             a,
@@ -1115,6 +1274,7 @@ class TestServer(TestCase):
 
     def test_page_406(self):
         a = object()
+        environ = defaultdict(str)
 
         with patch.object(
             self.server,
@@ -1122,8 +1282,13 @@ class TestServer(TestCase):
             return_value=b"406",
         ) as mock_method:
 
-            self.assertEqual(self.server.page_406("406", a), b"406")
+            self.assertEqual(
+                self.server.page_406(environ, None, "", "406", a), b"406"
+            )
         mock_method.assert_called_once_with(
+            environ,
+            None,
+            "",
             "406 Not Acceptable",
             b"Not Acceptable, your request is not a valid WebScripts request.",
             a,
@@ -1131,7 +1296,9 @@ class TestServer(TestCase):
 
     def test_send_error_page(self):
         a = object()
+        environ = defaultdict(str)
         self.server.configuration = None
+
         page = [
             b"---------------\n",
             b"** ERROR 403 **\n",
@@ -1147,6 +1314,9 @@ class TestServer(TestCase):
 
             self.assertEqual(
                 self.server.send_error_page(
+                    environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"",
                     a,
@@ -1155,6 +1325,7 @@ class TestServer(TestCase):
             )
 
         b.assert_called_once_with(
+            environ,
             a,
             "403 Forbidden",
             {"Content-Type": "text/plain; charset=utf-8"},
@@ -1174,6 +1345,9 @@ class TestServer(TestCase):
 
             self.assertEqual(
                 self.server.send_error_page(
+                    environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"",
                     a,
@@ -1182,6 +1356,7 @@ class TestServer(TestCase):
             )
 
         b.assert_called_once_with(
+            environ,
             a,
             "401 Unauthorized",
             {"Content-Type": "text/html; charset=utf-8"},
@@ -1206,6 +1381,9 @@ class TestServer(TestCase):
 
             self.assertEqual(
                 self.server.send_error_page(
+                    environ,
+                    None,
+                    "",
                     "403 Forbidden",
                     b"403",
                     a,
@@ -1214,6 +1392,7 @@ class TestServer(TestCase):
             )
 
         b.assert_called_once_with(
+            environ,
             a,
             "403 Forbidden",
             {"Content-Type": "text/plain; charset=utf-8"},
@@ -1225,10 +1404,29 @@ class TestServer(TestCase):
 
         self.server.pages.packages.a = a
         self.assertIsInstance(
-            self.server.send_custom_error("403 Forbidden", "403"), Mock
+            self.server.send_custom_error(
+                {}, None, "", "403 Forbidden", "403"
+            ),
+            Mock,
         )
 
-        a.page_403.assert_called_once_with("403 Forbidden")
+        a.page_403.assert_called_once_with(
+            {}, None, self.server, "", "403 Forbidden"
+        )
+
+        self.assertIsInstance(
+            self.server.send_custom_error(
+                {}, None, "", "403 Forbidden", "403"
+            ),
+            Mock,
+        )
+
+        a.page_403.assert_has_calls(
+            [
+                call({}, None, self.server, "", "403 Forbidden"),
+                call({}, None, self.server, "", "403 Forbidden"),
+            ]
+        )
 
 
 class TestFunctions(TestCase):
@@ -1250,25 +1448,44 @@ class TestFunctions(TestCase):
             )
         ),
     )
-    def test_main(self):
+    @patch.object(
+        WebScripts.WebScripts, "check_file_permission", return_value=True
+    )
+    def test_main(self, *args):
         global WebScripts
+
+        tuple(
+            setattr(l, "check_file_permission", lambda *x, **y: True)
+            for l in locations
+        )
 
         def raise_keyboard(self):
             raise KeyboardInterrupt
 
-        WebScripts.__name__ = "__main__"
+        WebScripts.WebScripts.__name__ = WebScripts.__name__ = "__main__"
         argv = sys.argv.copy()
-        sys.argv = ["WebScripts", "--debug"]
+        WebScripts.WebScripts.argv = WebScripts.argv = sys.argv = [
+            "WebScripts",
+            "--debug",
+        ]
         WebScripts.main()
 
-        WebScripts.argv = ["WebScripts", "--test-running"]
+        WebScripts.WebScripts.argv = WebScripts.argv = sys.argv = [
+            "WebScripts",
+            "--test-running",
+        ]
         WebScripts.main()
-        sys.argv = argv
+        WebScripts.WebScripts.argv = WebScripts.argv = sys.argv = argv
+
+        tuple(
+            setattr(l, "check_file_permission", real_check_file_permission)
+            for l in locations
+        )
 
     def test_parse_args(self):
         argv = sys.argv.copy()
-        sys.argv = ["WebScripts"]
-        arguments = parse_args()
+        argv_ = sys.argv = ["WebScripts"]
+        arguments = parse_args(argv_)
 
         for config, value in arguments.__dict__.items():
             if value is None:
@@ -1280,7 +1497,9 @@ class TestFunctions(TestCase):
 
     def test_get_server_config(self):
         argv = sys.argv.copy()
-        sys.argv = [
+        argv_ = sys.argv = ["WebScripts"]
+        arguments_empty = parse_args(argv_)
+        argv_ = sys.argv = [
             "WebScripts",
             "--config-cfg",
             "test_inexistant_file",
@@ -1291,7 +1510,7 @@ class TestFunctions(TestCase):
             "test.json",
             "test/test.json",
         ]
-        arguments = parse_args()
+        arguments = parse_args(argv_)
 
         with open("test.json", "w") as f:
             f.write('{"server": {}}')
@@ -1299,19 +1518,30 @@ class TestFunctions(TestCase):
         with open("test.ini", "w") as f:
             f.write("[server]\n")
 
-        for configurations in get_server_config(arguments):
-            self.assertTrue(isinstance(configurations, dict))
-
-        arguments = parse_args()
         with patch.object(
-            WebScripts.WebScripts,
-            "system",
-            return_value="Linux"
-            if WebScripts.WebScripts.system() == "Windows"
-            else "Windows",
-        ) as mock_method:
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ):
+            for configurations in get_server_config(arguments_empty):
+                for config in configurations.values():
+                    if config:
+                        self.assertTrue(False)
+
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
             for configurations in get_server_config(arguments):
                 self.assertTrue(isinstance(configurations, dict))
+
+            arguments = parse_args(argv_)
+            with patch.object(
+                WebScripts.WebScripts,
+                "system",
+                return_value="Linux"
+                if WebScripts.WebScripts.system() == "Windows"
+                else "Windows",
+            ) as mock_method:
+                for configurations in get_server_config(arguments):
+                    self.assertTrue(isinstance(configurations, dict))
 
         sys.argv = argv
 
@@ -1334,13 +1564,24 @@ class TestFunctions(TestCase):
     def test_configure_logs_system(self):
         global WebScripts
 
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=False
+        ), self.assertRaises(WebScriptsSecurityError):
+            configure_logs_system()
+            self.assertTrue(path.isdir("logs"))
+            self.assertFalse(path.isfile(path.join("logs", "root.logs")))
+
         def raise_permission(file):
             raise PermissionError
 
         if path.isdir("logs"):
             rmtree("logs", ignore_errors=True)
 
-        configure_logs_system()
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
+            configure_logs_system()
+
         disable_logs()
 
         self.assertTrue(path.isdir("logs"))
@@ -1353,7 +1594,11 @@ class TestFunctions(TestCase):
         sys.modules["os"].mkdir = raise_permission
         WebScripts.mkdir = Mock(side_effect=PermissionError())
 
-        configure_logs_system()
+        with patch.object(
+            WebScripts.WebScripts, "check_file_permission", return_value=True
+        ):
+            configure_logs_system()
+
         disable_logs()
 
     def test_add_configuration(self):
@@ -1373,6 +1618,48 @@ class TestFunctions(TestCase):
             Request=Mock(send_mail=Mock())
         )
         self.assertEqual(send_mail(self.conf, "test"), 0)
+
+    @patch.object(
+        WebScripts.WebScripts, "check_file_permission", return_value=True
+    )
+    def test_default_configuration(self, *args):
+        with patch.object(
+            WebScripts.WebScripts,
+            "get_server_config",
+            return_value=(x for x in [{"server": {}}]),
+        ):
+            config = default_configuration(["test"])
+
+        self.assertDictEqual(config.urls, {})
+
+        with patch.object(
+            WebScripts.WebScripts,
+            "get_server_config",
+            return_value=(x for x in [{"server": {"urls_section": "_urls_"}}]),
+        ):
+            with self.assertRaises(WebScriptsConfigurationError):
+                default_configuration(["test"])
+
+        with patch.object(
+            WebScripts.WebScripts,
+            "get_server_config",
+            return_value=(
+                x
+                for x in [
+                    {
+                        "server": {
+                            "urls_section": "_urls_",
+                        },
+                        "_urls_": {
+                            "key": 1,
+                            2: "value",
+                        },
+                    }
+                ]
+            ),
+        ):
+            with self.assertRaises(WebScriptsConfigurationError):
+                default_configuration(["test"])
 
 
 if __name__ == "__main__":

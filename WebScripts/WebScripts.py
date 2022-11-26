@@ -22,20 +22,22 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file is the "main" file of this package (implement the main function,
+This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "0.1.4"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This tool run scripts and display the result in a Web
+__description__ = """
+This tool run scripts and display the result in a Web
 Interface.
 
-This file is the "main" file of this package (implement the main function,
-the Server class and the Configuration class)."""
+This file is the "main" file of this package (implements the main function,
+the Server class and the Configuration class).
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -51,17 +53,20 @@ __copyright__ = copyright
 __all__ = ["Configuration", "Server", "main"]
 
 from os.path import basename, abspath, join, dirname, normpath, exists, isdir
-from types import SimpleNamespace, ModuleType, FunctionType
-from typing import TypeVar, Tuple, List, Dict, Union
+from types import SimpleNamespace, ModuleType, FunctionType, MethodType
+from typing import TypeVar, Tuple, List, Dict, Union, Set, Iterable
 from sys import exit, modules as sys_modules, argv
-from os import _Environ, getcwd, mkdir, environ
+from os import _Environ, mkdir, environ
 from collections.abc import Iterator, Callable
 from argparse import Namespace, ArgumentParser
 from traceback import print_exc, format_exc
 from json.decoder import JSONDecodeError
 from logging.config import fileConfig
+from collections import defaultdict
 from wsgiref import simple_server
-from logging import basicConfig
+
+# from logging import basicConfig
+from urllib.parse import quote
 from threading import Thread
 from base64 import b64decode
 from platform import system
@@ -76,16 +81,20 @@ if __package__:
         Pages,
         Argument,
         User,
-        Session,
         ScriptConfig,
         CallableFile,
+        TokenCSRF,
+        Blacklist,
+        Session,
         JsonValue,
         DefaultNamespace,
         get_ini_dict,
         lib_directory as server_path,
+        current_directory,
         log_trace,
         get_ip,
         Logs,
+        get_environ,
         get_file_content,
         get_arguments_count,
         # doRollover,
@@ -93,9 +102,19 @@ if __package__:
         # namer,
         # Handler,
         get_real_path,
+        WebScriptsSecurityError,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_command,
+        logger_warning,
+        logger_error,
+        logger_critical,
+        check_file_permission,
     )
 else:
     from hardening import main as hardening
@@ -103,16 +122,20 @@ else:
         Pages,
         Argument,
         User,
-        Session,
         ScriptConfig,
         CallableFile,
+        TokenCSRF,
+        Blacklist,
+        Session,
         JsonValue,
         DefaultNamespace,
         get_ini_dict,
         lib_directory as server_path,
+        current_directory,
         log_trace,
         get_ip,
         Logs,
+        get_environ,
         get_file_content,
         get_arguments_count,
         # doRollover,
@@ -120,9 +143,19 @@ else:
         # namer,
         # Handler,
         get_real_path,
+        WebScriptsSecurityError,
         WebScriptsArgumentError,
         WebScriptsConfigurationError,
         WebScriptsConfigurationTypeError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_command,
+        logger_warning,
+        logger_error,
+        logger_critical,
+        check_file_permission,
     )
 
 NameSpace = TypeVar("NameSpace", SimpleNamespace, Namespace)
@@ -131,13 +164,8 @@ Content = TypeVar(
     "Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes
 )
 
-logger_debug: Callable = Logs.debug
-logger_info: Callable = Logs.info
-logger_warning: Callable = Logs.warning
-logger_error: Callable = Logs.error
-logger_critical: Callable = Logs.critical
-current_directory: str = getcwd()
-log_path: str = join(current_directory, "logs")
+# current_directory: str = getcwd()
+# log_path: str = join(current_directory, "logs")
 
 
 class Configuration(DefaultNamespace):
@@ -150,6 +178,7 @@ class Configuration(DefaultNamespace):
     __defaults__ = {
         "interface": "127.0.0.1",
         "port": 8000,
+        "urls": {},
         "modules": [],
         "js_path": [],
         "log_level": 0,
@@ -160,8 +189,10 @@ class Configuration(DefaultNamespace):
         "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
         "auth_script": None,
         "active_auth": False,
+        "webproxy_number": None,
         "documentations_path": [],
         "accept_unknow_user": True,
+        "force_file_permissions": True,
         "accept_unauthenticated_user": True,
     }
     __required__ = ("interface", "port")
@@ -181,7 +212,8 @@ class Configuration(DefaultNamespace):
         "documentations_path",
         "scripts_path",
         "json_scripts_config",
-        "ini_scripts_config" "log_level",
+        "ini_scripts_config",
+        "log_level",
         "log_filename",
         "log_level",
         "log_format",
@@ -189,6 +221,7 @@ class Configuration(DefaultNamespace):
         "log_encoding",
         "auth_failures_to_blacklist",
         "blacklist_time",
+        "webproxy_number",
         "smtp_server",
         "smtp_starttls",
         "smtp_password",
@@ -205,9 +238,11 @@ class Configuration(DefaultNamespace):
         "accept_unknow_user": bool,
         "accept_unauthenticated_user": bool,
         "admin_groups": List[int],
+        # "urls": dict,
         "modules": list,
         "modules_path": list,
         "js_path": list,
+        # "log_level": int,
         "statics_path": list,
         "documentations_path": list,
         "exclude_auth_paths": list,
@@ -280,8 +315,19 @@ class Configuration(DefaultNamespace):
 class Server:
 
     """
-    This class implement the WebScripts server.
+    This class implements the WebScripts server.
     """
+
+    class CommonsClasses:
+        Argument = Argument
+        User = User
+        ScriptConfig = ScriptConfig
+        CallableFile = CallableFile
+        TokenCSRF = TokenCSRF
+        Blacklist = Blacklist
+        Session = Session
+        DefaultNamespace = DefaultNamespace
+        Pages = Pages
 
     @log_trace
     def __init__(self, configuration: Configuration):
@@ -298,8 +344,15 @@ class Server:
             "groups": [0],
         }
         self.error: str = "200 OK"
+        self.pages_cache = defaultdict(lambda: (None, None))
         self.pages = Pages()
         self.logs = Logs
+        self.routing_url = configuration.urls
+
+        self.send_mail = send_mail
+
+        if configuration.webproxy_number is not None:
+            configuration.webproxy_number += 1
 
         version = self.version = (
             sys_modules[__package__].__version__
@@ -318,9 +371,25 @@ class Server:
         security = self.security = getattr(configuration, "security", True)
         self.loglevel = getattr(configuration, "log_level", "DEBUG")
 
+        self.path = server_path
+        self.research_filename = get_real_path
+        self.research_file_content = get_file_content
+        self.get_environ_strings = get_environ
+        self.environ = environ
+
         self.set_default_headers(headers, security, configuration)
         self.add_module_or_package()
         self.add_paths()
+
+        packages = Pages.packages
+        packages = [getattr(packages, attr) for attr in dir(packages)]
+        environ["WEBSCRIPTS_MODULES"] = ":".join(
+            [
+                package.__file__
+                for package in packages
+                if isinstance(package, ModuleType) and package.__file__
+            ]
+        )
 
     @staticmethod
     @log_trace
@@ -339,8 +408,14 @@ class Server:
                 "Strict-Transport-Security"
             ] = "max-age=63072000; includeSubDomains; preload"
             headers["Content-Security-Policy"] = (
-                "default-src 'self'; form-action 'none'; "
-                "frame-ancestors 'none'"
+                "default-src 'self'; navigate-to 'self'; worker-src "
+                "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                " style-src 'self'; script-src-attr 'none'; object-src"
+                " 'none'; media-src 'none'; manifest-src 'none'; "
+                "frame-ancestors 'none'; connect-src 'self'; font-src"
+                " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                " 'none'; form-action 'none'; script-src 'self' "
+                "'require-trusted-types-for'"
             )
             headers["X-Frame-Options"] = "deny"
             headers["X-XSS-Protection"] = "1; mode=block"
@@ -366,6 +441,8 @@ class Server:
             )
             if "csp" not in configuration.modules:
                 configuration.modules.append("csp")
+            if "Configurations" not in configuration.modules:
+                configuration.modules.append("Configurations")
             if "modules" not in configuration.modules_path:
                 configuration.modules_path.append("modules")
             if "/csp/debug/" not in configuration.exclude_auth_pages:
@@ -488,7 +565,7 @@ class Server:
         api_key = environ_get("HTTP_API_KEY")
         cookies = environ_get("HTTP_COOKIE")
         token = environ_get("HTTP_API_TOKEN")
-        ip = get_ip(environ)
+        ip = environ_get("REMOTE_IP")
 
         pages = self.pages
         configuration = self.configuration
@@ -523,7 +600,7 @@ class Server:
                 pages,
                 environ,
                 default_build(ip=ip, **not_authenticated),
-                configuration,
+                self,
                 configuration.auth_script,
             )
             code, headers, content = (
@@ -535,7 +612,7 @@ class Server:
             code, headers, content = pages.auth(
                 environ,
                 default_build(ip=ip, **not_authenticated),
-                configuration,
+                self,
                 configuration.auth_script,
                 ["--api-key", api_key],
                 [],
@@ -568,7 +645,9 @@ class Server:
     @log_trace
     def add_module_or_package(self) -> None:
 
-        """This function add packages and modules to build custom page."""
+        """
+        This function add packages and modules to build custom page.
+        """
 
         modules_path = []
         configuration = self.configuration
@@ -591,8 +670,10 @@ class Server:
             logger_warning(f"Add package/module named: {package}")
 
             package = __import__(package)
-            package._webscripts_filepath = normpath(package.__file__)
-            setattr(packages, package.__name__, package)
+            path_ = package._webscripts_filepath = normpath(package.__file__)
+
+            if check_file_permission(configuration, path_, recursive=True):
+                setattr(packages, package.__name__, package)
 
         logger_info("Remove new paths...")
         for path_ in modules_path:
@@ -656,29 +737,42 @@ class Server:
             )
 
     @log_trace
-    def get_function_page(self, path: str) -> Tuple[FunctionOrNone, str, bool]:
+    def get_function_page(
+        self, path: str, filename: str
+    ) -> Tuple[FunctionOrNone, str, bool]:
 
-        """This function find function from URL path.
+        """
+        This function find function from URL path.
         If the function is a WebScripts built-in function,
         return the function, filename and True. Else return the
-        function, filename and False."""
+        function, filename and False.
+        """
 
-        path = path.split("/")
-        del path[0]
+        path = tuple(path.split("/")[1:-1])
+        cache = self.pages_cache
+
+        logger_debug("Trying to get function page from cache...")
+        function, is_not_package = cache[path]
+
+        if function:
+            return function, filename, is_not_package
+
         get_attributes = self.get_attributes
         pages = self.pages
 
         logger_debug(
-            "Trying to get function page from default WebScripts function..."
+            "Trying to found function page from default WebScripts function..."
         )
-        default, filename, _ = get_attributes(pages, path)
+        function, is_not_package = get_attributes(pages, path)
 
-        if default is not None:
-            logger_info("Use default function page.")
-            return default, filename, True
-        else:
-            logger_debug("Trying to get function page from packages.")
-            return get_attributes(pages.packages, path, False)
+        if function is None:
+            logger_debug("Trying to found function page from packages...")
+            function, is_not_package = get_attributes(
+                pages.packages, path, False
+            )
+
+        cache[path] = (function, is_not_package)
+        return function, filename, is_not_package
 
     @log_trace
     def get_URLs(self) -> List[str]:
@@ -688,7 +782,7 @@ class Server:
         and the start of the URL of custom packages.
         """
 
-        urls = ["/api/", "/web/"]
+        urls = ["/api/", "/web/", *self.routing_url.keys()]
         append = urls.append
         pages = self.pages
 
@@ -719,30 +813,51 @@ class Server:
         object_: object,
         attributes: List[str],
         is_not_package: bool = True,
-    ) -> Tuple[FunctionOrNone, str, bool]:
+    ) -> Tuple[FunctionOrNone, bool]:
 
         """
         This function get recursive attribute from object.
         """
 
-        for attribute in attributes[:-1]:
+        def check_argument_count():
+            if isinstance(object_, FunctionType) or type(object_) == type:
+                if arg_count == 7:
+                    logger_info(f"Function page found {object_}.")
+                    return object_, is_not_package
+                else:
+                    return ValueError
+            elif isinstance(object_, MethodType):
+                if arg_count == 8:
+                    logger_info(f"Method page found {object_}.")
+                    return object_, is_not_package
+                else:
+                    return ValueError
+
+        for attribute in attributes:
             logger_debug(f"Trying to get {attribute} from {object_}")
             object_ = getattr(object_, attribute, None)
 
             if object_ is None:
-                return None, None, is_not_package
+                return None, is_not_package
 
         logger_debug("Get arguments length and check it...")
         arg_count = get_arguments_count(object_)
 
-        if isinstance(object_, Callable) and (
-            arg_count == 7 or arg_count == 8
-        ):
-            logger_info(f"Function page found {object_}.")
-            return object_, attributes[-1], is_not_package
-        else:
-            logger_info("Function page not found.")
-            return None, None, is_not_package
+        function = check_argument_count()
+        if function is None:
+            if isinstance(object_, Callable):
+                object_ = object_.__call__
+                function = check_argument_count()
+
+        if function is not None and function is not ValueError:
+            return function
+
+        logger_warning(
+            "The function cannot be called with 7 "
+            "arguments or the method cannot be called "
+            "with 8 arguments."
+        )
+        return None, is_not_package
 
     @staticmethod
     @log_trace
@@ -847,6 +962,42 @@ class Server:
 
     @staticmethod
     @log_trace
+    def get_fullurl(environ: _Environ) -> str:
+
+        """
+        This function returns the full URL (based on the PEP 3333).
+
+        Link: https://peps.python.org/pep-3333/
+        """
+
+        scheme = environ["wsgi.url_scheme"]
+        url = scheme + "://"
+
+        host = environ.get("HTTP_HOST")
+        query = environ.get("QUERY_STRING")
+
+        if host:
+            url += host
+        else:
+            url += environ["SERVER_NAME"]
+
+            if scheme == "https":
+                if environ["SERVER_PORT"] != "443":
+                    url += ":" + environ["SERVER_PORT"]
+            else:
+                if environ["SERVER_PORT"] != "80":
+                    url += ":" + environ["SERVER_PORT"]
+
+        url += quote(environ.get("SCRIPT_NAME", ""))
+        url += quote(environ.get("PATH_INFO", ""))
+
+        if query:
+            url += "?" + query
+
+        return url
+
+    @staticmethod
+    @log_trace
     def check_origin(environ_getter: Callable, environ: _Environ) -> bool:
 
         """
@@ -928,7 +1079,7 @@ class Server:
         return [], None, True
 
     @log_trace
-    def app(self, environ: _Environ, respond: FunctionType) -> List[bytes]:
+    def app(self, environ_: _Environ, respond: MethodType) -> List[bytes]:
 
         """
         This function get function page,
@@ -936,22 +1087,46 @@ class Server:
         return HTTP errors.
         """
 
+        environ = self.environ._data.copy()
+        # environ = _Environ(
+        #     environ._data,
+        #     environ.encodekey,
+        #     environ.decodekey,
+        #     environ.encodevalue,
+        #     environ.decodevalue
+        # )
+
+        # d_setitem: Callable = environ._data.__setitem__
+        # [d_setitem(encode_key(key), encode_value(value)) if isinstance(value, str) else d_setitem(encode_key(key), value) for key, value in environ_.items()]
+
+        environ.update(environ_)
+
         path_info = environ["PATH_INFO"]
         method = environ["REQUEST_METHOD"]
-        port = environ.get("REMOTE_PORT")
-        logger_debug(
-            f"Request ({method}) from "
-            f"{get_ip(environ)}:{port} on {path_info}."
-        )
-        path_info_startswith = path_info.startswith
         configuration = self.configuration
-        environ["LOG_PATH"] = log_path
-        environ["WEBSCRIPTS_PATH"] = server_path
+        port = environ.setdefault("REMOTE_PORT", "0")
+        ip = environ["REMOTE_IP"] = get_ip(
+            environ, configuration.webproxy_number
+        )
+        logger_access(f"Request ({method}) from {ip!r}:{port} on {path_info}.")
+
+        if ip is None:
+            logger_critical("IP Spoofing: Error 403.")
+            return self.page_403(environ, self.unknow, "", None, respond)
+
+        path_info_startswith = path_info.startswith
+        path, filename = path_info.rsplit("/", 1)
+        path += "/"
         is_head_method = method == "HEAD"
+
+        new_url = self.routing_url.get(path)
+        if new_url is not None:
+            logger_info(f"Routing URL: {path_info!r} to {new_url!r}.")
+            path = new_url
 
         logger_debug("Trying to get function page...")
         get_response, filename, is_not_package = self.get_function_page(
-            path_info
+            path, filename
         )
 
         logger_debug("Check authentication...")
@@ -962,7 +1137,7 @@ class Server:
                 f'Blacklist: Error 403 on "{path_info}" for '
                 f'"{user.name}" (ID: {user.id}).'
             )
-            return self.page_403(None, respond)
+            return self.page_403(environ, user, filename, None, respond)
 
         logger_info("User is not blacklisted.")
         logger_debug("Trying to get and parse body...")
@@ -974,7 +1149,7 @@ class Server:
         elif method == "GET" or is_head_method:
             arguments, csrf_token, is_webscripts_request = [], None, True
         else:
-            return self.page_400(method, respond)
+            return self.page_400(environ, user, filename, method, respond)
 
         arguments, inputs = self.return_inputs(
             arguments, is_webscripts_request
@@ -1004,7 +1179,9 @@ class Server:
             )
         ):
             logger_warning(f"Unauthenticated try to get access to {path_info}")
-            self.send_headers(respond, "302 Found", {"Location": "/web/auth/"})
+            self.send_headers(
+                environ, respond, "302 Found", {"Location": "/web/auth/"}
+            )
             return [
                 b"Authentication required:\n\t",
                 b" - For API you can use Basic Auth",
@@ -1014,18 +1191,18 @@ class Server:
 
         if get_response is None:
             logger_info("Page 404, cause: no function page.")
-            return self.page_404(path_info, respond)
+            return self.page_404(environ, user, filename, path_info, respond)
 
         if error == "406":
             logger_debug("Send response (code 406).")
-            return self.page_406(None, respond)
+            return self.page_406(environ, user, filename, None, respond)
 
         logger_debug("Trying to execute function page...")
         try:
             error, headers, page = get_response(
                 environ,
                 user,
-                configuration,
+                self,
                 filename,
                 arguments,
                 inputs,
@@ -1036,20 +1213,22 @@ class Server:
             error_text = format_exc()
             error = f"{error}\n{error_text}"
             Logs.error(error)
-            return self.page_500(error_text, respond)
+            return self.page_500(environ, user, filename, error_text, respond)
 
-        if error == "404":
+        if error == "404" and not page:
             logger_debug("Send response 404, cause: function page return 404.")
-            return self.page_404(path_info, respond)
-        elif error == "403":
+            return self.page_404(environ, user, filename, path_info, respond)
+        elif error == "403" and not page:
             logger_debug("Send response 403, cause: function page return 403.")
-            return self.page_403(None, respond)
-        elif error == "500":
+            return self.page_403(environ, user, filename, None, respond)
+        elif error == "500" and not page:
             logger_debug("Send response 500, cause: function page return 500.")
-            return self.page_500(page, respond)
-        else:
+            return self.page_500(environ, user, filename, page, respond)
+        elif not page:
             logger_debug(f"Get custom response for code {error}")
-            response = self.send_custom_error("", error)
+            response = self.send_custom_error(
+                environ, user, filename, "", error
+            )
             if response is not None:
                 logger_info(f"Get a response for code {error}")
                 error, headers, page = response
@@ -1057,7 +1236,7 @@ class Server:
         error, headers = self.set_default_values_for_response(error, headers)
 
         logger_debug("Send headers...")
-        self.send_headers(respond, error, headers)
+        self.send_headers(environ, respond, error, headers)
         if is_head_method:
             logger_debug("Is HEAD method, return an empty response body...")
             return []
@@ -1086,7 +1265,7 @@ class Server:
 
     @staticmethod
     @log_trace
-    def return_page(page: Union[bytes, str, list]) -> List[bytes]:
+    def return_page(page: Union[bytes, str, Iterable[bytes]]) -> List[bytes]:
 
         """
         This function returns response as a list of bytes.
@@ -1098,8 +1277,8 @@ class Server:
         elif isinstance(page, str):
             logger_debug("Send str response (encode using utf-8)...")
             return [page.encode()]
-        elif isinstance(page, list):
-            logger_debug("Send list response...")
+        elif isinstance(page, Iterable):
+            logger_debug("Send iterable response...")
             return page
 
     @log_trace
@@ -1128,7 +1307,8 @@ class Server:
     @log_trace
     def send_headers(
         self,
-        respond: FunctionType,
+        environ: _Environ,
+        respond: MethodType,
         error: str = None,
         headers: Dict[str, str] = None,
     ) -> None:
@@ -1148,11 +1328,21 @@ class Server:
             _headers = self.headers.copy()
             _headers.update(headers)
 
-        logger_debug("Call respond WSGI function...")
+        logger_response(
+            f"Response {environ['REMOTE_IP']!r}:{environ['REMOTE_PORT']} "
+            f"{environ['REQUEST_METHOD']} {environ['PATH_INFO']} {error!r}"
+        )
         respond(error, [(k, v) for k, v in _headers.items()])
 
     @log_trace
-    def page_500(self, error: str, respond: FunctionType) -> List[bytes]:
+    def page_500(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error: Union[str, bytes, Iterable[bytes]],
+        respond: MethodType,
+    ) -> List[bytes]:
 
         """
         This function return error 500 web page.
@@ -1160,10 +1350,24 @@ class Server:
 
         error_code = "500 Internal Error"
         logger_debug("Send 500 Internal Error...")
-        return self.send_error_page(error_code, error.encode(), respond)
+        return self.send_error_page(
+            environ,
+            user,
+            filename,
+            error_code,
+            b"".join(self.return_page(error)),
+            respond,
+        )
 
     @log_trace
-    def page_404(self, url: str, respond: FunctionType):
+    def page_404(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        url: str,
+        respond: MethodType,
+    ):
 
         """
         This function return error 404 web page.
@@ -1178,12 +1382,23 @@ class Server:
             f" on this server.\nURLs:\n\t - {urls}"
         )
         logger_error(f"HTTP 404 on {url}")
-        return self.send_error_page(error_code, error.encode(), respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error.encode(), respond
+        )
 
     @log_trace
-    def page_400(self, method: str, respond: FunctionType):
+    def page_400(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        method: str,
+        respond: MethodType,
+    ):
 
-        """This function return error 403 web page."""
+        """
+        This function return error 400 web page.
+        """
 
         error_code = "400 Bad Request"
         error = (
@@ -1191,46 +1406,89 @@ class Server:
             f"POST or HEAD not {method}".encode()
         )
         logger_debug("Send 400 Bad Request...")
-        return self.send_error_page(error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
-    def page_401(self, error_description: str, respond: FunctionType):
+    def page_401(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
+    ):
 
-        """This function return error 401 web page."""
+        """
+        This function return error 401 web page.
+        """
 
         error_code = "401 Unauthorized"
         error = b"Unauthorized (You don't have permissions)"
         logger_debug("Send 401 Unauthorized...")
-        return self.send_error_page(error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
-    def page_403(self, error_description: str, respond: FunctionType):
+    def page_403(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
+    ):
 
-        """This function return error 403 web page."""
+        """
+        This function return error 403 web page.
+        """
 
         error_code = "403 Forbidden"
         error = b"Forbidden (You don't have permissions)"
         logger_debug("Send 403 Forbidden...")
-        return self.send_error_page(error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
-    def page_406(self, error_description: str, respond: FunctionType):
+    def page_406(
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error_description: str,
+        respond: MethodType,
+    ):
 
-        """This function return error 406 web page."""
+        """
+        This function return error 406 web page.
+        """
 
         error_code = "406 Not Acceptable"
         error = (
             b"Not Acceptable, your request is not a valid WebScripts request."
         )
         logger_debug("Send 406 Not Acceptable...")
-        return self.send_error_page(error_code, error, respond)
+        return self.send_error_page(
+            environ, user, filename, error_code, error, respond
+        )
 
     @log_trace
     def send_error_page(
-        self, error: str, data: bytes, respond: FunctionType
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error: str,
+        data: bytes,
+        respond: MethodType,
     ) -> List[bytes]:
 
-        """This function send HTTP errors."""
+        """
+        This function send HTTP errors.
+        """
 
         code = error[:3]
         headers = {"Content-Type": "text/plain; charset=utf-8"}
@@ -1239,7 +1497,7 @@ class Server:
         logger_debug("Trying to get custom error response...")
         try:
             custom_error, custom_headers, custom_data = self.send_custom_error(
-                error, code
+                environ, user, filename, error, code
             )
         except Exception as exception:
             print_exc()
@@ -1251,7 +1509,7 @@ class Server:
 
         if self.debug:
             logger_warning("Send debug error page...")
-            self.send_headers(respond, error, headers)
+            self.send_headers(environ, respond, error, headers)
             return [
                 b"---------------\n",
                 f"** ERROR {code} **\n".encode(),
@@ -1263,11 +1521,11 @@ class Server:
 
         if custom_data is not None:
             logger_debug("Send custom error page...")
-            self.send_headers(respond, custom_error, custom_headers)
+            self.send_headers(environ, respond, custom_error, custom_headers)
             return custom_data
 
         logger_debug("Send default error page...")
-        self.send_headers(respond, error, headers)
+        self.send_headers(environ, respond, error, headers)
         return [
             b"---------------\n",
             f"** ERROR {code} **\n".encode(),
@@ -1275,7 +1533,12 @@ class Server:
         ]
 
     def send_custom_error(
-        self, error: str, code: str
+        self,
+        environ: _Environ,
+        user: User,
+        filename: str,
+        error: str,
+        code: str,
     ) -> Tuple[str, Dict[str, str], str]:
 
         """
@@ -1283,6 +1546,15 @@ class Server:
         """
 
         logger_debug("Search custom error in packages...")
+
+        cache = self.pages_cache
+        function_name = "page_" + code
+        function, _ = cache[function_name]
+
+        if function is not None:
+            logger_debug("Get custom error page (function) from cache.")
+            return function(environ, user, self, filename, error)
+
         packages = self.pages.packages
         # for package in self.pages.packages.__dict__.values():
         for package in dir(packages):
@@ -1290,21 +1562,28 @@ class Server:
 
             if isinstance(package, ModuleType):
                 logger_debug(f"Check in {package}...")
-                page = package.__dict__.get("page_" + code)
+                page = getattr(package, function_name, None)
 
                 if page is not None:
                     logger_info(
                         f"Found the custom error page: {package}.page_{code}"
                     )
+                    cache[function_name] = page, False
                     return page(
+                        environ,
+                        user,
+                        self,
+                        filename,
                         error,
                     )
 
 
 @log_trace
-def parse_args() -> Namespace:
+def parse_args(argv: List[str] = argv) -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parse command line arguments.
+    """
 
     parser = ArgumentParser(
         description="This package implements a web server to run scripts or "
@@ -1525,7 +1804,7 @@ def parse_args() -> Namespace:
         "--n-adr",
         help="The email address to send notifications.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv[1:])
 
 
 @log_trace
@@ -1542,6 +1821,9 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     ]
     insert = paths.insert
 
+    temp_config = Configuration()
+    temp_config.force_file_permissions = True
+
     if system() == "Windows":
         logger_debug("Add default server configuration for Windows...")
         insert(0, join(server_path, "config", "nt", "server.json"))
@@ -1554,7 +1836,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in paths:
         logger_debug(f"Check {filename}...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(f"Configuration file detected: {filename}")
             if filename.endswith(".json"):
                 yield loads(get_file_content(filename))
@@ -1566,7 +1848,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in arguments.config_cfg:
         logger_debug("Check configuration file (cfg) added in arguments...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(
                 f"Configuration file detected (type cfg): {filename}"
             )
@@ -1580,7 +1862,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     for filename in arguments.config_json:
         logger_debug("Check configuration file (json) added in arguments...")
 
-        if exists(filename):
+        if exists(filename) and check_file_permission(temp_config, filename):
             logger_warning(
                 f"Configuration file detected (type json): {filename}"
             )
@@ -1607,15 +1889,13 @@ def logs_configuration(configuration: NameSpace) -> None:
     """
 
     log_config = {}
+    log_level = getattr(configuration, "log_level", 0)
 
-    if (
-        isinstance(configuration.log_level, str)
-        and configuration.log_level.isdigit()
-    ):
-        configuration.log_level = int(configuration.log_level)
-    elif isinstance(configuration.log_level, str):
-        configuration.log_level = getattr(logging, configuration.log_level, 0)
-    elif not isinstance(configuration.log_level, int):
+    if isinstance(log_level, str) and log_level.isdigit():
+        configuration.log_level = int(log_level)
+    elif isinstance(log_level, str):
+        configuration.log_level = getattr(logging, log_level, 0)
+    elif not isinstance(log_level, int):
         raise WebScriptsConfigurationError(
             "log_level configuration must be an integer or a "
             'string in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]'
@@ -1662,6 +1942,8 @@ def add_configuration(
         add_conf(**server)
 
     logger_debug("Build type of configurations...")
+
+    logs_configuration(current_configuration)
     current_configuration.build_types()
 
     config_dict = current_configuration.get_dict()
@@ -1672,10 +1954,12 @@ def add_configuration(
     return configuration
 
 
-def configure_logs_system() -> None:
+def configure_logs_system() -> Tuple[Set[str], Set[str]]:
 
-    """This function try to create the logs directory
-    if not found and configure logs."""
+    """
+    This function try to create the logs directory
+    if not found and configure logs.
+    """
 
     if not isdir("logs"):
         logger_info("./logs directory not found.")
@@ -1689,31 +1973,70 @@ def configure_logs_system() -> None:
         else:
             logger_info("./logs directory is created.")
 
+    log_file = get_real_path(join("config", "loggers.ini"))
+
+    temp_config = Configuration()
+    temp_config.force_file_permissions = True
+
+    if not check_file_permission(temp_config, log_file):
+        raise WebScriptsSecurityError(
+            "Logs configuration file/directory permissions are"
+            " insecure. Remote code execution can be exploited."
+        )
+
     fileConfig(
-        get_real_path(join("config", "loggers.ini")),
+        log_file,
         disable_existing_loggers=False,
     )
 
-    basicConfig(
-        format="%(asctime)s %(levelname)s %(message)s (%(funcName)s -> "
-        "%(filename)s:%(lineno)d)",
-        datefmt="%d/%m/%Y %H:%M:%S",
-        encoding="utf-8",
-        level=0,
-        filename=join(get_real_path("logs", is_dir=True), "root.logs"),
-        force=True,
-    )
+    Logs.log_response.handlers[0].baseFilename
 
-    # for logger in (
-    #     "log_trace",
-    #     "log_debug",
-    #     "log_info",
-    #     "log_warning",
-    #     "log_error",
-    #     "log_critical",
-    #     "file",
-    # ):
-    #     logger = getattr(Logs, logger)
+    # basicConfig(
+    #     format=(
+    #         "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> "
+    #         "%(filename)s:%(lineno)d)"
+    #     ),
+    #     datefmt="%d/%m/%Y %H:%M:%S",
+    #     encoding="utf-8",
+    #     level=0,
+    #     filename=join(get_real_path("logs", is_dir=True), "root.logs"),
+    #     force=True,
+    # )
+
+    logs_path = set()
+    log_files = set()
+
+    logs_path_add = logs_path.add
+    log_files_add = log_files.add
+
+    for logger_ in (
+        "log_trace",
+        "log_response",
+        "log_access",
+        "log_command",
+        "log_debug",
+        "log_info",
+        "log_warning",
+        "log_error",
+        "log_critical",
+        "file",
+    ):
+        logger = getattr(Logs, logger_)
+        handlers = logger.handlers
+
+        for handler in handlers:
+            filepath = getattr(handler, "baseFilename", None)
+            if filepath is not None:
+                logs_path_add(dirname(filepath))
+                log_files_add(
+                    (logger_.split("_", 1)[1] if "_" in logger_ else "all")
+                    + "?"
+                    + filepath
+                )
+
+    environ["WEBSCRIPTS_LOGS_PATH"] = "|".join(logs_path)
+    environ["WEBSCRIPTS_LOGS_FILES"] = "|".join(log_files)
+    return logs_path, log_files
 
     #     if logger.hasHandlers() and len(logger.handlers):
     #         logger.handlers[0].doRollover = Handler.doRollover
@@ -1721,12 +2044,14 @@ def configure_logs_system() -> None:
     #         logger.handlers[0].namer = Handler.namer
 
 
-def send_mail(configuration: Configuration, message: str) -> int:
+def send_mail(*args, **kwargs) -> int:
 
-    """This function send a mail to adminitrators
+    """
+    This function send a mail to adminitrators
     using the error_pages modules.
 
-    Return 0 if message is sent else 1."""
+    Return 0 if message is sent else 1.
+    """
 
     logger_debug("Get module error_pages...")
     error_pages = getattr(Pages.packages, "error_pages", None)
@@ -1734,15 +2059,76 @@ def send_mail(configuration: Configuration, message: str) -> int:
         logger_debug("Start a Thread to send email...")
         Thread(
             target=error_pages.Request.send_mail,
-            args=(
-                configuration,
-                message,
-            ),
+            args=args,
+            kwargs=kwargs,
         ).start()
         return 0
 
     logger_error("Module error_pages is not detected, can not send email.")
     return 1
+
+
+def default_configuration(argv: List[str] = argv) -> Configuration:
+
+    """
+    This function builds the default configuration.
+    """
+
+    log_paths, log_files = configure_logs_system()
+    environ["WEBSCRIPTS_PATH"] = server_path
+    args = parse_args(argv)
+
+    logger_debug("Load configurations...")
+
+    configuration = Configuration()
+    configuration.logs_path = list(log_paths)
+    configuration.log_files = list(log_files)
+    for config in get_server_config(args):
+        configuration = add_configuration(configuration, config)
+
+    configuration = add_configuration(configuration, args.__dict__)
+    # logs_configuration(configuration)
+
+    logger_debug("Check and type configurations...")
+    configuration.set_defaults()
+    configuration.check_required()
+    configuration.get_unexpecteds()
+    configuration.build_types()
+
+    urls_section = configuration.get("urls_section")
+
+    if urls_section is not None:
+        urls = getattr(configuration, urls_section, None)
+
+        if urls is None:
+            raise WebScriptsConfigurationError(
+                f"The 'urls_section' ({urls_section!r}) " "does not exists."
+            )
+
+        if not isinstance(urls, dict) or not all(
+            isinstance(k, str) and isinstance(v, str) for k, v in urls.items()
+        ):
+            raise WebScriptsConfigurationError(
+                f"Key {urls_section!r} (the url section) should be a section"
+                ' of strings (dict or JSON object {"string": "string"}).'
+            )
+
+        configuration.urls = urls
+    else:
+        configuration.urls = {}
+
+    configuration.__types__["log_level"] = int
+    configuration.data_dir = datapath = get_real_path(
+        getattr(configuration, "data_dir", "data"), is_dir=True
+    )
+    environ["WEBSCRIPTS_DATA_PATH"] = datapath
+    environ["WEBSCRIPTS_DOCUMENTATION_PATH"] = ":".join(
+        configuration.documentations_path
+    )
+
+    logger_info("Configurations are loaded.")
+
+    return configuration
 
 
 def main() -> int:
@@ -1758,28 +2144,7 @@ def main() -> int:
     else:
         NO_START = False
 
-    configure_logs_system()
-    environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
-    environ["WEBSCRIPTS_PATH"] = server_path
-    args = parse_args()
-
-    logger_debug("Load configurations...")
-
-    configuration = Configuration()
-    for config in get_server_config(args):
-        configuration = add_configuration(configuration, config)
-
-    configuration = add_configuration(configuration, args.__dict__)
-
-    logs_configuration(configuration)
-
-    logger_debug("Check and type configurations...")
-    configuration.set_defaults()
-    configuration.check_required()
-    configuration.get_unexpecteds()
-    configuration.build_types()
-
-    logger_info("Configurations are loaded.")
+    configuration = default_configuration(argv)
     debug = getattr(configuration, "debug", None)
 
     if debug:
@@ -1803,7 +2168,7 @@ def main() -> int:
     )
 
     logger_info("Check hardening of the WebScripts server...")
-    hardening(server, Logs, send_mail)
+    hardening(server)
 
     if debug:
         # second export to get all configurations

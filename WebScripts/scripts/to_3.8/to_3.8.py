@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 
 This file change the code for python3.8 compatibility.
 
-To install WebScripts with python3.8 compatibility 
+To install WebScripts with python3.8 compatibility
 as package run the following commands line:
     - python3.8 to_3.8.py
     - python3.8 ../../../setup38.py install
@@ -35,7 +35,7 @@ The new package is named WebScripts38.
 Impact: "log_encoding" configuration is not use.
 """
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -74,7 +74,10 @@ def copy(directory: str, setup_filename: str) -> None:
     """
 
     logging.warning("Copy the WebScripts directory and the setup filename...")
-    copytree(path.join(directory, "WebScripts"), path.join(directory, "WebScripts38"))
+    copytree(
+        path.join(directory, "WebScripts"),
+        path.join(directory, "WebScripts38"),
+    )
     copyfile(path.join(directory, "setup.py"), setup_filename)
     logging.info("Copy the WebScripts directory and the setup filename...")
 
@@ -91,7 +94,8 @@ def change_setup(filename: str) -> None:
     with open(filename, "w") as file:
         file.write(
             content.replace(
-                "import WebScripts as package", "import WebScripts38 as package"
+                "import WebScripts as package",
+                "import WebScripts38 as package",
             ).replace('python_requires=">=3.9",', 'python_requires=">=3.8",')
         )
 
@@ -125,12 +129,27 @@ def change_utils(filename: str):
     with open(filename, "w") as file:
         file.write(
             content.replace(
-                "from typing import TypeVar, List, Dict, _SpecialGenericAlias, _GenericAlias",
-                "from typing import TypeVar, List, Dict, _GenericAlias",
+                """from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _SpecialGenericAlias,
+    _GenericAlias,
+    Any,
+    Union,
+)""",
+                """from typing import (
+    TypeVar,
+    List,
+    Dict,
+    _GenericAlias,
+    Any,
+    Union,
+)""",
             ).replace(
                 """ or isinstance(
-                type_, _SpecialGenericAlias
-            )""",
+            type_, _SpecialGenericAlias
+        )""",
                 "",
             )
         )
@@ -190,6 +209,7 @@ def change_subscriptable_iterator(directory: str) -> None:
 
         logging.info(f"New {filename} is changed ({number} times).")
 
+
 def main():
 
     """
@@ -204,7 +224,9 @@ def main():
     change_manifest(path.join(webscript_dir, "MANIFEST.in"))
     change_setup(new_setup)
     change_utils(path.join(webscript_dir, "WebScripts38", "utils.py"))
-    change_WebScripts(path.join(webscript_dir, "WebScripts38", "WebScripts.py"))
+    change_WebScripts(
+        path.join(webscript_dir, "WebScripts38", "WebScripts.py")
+    )
     change_subscriptable_iterator(webscript_dir)
 
 

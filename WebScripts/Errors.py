@@ -20,21 +20,22 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This package implements a web server to run scripts or
-executables from the command line and display the result
-in a web interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file contains all WebScripts errors class."""
+This file contains WebScripts exception classes.
+"""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This package implements a web server to run scripts or
-executables from the command line and display the result in a web interface.
+__description__ = """
+This tool run scripts and display the result in a Web Interface.
 
-This file contains all WebScripts errors class."""
+This file contains WebScripts exception classes.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -60,48 +61,62 @@ __all__ = [
 
 class WebScriptsError(Exception):
 
-    """To raise WebScripts errors"""
+    """
+    To raise WebScripts errors
+    """
 
     pass
 
 
 class WebScriptsConfigurationError(WebScriptsError):
 
-    """To raise Configuration Error."""
+    """
+    To raise Configuration Error.
+    """
 
     pass
 
 
 class WebScriptsConfigurationTypeError(WebScriptsConfigurationError):
 
-    """To raise Configuration Error."""
+    """
+    To raise Configuration Error.
+    """
 
     pass
 
 
 class WebScriptsArgumentError(WebScriptsError):
 
-    """To raise Argument Error."""
+    """
+    To raise Argument Error.
+    """
 
     pass
 
 
-class ScriptConfigurationError(WebScriptsError):
+class ScriptConfigurationError(WebScriptsConfigurationError):
 
-    """To raise Script Configuration Error."""
+    """
+    To raise Script Configuration Error.
+    """
 
     pass
 
 
 class MissingAttributesError(WebScriptsError):
 
-    """To raise Missing Attributes Error."""
+    """
+    To raise Missing Attributes Error.
+    """
 
     pass
 
 
 class WebScriptsSecurityError(WebScriptsError):
 
-    """To raise Security Error in WebScripts services."""
+    """
+    To raise Security Error in WebScripts services.
+    """
 
     pass

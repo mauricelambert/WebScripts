@@ -47,7 +47,7 @@ The default configuration JSON files:
         "documentations_path": [
             "./doc/*.html"
         ],
-        "modules": ["error_pages", "share"],
+        "modules": ["error_pages", "share", "cgi", "rss", "JsonRpc", "notification"],
         "modules_path": ["./modules"],
         "js_path": [
             "./static/js/*.js"
@@ -75,7 +75,19 @@ The default configuration JSON files:
             "admin1@webscripts.local",
             "admin2@webscripts.local"
         ],
-        "notification_address": "notification@webscripts.local"
+        "notification_address": "notification@webscripts.local",
+
+        "webproxy_number": 0,
+
+        "data_dir": "data",
+        "cgi_path": ["cgi-bin"]
+    },
+
+    "urls": {
+        "/authentication/": "/web/auth/",
+        "/cgi-bin/": "/cgi/bin/",
+        "/bin/": "/cgi/bin/",
+        "/cgi/": "/cgi/bin/"
     }
 }
 ```
@@ -87,7 +99,7 @@ The default configuration INI file:
 interface=127.0.0.1                                                                            # required value
 port=8000                                                                                      # required value
 
-debug=false                                                                                    # Export config and get error messages on HTTP errors pages [NEVER true in production]
+debug=false                                                                                    # Export the full server configuration, active unsecure module to see and change configurations and get error messages on HTTP errors pages [NEVER true in production]
 security=true                                                                                  # Add security HTTP headers
 
 accept_unknow_user=false                                                                       # Don't force a user to re-authenticate
@@ -108,7 +120,7 @@ ini_scripts_config=./config/scripts/*.ini                                       
 documentations_path=./doc/*.html                                                               # Add path to search documentation scripts
 # modules                                                                                      # Add custom modules (names) to the server
 # modules_path                                                                                 # Add directory to import custom modules
-modules=error_pages,share
+modules=error_pages,share,cgi,rss,JsonRpc,notification
 modules_path=./modules
 js_path=./static/js/*.js                                                                       # Add glob syntax files to get javascript files
 statics_path=./static/html/*.html,./static/css/*.css,./static/images/*.png,./static/images/*.jpg,./static/pdf/*.pdf  # Add glob syntax files to get static files
@@ -126,11 +138,21 @@ smtp_port=25                                                                    
 smtp_ssl=false                                                                                 # Using SSL (not starttls) to secure the connection
 admin_adresses=admin1@webscripts.local,admin2@webscripts.local                                 # Administrators email addresses to receive the notification
 notification_address=notification@webscripts.local                                             # Notification address to send the notification (the sender email address)
+webproxy_number=0                                                                              # Number of web proxies in front of the WebScripts server (this is the security configuration to block IP address spoofing: proxies add a header to send the client's IP address and proxies use different headers, there is no way to know which header is the right IP but it is possible to check the number of IPs in the headers). This configuration impact the bruteforce protection and the IP filtering authentication. Without this configuration the IP spoofing protection will be disabled (the bruteforce protection and IP filtering in authentication will be ineffective).
+
+data_dir=data                                                                                  # Configure data directory
+cgi_path=cgi-bin                                                                               # CGI path to find scripts
+
+[urls]
+/authentication/=/web/auth/                                                                    # Routing the URL -> /authentication/ 'redirect' to /web/auth/
+/cgi-bin/=/cgi/bin/                                                                            # Routing the URL -> /cgi-bin/ 'redirect' to /cgi/bin/
+/cgi/=/cgi/bin/                                                                                # Routing the URL -> /cgi/ 'redirect' to /cgi/bin/
+/bin/=/cgi/bin/                                                                                # Routing the URL -> /bin/ 'redirect' to /cgi/bin/
 ```
 
  - *interface*: to change the connection interface
  - *port*: to change the connection port
- - *debug*: active the debug mode (export configuration, print error message and existing URLs in web page)
+ - *debug*: active the debug mode (export configuration, print error message and existing URLs in web page and active unsecure module to see and change configurations)
  - *security*: send security HTTP headers, desactive the Content-Security-Policy-Report-Only header and debug module for Content-Security-Policy
  - *accept_unknow_user* and *accept_unauthenticated_user*: don't force client authentication
  - *active_auth*: active the authentication script
@@ -162,6 +184,13 @@ notification_address=notification@webscripts.local                              
  - *smtp_ssl*: Use SSL to secure the connection
  - *admin_adresses*: Administrators email addresses to receive email notification
  - *notification_address*: Address to send email notifications (and username if password is not `None`)
+ - *webproxy_number*: Number of Web proxy that add new IP address in HTTP request
+ - *data_dir*: The data directory path
+ - *cgi_path*: The CGI scripts/executables directories
+
+## URLs
+
+You can defined URLs to redirect to other WebScripts URLs. It's useful to create shorthen URLs or to access faster to some Web pages.
 
 ## INI syntax
 

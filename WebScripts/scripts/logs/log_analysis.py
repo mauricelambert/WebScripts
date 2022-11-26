@@ -3,7 +3,7 @@
 
 ###################
 #    This file displays an HTML table for log and activity analysis
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file displays an HTML table for log and activity analysis."""
+This file displays an HTML table for log and activity analysis.
+"""
 
-__version__ = "0.0.2"
+__version__ = "1.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -31,7 +33,8 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file displays an HTML table for log and activity analysis."""
+This file displays an HTML table for log and activity analysis.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -44,93 +47,100 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = ["get_line", "build_html_table", "main"]
+__all__ = ["write_line", "write_csv", "main"]
 
+from collections import Counter
 from typing import Dict, List
-from os import path  # , chdir
-import sys
+from sys import exit, stdout
+from os import environ
+from csv import writer
 
 
-def get_line(
+def write_line(
+    csv_writer: writer,
     date: str,
     dates: List[str],
     columns: List[str],
     table: Dict[str, Dict[str, int]],
-) -> str:
+) -> None:
 
-    """This function creates an HTML table row."""
-
-    line = ""
+    """
+    This function creates an HTML table row.
+    """
 
     if date not in dates:
-        dates.append(date)
-        line = "<tr>"
-        for column in columns:
-            if column == "date":
-                line += f"<td>{date[1:]}</td>"
-            else:
-                log_number = table[column].get(date, 0)
-                line += f"<td>{log_number}</td>"
-
-        line += "</tr>"
-
-    return line
+        dates.add(date)
+        csv_writer.writerow(
+            [
+                date[1:]
+                if column == "date"
+                else str(table[column].get(date, 0))
+                for column in columns
+            ]
+        )
 
 
-def build_html_table(table: Dict[str, Dict[str, int]]) -> str:
+def write_csv(table: Dict[str, Dict[str, int]]) -> None:
 
-    """This function builds the HTML table."""
+    """
+    This function builds the HTML table.
+    """
 
-    columns = ["date"] + list(table.keys())
-    dates = []
-    html = f"<table><tr><td>{'</td><td>'.join(columns)}</td></tr>"
+    columns = ["date", *table.keys()]
+    csv_writer = writer(stdout)
+    csv_writer.writerow(columns)
+
+    dates = set()
 
     for dates_ in table.values():
         for date in dates_.keys():
-            html += get_line(date, dates, columns, table)
-
-    return html + "</table>"
+            write_line(csv_writer, date, dates, columns, table)
 
 
-def main() -> None:
+def main() -> int:
 
-    """This function read the logfile and parse lines."""
-
-    # chdir(path.join(path.dirname(__file__), "..", ".."))
+    """
+    This function read the logfile and parse lines.
+    """
 
     table = {}
-    last_char = -1
 
-    with open(path.join("logs", "00-server.logs")) as logfile:
-        line = logfile.readline()
+    for level in environ["WEBSCRIPTS_LOGS_FILES"].split("|"):
+        level, filename = level.split("?", 1)
 
-        while last_char != logfile.tell():
+        if level.casefold() == "all":
+            break
+
+    with open(filename) as logfile:
+        readline = logfile.readline
+        line = readline()
+
+        while line != "":
             line = line.split(maxsplit=4)
 
             if len(line) == 5 and line[2] in (
                 "DEBUG",
-                "WARNING",
                 "INFO",
+                "ACCESS",
+                "RESPONSE",
+                "COMMAND",
+                "WARNING",
                 "ERROR",
                 "CRITICAL",
             ):
                 date, time, level, level_no, log = line
             else:
-                line = logfile.readline()
-                last_char = logfile.tell()
+                line = readline()
                 continue
 
-            table.setdefault(level, {})
-            table_level = table[level]
-            table_level.setdefault(date, 0)
+            table_level = table.setdefault(level, Counter())
             table_level[date] += 1
 
-            last_char = logfile.tell()
-            line = logfile.readline()
+            line = readline()
 
-    print(build_html_table(table))
+    write_csv(table)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

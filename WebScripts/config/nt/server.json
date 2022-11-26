@@ -5,6 +5,7 @@
 
 		"debug": false,
 		"security": true,
+		"force_file_permissions": true,
 		
 		"accept_unknow_user": false,
 		"accept_unauthenticated_user": false,
@@ -18,7 +19,10 @@
 		"session_max_time": 3600,
 		"csrf_max_time": 300,
 
+		"urls_section": "urls",
+
 		"scripts_path": [
+			"./scripts/rss",
 			"./scripts/account", 
 			"./scripts/passwords", 
 			"./scripts/uploads"
@@ -34,7 +38,7 @@
 		"documentations_path": [
 			"./doc/*.html"
 		],
-		"modules": ["error_pages", "share"],
+		"modules": ["error_pages", "share", "cgi", "rss", "JsonRpc", "notification"],
 		"modules_path": ["./modules"],
 		"js_path": [
 			"./static/js/*.js"
@@ -62,7 +66,19 @@
 			"admin1@webscripts.local",
 			"admin2@webscripts.local"
 		],
-		"notification_address": "notification@webscripts.local"
+		"notification_address": "notification@webscripts.local",
+
+		"webproxy_number": 0,
+
+		"data_dir": "data",
+		"cgi_path": ["cgi-bin"]
+	},
+
+	"urls": {
+		"/authentication/": "/web/auth/",
+		"/cgi-bin/": "/cgi/bin/",
+		"/bin/": "/cgi/bin/",
+		"/cgi/": "/cgi/bin/"
 	},
 
 	"scripts": {

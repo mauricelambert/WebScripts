@@ -9,7 +9,8 @@
 		"delete_group.py": "config_delete_group",
 		"api_view_users.py": "config_api_view_users",
 		"api_view_groups.py": "config_api_view_groups",
-		"change_user_password.py": "config_change_user_password"
+		"change_user_password.py": "config_change_user_password",
+		"my_user_informations.py": "config_my_user_informations"
 	},
 
 	"config_change_user_password": {
@@ -125,7 +126,7 @@
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -137,7 +138,7 @@
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_users_args",
-		"content_type": "text/plain",
+		"content_type": "text/json",
 		"category": "Administration",
 		"description": "This script list all users to get names, IDs and groups (access level).",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -217,7 +218,7 @@
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -229,7 +230,7 @@
 		"launcher": "python",
 		"access_groups": [1000],
 		"args": "view_groups_args",
-		"content_type": "text/plain",
+		"content_type": "text/json",
 		"category": "Administration",
 		"description": "This script list all groups to get IDs, access level and names.",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -252,5 +253,14 @@
 
 	"args_get_apikey": {
 		"password": "arg_password"
+	},
+
+	"config_my_user_informations": {
+		"timeout": 15,
+		"minimum_access": 50,
+		"launcher": "python",
+		"category": "My Account",
+		"description": "This script prints user informations.",
+		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
 	}
 }

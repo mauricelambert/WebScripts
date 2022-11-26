@@ -26,7 +26,13 @@ variables values.
 """
 
 from os import path, rename, chdir, getcwd, mkdir, remove
+from unittest.mock import MagicMock, patch, Mock
+from contextlib import suppress
+from importlib import reload
+from platform import system
 import logging.config
+import subprocess
+import builtins
 import logging
 import sys
 
@@ -152,14 +158,255 @@ def import_without_package():
         raise error
 
 
-disable_logs()
+# disable_logs()
 import_without_package()
 
-import WebScripts
+from importlib.util import spec_from_file_location, module_from_spec
+from os.path import basename, splitext, split, join
+from importlib._bootstrap import _exec
+from types import ModuleType
 
-sys.argv = ["WebScripts", "--debug"]
-WebScripts.main()
+
+def import_from_filename(filename: str) -> ModuleType:
+
+    """
+    This function returns a module from path/filename.
+    """
+
+    spec = spec_from_file_location(splitext(basename(filename))[0], filename)
+    module = module_from_spec(spec)
+    module.__spec__ = spec
+    spec.loader.exec_module(module)
+
+    return module
+
+
+class OsModule:
+    def __new__(cls):
+        import os
+
+        return type("OsModule", (), os.__dict__)
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def mkdir(file):
+        raise PermissionError
+
+    class path:
+        def __new__(cls):
+            import os.path
+
+            return type("PathModule", (), os.path.__dict__)
+
+        def __init__(self):
+            pass
+
+        @staticmethod
+        def isdir(directory):
+            return False
+
+
+import os
+import os.path
+
+sys.modules["os"] = OsModule()
+sys.modules["path"] = OsModule.path()
+sys.modules["os.path"] = OsModule.path()
+
+sys.modules["os"].mkdir = OsModule.mkdir
+
+with patch.object(
+    sys.modules["os.path"], "isdir", return_value=False
+), patch.object(sys.modules["path"], "isdir", return_value=False):
+    import WebScripts
+
+real_check_file_permission = WebScripts.check_file_permission
+
+WebScripts.check_file_permission = lambda *x, **y: True
+
+WebScripts.configure_logs_system()
+
+sys.modules["utils"] = utils = import_from_filename(
+    join(split(WebScripts.__file__)[0], "utils.py")
+)
+# sys.modules["commons"] = commons = import_from_filename(
+#     join(split(WebScripts.__file__)[0], "commons.py")
+# )
+# sys.modules["hardening"] = hardening = import_from_filename(
+#     join(split(WebScripts.__file__)[0], "hardening.py")
+# )
+
+# utils2 = sys.modules.get("WebScripts.utils", utils)
+# commons2 = sys.modules.get("WebScripts.commons", commons)
+# hardening2 = sys.modules.get("WebScripts.hardening", hardening)
+
+# utils2.check_file_permission = commons2.check_file_permission = utils.check_file_permission = commons.check_file_permission = lambda *x, **y: True
+IS_WINDOWS = utils.IS_WINDOWS
+# utils2.IS_WINDOWS = utils.IS_WINDOWS = True
+
+
+def get_pourcent(self) -> None:
+    self.pourcent = {s.value: 0 for s in hardening2.SEVERITY}
+    self.pourcent["ALL"] = 0
+    print("*" * 50)
+
+
+# real_get_pourcent = hardening2.Report.get_pourcent
+# hardening2.Report.get_pourcent = hardening.Report.get_pourcent = get_pourcent
+
+WebScripts.argv = sys.argv = ["WebScripts", "--debug", "--active-auth"]
+
+# print("", *dir(WebScripts), sep="\n")
+# print(WebScripts.isdir)
+# print(WebScripts.mkdir)
+
+WebScripts.mkdir = OsModule.mkdir
+# print(WebScripts.mkdir)
+WebScripts.main.__globals__["get_ip"].__globals__[
+    "check_file_permission"
+] = lambda *x, **y: True
+WebScripts.main.__globals__["get_ip"].__globals__["IS_WINDOWS"] = True
+daemon_func = WebScripts.main.__globals__["hardening"].__globals__[
+    "daemon_func"
+]
+WebScripts.main.__globals__["hardening"].__globals__["daemon_func"] = Mock()
+simple_server = WebScripts.main.__globals__["simple_server"]
+WebScripts.main.__globals__["simple_server"] = Mock()
+with patch.object(WebScripts, "isdir", return_value=False):
+    WebScripts.main()
+
+# hardening2.Report.get_pourcent = hardening.Report.get_pourcent = real_get_pourcent
+# utils2.check_file_permission = commons2.check_file_permission = utils.check_file_permission = commons.check_file_permission = WebScripts.check_file_permission = real_check_file_permission
 sys.argv = argv
+# utils2.IS_WINDOWS = utils.IS_WINDOWS = IS_WINDOWS
+WebScripts.main.__globals__["get_ip"].__globals__[
+    "check_file_permission"
+] = real_check_file_permission
+WebScripts.main.__globals__["get_ip"].__globals__["IS_WINDOWS"] = IS_WINDOWS
+WebScripts.main.__globals__["hardening"].__globals__[
+    "daemon_func"
+] = daemon_func
+WebScripts.main.__globals__["simple_server"] = simple_server
 
-for file in to_remove:
-    remove(file)
+sys.modules["win32evtlogutil"] = Mock(ReportEvent=Mock())
+sys.modules["win32security"] = Mock(
+    OpenProcessToken=Mock(),
+    GetTokenInformation=Mock(return_value=[Mock()]),
+    TokenUser=Mock(),
+)
+sys.modules["win32api"] = Mock(GetCurrentProcess=Mock())
+sys.modules["win32con"] = Mock(TOKEN_READ=Mock())
+sys.modules["win32evtlog"] = Mock(
+    EVENTLOG_INFORMATION_TYPE=Mock(),
+    EVENTLOG_WARNING_TYPE=Mock(),
+    EVENTLOG_ERROR_TYPE=Mock(),
+)
+_exec(utils.__spec__, utils)
+
+
+class ModuleTest:
+    @property
+    def ReportEvent(self):
+        raise ImportError("test")
+
+    def __getattr__(self):
+        raise ImportError("test")
+
+    def __getattribute__(self):
+        raise ImportError("test")
+
+
+from inspect import stack
+
+
+def change_WINDOWS_LOGS(*args):
+    module_caller_globals = stack()[1].frame.f_globals
+    print("*" * 150)
+    print(module_caller_globals)
+    print("*" * 150)
+    module_caller_globals["WINDOWS_LOGS"] = False
+
+
+sys.modules["win32evtlogutil"] = ModuleTest()
+# from win32evtlogutil import ReportEvent
+del sys.modules["win32con"]
+del sys.modules["win32api"]
+del sys.modules["win32evtlog"]
+sys.modules["win32security"] = Mock()
+sys.modules["win32security"].GetTokenInformation = change_WINDOWS_LOGS
+# sys_path = sys.path
+# path_importer = sys.path_importer_cache.copy()
+# path_hooks = sys.path_hooks
+# meta_path = sys.meta_path
+
+# def clear_path():
+#     sys.path = []
+#     sys.path_importer_cache.clear()
+#     sys.path_hooks = []
+#     sys.modules = {k: v for k, v in sys.modules.items() if "win" not in k}
+#     sys.meta_path = []
+#     return "Windows"
+
+# sys.modules["platform"].system = clear_path
+_exec(utils.__spec__, utils)
+exec(open(utils.__file__).read())
+
+# sys.path = sys_path
+# sys.path_importer_cache = path_importer
+# sys.path_hooks = path_hooks
+# sys.meta_path = meta_path
+
+# print(sys.path, list(sys.modules.keys()))
+
+sys.modules["syslog"] = Mock(
+    syslog=Mock(),
+    LOG_DEBUG=Mock(),
+    LOG_INFO=Mock(),
+    LOG_WARNING=Mock(),
+    LOG_ERR=Mock(),
+    LOG_CRIT=Mock(),
+)
+sys.modules["pwd"] = Mock(
+    getpwuid=Mock(),
+)
+# sys.modules["platform"].system = (
+#     lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
+# )
+
+with patch.object(
+    sys.modules["platform"],
+    "system",
+    return_value=("Linux" if system() == "Windows" else "Windows"),
+), patch.object(
+    sys.modules["subprocess"],
+    "check_call",
+    return_value=0,
+):
+    utils.get_real_path("/test/whynot", no_error=True)
+    _exec(utils.__spec__, utils)
+
+# sys.modules["platform"].system = system
+
+with patch.object(
+    sys.modules["subprocess"],
+    "check_call",
+    return_value=0,
+):
+    _exec(utils.__spec__, utils)
+
+sys.argv = ["exe", "--test-running"]
+__import__(
+    "WebScripts",
+    {"__name__": "__main__"},
+    {"__name__": "__main__"},
+)
+
+global_ = globals().copy()
+local_ = locals().copy()
+
+local_["__name__"] = "__main__"
+global_["__name__"] = "__main__"
+
+# exec(open(WebScripts.__file__).read(), locals=local_, globals=global_)

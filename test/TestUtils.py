@@ -25,15 +25,15 @@ This file tests the Utils.py file
 """
 
 from os import path, device_encoding, getcwd
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, call
 from unittest import TestCase, main
 from types import MethodType
 from importlib import reload
 from os.path import abspath
+from platform import system
 from typing import List
 from io import StringIO
 from json import load
-import platform
 import locale
 import json
 import gzip
@@ -63,15 +63,18 @@ from WebScripts.utils import (
     CustomLogHandler,
     # namer,
     # rotator,
+    check_file_permission,
 )
 import WebScripts.utils
 
 
 class TestLinuxLogs(TestCase):  # Code coverage, no tests on Logs functions
     def setUp(self):
-        WebScripts.utils.syslog = Mock(
-            LOG_DEBUG=10, LOG_INFO=20, LOG_WARNING=30, LOG_ERR=40, LOG_CRIT=50
-        )
+        WebScripts.utils.LOG_DEBUG = 10
+        WebScripts.utils.LOG_INFO = 20
+        WebScripts.utils.LOG_WARNING = 30
+        WebScripts.utils.LOG_ERR = 40
+        WebScripts.utils.LOG_CRIT = 50
         WebScripts.utils.ReportEvent = Mock()
         self.logs = LinuxLogs
 
@@ -90,16 +93,24 @@ class TestLinuxLogs(TestCase):  # Code coverage, no tests on Logs functions
     def test_critical(self):
         self.logs.critical("test")
 
+    def test_access(self):
+        self.logs.access("test")
+
+    def test_response(self):
+        self.logs.response("test")
+
+    def test_command(self):
+        self.logs.command("test")
+
 
 class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
     def setUp(self):
-        WebScripts.utils.win32evtlog = Mock(
-            EVENTLOG_INFORMATION_TYPE=10,
-            EVENTLOG_WARNING_TYPE=20,
-            EVENTLOG_ERROR_TYPE=30,
-        )
+        WebScripts.utils.EVENTLOG_INFORMATION_TYPE = 10
+        WebScripts.utils.EVENTLOG_WARNING_TYPE = 20
+        WebScripts.utils.EVENTLOG_ERROR_TYPE = 30
         WebScripts.utils.ReportEvent = Mock()
         WebScripts.utils.WINDOWS_LOGS = True
+        WebScripts.utils.SID = "test"
         self.logs = WindowsLogs
 
     def test_debug(self):
@@ -116,6 +127,15 @@ class TestWindowsLogs(TestCase):  # Code coverage, no tests on Logs functions
 
     def test_critical(self):
         self.logs.critical("test")
+
+    def test_access(self):
+        self.logs.access("test")
+
+    def test_response(self):
+        self.logs.response("test")
+
+    def test_command(self):
+        self.logs.command("test")
 
 
 class TestLogs(TestCase):  # Code coverage, no tests on Logs functions
@@ -272,6 +292,50 @@ class TestDefaultNamespace(TestCase):
         with self.assertRaises(WebScriptsConfigurationError):
             self.default_namespace.build_types()
 
+    def test_build_type(self):
+
+        self.default_namespace.__types__ = {
+            "ListInt": List[int],
+            "ListStr": List[str],
+            "ListFloat": List[float],
+            "ListError": List[int],
+            "List": List[int],
+            "float": float,
+            "error": int,
+            "none": None,
+            "int": int,
+        }
+
+        self.default_namespace.build_type("int", 1)
+        self.default_namespace.build_type("float", 1)
+        self.default_namespace.build_type("none", None)
+        self.default_namespace.build_type("other", None)
+        self.default_namespace.build_type("ListInt", 1)
+        self.assertEqual(self.default_namespace.ListInt, [1])
+        self.default_namespace.build_type("ListInt", ["1", "2"])
+        self.default_namespace.build_type("ListFloat", "0.2,0.3")
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type(
+                "ListError", 1 + 2j
+            )  # complex(1,0)
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("error", 1 + 2j)
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("List", [1, "1", 1 + 2j])
+
+        with self.assertRaises(WebScriptsConfigurationError):
+            self.default_namespace.build_type("ListStr", ["1", 1 + 2j])
+
+        self.assertEqual(self.default_namespace.int, 1)
+        self.assertEqual(self.default_namespace.float, 1.0)
+        self.assertEqual(self.default_namespace.ListInt, [1, 2])
+        self.assertEqual(self.default_namespace.ListFloat, [0.2, 0.3])
+        self.assertEqual(self.default_namespace.none, "None")
+        self.assertEqual(self.default_namespace.other, "None")
+
     def test_set_default(self):
         self.default_namespace.__defaults__ = {
             "test": "value",
@@ -370,7 +434,7 @@ class TestFunctions(TestCase):
         # self.assertFalse(WebScripts.utils.WINDOWS_LOGS)
 
     def test_get_encodings(self):
-        encodings = ["utf-8", "cp1252", "latin-1"]
+        encodings = ["utf-8", "cp1252", "latin-1", None]
 
         if device_encoding(0) is not None:
             encodings.insert(0, device_encoding(0))
@@ -392,16 +456,16 @@ class TestFunctions(TestCase):
                 json.load(file),
             )
 
-        def generator():
-            yield "ascii"
+        with patch.object(
+            WebScripts.utils,
+            "get_encodings",
+            return_value=(x for x in ["ascii", None]),
+        ) as mock_method:
+            with open("test.txt", "wb") as file:
+                file.write(bytes(range(256)))
 
-        WebScripts.utils.get_encodings = generator
-
-        with open("test.txt", "wb") as file:
-            file.write(bytes(range(256)))
-
-        with self.assertRaises(Exception):
-            get_file_content("test.txt")
+            with self.assertRaises(Exception):
+                get_file_content("test.txt")
 
         os.remove("test.txt")
         os.remove("test.json")
@@ -419,7 +483,7 @@ class TestFunctions(TestCase):
             get_real_path("static/html/utils.html").lower(),
         )
 
-        if platform.system() == "Windows":
+        if system() == "Windows":
             self.assertEqual(
                 r"C:\WINDOWS\system32\cmd.exe".lower(),
                 get_real_path(r"C:\WINDOWS\system32\cmd.exe").lower(),
@@ -436,27 +500,47 @@ class TestFunctions(TestCase):
         os.remove("test.json")
 
         WebScripts.utils.system = (
-            "Linux" if platform.system() == "Windows" else "Windows"
+            "Linux" if system() == "Windows" else "Windows"
+        )
+        WebScripts.utils.IS_WINDOWS = (
+            False if WebScripts.utils.IS_WINDOWS else True
         )
 
         with self.assertRaises(FileNotFoundError):
             get_real_path("test.test")
 
+        self.assertIsNone(get_real_path("test.test", no_error=True))
+
     def test_get_ip(self):
         env = {
-            "X_REAL_IP": "ip1",
-            "X_FORWARDED_FOR": "ip2",
-            "X_FORWARDED_HOST": "ip3",
-            "REMOTE_ADDR": "ip4",
+            "HTTP_X_FORWARDED_FOR": "ip1, ipX",
+            "HTTP_X_REAL_IP": "ip2",
+            "HTTP_X_FORWARDED_HOST": "ip3",
+            "HTTP_CLIENT_IP": "ip4",
+            "REMOTE_ADDR": "ip5",
         }
 
-        self.assertEqual(get_ip(env), "ip1ip2ip3ip4")
-        env.pop("X_REAL_IP")
-        self.assertEqual(get_ip(env), "ip2ip3ip4")
-        env.pop("X_FORWARDED_FOR")
-        self.assertEqual(get_ip(env), "ip3ip4")
-        env.pop("X_FORWARDED_HOST")
-        self.assertEqual(get_ip(env), "ip4")
+        self.assertIsNone(get_ip(env, 5))
+
+        env["HTTP_X_FORWARDED_FOR"] = "ip1"
+
+        self.assertIsNone(get_ip(env, 2))
+        self.assertIsNotNone(get_ip(env, 5))
+
+        self.assertEqual(get_ip(env, None), "ip1, ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip1")
+        env.pop("HTTP_X_FORWARDED_FOR")
+        self.assertEqual(get_ip(env, None), "ip2, ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip2")
+        env.pop("HTTP_X_REAL_IP")
+        self.assertEqual(get_ip(env, None), "ip3, ip4, ip5")
+        self.assertEqual(get_ip(env, None, False), "ip3")
+        env.pop("HTTP_X_FORWARDED_HOST")
+        self.assertEqual(get_ip(env, 2), "ip4, ip5")
+        self.assertEqual(get_ip(env, 2, False), "ip4")
+        env.pop("HTTP_CLIENT_IP")
+        self.assertEqual(get_ip(env, 1), "ip5")
+        self.assertEqual(get_ip(env, 1, False), "ip5")
 
     def test_get_ini_dict(self):
 
@@ -488,11 +572,157 @@ class TestFunctions(TestCase):
         def methodTest6(a, b, c, *, d=0, e="", f=None):
             pass
 
+        class Test:
+            def __call__(self):
+                pass
+
+            def test(self):
+                pass
+
         self.assertEqual(0, get_arguments_count(methodTest0))
         self.assertEqual(2, get_arguments_count(methodTest2))
         self.assertEqual(6, get_arguments_count(methodTest6))
         self.assertEqual(3, get_arguments_count(methodTest3))
         self.assertEqual(5, get_arguments_count(methodTest5))
+        self.assertEqual(1, get_arguments_count(Test()))
+        self.assertEqual(1, get_arguments_count(Test().test))
+        self.assertEqual(1, get_arguments_count(Test.test))
+        self.assertEqual(1, get_arguments_count(lambda x: x))
+
+    def test_check_file_permission(self):
+        WebScripts.utils.IS_WINDOWS = True
+        self.assertTrue(
+            check_file_permission(None, "test", False, False, False)
+        )
+
+        WebScripts.utils.IS_WINDOWS = False
+        config = DefaultNamespace()
+        config.force_file_permissions = False
+
+        self.assertTrue(
+            check_file_permission(config, "test", False, False, False)
+        )
+
+        config = DefaultNamespace()
+        config.force_file_permissions = True
+
+        class SpecificMock(Mock):
+            first = True
+            st_uid = 0
+
+            @property
+            def st_mode(self):
+                first = self.first
+                self.first = False
+                return 33024 if first else 16877
+                16877  # 0o040755 = 0o0400 + 0o0200 + 0o100 + 0o0040 + 0o0010 + 0o0004 + 0o0001 + 0o040000
+                33024  # 0o100400 = 0o0400 + 0o100000
+
+        stat_response = SpecificMock()
+
+        user = WebScripts.utils.user
+        getpwuid = getattr(WebScripts.utils, "getpwuid", None)
+
+        WebScripts.utils.user = "root"
+        WebScripts.utils.getpwuid = (
+            lambda x: Mock(pw_name="root") if x == 0 else Mock()
+        )
+
+        class SpecialMock(Mock):
+            def __call__(self, file):
+                super().__call__(file)
+                return file == "test/test"
+
+        isfile = WebScripts.utils.isfile
+        mock = WebScripts.utils.isfile = SpecialMock()
+
+        with patch.object(
+            WebScripts.utils, "stat", return_value=stat_response
+        ) as file, patch.object(
+            WebScripts.utils, "isdir", return_value=True
+        ) as mock2:
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, False, True)
+            )
+            self.assertEqual(mock.call_count, 2)
+            self.assertListEqual(
+                mock.call_args_list, [call("test/test"), call("test")]
+            )
+            mock2.assert_called_once()
+
+            stat_response = DefaultNamespace()
+            stat_response.st_uid = 0
+            stat_response.st_mode = (
+                33088  # 0o100500 = 0o0400 + 0o100 + 0o100000
+            )
+
+            file.return_value = stat_response
+
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+            self.assertEqual(mock.call_count, 3)
+            self.assertListEqual(
+                mock.call_args_list,
+                [call("test/test"), call("test"), call("test/test")],
+            )
+            mock2.assert_called_once()
+
+            stat_response.st_mode = 32832  # 0o100100 = 0o100 + 0o100000
+
+            self.assertTrue(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+            self.assertEqual(mock.call_count, 4)
+            self.assertListEqual(
+                mock.call_args_list,
+                [
+                    call("test/test"),
+                    call("test"),
+                    call("test/test"),
+                    call("test/test"),
+                ],
+            )
+            mock2.assert_called_once()
+
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100200
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o040777
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100411
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100444
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 0o100422
+            self.assertFalse(
+                check_file_permission(config, "test", False, False, False)
+            )
+
+            stat_response.st_mode = 32832
+            stat_response.st_uid = 1
+            self.assertFalse(
+                check_file_permission(config, "test/test", False, True, False)
+            )
+
+        WebScripts.utils.getpwuid = getpwuid
+        WebScripts.utils.isfile = isfile
+        WebScripts.utils.user = user
 
 
 if __name__ == "__main__":

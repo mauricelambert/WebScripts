@@ -26,7 +26,7 @@ This file download and upload functions for scripts,
 tools and command line client.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -35,7 +35,8 @@ __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
 This file download and upload functions for scripts,
-tools and command line client."""
+tools and command line client.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -48,11 +49,15 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-from typing import List, Tuple, Dict, TypeVar
+__all__ = ["Download", "upload"]
+
+from typing import List, Tuple, Dict, TypeVar, Union, Iterable
 from os import path, _Environ, environ as env
-from sys import path as syspath
-from lzma import decompress
-from gzip import compress
+from sys import path as syspath, modules
+from tempfile import TemporaryFile
+from lzma import open as lzmaopen
+from gzip import open as gzipopen
+from types import MethodType
 from json import dumps
 
 # if "WebScripts" in sys.modules:
@@ -78,7 +83,15 @@ from uploads_management import (
 )
 
 syspath.pop(0)
-ServerConfiguration = TypeVar("ServerConfiguration")
+Server = TypeVar("Server")
+
+module_getter: MethodType = modules.get
+check_right = module_getter(
+    "WebScripts.Pages"
+    if module_getter("WebScripts")
+    else "WebScripts38.Pages",
+    module_getter("Pages"),
+).check_right
 
 
 class Download:
@@ -90,12 +103,12 @@ class Download:
     def filename(
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         arguments: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[Iterable[bytes], bytes]]:
 
         """
         This funtion download file by filename.
@@ -129,48 +142,50 @@ class Download:
         )
 
     @staticmethod
-    def get_data(file: Upload) -> bytes:
+    def get_data(file: Upload) -> Iterable[bytes]:
 
         """
         This function get file and manage the compression.
         """
 
-        with open(
+        file_ = open(
             get_real_file_name(file.name, float(file.timestamp)), "rb"
-        ) as file_:
+        )
 
-            if file.is_binary == "binary" and not file.no_compression:
-                data = compress(decompress(file_.read()))
-            else:
-                data = file_.read()
+        if file.is_binary == "binary" and not file.no_compression:
+            tempfile = TemporaryFile()
+            gzipfile = gzipopen(tempfile, "wb")
+            writer = gzipfile.write
+            [writer(line) for line in lzmaopen(file_)]
+            tempfile.seek(0)
+            gzipfile = gzipopen(tempfile)
+            data = gzipfile
+        else:
+            data = file_
 
         return data
 
     def id(
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         id_: str,
         arguments: List[str],
         inputs: List[str],
         csrf_token: str = None,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[str, Dict[str, str], Union[Iterable[bytes], bytes]]:
 
         """
         This funtion download file by ID.
         """
 
-        # script = Pages.scripts.get("get_any_file.py")
-        permissions = getattr(server_configuration, "admin_groups", None)
+        script = server.pages.scripts.get("get_any_file.py")
+        permissions = getattr(server.configuration, "admin_groups", None)
 
-        if permissions is None:
-            return "404", {}, b""
-
-        if not any(g in permissions for g in user["groups"]):
+        if script and not check_right(user, script):
             return "403", {}, b""
-
-        # if not check_right(user, script):
-        #     return "403", {}, b""
+        elif permissions and not any(g in permissions for g in user["groups"]):
+            return "403", {}, b""
 
         headers = {
             "Content-Type": "application/octet-stream",
@@ -199,7 +214,7 @@ class Download:
 def upload(
     environ: _Environ,
     user: User,
-    server_configuration: ServerConfiguration,
+    server: Server,
     filename: str,
     data: bytes,
     none: None,

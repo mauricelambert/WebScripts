@@ -1,32 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections.abc import Callable
-from os import chdir, name, environ
 from os.path import join, dirname
 from typing import List
 import atexit
 
-chdir(join(dirname(__file__), ".."))
+activator = join(dirname(__file__), "activate_this.py")
 
-activator = (
-    r"Scripts\activate_this.py" if name == "nt" else "bin/activate_this.py"
-)
 with open(activator) as f:
     exec(f.read(), {"__file__": activator})  # nosec # nosemgrep
 
 from WebScripts.WebScripts import (
-    Configuration,
-    get_server_config,
-    add_configuration,
-    logs_configuration,
-    server_path,
     Server,
     configure_logs_system,
     send_mail,
-    get_real_path,
     hardening,
     Logs,
+    logger_debug,
+    logger_info,
+    logger_warning,
+    default_configuration,
 )
 
 
@@ -42,26 +35,10 @@ class Paths:
 
 
 configure_logs_system()
-environ["SERVER_LOG_PATH"] = get_real_path("logs", is_dir=True)
-environ["WEBSCRIPTS_PATH"] = server_path
 
-logger_debug: Callable = Logs.debug
-logger_info: Callable = Logs.info
-logger_warning: Callable = Logs.warning
 paths = Paths([], [])
 
-logger_debug("Load configurations...")
-configuration = Configuration()
-for config in get_server_config(paths):
-    configuration = add_configuration(configuration, config)
-
-logs_configuration(configuration)
-
-logger_debug("Check and type configurations...")
-configuration.set_defaults()
-configuration.check_required()
-configuration.get_unexpecteds()
-configuration.build_types()
+configuration = default_configuration()
 
 logger_debug("Build server with configurations...")
 server = Server(configuration)
@@ -79,7 +56,7 @@ atexit.register(
 )
 
 logger_info("Check hardening of the WebScripts server...")
-hardening(server, Logs, send_mail)
+hardening(server)
 
 logger_warning("Starting server...")
 application = server.app

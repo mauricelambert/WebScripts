@@ -6,10 +6,10 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 2.4.9)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 3.0.0)</font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="__init__.py">__init__.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;tools&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.</tt></p>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cchris%5Cdocuments%5Carsen%5Cmacro%5Cdocx%5Clib%5Csite-packages%5Cwebscripts%5C__init__.py">c:\users\chris\documents\arsen\macro\docx\lib\site-packages\webscripts\__init__.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#75B4AD">
@@ -69,13 +69,13 @@ Methods defined here:<br>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>__defaults__</strong> = {'accept_unauthenticated_user': True, 'accept_unknow_user': True, 'active_auth': False, 'auth_script': None, 'documentations_path': [], 'exclude_auth_pages': ['/api/', '/auth/', '/web/auth/'], 'exclude_auth_paths': ['/static/', '/js/'], 'interface': '127.0.0.1', 'js_path': [], 'log_level': 0, ...}</dl>
+<dl><dt><strong>__defaults__</strong> = {'accept_unauthenticated_user': True, 'accept_unknow_user': True, 'active_auth': False, 'auth_script': None, 'documentations_path': [], 'exclude_auth_pages': ['/api/', '/auth/', '/web/auth/'], 'exclude_auth_paths': ['/static/', '/js/'], 'force_file_permissions': True, 'interface': '127.0.0.1', 'js_path': [], ...}</dl>
 
-<dl><dt><strong>__optional__</strong> = ('debug', 'security', 'active_auth', 'auth_script', 'accept_unknow_user', 'accept_unauthenticated_user', 'exclude_auth_paths', 'exclude_auth_pages', 'modules', 'modules_path', 'js_path', 'statics_path', 'documentations_path', 'scripts_path', 'json_scripts_config', 'ini_scripts_configlog_level', 'log_filename', 'log_level', 'log_format', 'log_date_format', ...)</dl>
+<dl><dt><strong>__optional__</strong> = ('debug', 'security', 'active_auth', 'auth_script', 'accept_unknow_user', 'accept_unauthenticated_user', 'exclude_auth_paths', 'exclude_auth_pages', 'modules', 'modules_path', 'js_path', 'statics_path', 'documentations_path', 'scripts_path', 'json_scripts_config', 'ini_scripts_config', 'log_level', 'log_filename', 'log_level', 'log_format', ...)</dl>
 
 <dl><dt><strong>__required__</strong> = ('interface', 'port')</dl>
 
-<dl><dt><strong>__types__</strong> = {'accept_unauthenticated_user': &lt;class 'bool'&gt;, 'accept_unknow_user': &lt;class 'bool'&gt;, 'active_auth': &lt;class 'bool'&gt;, 'admin_adresses': &lt;class 'list'&gt;, 'auth_failures_to_blacklist': &lt;class 'int'&gt;, 'blacklist_time': &lt;class 'int'&gt;, 'debug': &lt;class 'bool'&gt;, 'documentations_path': &lt;class 'list'&gt;, 'ini_scripts_config': &lt;class 'list'&gt;, 'js_path': &lt;class 'list'&gt;, ...}</dl>
+<dl><dt><strong>__types__</strong> = {'accept_unauthenticated_user': &lt;class 'bool'&gt;, 'accept_unknow_user': &lt;class 'bool'&gt;, 'active_auth': &lt;class 'bool'&gt;, 'admin_adresses': &lt;class 'list'&gt;, 'admin_groups': typing.List[int], 'auth_failures_to_blacklist': &lt;class 'int'&gt;, 'blacklist_time': &lt;class 'int'&gt;, 'csrf_max_time': &lt;class 'int'&gt;, 'debug': &lt;class 'bool'&gt;, 'documentations_path': &lt;class 'list'&gt;, ...}</dl>
 
 <hr>
 Methods inherited from <a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>:<br>
@@ -83,7 +83,9 @@ Methods inherited from <a href="WebScripts.utils.html#DefaultNamespace">WebScrip
 
 <dl><dt><a name="Configuration-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
-<dl><dt><a name="Configuration-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+<dl><dt><a name="Configuration-build_type"><strong>build_type</strong></a>(self, attribut: str, value: Any, type_: type = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;builds&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
 
 <dl><dt><a name="Configuration-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
 if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
@@ -164,7 +166,7 @@ Data and other attributes inherited from <a href="types.html#SimpleNamespace">ty
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt><a href="#Server">Server</a>(configuration:&nbsp;WebScripts.WebScripts.<a href="#Configuration">Configuration</a>)<br>
 &nbsp;<br>
-This&nbsp;class&nbsp;implement&nbsp;the&nbsp;WebScripts&nbsp;server.<br>&nbsp;</tt></td></tr>
+This&nbsp;class&nbsp;implements&nbsp;the&nbsp;WebScripts&nbsp;server.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Server-__init__"><strong>__init__</strong></a>(self, configuration: WebScripts.WebScripts.Configuration)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
@@ -173,7 +175,7 @@ This&nbsp;class&nbsp;implement&nbsp;the&nbsp;WebScripts&nbsp;server.<br>&nbsp;</
 
 <dl><dt><a name="Server-add_paths"><strong>add_paths</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;js,&nbsp;static&nbsp;and&nbsp;scripts&nbsp;paths.</tt></dd></dl>
 
-<dl><dt><a name="Server-app"><strong>app</strong></a>(self, environ: os._Environ, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;function&nbsp;page,<br>
+<dl><dt><a name="Server-app"><strong>app</strong></a>(self, environ_: os._Environ, respond: method) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;function&nbsp;page,<br>
 return&nbsp;content&nbsp;page,&nbsp;catch&nbsp;errors&nbsp;and<br>
 return&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
 
@@ -185,24 +187,24 @@ username&nbsp;are&nbsp;not&nbsp;in&nbsp;the&nbsp;blacklist.</tt></dd></dl>
 <dl><dt><a name="Server-get_URLs"><strong>get_URLs</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;urls&nbsp;(scripts,&nbsp;documentation...)<br>
 and&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;URL&nbsp;of&nbsp;custom&nbsp;packages.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.<br>
+<dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str, filename: str) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.<br>
 If&nbsp;the&nbsp;function&nbsp;is&nbsp;a&nbsp;WebScripts&nbsp;built-in&nbsp;function,<br>
 return&nbsp;the&nbsp;function,&nbsp;filename&nbsp;and&nbsp;True.&nbsp;Else&nbsp;return&nbsp;the<br>
 function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_session"><strong>get_session</strong></a>(self, cookies: List[str], ip: str) -&gt; WebScripts.commons.User</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;User&nbsp;from&nbsp;cookies.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_400"><strong>page_400</strong></a>(self, method: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_400"><strong>page_400</strong></a>(self, environ: os._Environ, method: str, respond: method)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_401"><strong>page_401</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;401&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_401"><strong>page_401</strong></a>(self, environ: os._Environ, error_description: str, respond: method)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;401&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_403"><strong>page_403</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_403"><strong>page_403</strong></a>(self, environ: os._Environ, error_description: str, respond: method)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_404"><strong>page_404</strong></a>(self, url: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;404&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_404"><strong>page_404</strong></a>(self, environ: os._Environ, url: str, respond: method)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;404&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_406"><strong>page_406</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;406&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_406"><strong>page_406</strong></a>(self, environ: os._Environ, error_description: str, respond: method)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;406&nbsp;web&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Server-page_500"><strong>page_500</strong></a>(self, error: str, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;500&nbsp;web&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Server-page_500"><strong>page_500</strong></a>(self, environ: os._Environ, error: Union[str, bytes, Iterable[bytes]], respond: method) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;500&nbsp;web&nbsp;page.</tt></dd></dl>
 
 <dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[~Content, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
 
@@ -210,9 +212,9 @@ function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
 
-<dl><dt><a name="Server-send_error_page"><strong>send_error_page</strong></a>(self, error: str, data: bytes, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
+<dl><dt><a name="Server-send_error_page"><strong>send_error_page</strong></a>(self, environ: os._Environ, error: str, data: bytes, respond: method) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
 
-<dl><dt><a name="Server-send_headers"><strong>send_headers</strong></a>(self, respond: function, error: str = None, headers: Dict[str, str] = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;error&nbsp;code,&nbsp;message&nbsp;and&nbsp;headers.</tt></dd></dl>
+<dl><dt><a name="Server-send_headers"><strong>send_headers</strong></a>(self, environ: os._Environ, respond: method, error: str = None, headers: Dict[str, str] = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;error&nbsp;code,&nbsp;message&nbsp;and&nbsp;headers.</tt></dd></dl>
 
 <dl><dt><a name="Server-set_default_values_for_response"><strong>set_default_values_for_response</strong></a>(self, error: str, headers: Dict[str, str]) -&gt; Tuple[str, Dict[str, str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;default&nbsp;error&nbsp;if&nbsp;not&nbsp;defined&nbsp;and<br>
 default&nbsp;headers&nbsp;updated&nbsp;with&nbsp;custom&nbsp;headers.</tt></dd></dl>
@@ -221,17 +223,21 @@ default&nbsp;headers&nbsp;updated&nbsp;with&nbsp;custom&nbsp;headers.</tt></dd><
 Static methods defined here:<br>
 <dl><dt><a name="Server-check_origin"><strong>check_origin</strong></a>(environ_getter: collections.abc.Callable, environ: os._Environ) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;Origin&nbsp;of&nbsp;POST&nbsp;methods.</tt></dd></dl>
 
-<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, str, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(object_: object, attributes: List[str], is_not_package: bool = True) -&gt; Tuple[~FunctionOrNone, bool]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_baseurl"><strong>get_baseurl</strong></a>(environ_getter: collections.abc.Callable, environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;URL&nbsp;base.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_content_length"><strong>get_content_length</strong></a>(environ: os._Environ) -&gt; int</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;content&nbsp;length.</tt></dd></dl>
 
+<dl><dt><a name="Server-get_fullurl"><strong>get_fullurl</strong></a>(environ: os._Environ) -&gt; str</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;full&nbsp;URL&nbsp;(based&nbsp;on&nbsp;the&nbsp;<a href="https://www.python.org/dev/peps/pep-3333/">PEP&nbsp;3333</a>).<br>
+&nbsp;<br>
+Link:&nbsp;<a href="https://peps.python.org/pep-3333/">https://peps.python.org/pep-3333/</a></tt></dd></dl>
+
 <dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], List[str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
 
 <dl><dt><a name="Server-get_json_content"><strong>get_json_content</strong></a>(body: bytes, content_type: str) -&gt; ~JsonValue</dt><dd><tt>This&nbsp;functions&nbsp;returns&nbsp;the&nbsp;loaded&nbsp;JSON&nbsp;content.</tt></dd></dl>
 
-<dl><dt><a name="Server-return_page"><strong>return_page</strong></a>(page: Union[bytes, str, list]) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;response&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;bytes.</tt></dd></dl>
+<dl><dt><a name="Server-return_page"><strong>return_page</strong></a>(page: Union[bytes, str, Iterable[bytes]]) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;response&nbsp;as&nbsp;a&nbsp;list&nbsp;of&nbsp;bytes.</tt></dd></dl>
 
 <dl><dt><a name="Server-set_default_headers"><strong>set_default_headers</strong></a>(headers: Dict[str, str], security: bool, configuration: WebScripts.WebScripts.Configuration) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;sets&nbsp;defaults&nbsp;headers.</tt></dd></dl>
 
@@ -252,6 +258,10 @@ Data descriptors defined here:<br>
 <dl><dt><strong>__weakref__</strong></dt>
 <dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
 </dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>CommonsClasses</strong> = &lt;class 'WebScripts.WebScripts.Server.CommonsClasses'&gt;</dl>
+
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#A57927">
@@ -271,7 +281,7 @@ configurations&nbsp;and&nbsp;launch&nbsp;the&nbsp;server.</tt></dd></dl>
 <td width="100%"><strong>__all__</strong> = ['Configuration', 'Server', 'main']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = 'This tools run scripts and display the result in a Web Interface.'<br>
+<strong>__description__</strong> = 'This tool run scripts and display the result in a Web Interface.'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>

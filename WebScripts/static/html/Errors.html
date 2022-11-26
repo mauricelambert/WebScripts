@@ -6,14 +6,12 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Errors</strong></big></big> (version 0.0.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Errors</strong></big></big> (version 0.0.2)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="errors.py">errors.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or<br>
-executables&nbsp;from&nbsp;the&nbsp;command&nbsp;line&nbsp;and&nbsp;display&nbsp;the&nbsp;result<br>
-in&nbsp;a&nbsp;web&nbsp;interface.<br>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;contains&nbsp;all&nbsp;WebScripts&nbsp;errors&nbsp;class.</tt></p>
+This&nbsp;file&nbsp;contains&nbsp;WebScripts&nbsp;exception&nbsp;classes.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#C89B48">
@@ -29,12 +27,12 @@ This&nbsp;file&nbsp;contains&nbsp;all&nbsp;WebScripts&nbsp;errors&nbsp;class.</t
 </font></dt><dd>
 <dl>
 <dt><font face="helvetica, arial"><a href="Errors.html#MissingAttributesError">MissingAttributesError</a>
-</font></dt><dt><font face="helvetica, arial"><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a>
 </font></dt><dt><font face="helvetica, arial"><a href="Errors.html#WebScriptsArgumentError">WebScriptsArgumentError</a>
 </font></dt><dt><font face="helvetica, arial"><a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a>
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="Errors.html#WebScriptsConfigurationTypeError">WebScriptsConfigurationTypeError</a>
+<dt><font face="helvetica, arial"><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a>
+</font></dt><dt><font face="helvetica, arial"><a href="Errors.html#WebScriptsConfigurationTypeError">WebScriptsConfigurationTypeError</a>
 </font></dt></dl>
 </dd>
 <dt><font face="helvetica, arial"><a href="Errors.html#WebScriptsSecurityError">WebScriptsSecurityError</a>
@@ -111,13 +109,14 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#EEC477">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="ScriptConfigurationError">class <strong>ScriptConfigurationError</strong></a>(<a href="Errors.html#WebScriptsError">WebScriptsError</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="ScriptConfigurationError">class <strong>ScriptConfigurationError</strong></a>(<a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>To&nbsp;raise&nbsp;Script&nbsp;Configuration&nbsp;Error.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="Errors.html#ScriptConfigurationError">ScriptConfigurationError</a></dd>
+<dd><a href="Errors.html#WebScriptsConfigurationError">WebScriptsConfigurationError</a></dd>
 <dd><a href="Errors.html#WebScriptsError">WebScriptsError</a></dd>
 <dd><a href="builtins.html#Exception">builtins.Exception</a></dd>
 <dd><a href="builtins.html#BaseException">builtins.BaseException</a></dd>
@@ -501,7 +500,7 @@ Data descriptors inherited from <a href="builtins.html#BaseException">builtins.B
 <td width="100%"><strong>__all__</strong> = ['WebScriptsError', 'WebScriptsConfigurationError', 'WebScriptsArgumentError', 'ScriptConfigurationError', 'MissingAttributesError', 'WebScriptsConfigurationTypeError', 'WebScriptsSecurityError']<br>
 <strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
 <strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = 'This package implements a web server to run scri...<font color="#c040c0">\n\n</font>This file contains all WebScripts errors class.'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...This file contains WebScripts exception classes.<font color="#c040c0">\n</font>'<br>
 <strong>__license__</strong> = 'GPL-3.0 License'<br>
 <strong>__maintainer__</strong> = 'Maurice Lambert'<br>
 <strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>

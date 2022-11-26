@@ -1,7 +1,10 @@
-from sys import argv, stdin, stderr
+from sys import argv, stdin, stderr, exit
 from functools import partial
 from time import sleep
 from os import environ
+
+# print("Only error...", file=stderr)
+# exit(1)
 
 print = partial(print, flush=True)
 
@@ -11,7 +14,7 @@ print("Inputs:")
 print(inputs)
 print("Inputs end.")
 
-print(f"Log path: {environ['LOG_PATH']}")
+print(f"Log path: {environ['WEBSCRIPTS_LOGS_PATH']}")
 
 sleep(5)
 print("5 seconds...")

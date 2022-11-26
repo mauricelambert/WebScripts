@@ -22,7 +22,7 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package.
+This file implements commons functions and class for WebScripts package.
 """
 
 __version__ = "0.1.3"
@@ -33,7 +33,7 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file implement commons functions and class for WebScripts package.
+This file implements commons functions and class for WebScripts package.
 """
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
@@ -60,25 +60,25 @@ __all__ = [
 ]
 
 
+from os.path import join, normcase, isfile, dirname, splitext, basename, split
 from typing import TypeVar, Tuple, List, Dict
+from secrets import token_bytes, token_hex
 from configparser import ConfigParser
 from collections.abc import Callable
 from subprocess import Popen, PIPE  # nosec
 from types import SimpleNamespace
 from base64 import b64encode
-from os import path, getcwd
-from platform import system
 from re import fullmatch
 from glob import iglob
 from time import time
-import secrets
-import json
+from json import load
 
 if __package__:
     from .utils import (
         DefaultNamespace,
         get_ini_dict,
         server_path as lib_directory,
+        working_directory as current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -94,12 +94,23 @@ if __package__:
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
         WebScriptsSecurityError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_command,
+        logger_warning,
+        logger_error,
+        logger_critical,
+        IS_WINDOWS,
+        check_file_permission,
     )
 else:
     from utils import (
         DefaultNamespace,
         get_ini_dict,
         server_path as lib_directory,
+        working_directory as current_directory,
         log_trace,
         get_ip,
         Logs,
@@ -115,6 +126,16 @@ else:
         WebScriptsArgumentError,
         WebScriptsConfigurationTypeError,
         WebScriptsSecurityError,
+        logger_debug,
+        logger_info,
+        logger_access,
+        logger_response,
+        logger_command,
+        logger_warning,
+        logger_error,
+        logger_critical,
+        IS_WINDOWS,
+        check_file_permission,
     )
 
 JsonValue = TypeVar("JsonValue", str, int, bool, None, List[str], List[int])
@@ -124,12 +145,6 @@ Blacklist = TypeVar("Blacklist")
 Pages = TypeVar("Pages")
 
 Configuration = TypeVar("Configuration", ServerConfiguration, SimpleNamespace)
-
-logger_debug: Callable = Logs.debug
-logger_info: Callable = Logs.info
-logger_warning: Callable = Logs.warning
-logger_error: Callable = Logs.error
-logger_critical: Callable = Logs.critical
 
 
 class Argument(DefaultNamespace):
@@ -320,8 +335,6 @@ class ScriptConfig(DefaultNamespace):
             server_configuration, server_configuration
         )
 
-        current_directory = getcwd()
-
         json_scripts_config = getattr(
             server_configuration, "json_scripts_config", []
         )
@@ -332,12 +345,17 @@ class ScriptConfig(DefaultNamespace):
             configuration_files
         ) = getattr(server_configuration, "configuration_files", {})
 
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
 
             for config_path in ini_scripts_config:
-                config_path = path.join(dirname, path.normcase(config_path))
+                config_path = join(dirname_, normcase(config_path))
 
                 for config_filename in iglob(config_path):
+                    if not check_file_permission(
+                        server_configuration, config_filename
+                    ):
+                        continue
+
                     configuration = DefaultNamespace()
                     temp_configurations = get_ini_dict(config_filename)
                     configuration.update(**temp_configurations)
@@ -352,13 +370,18 @@ class ScriptConfig(DefaultNamespace):
                     ] = temp_configurations
 
             for config_path in json_scripts_config:
-                config_path = path.join(dirname, path.normcase(config_path))
+                config_path = join(dirname_, normcase(config_path))
 
                 for config_filename in iglob(config_path):
+                    if not check_file_permission(
+                        server_configuration, config_filename
+                    ):
+                        continue
+
                     configuration = DefaultNamespace()
 
                     with open(config_filename) as file:
-                        temp_configurations = json.load(file)
+                        temp_configurations = load(file)
                         configuration.update(**temp_configurations)
 
                     scripts_config.update(
@@ -387,12 +410,14 @@ class ScriptConfig(DefaultNamespace):
 
         for name, section_config in scripts.items():
             script_section = getattr(configuration, section_config, None)
-            logger_warning(f"Script found: {name} (section: {section_config})")
+            logger_warning(
+                f"Script found: {name!r} (section: {section_config!r})"
+            )
 
             if script_section is None:
                 raise WebScriptsConfigurationError(
-                    f"section {section_config} doesn't exist (to configure "
-                    f"script named {name})"
+                    f"section {section_config!r} doesn't exist (to configure "
+                    f"script named {name!r})"
                 )
             else:
                 script_section = script_section.copy()
@@ -419,13 +444,13 @@ class ScriptConfig(DefaultNamespace):
             path_ = script_section.get("path")
             script_section["path"] = script_path = get_real_path(path_)
             if script_path is None:
-                script_section["path"] = cls.get_script_path(
+                script_path = script_section["path"] = cls.get_script_path(
                     server_configuration, script_section
                 )
-            elif not path.isfile(script_path):
+            elif not isfile(script_path):
                 raise WebScriptsConfigurationError(
-                    f"Location for script named {script_section['name']} "
-                    f"({script_path}) doesn't exist."
+                    f"Location for script named {name!r} "
+                    f"({script_path!r}) doesn't exist."
                 )
 
             if script_section.get("launcher") is None:
@@ -433,15 +458,20 @@ class ScriptConfig(DefaultNamespace):
                     "launcher"
                 ] = cls.get_Windows_default_script_launcher(script_section)
 
-            script_section["dirname"] = path.dirname(script_section["path"])
+            script_section["dirname"] = dirname(script_path)
 
-            scripts_config[name] = cls.default_build(**script_section)
-            scripts_config[name].build_args(script_configuration)
+            if not check_file_permission(
+                server_configuration, script_path, executable=True
+            ):
+                continue
+
+            build = scripts_config[name] = cls.default_build(**script_section)
+            build.build_args(script_configuration)
 
             if path_ is None:
-                scripts_config[name].path_is_defined = False
+                build.path_is_defined = False
             else:
-                scripts_config[name].path_is_defined = True
+                build.path_is_defined = True
 
         return scripts_config
 
@@ -452,16 +482,16 @@ class ScriptConfig(DefaultNamespace):
     ) -> str:
 
         """
-        This function get the Windows default launcher to execute a file.
+        This function gets the Windows default launcher to execute a file.
         """
 
-        if system() != "Windows":
-            return
+        if not IS_WINDOWS:
+            return None
 
         logger_info(
             f"Research default launcher for script {script_config['name']}"
         )
-        extension = path.splitext(script_config["path"])[1]
+        extension = splitext(script_config["path"])[1]
 
         if (
             fullmatch(r"[.]\w+", extension) is None
@@ -475,13 +505,16 @@ class ScriptConfig(DefaultNamespace):
                 "reason this extension is blocked)"
             )
 
+        command = [
+            r"C:\WINDOWS\system32\cmd.exe",
+            "/c",
+            "assoc",
+            extension,
+        ]
+        logger_command("Get launcher from extension: " + repr(command))
+
         process = Popen(
-            [
-                r"C:\WINDOWS\system32\cmd.exe",
-                "/c",
-                "assoc",
-                extension,
-            ],  # protection against command injection
+            command,  # protection against command injection
             stdout=PIPE,
             stderr=PIPE,
             text=True,
@@ -489,11 +522,14 @@ class ScriptConfig(DefaultNamespace):
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            return
+            return None
         filetype = stdout.split("=")[1] if "=" in stdout else ""
 
+        command = [r"C:\WINDOWS\system32\cmd.exe", "/c", "ftype", filetype]
+        logger_command("Get launcher from extension: " + repr(command))
+
         process = Popen(
-            [r"C:\WINDOWS\system32\cmd", "/c", "ftype", filetype],
+            command,
             stdout=PIPE,
             stderr=PIPE,
             text=True,
@@ -501,7 +537,7 @@ class ScriptConfig(DefaultNamespace):
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            return
+            return None
         launcher = (
             stdout.split()[0].split("=")[1].replace('"', "")
             if "=" in stdout
@@ -526,14 +562,12 @@ class ScriptConfig(DefaultNamespace):
         This function return a script path from configuration.
         """
 
-        current_directory = getcwd()
-
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
             for directory in server_configuration.scripts_path:
-                script_path = path.join(
-                    dirname, path.normcase(directory), script_config["name"]
+                script_path = join(
+                    dirname_, normcase(directory), script_config["name"]
                 )
-                if path.isfile(script_path):
+                if isfile(script_path):
                     logger_info(
                         f"Found script named: {script_config['name']} in "
                         f"location: {script_path}"
@@ -559,9 +593,7 @@ class ScriptConfig(DefaultNamespace):
 
         if doc_file is None:
             for path_ in paths:
-                doc_files = path.join(
-                    path_, f"{path.splitext(path.basename(name))[0]}.*"
-                )
+                doc_files = join(path_, f"{splitext(basename(name))[0]}.*")
                 for doc_file in iglob(doc_files):
                     logger_debug(f"Documentation file found for {name}")
                     break
@@ -625,9 +657,9 @@ class ScriptConfig(DefaultNamespace):
 
         if configuration_file is not None:
             if configuration_file.endswith(".json"):
-                configuration = json.loads(
-                    get_file_content(configuration_file)
-                )
+                file = get_file_content(configuration_file, as_iterator=True)
+                configuration = load(file)
+                file.close()
             else:
                 config = ConfigParser(
                     allow_no_value=True, inline_comment_prefixes="#"
@@ -698,21 +730,16 @@ class ScriptConfig(DefaultNamespace):
         path if it exists.
         """
 
-        current_directory = getcwd()
-
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
             for doc_glob in configuration.documentations_path:
 
-                doc_glob = path.join(dirname, path.normcase(doc_glob))
+                doc_glob = join(dirname_, normcase(doc_glob))
                 for doc in iglob(doc_glob):
 
-                    doc_dirname, doc_filename = path.split(doc)
-                    no_extension, extension = path.splitext(doc_filename)
+                    doc_dirname, doc_filename = split(doc)
+                    no_extension, extension = splitext(doc_filename)
 
-                    if (
-                        no_extension
-                        == path.splitext(path.basename(filename))[0]
-                    ):
+                    if no_extension == splitext(basename(filename))[0]:
                         return doc
 
 
@@ -773,7 +800,7 @@ class CallableFile(Callable):
         self.type = type_
         self.config = config
         self.filename = filename
-        self.extension = path.splitext(path_)[1].lower()
+        self.extension = splitext(path_)[1].lower()
 
     @log_trace
     def __call__(self, user: User) -> Tuple[str, Dict[str, str], List[bytes]]:
@@ -781,103 +808,108 @@ class CallableFile(Callable):
             return (
                 "200 OK",
                 {"Content-Type": "text/javascript; charset=utf-8"},
-                get_file_content(self.path, "rb"),
+                get_file_content(self.path, as_iterator=True),
             )
         elif self.type == "static":
             if self.is_html():
                 return (
                     "200 OK",
                     {"Content-Type": "text/html; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".css":
                 return (
                     "200 OK",
                     {"Content-Type": "text/css; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".ico":
                 return (
                     "200 OK",
                     {"Content-Type": "image/x-icon"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".png":
                 return (
                     "200 OK",
                     {"Content-Type": "image/png"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_jpeg():
                 return (
                     "200 OK",
                     {"Content-Type": "image/jpeg"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".gif":
                 return (
                     "200 OK",
                     {"Content-Type": "image/gif"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".json":
                 return (
                     "200 OK",
                     {"Content-Type": "application/json; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".txt":
                 return (
                     "200 OK",
                     {"Content-Type": "text/plain; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".pdf":
                 return (
                     "200 OK",
                     {"Content-Type": "application/pdf; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".csv":
                 return (
                     "200 OK",
                     {"Content-Type": "text/csv; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_tiff():
                 return (
                     "200 OK",
                     {"Content-Type": "image/tiff"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.is_xml():
                 return (
                     "200 OK",
                     {"Content-Type": "application/xml; charset=utf-8"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             elif self.extension == ".svg":
                 return (
                     "200 OK",
                     {"Content-Type": "image/svg+xml"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
             else:
                 return (
                     "200 OK",
                     {"Content-Type": "application/octet-stream"},
-                    get_file_content(self.path, "rb"),
+                    get_file_content(self.path, as_iterator=True),
                 )
         elif self.type == "script":
-            nonce = secrets.token_hex(20)
+            nonce = token_hex(20)
             return (
                 "200 OK",
                 {
                     "Content-Type": "text/html; charset=utf-8",
                     "Content-Security-Policy": (
-                        "default-src 'self'; form-action 'none'; "
-                        "frame-ancestors 'none'; script-src 'self' "
-                        f"'nonce-{nonce}'"
+                        "default-src 'self'; navigate-to 'self'; worker-src "
+                        "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                        " style-src 'self'; script-src-attr 'none'; object-src"
+                        " 'none'; media-src 'none'; manifest-src 'none'; "
+                        "frame-ancestors 'none'; connect-src 'self'; font-src"
+                        " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                        " 'none'; form-action 'none'; script-src 'self' "
+                        f"'nonce-{nonce}' 'require-trusted-types-for'"
                     ),
                 },
                 CallableFile.template_script
@@ -1039,7 +1071,7 @@ class TokenCSRF:
         This function build a CSRF token for a user.
         """
 
-        token = b64encode(secrets.token_bytes(48)).decode()
+        token = b64encode(token_bytes(48)).decode()
         user.csrf[token] = time()
         return token
 
@@ -1060,6 +1092,10 @@ class TokenCSRF:
         max_time = time() - csrf_max_time
 
         if referer and baseurl and not referer.startswith(baseurl):
+            logger_error(
+                f"Referrer error: referer ({referer!r}) "
+                f"do not start with baseurl ({baseurl!r})."
+            )
             TokenCSRF.clean(user, max_time)
             return False
 
@@ -1068,6 +1104,9 @@ class TokenCSRF:
         if timestamp >= max_time:
             return True
         else:
+            logger_warning(
+                f"CSRF Token has expired ({timestamp} >= {max_time})"
+            )
             TokenCSRF.clean(user, max_time)
             return False
 
@@ -1097,7 +1136,7 @@ class Session:
     """
 
     def __init__(self, user: User, ip: str):
-        self.cookie = secrets.token_hex(64)
+        self.cookie = token_hex(64)
         self.time = time()
         self.user = user
         self.ip = ip
@@ -1142,19 +1181,23 @@ class Session:
         if cookie.startswith("SessionID="):
             cookie = cookie[10:]
         else:
+            logger_error("Session cookie do not start with 'SessionID='.")
             return default_user
 
         if ":" in cookie:
             user_id, cookie_session = cookie.split(":", 1)
         else:
+            logger_error("Invalid session cookie: ':' not in cookie")
             return default_user
 
         if user_id.isdigit():
             session = pages.sessions.get(int(user_id), None)
         else:
+            logger_error("Cookie: UserID is not digit.")
             return default_user
 
         if session is None:
+            logger_info("Session not found.")
             return default_user
 
         if (
@@ -1164,4 +1207,5 @@ class Session:
         ):
             return session.user
         else:
+            logger_warning("Session: Bad IP or session expired or bad cookie.")
             return default_user

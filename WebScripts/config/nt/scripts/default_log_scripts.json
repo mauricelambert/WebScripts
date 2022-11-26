@@ -10,7 +10,7 @@
 		"launcher": "python",
 		"category": "Security",
 		"minimum_access": 1000,
-		"content_type": "text/html",
+		"content_type": "text/csv",
 		"path": "./scripts/logs/log_analysis.py",
 		"description": "This file displays an HTML table for log and activity analysis.",
 		"command_generate_documentation": "python \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\""
@@ -34,7 +34,11 @@
 		"INFO": "arg_INFO",
 		"DEBUG": "arg_DEBUG",
 		"ERROR": "arg_ERROR",
+		"TRACE": "arg_TRACE",
+		"ACCESS": "arg_ACCESS",
+		"COMMAND": "arg_COMMAND",
 		"WARNING": "arg_WARNING",
+		"RESPONSE": "arg_RESPONSE",
 		"CRITICAL": "arg_CRITICAL"
 	},
 
@@ -49,6 +53,11 @@
 		"description": "View the latest logs."
 	},
 
+	"arg_TRACE": {
+		"html_type": "checkbox",
+		"description": "View the latest TRACE logs."
+	},
+
 	"arg_DEBUG": {
 		"html_type": "checkbox",
 		"description": "View the latest DEBUG logs."
@@ -57,6 +66,21 @@
 	"arg_INFO": {
 		"html_type": "checkbox",
 		"description": "View the latest INFO logs."
+	},
+
+	"arg_ACCESS": {
+		"html_type": "checkbox",
+		"description": "View the latest ACCESS logs."
+	},
+
+	"arg_RESPONSE": {
+		"html_type": "checkbox",
+		"description": "View the latest RESPONSE logs."
+	},
+
+	"arg_COMMAND": {
+		"html_type": "checkbox",
+		"description": "View the latest COMMAND logs."
 	},
 
 	"arg_WARNING": {

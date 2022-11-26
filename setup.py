@@ -23,7 +23,7 @@
 This tool run scripts and display the result in a Web Interface.
 """
 
-__version__ = "2.3.3"
+__version__ = "2.3.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -45,13 +45,13 @@ __copyright__ = copyright
 
 print(copyright)
 
+from os.path import join, exists, basename, splitext, split, abspath, dirname
 from importlib.machinery import SourceFileLoader
 from setuptools.command.install import install
 
 # from setuptools.command.develop import develop
+from os import path, makedirs, getcwd, environ
 from setuptools import setup, find_packages
-from os import path, makedirs, getcwd
-from os.path import join, exists
 from getpass import getuser
 from typing import Dict
 
@@ -129,6 +129,7 @@ class PostInstallScript(install):
         self.json_config_files = []
         self.ini_config_files = []
         self.py_scripts_files = []
+        self.csv_files = []
 
     def linux_files_permissions(self, filename: str) -> None:
 
@@ -199,9 +200,9 @@ class PostInstallScript(install):
 
         logging.debug(f"Change the permissions of {filename}")
 
-        file = path.split(filename)[1]
-        extension = path.splitext(filename)[1]
-        directory = path.dirname(filename)
+        file = split(filename)[1]
+        extension = splitext(filename)[1]
+        directory = dirname(filename)
 
         if file == "id" or extension == ".csv":
             os.chmod(filename, 0o600)
@@ -300,7 +301,7 @@ class PostInstallScript(install):
                     logging.debug("Add the launcher")
                     script["launcher"] = launcher
 
-                    script_name, _ = path.splitext(path.basename(filename))
+                    script_name, _ = splitext(basename(filename))
                     logging.info(f"Configure script named: {script_name}")
                     for py_filename in self.py_scripts_files:
                         if py_filename.endswith(f"{script_name}.py"):
@@ -318,7 +319,7 @@ class PostInstallScript(install):
                 specific_config_file = section.get("configuration_file")
 
                 if specific_config_file:
-                    specific_config_file = path.basename(specific_config_file)
+                    specific_config_file = basename(specific_config_file)
                     for config_file in self.json_config_files:
                         if config_file.endswith(specific_config_file):
                             section["configuration_file"] = config_file
@@ -335,12 +336,12 @@ class PostInstallScript(install):
             server = configurations.get("server")
 
             if server is not None:
-                path_ = [path.dirname(filename), "..", "modules"]
+                path_ = [dirname(filename), "..", "modules"]
 
                 if self.is_windows:
                     path_.insert(1, "..")
 
-                server["modules_path"] = path.abspath(path.join(*path_))
+                server["modules_path"] = abspath(join(*path_))
 
             PostInstallScript.save_scripts_configurations(
                 filename, configurations
@@ -361,7 +362,7 @@ class PostInstallScript(install):
 
         """This function removes unnecessary configuration files."""
 
-        sub_path = path.join("config", "nt")
+        sub_path = join("config", "nt")
 
         if not self.no_hardening or self.json_only:
             logging.info("Remove server.ini files")
@@ -406,9 +407,14 @@ class PostInstallScript(install):
 
         logging.debug("Import manage_defaults_databases (account manager)")
         module_name = "manage_defaults_databases"
+        file_name = f"{module_name}.py"
         for filename in self.py_scripts_files:
-            if filename.endswith(f"{module_name}.py"):
+            if filename.endswith(file_name):
                 loader = SourceFileLoader(module_name, filename)
+                break
+        for filename in self.csv_files:
+            if filename.endswith("users.csv"):
+                environ["WEBSCRIPTS_DATA_PATH"] = split(filename)[0]
                 break
 
         spec = importlib.util.spec_from_loader(module_name, loader)
@@ -437,7 +443,7 @@ class PostInstallScript(install):
             if not self.no_hardening:
                 PostInstallScript.linux_files_permissions(self, filename)
 
-            extension = path.splitext(filename)[1]
+            extension = splitext(filename)[1]
 
             if extension == ".json":
                 self.json_config_files.append(filename)
@@ -445,8 +451,11 @@ class PostInstallScript(install):
             elif extension == ".py":
                 self.py_scripts_files.append(filename)
 
-            elif path.split(filename)[1] == "server.ini":
+            elif split(filename)[1] == "server.ini":
                 self.ini_config_files.append(filename)
+
+            elif extension == ".csv":
+                self.csv_files.append(filename)
 
         PostInstallScript.remove_configuration_files(self)
         if not self.no_hardening:
@@ -470,8 +479,8 @@ setup(
     version=package.__version__,
     packages=find_packages(include=[package.__name__]),
     scripts=[
-        path.join("Scripts", "wsgi.py"),
-        path.join("Scripts", "activate_this.py"),
+        join("Scripts", "wsgi.py"),
+        join("Scripts", "activate_this.py"),
     ],
     author=package.__author__,
     author_email=package.__author_email__,
@@ -485,7 +494,8 @@ setup(
         "Documentation": "https://webscripts.readthedocs.io/en/latest/",
         "Wiki": "https://github.com/mauricelambert/WebScripts/wiki",
         "Presentation": (
-            "https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216"
+            "https://www.slideshare.net/MauriceLambert"
+            "1/webscripts-server-251581216"
         ),
     },
     include_package_data=True,

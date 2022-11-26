@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file can add a user
-#    Copyright (C) 2021  Maurice Lambert
+#    This file adds a new user.
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,9 +22,10 @@
 """
 This tool run scripts and display the result in a Web Interface.
 
-This file can add a user."""
+This file adds a new user.
+"""
 
-__version__ = "0.0.2"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -32,12 +33,13 @@ __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
 This tool run scripts and display the result in a Web Interface.
 
-This file can add a user."""
+This file adds a new user.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -45,21 +47,29 @@ under certain conditions.
 license = __license__
 __copyright__ = copyright
 
-__all__ = []
+__all__ = ["parse_args", "main"]
 
-from modules.manage_defaults_databases import add_user, UserError
+from modules.manage_defaults_databases import (
+    add_user,
+    UserError,
+    get_dict_groups,
+)
 from argparse import ArgumentParser, Namespace
-import sys
+from sys import exit, stderr
 
 
 def parse_args() -> Namespace:
 
-    """This function parse command line arguments."""
+    """
+    This function parse command line arguments.
+    """
 
-    parser = ArgumentParser()
-    parser.add_argument("username", help="Name of the new user")
-    parser.add_argument("password", help="Password of the new user")
-    parser.add_argument(
+    parser = ArgumentParser(description="This file adds a new user.")
+    add_argument = parser.add_argument
+
+    add_argument("username", help="Name of the new user")
+    add_argument("password", help="Password of the new user")
+    add_argument(
         "--groups",
         "-g",
         help="List of groups IDs to add permissions to the new user.",
@@ -68,7 +78,16 @@ def parse_args() -> Namespace:
         required=True,
         default=[],
     )
-    parser.add_argument(
+    add_argument(
+        "--group-names",
+        "-n",
+        help="List of groups names to add permissions to the new user.",
+        type=int,
+        nargs="+",
+        required=True,
+        default=[],
+    )
+    add_argument(
         "--ips",
         "-i",
         help="List of glob syntax for authorized IPs",
@@ -76,7 +95,7 @@ def parse_args() -> Namespace:
         nargs="+",
         default=["*"],
     )
-    parser.add_argument(
+    add_argument(
         "--categories",
         "-c",
         help="List of glob syntax for authorized categories",
@@ -84,7 +103,7 @@ def parse_args() -> Namespace:
         nargs="+",
         default=["*"],
     )
-    parser.add_argument(
+    add_argument(
         "--scripts",
         "-s",
         help="List of glob syntax for authorized scripts",
@@ -95,36 +114,52 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
+def main() -> int:
 
     """
-    Main function to add user using the default manager for user database.
+    This function adds a new user using the
+    default user manager.
     """
 
     arguments = parse_args()
+
+    groups = get_dict_groups(by_name=True)
+
+    user_namedgroups = [
+        groups[name] for name in arguments.group_names if name in groups
+    ]
 
     try:
         user = add_user(
             arguments.username,
             arguments.password,
-            arguments.groups,
+            arguments.groups + user_namedgroups,
             arguments.ips,
             arguments.categories,
             arguments.scripts,
         )
     except UserError as error:
-        print(error)
-        sys.exit(2)
+        print(error, file=stderr)
+        return 2
     except Exception as error:
-        print(error)
-        sys.exit(127)
+        print(error, file=stderr)
+        return 127
+
+    groups = get_dict_groups()
 
     print(
-        f"User added:\n\t - Name: {user.name}\n\t - ID: {user.ID}\n\t - IPs:"
-        f" {user.IPs}\n\t - Groups: {user.groups}"
+        f"User added:\n\t - Name: {user.name!r}\n\t - ID: {user.ID}\n\t - IPs:"
+        f" {user.IPs}\n\t - Groups: "
+        + ",".join(
+            [
+                f'{groups.get(group, "UNKNOWN")!r} ({group})'
+                for group in user.groups.split(",")
+            ]
+        )
     )
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

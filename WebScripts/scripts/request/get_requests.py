@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML table of user requests
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2022  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool run scripts and display the result in a Web Interface.
 
-This file prints an HTML table of user requests."""
+This file prints an HTML table of user requests.
+"""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -36,7 +38,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -49,13 +51,15 @@ __all__ = []
 from modules.requests_management import get_requests
 from time import localtime, strftime
 from urllib.parse import quote
-import html
-import sys
+from sys import exit, stderr
+from html import escape
 
 
-def main() -> None:
+def main() -> int:
 
-    """Print the HTML table of user requests."""
+    """
+    Print the HTML table of user requests.
+    """
 
     fields = [
         "ID",
@@ -65,32 +69,34 @@ def main() -> None:
         "ErrorCode",
         "Page",
     ]
-    print(f"<table><tr><td>{'</td><td>'.join(fields)}</td></tr>")
+    print(
+        f"<table><thead><tr><th>{'</th><th>'.join(fields)}</th>"
+        "</thead></tr><tbody>"
+    )
 
     try:
         requests = get_requests()
     except Exception as e:
-        print(html.escape(f"{e.__class__.__name__}: {e}"))
-        sys.exit(127)
+        print(f"{e.__class__.__name__}: {e}", file=stderr)
+        return 127
 
     not_first = False
     for request in requests:
         if not_first:
             print(
                 f'<tr><td><a href="get_request.py?ID={quote(request.ID)}">'
-                f"{html.escape(request.ID)}</a></td><td>"
+                f"{escape(request.ID)}</a></td><td>"
                 + strftime("%Y-%m-%d %H:%M:%S", localtime(float(request.Time)))
-                + f"</td><td>{html.escape(request.UserName)}</td>"
-                f"<td>{html.escape(request.Subject)}</td>"
-                f"<td>{html.escape(request.ErrorCode)}</td>"
-                f"<td>{html.escape(request.Page)}</td></tr>"
+                + f"</td><td>{escape(request.UserName)}</td>"
+                f"<td>{escape(request.Subject)}</td>"
+                f"<td>{escape(request.ErrorCode)}</td>"
+                f"<td>{escape(request.Page)}</td></tr>"
             )
         else:
             not_first = True
 
-    print("</table>")
+    print("</tbody></table>")
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

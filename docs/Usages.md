@@ -150,7 +150,8 @@ WebScripts --e-auth-pages "/auth/page.py" "/help/page.html" --e-auth-pages "/con
 
  - To get python error message and traceback on page 500.
  - To get the existing URLs on page 404.
- - To export the server configuration to the JSON file named export_Configuration.json.
+ - To export the full (since version *3.0.0*) server configuration to a JSON file named export_Configuration.json.
+ - Active unsecure module to see and change configurations
 ```bash
 WebScripts --debug
 WebScripts -d

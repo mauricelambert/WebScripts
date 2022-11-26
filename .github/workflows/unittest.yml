@@ -1,20 +1,12 @@
 name: WebScripts Tests
-on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
+on: [push]
 
 jobs:
   build:
 
     strategy:
       matrix:
-        python-version: [3.9, "3.10"]
+        python-version: [3.9, "3.10", "3.11.0-beta.3"]
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     
     name: "Run test on ${{ matrix.os }} with ${{ matrix.python-version }}"
@@ -29,6 +21,8 @@ jobs:
       - name: Test WebScripts with unittest
         run: |
           python -m unittest discover -s test -p Test*.py -v
+          python -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
+          python -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
           python -m WebScripts --test-running
           python -m pip install .
           python -m pip install --force-reinstall --install-option "-pabc" --install-option "-d." .
