@@ -54,7 +54,7 @@ __all__ = [
     "Logs",
     "DefaultNamespace",
     "log_trace",
-    "get_ip_protected",
+    "get_ip",
     "get_arguments_count",
     "get_file_content",
     "get_real_path",
@@ -105,8 +105,8 @@ from types import (
     CodeType,
     FrameType,
 )
+from os import path, _Environ, device_encoding, remove, stat, getcwd, listdir
 from os.path import abspath, isdir, isfile, exists, dirname, normcase, join
-from os import path, _Environ, device_encoding, remove, stat, getcwd
 from subprocess import check_call, DEVNULL  # nosec
 from locale import getpreferredencoding
 from configparser import ConfigParser

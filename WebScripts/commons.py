@@ -345,10 +345,10 @@ class ScriptConfig(DefaultNamespace):
             configuration_files
         ) = getattr(server_configuration, "configuration_files", {})
 
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
 
             for config_path in ini_scripts_config:
-                config_path = join(dirname, normcase(config_path))
+                config_path = join(dirname_, normcase(config_path))
 
                 for config_filename in iglob(config_path):
                     if not check_file_permission(
@@ -370,7 +370,7 @@ class ScriptConfig(DefaultNamespace):
                     ] = temp_configurations
 
             for config_path in json_scripts_config:
-                config_path = join(dirname, normcase(config_path))
+                config_path = join(dirname_, normcase(config_path))
 
                 for config_filename in iglob(config_path):
                     if not check_file_permission(
@@ -562,10 +562,10 @@ class ScriptConfig(DefaultNamespace):
         This function return a script path from configuration.
         """
 
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
             for directory in server_configuration.scripts_path:
                 script_path = join(
-                    dirname, normcase(directory), script_config["name"]
+                    dirname_, normcase(directory), script_config["name"]
                 )
                 if isfile(script_path):
                     logger_info(
@@ -730,10 +730,10 @@ class ScriptConfig(DefaultNamespace):
         path if it exists.
         """
 
-        for dirname in (lib_directory, current_directory):
+        for dirname_ in (lib_directory, current_directory):
             for doc_glob in configuration.documentations_path:
 
-                doc_glob = join(dirname, normcase(doc_glob))
+                doc_glob = join(dirname_, normcase(doc_glob))
                 for doc in iglob(doc_glob):
 
                     doc_dirname, doc_filename = split(doc)
