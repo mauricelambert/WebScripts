@@ -90,20 +90,20 @@ is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.<
 <font color="#000000" face="helvetica, arial"><a name="Feed">class <strong>Feed</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Feed">Feed</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;category:&nbsp;str,&nbsp;arguments:&nbsp;Dict[str,&nbsp;Dict[str,&nbsp;str]],&nbsp;inputs:&nbsp;List[str],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;collections.abc.Iterable[bytes]]<br>
+<td colspan=2><tt><a href="#Feed">Feed</a>(environ:&nbsp;os._Environ,&nbsp;user:&nbsp;~User,&nbsp;server:&nbsp;~Server,&nbsp;category:&nbsp;str,&nbsp;arguments:&nbsp;Dict[str,&nbsp;Dict[str,&nbsp;str]],&nbsp;inputs:&nbsp;List[str],&nbsp;csrf_token:&nbsp;str&nbsp;=&nbsp;None)&nbsp;-&amp;gt;&nbsp;Tuple[str,&nbsp;Dict[str,&nbsp;str],&nbsp;Iterable[bytes]]<br>
 &nbsp;<br>
 This&nbsp;class&nbsp;implements&nbsp;the&nbsp;RSS&nbsp;feed.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Class methods defined here:<br>
 <dl><dt><a name="Feed-csv"><strong>csv</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;CSV.</tt></dd></dl>
 
-<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str, category: str) -&gt; collections.abc.Iterable[bytes]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</tt></dd></dl>
+<dl><dt><a name="Feed-generator"><strong>generator</strong></a>(full_url: str, base_url: str, rss_path: str, category: str) -&gt; Iterable[bytes]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;generator&nbsp;returns&nbsp;RSS&nbsp;feed&nbsp;content.</tt></dd></dl>
 
 <dl><dt><a name="Feed-json"><strong>json</strong></a>(environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed&nbsp;content&nbsp;as&nbsp;JSON.</tt></dd></dl>
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="Feed-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], collections.abc.Iterable[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed.</tt></dd></dl>
+<dl><dt><a name="Feed-__new__"><strong>__new__</strong></a>(cls: type, environ: os._Environ, user: ~User, server: ~Server, category: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Iterable[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;prints&nbsp;the&nbsp;RSS&nbsp;feed.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -183,6 +183,7 @@ The&nbsp;"fileobj"&nbsp;argument&nbsp;can&nbsp;be&nbsp;any&nbsp;<a href="builtin
     
 <tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>Dict</strong> = typing.Dict<br>
+<strong>Iterable</strong> = typing.Iterable<br>
 <strong>List</strong> = typing.List<br>
 <strong>QUOTE_ALL</strong> = 1<br>
 <strong>Server</strong> = ~Server<br>

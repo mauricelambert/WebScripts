@@ -27,7 +27,7 @@ let dark_theme = window.matchMedia("(prefers-color-scheme: dark)").matches;
 This class implements a script object.
 */
 class Script {
-    constructor (script) {
+    constructor(script) {
         let name = this.name = script.name;
         this.name_lower = name.toLowerCase();
 
@@ -43,15 +43,17 @@ class Script {
     }
 
     /*
-    This function builds the script "cards" for the index page and the search bar results.
+    This function builds the script "cards" for the index page and the
+    search bar results.
     */
-    build_card (attribut, ...classes) {
+    build_card(attribut, ...classes) {
         let doc_createElement = document.createElement.bind(document);
         let link_script_card = this[attribut] = doc_createElement("a");
         let div_script_card = doc_createElement("div");
         let classList = div_script_card.classList;
         let div_class_list_add = classList.add.bind(classList);
-        let append_child = div_script_card.appendChild.bind(div_script_card);
+        let append_child = div_script_card.appendChild.bind(
+        div_script_card);
         let name = this.name;
 
         if (name === "/auth/") {
@@ -82,18 +84,20 @@ class Script {
     This function implements the search method to research a script,
     on a script page or/and the index page.
     */
-    search () {
+    search() {
         let getElementById = document.getElementById.bind(document);
 
         let path = url.pathname;
         let path_split = path.split('/');
-        let path_search = path.startsWith("/web/") && path_split.length === 3 && path_split[2];
+        let path_search = path.startsWith("/web/") && path_split.length ===
+            3 && path_split[2];
         let search_value = getElementById("webscripts_search_bar").value;
         let pattern = search_value || path_search || "";
         pattern = pattern.toLowerCase();
 
         let search_result_container = getElementById("search_result");
-        let result_container_appendChild = search_result_container.appendChild.bind(search_result_container);
+        let result_container_appendChild = search_result_container
+            .appendChild.bind(search_result_container);
 
         let container = getElementById("webscripts_content");
         let container_appendChild = container.appendChild.bind(container);
@@ -120,7 +124,9 @@ class Script {
 
         for (let script of Object.values(Script.prototype.scripts)) {
             let category_name = script.category;
-            if (script.name_lower.includes(pattern) || script.category_lower.includes(pattern) || script.description_lower.includes(pattern)) {
+            if (script.name_lower.includes(pattern) || script.category_lower
+                .includes(pattern) || script.description_lower.includes(
+                    pattern)) {
                 if (is_index && category_name) {
                     no_result = false;
                     let category = categories[category_name];
@@ -140,19 +146,22 @@ class Script {
         }
 
         if (path_search && no_result) {
-            container.innerHTML = "<center><p><strong>There is no script matching your search.</strong></p></center>";
+            container.innerHTML =
+                "<center><p><strong>There is no script matching " +
+                "your search.</strong></p></center>";
         }
     }
 
     /*
     This function builds the script category if not exists.
     */
-    build_category () {
+    build_category() {
         let category = this.category;
         let categories = this.categories;
         if (category && !categories.hasOwnProperty(category)) {
             let doc_createElement = document.createElement.bind(document);
-            let div_category = categories[category] = doc_createElement("div");
+            let div_category = categories[category] = doc_createElement(
+                "div");
             let dic_classList = div_category.classList;
             let div_class_list_add = dic_classList.add.bind(dic_classList);
 
@@ -161,7 +170,8 @@ class Script {
 
             let title = doc_createElement("h3");
             let title_classList = title.classList;
-            let title_class_list_add = title_classList.add.bind(title_classList);
+            let title_class_list_add = title_classList.add.bind(
+                title_classList);
             title_class_list_add("category");
             title_class_list_add("category_title");
         }
@@ -170,11 +180,12 @@ class Script {
     /*
     This function is a "constructor" to build all scripts.
     */
-    build_scripts (scripts) {
+    build_scripts(scripts) {
         for (let script_basic of Object.values(scripts)) {
             let script = new Script(script_basic);
             script.build_category();
-            script.build_card("link_card", "script_cards", "category_content"); // "category"
+            script.build_card("link_card", "script_cards",
+                "category_content"); // "category"
             script.build_card("search_button", "search_result");
         }
 
@@ -220,8 +231,10 @@ class Theme {
         let elements = null;
 
         if (element === null) {
-            let getElementsByTagName = document.getElementsByTagName.bind(document);
-            let getElementByClass = document.getElementsByClassName.bind(document);
+            let getElementsByTagName = document.getElementsByTagName.bind(
+                document);
+            let getElementByClass = document.getElementsByClassName.bind(
+                document);
             let getElementById = document.getElementById.bind(document);
 
             elements = [
@@ -248,10 +261,12 @@ class Theme {
                 elements.push(bar);
             }
         } else {
-            let getElementsByTagName = element.getElementsByTagName.bind(element);
+            let getElementsByTagName = element.getElementsByTagName.bind(
+                element);
 
             elements = [
-                ...element.getElementsByClassName('webscripts_column_select'),
+                ...element.getElementsByClassName(
+                    'webscripts_column_select'),
                 ...element.getElementsByClassName('border'),
                 ...getElementsByTagName('button'),
                 ...getElementsByTagName('input'),
@@ -289,7 +304,8 @@ class Theme {
     This function changes the theme when the page loads.
     */
     load() {
-        if ((localStorage.getItem('theme') === null && dark_theme) || localStorage.getItem('theme') === "dark") {
+        if ((localStorage.getItem('theme') === null && dark_theme) ||
+            localStorage.getItem('theme') === "dark") {
             localStorage.setItem('theme', 'dark');
         } else if (localStorage.getItem('theme') === "light" || localStorage
             .getItem('theme') === null) {
@@ -310,7 +326,8 @@ class HeaderSticker {
         let canvas = this.canvas = document.createElement("canvas");
         canvas.id = "webscripts_header_canvas_image";
 
-        let height = this.height = document.getElementById('webscripts_header_text_position').offsetHeight;
+        let height = this.height = document.getElementById(
+            'webscripts_header_text_position').offsetHeight;
         canvas.style.height = height + "px";
 
         this.context = canvas.getContext("2d");
@@ -338,7 +355,8 @@ class HeaderSticker {
         let sticker = this.effect(20);
         context.drawImage(sticker, start_x, start_y, 200, 160);
 
-        let container = document.getElementById('webscripts_header_canvas_container');
+        let container = document.getElementById(
+            'webscripts_header_canvas_container');
         container.style.height = height + "px";
         container.appendChild(this.canvas);
     }
@@ -346,7 +364,7 @@ class HeaderSticker {
     /*
     This method builds the sticker effect.
     */
-    effect (grow) {
+    effect(grow) {
         let canvas1 = document.createElement("canvas");
         let context1 = canvas1.getContext("2d");
         let canvas2 = document.createElement("canvas");
@@ -359,7 +377,7 @@ class HeaderSticker {
         context2.shadowColor = 'white';
         context2.shadowBlur = 2;
 
-        for(let i = 0;i < grow; i++){
+        for (let i = 0; i < grow; i++) {
             context2.drawImage(canvas1, 0, 0);
             context1.drawImage(canvas2, 0, 0);
         }
@@ -377,7 +395,7 @@ This class implements the button menu actions.
 */
 class Menu {
 
-    constructor () {
+    constructor() {
         this.container = document.getElementById("webscripts_menu_values");
     }
 
@@ -402,10 +420,12 @@ class Menu {
     download() {
         let body = document.body;
         let download_link = document.createElement('a');
-        let download_link_set = download_link.setAttribute.bind(download_link);
+        let download_link_set = download_link.setAttribute.bind(
+            download_link);
 
         download_link_set('href',
-            `data:text/${download_type};charset=utf-8,` + encodeURIComponent(
+            `data:text/${download_type};charset=utf-8,` +
+            encodeURIComponent(
                 download_text));
         download_link_set('download', `result_${script_name}` +
             download_extension);
@@ -432,7 +452,8 @@ class Menu {
     This function build an URL to relaunch this script execution.
     */
     get_execution_url() {
-        let getElementsByTagName = document.getElementsByTagName.bind(document);
+        let getElementsByTagName = document.getElementsByTagName.bind(
+            document);
         let elements = Array.from(getElementsByTagName('input')).concat(
             Array.from(getElementsByTagName('select')));
 
@@ -440,7 +461,10 @@ class Menu {
         let append = url.searchParams.append.bind(url.searchParams)
 
         for (let element of elements) {
-            if (element.name && element.value && element.type !== "password" && element.type !== "file" && element.type !== "submit" && element.type !== "button" && element.name !== "csrf_token") {
+            if (element.name && element.value && element.type !==
+                "password" && element.type !== "file" && element.type !==
+                "submit" && element.type !== "button" && element.name !==
+                "csrf_token") {
                 append(element.name, element.value);
             }
         }
@@ -452,7 +476,7 @@ class Menu {
     /*
     This function copy the full output.
     */
-    copy_output () {
+    copy_output() {
         navigator.clipboard.writeText(download_text);
         this.toast("Copied");
     }
@@ -465,14 +489,17 @@ class Menu {
         toast.classList.add("toast", "show");
         toast.innerText = text;
         document.body.appendChild(toast);
-        setTimeout(() => {document.body.removeChild(toast);}, 3000)
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 3000)
     }
 }
 
 class Notification {
-    close () {
+    close() {
         this.style.display = "none";
-        let notifications = JSON.parse(localStorage.getItem('notifications_closed'));
+        let notifications = JSON.parse(localStorage.getItem(
+            'notifications_closed'));
 
         if (notifications) {
             notifications.push(this.id);
@@ -480,14 +507,15 @@ class Notification {
             notifications = [this.id];
         }
 
-        localStorage.setItem('notifications_closed', JSON.stringify(notifications));
+        localStorage.setItem('notifications_closed', JSON.stringify(
+            notifications));
     }
 }
 
 /*
 This function is performed when the Web page is loaded.
 */
-window.onload = (first, script_onload=null, ...functions) => {
+window.onload = (first, script_onload = null, ...functions) => {
     let getById = document.getElementById.bind(document);
 
     let theme = new Theme();
@@ -498,14 +526,16 @@ window.onload = (first, script_onload=null, ...functions) => {
     getById("webscripts_search_bar").onkeyup = Script.prototype.search;
 
     let menu = new Menu();
-    getById("webscripts_menu_button_left").onclick = menu.change_display.bind(menu);
+    getById("webscripts_menu_button_left").onclick = menu.change_display
+        .bind(menu);
     getById("webscripts_theme_button").onclick = theme.reverse.bind(theme);
 
     for (let func of functions) {
         func();
     }
 
-    let notifications = new Set(JSON.parse(localStorage.getItem('notifications_closed')));
+    let notifications = new Set(JSON.parse(localStorage.getItem(
+        'notifications_closed')));
 
     if (notifications) {
         for (let notification of notifications) {
@@ -516,15 +546,18 @@ window.onload = (first, script_onload=null, ...functions) => {
             } else {
                 notifications.delete(notification);
             }
-            
+
         }
     }
 
-    localStorage.setItem('notifications_closed', JSON.stringify([...notifications]));
+    localStorage.setItem('notifications_closed', JSON.stringify([...
+        notifications
+    ]));
 
     notifications = document.getElementsByClassName('notification_close');
 
     for (let notification of notifications) {
-        notification.onclick = Notification.prototype.close.bind(notification.parentNode);
+        notification.onclick = Notification.prototype.close.bind(
+            notification.parentNode);
     }
 }

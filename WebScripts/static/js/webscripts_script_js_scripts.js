@@ -30,7 +30,7 @@ let execution_number = 0;
 This class implements an argument.
 */
 class Argument {
-    constructor (argument) {
+    constructor(argument) {
         let container = this.container = document.createElement("div");
         this.javascript_attributs = argument.javascript_attributs;
         this.predefined_values = argument.predefined_values;
@@ -161,7 +161,8 @@ class Argument {
     }
 
     /*
-    This method implements the onchange event to have multiple values for an argument.
+    This method implements the onchange event to have multiple values for
+    an argument.
     */
     onchange_input_list(event) {
         let source = event.target || event.srcElement;
@@ -202,19 +203,24 @@ class Argument {
 This class implements the script interface.
 */
 class ScriptInterface {
-    constructor (name) {
+    constructor(name) {
         this.name = name;
         this.script = Script.prototype.scripts[name];
 
         let getElementById = document.getElementById.bind(document);
         this.advanced_button = getElementById("print_advanced");
         this.description_container = getElementById("script_description");
-        this.advanced_arguments_container = getElementById("advanced_container");
-        let script_container = this.script_container = getElementById("script_interface");
-        let advanced_arguments = this.advanced_arguments = getElementById("advanced_arguments");
+        this.advanced_arguments_container = getElementById(
+            "advanced_container");
+        let script_container = this.script_container = getElementById(
+            "script_interface");
+        let advanced_arguments = this.advanced_arguments = getElementById(
+            "advanced_arguments");
 
-        this.advanced_arguments_add = advanced_arguments.appendChild.bind(advanced_arguments);
-        this.insert_argument = script_container.insertBefore.bind(script_container);
+        this.advanced_arguments_add = advanced_arguments.appendChild.bind(
+            advanced_arguments);
+        this.insert_argument = script_container.insertBefore.bind(
+            script_container);
     }
 
     /*
@@ -238,8 +244,10 @@ class ScriptInterface {
     or defined the button behavior.
     */
     config_advanced_arguments() {
-        let advanced_arguments_container = this.advanced_arguments_container;
-        if (!advanced_arguments_container.getElementsByClassName("row").length) {
+        let advanced_arguments_container = this
+        .advanced_arguments_container;
+        if (!advanced_arguments_container.getElementsByClassName("row")
+            .length) {
             advanced_arguments_container.style.display = "none";
         } else {
             let arguments_ = this.advanced_arguments;
@@ -268,16 +276,19 @@ class ScriptInterface {
         query = query.substr(1);
         query.split("&").forEach(function(part) {
             let item = part.split("=");
-            element = decodeURIComponent(item[0].replaceAll("+", " "));
+            element = decodeURIComponent(item[0].replaceAll("+",
+                " "));
 
             if (element) {
                 element = document.getElementById(element);
 
                 if (element) {
-                    if (element.type === "checkbox" && item[1] === "on") {
+                    if (element.type === "checkbox" && item[1] ===
+                        "on") {
                         element.checked = true;
                     } else {
-                        element.value = decodeURIComponent(item[1].replaceAll("+", " "));
+                        element.value = decodeURIComponent(item[1]
+                            .replaceAll("+", " "));
                         event = new Event('change');
                         element.dispatchEvent(event);
                     }
@@ -296,11 +307,13 @@ class ScriptInterface {
             let container = document.createElement("div");
             let classList = container.classList;
             let addClass = classList.add.bind(classList);
-            
+
             addClass("argument_container");
             addClass("inline");
 
-            dom_argument = (argument.predefined_values !== undefined && argument.predefined_values !== null) ? argument.build_select() : argument.build_input();
+            dom_argument = (argument.predefined_values !== undefined &&
+                    argument.predefined_values !== null) ? argument
+                .build_select() : argument.build_input();
 
             dom_argument.addEventListener('keypress', (event) => {
                 if (event.keyCode === 13) {
@@ -308,15 +321,19 @@ class ScriptInterface {
                 }
             });
 
-            this.set_custom_attributes(dom_argument, argument.javascript_attributs);
+            this.set_custom_attributes(dom_argument, argument
+                .javascript_attributs);
 
             container.appendChild(dom_argument);
 
             let label = argument.add_label(dom_argument);
             let paragraph = argument.add_description();
-            let elements_container = argument.group_argument_elements(label, paragraph, container);
+            let elements_container = argument.group_argument_elements(label,
+                paragraph, container);
 
-            argument.is_advanced ? this.advanced_arguments_add(elements_container) : this.insert_argument(elements_container, this.advanced_arguments_container);
+            argument.is_advanced ? this.advanced_arguments_add(
+                elements_container) : this.insert_argument(
+                elements_container, this.advanced_arguments_container);
         }
     }
 }
@@ -325,8 +342,8 @@ class ScriptInterface {
 Add a function to run when the Web page is loaded.
 */
 let onload2 = window.onload;
-window.onload = (first, script_onload=null, ...functions) => {
-    onload2(window, script_onload=() => {
+window.onload = (first, script_onload = null, ...functions) => {
+    onload2(window, script_onload = () => {
         script = new ScriptInterface(script_name);
 
         script.add_description();
@@ -335,16 +352,23 @@ window.onload = (first, script_onload=null, ...functions) => {
         script.set_url_values();
         script.config_advanced_arguments();
 
-        document.getElementById("submit_button").onclick = ScriptExecution.prototype.start;
+        document.getElementById("submit_button").onclick =
+            ScriptExecution.prototype.start;
 
         let menu = new Menu();
         let history = new History();
-        document.getElementById("webscripts_copy_execution_button").onclick = menu.get_execution_url.bind(menu);
-        document.getElementById("webscripts_menu_button_right").onclick = history.change_display.bind(history);
-        document.getElementById("webscripts_copy_output_button").onclick = menu.copy_output.bind(menu);
-        document.getElementById("webscripts_download_button").onclick = menu.download.bind(menu);
-        document.getElementById("webscripts_index_button").onclick = menu.index.bind(menu);
-        document.getElementById("webscripts_clear_button").onclick = menu.clear.bind(menu);
+        document.getElementById("webscripts_copy_execution_button")
+            .onclick = menu.get_execution_url.bind(menu);
+        document.getElementById("webscripts_menu_button_right")
+            .onclick = history.change_display.bind(history);
+        document.getElementById("webscripts_copy_output_button")
+            .onclick = menu.copy_output.bind(menu);
+        document.getElementById("webscripts_download_button")
+            .onclick = menu.download.bind(menu);
+        document.getElementById("webscripts_index_button").onclick =
+            menu.index.bind(menu);
+        document.getElementById("webscripts_clear_button").onclick =
+            menu.clear.bind(menu);
     });
 };
 
@@ -353,10 +377,12 @@ This class implements object and methods to run scripts.
 */
 class ScriptExecution {
     constructor() {
-        let getElementsByTagName = document.getElementsByTagName.bind(document);
+        let getElementsByTagName = document.getElementsByTagName.bind(
+            document);
         let getElementById = document.getElementById.bind(document);
-        this.dom_arguments = Array.from(getElementsByTagName('input')).concat(
-            Array.from(getElementsByTagName('select')));
+        this.dom_arguments = Array.from(getElementsByTagName('input'))
+            .concat(
+                Array.from(getElementsByTagName('select')));
         this.script_container = getElementById("script_interface");
         this.start_button = getElementById("submit_button");
         this.progressbar = getElementById("progressbar");
@@ -426,7 +452,10 @@ class ScriptExecution {
         let arguments_ = this.arguments = {};
 
         for (let [name, argument, position] of sort) {
-            arguments_[name] = {"value": argument["value"], "input": argument["input"]};
+            arguments_[name] = {
+                "value": argument["value"],
+                "input": argument["input"]
+            };
         }
     }
 
@@ -465,7 +494,7 @@ class ScriptExecution {
         if (this.progress) {
             this.progress = false;
             let interval = setInterval(() => {
-                let progressbar =  this.progressbar;
+                let progressbar = this.progressbar;
                 if (test(progressbar.value)) {
                     clearInterval(interval);
                     this.progress = true;
@@ -474,7 +503,8 @@ class ScriptExecution {
                         this.progress_animation();
                     }
                 } else {
-                    progressbar.value = operation(progressbar.value);
+                    progressbar.value = operation(progressbar
+                    .value);
                 }
             }, 20);
         }
@@ -578,7 +608,8 @@ class ScriptExecution {
         } else {
             argument = arguments_[name] = {
                 "value": value,
-                "position": this.script_container.innerHTML.indexOf(`id="${id}"`)
+                "position": this.script_container.innerHTML.indexOf(
+                    `id="${id}"`)
             };
 
             for (let argument_ of script.script.arguments) {
@@ -586,7 +617,8 @@ class ScriptExecution {
                     continue;
                 }
 
-                argument["input"] = (argument_.input === true) ? true : false;
+                argument["input"] = (argument_.input === true) ? true :
+                    false;
                 break;
             }
         }
@@ -597,7 +629,7 @@ class ScriptExecution {
     /*
     This method returns 'light' when theme is light.
     */
-    get_theme () {
+    get_theme() {
         if (localStorage.getItem('theme') === "light" || window.matchMedia(
                 "(prefers-color-scheme: light)").matches) {
             return 'light';
@@ -607,15 +639,17 @@ class ScriptExecution {
     /*
     This method redirects to referrer or to "/web/".
     */
-    redirect () {
+    redirect() {
         let referrer = document.referrer;
-        window.location = (referrer && referrer.startsWith(window.location.origin) && !referrer.endsWith("/web/auth/")) ? referrer : window.location = new URL("/web/", window.location);
+        window.location = (referrer && referrer.startsWith(window.location
+                .origin) && !referrer.endsWith("/web/auth/")) ? referrer :
+            window.location = new URL("/web/", window.location);
     }
 
     /*
     This method adds the error message when HTTP error is raised.
     */
-    http_error (status, message=null) {
+    http_error(status, message = null) {
         this.error_container.innerText = "HTTP ERROR " + status;
 
         if (message) {
@@ -634,7 +668,7 @@ class ScriptExecution {
         link.href = "/error_pages/Report/new/" + status;
         link.innerText = "on the local report page";
         this.error_container.appendChild(link);
-        
+
         this.script_end();
     }
 
@@ -650,7 +684,8 @@ class ScriptExecution {
 
             if (xhttp.readyState === 4) {
                 if (status === 200) {
-                    this.response_manager(JSON.parse(xhttp.responseText));
+                    this.response_manager(JSON.parse(xhttp
+                        .responseText));
                 } else if (status === 302 && script_name === "/auth/") {
                     this.redirect();
                 } else if (status === 500) {
@@ -668,7 +703,8 @@ class ScriptExecution {
             }
         }
 
-        let url = script_name[0] === "/" ? script_name : "/api/scripts/" + script_name;
+        let url = script_name[0] === "/" ? script_name : "/api/scripts/" +
+            script_name;
 
         xhttp.open("POST", url, true);
         xhttp.setRequestHeader('Content-Type', 'application/json');
@@ -691,14 +727,15 @@ class ScriptExecution {
     /*
     This method resets the variables and calculates the time.
     */
-    script_end(){
+    script_end() {
         let end = this.end = Date.now();
         this.start_button.disabled = false;
         this.is_running = false;
         this.full_output = "";
         this.full_error = "";
 
-        let diff_seconds = Math.round((end.valueOf() - this.start.valueOf()) /
+        let diff_seconds = Math.round((end.valueOf() - this.start
+        .valueOf()) /
             1000);
         let minutes = Math.round(diff_seconds / 60);
         let seconds = diff_seconds - minutes * 60;
@@ -718,7 +755,7 @@ class ScriptExecution {
     This method prints a new line and send
     the new request to get a new line.
     */
-    real_time_handler (response) {
+    real_time_handler(response) {
         if (!response.code) {
             response.code = "Running...";
         }
@@ -732,6 +769,10 @@ class ScriptExecution {
             false,
             "Running...",
             this.first_ouput,
+            false,
+            null,
+            null,
+            this.arguments,
         );
 
         if (output_builder.build()) {
@@ -750,7 +791,7 @@ class ScriptExecution {
         let output, error;
 
         if (response.csrf) {
-           this.csrf.value = response.csrf;
+            this.csrf.value = response.csrf;
         }
 
         if (response.key) {
@@ -770,13 +811,17 @@ class ScriptExecution {
             true,
             this.full_output,
             this.full_error,
+            this.arguments,
         );
 
         output_builder.build();
 
-        document.getElementById('code').id = `last_code_${execution_number}`;
-        document.getElementById('last_output').id = `last_output_${execution_number}`;
-        document.getElementById('console').id = `console_${execution_number}`;
+        document.getElementById('code').id =
+        `last_code_${execution_number}`;
+        document.getElementById('last_output').id =
+            `last_output_${execution_number}`;
+        document.getElementById('console').id =
+            `console_${execution_number}`;
     }
 }
 
@@ -784,7 +829,9 @@ class ScriptExecution {
 This class implements functions to add a script execution in the web page.
 */
 class OutputBuilder {
-    constructor (output, add_history_ = true, time = null, make_new_output = true, update = false, full_output = null, full_error = null) {
+    constructor(output, add_history_ = true, time = null, make_new_output =
+        true, update = false, full_output = null, full_error = null,
+        user_inputs = {}) {
         this.output = output;
         this.add_history_ = add_history_;
         this.time = time;
@@ -801,6 +848,8 @@ class OutputBuilder {
         this.code;
         this.new_output;
 
+        this.user_inputs = user_inputs;
+
         this.error_string = this.clean_string(output.stderr);
         this.output_string = this.clean_string(output.stdout);
     }
@@ -809,7 +858,7 @@ class OutputBuilder {
     This function deletes whitespace characters on
     the start and the end of the string.
     */
-    clean_string (string) {
+    clean_string(string) {
         return string.replace(/^\s+|\s+$/g, '');
     };
 
@@ -817,13 +866,14 @@ class OutputBuilder {
     This function creates the "code" element and
     add the script execution status.
     */
-    code_builder (output, time) {
+    code_builder(output, time) {
         let code = document.createElement("code");
         code.id = "code";
         code.classList.add("code");
 
         code.innerText =
-            `>>> ${script_name}    ExitCode: ${output.code}    Error: ${output.error}`;
+            `>>> ${script_name}    ExitCode: ${output.code}    ` +
+            `Error: ${output.error}`;
 
         if (time) {
             code.innerText += `    ExecutionTime: ${time}`;
@@ -836,7 +886,7 @@ class OutputBuilder {
     This function creates containers
     for text and HTML content.
     */
-    new (code) {
+    new(code) {
         let new_output = document.createElement("div");
         let console_ = document.createElement("pre");
 
@@ -860,6 +910,12 @@ class OutputBuilder {
         .replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
 
     /*
+    This function escapes HTML special characters.
+    */
+    escape = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/'/g, "&#x27;").replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+
+    /*
     This function replaces CRLF by universal new line.
     */
     universal_new_line = str => str.replace(/\r\n/g, "\n");
@@ -868,14 +924,17 @@ class OutputBuilder {
     This is the main function to put the script
     content in the web interface.
     */
-    build () {
+    build() {
         this.get_output_container();
         this.update_status();
         this.add_history();
         this.set_stderr_content_type();
 
-        if ((this.full_output + this.full_error + this.output_string + this.error_string).length === 0 && this.add_history_) {
-            this.error_string = this.output.stderr = "WebScripts warning: There is no output or error for this execution.\n";
+        if ((this.full_output + this.full_error + this.output_string + this
+                .error_string).length === 0 && this.add_history_) {
+            this.error_string = this.output.stderr =
+                "WebScripts warning: There is no output or " +
+                "error for this execution.\n";
             this.stderr_content_type = "text/plain";
         }
 
@@ -892,13 +951,15 @@ class OutputBuilder {
     This function builds a new container
     or use the last builded container.
     */
-    get_output_container () {
+    get_output_container() {
         if (this.make_new_output) {
             this.code = this.code_builder(this.output, this.time);
             this.new_output = this.new(this.code);
         } else {
-            this.code = document.getElementById("code") || this.code_builder(this.output, this.time);
-            this.new_output = document.getElementById("last_output") || this.new(this.code);
+            this.code = document.getElementById("code") || this
+                .code_builder(this.output, this.time);
+            this.new_output = document.getElementById("last_output") || this
+                .new(this.code);
         }
     }
 
@@ -906,16 +967,18 @@ class OutputBuilder {
     This function updates the status at the
     end of the script execution.
     */
-    update_status () {
+    update_status() {
         if (this.update) {
-            this.code.innerText = this.code.innerText.replace('Running...', this.output.code).replace('Running...', this.output.error).replace('Running...', this.time);
+            this.code.innerText = this.code.innerText.replace('Running...',
+                this.output.code).replace('Running...', this.output
+                .error).replace('Running...', this.time);
         }
     }
 
     /*
     This function adds a new script content in the history.
     */
-    add_history () {
+    add_history() {
         if (this.add_history_) {
             let history = new History();
             history.add(this);
@@ -926,7 +989,7 @@ class OutputBuilder {
     This function sets the stderr
     content type from the server response.
     */
-    set_stderr_content_type () {
+    set_stderr_content_type() {
         if (this.output.hasOwnProperty("Stderr-Content-Type")) {
             this.stderr_content_type = this.output["Stderr-Content-Type"];
         }
@@ -935,14 +998,15 @@ class OutputBuilder {
     /*
     This function adds the stderr to the string content.
     */
-    add_stderr_content () {
+    add_stderr_content() {
         if (this.error_string.length !== 0) {
             if (this.stderr_content_type.includes("text/html")) {
-                this.html += this.output.stderr;
+                this.html += this.anti_XSS(this.output.stderr);
             } else if (this.stderr_content_type.includes("text/csv")) {
                 this.html += csv_to_html(this.output.stderr);
             } else if (this.stderr_content_type.includes("text/json")) {
-                this.text += JSON.stringify(JSON.parse(this.output.stderr), null, "    ");
+                this.text += JSON.stringify(JSON.parse(this.output.stderr),
+                    null, "    ");
             } else {
                 this.text += `\n${this.output.stderr}`;
             }
@@ -953,7 +1017,7 @@ class OutputBuilder {
     This function sets the download parameters
     and adds the stdout to the string content.
     */
-    build_content () {
+    build_content() {
         let html_content = () => {
             download_separator = "\n<br>\n";
             download_extension = ".html";
@@ -967,29 +1031,34 @@ class OutputBuilder {
         }
 
         let add_text_output = (text) => {
-            this.text = this.make_new_output ? `\n${text}${this.text}` : `${this.text}${text}`;;
+            this.text = this.make_new_output ? `\n${text}${this.text}` :
+                `${this.text}${text}`;;
         }
 
         if (this.content_type.includes("text/html")) {
             html_content();
-            this.html = this.output.stdout + this.html;
+            this.html = this.anti_XSS(this.output.stdout) + this.html;
         } else if (this.content_type.includes("text/csv")) {
             html_content();
-            this.html = ParserCSV.prototype.csv_to_html(null, this.output.stdout, '"', ',', '\r\n').outerHTML;
+            this.html = ParserCSV.prototype.csv_to_html(null, this.output
+                .stdout, '"', ',', '\r\n').outerHTML;
         } else if (this.content_type.includes("text/json")) {
             text_content();
-            add_text_output(JSON.stringify(JSON.parse(this.output.stdout), null, "    "));
+            add_text_output(JSON.stringify(JSON.parse(this.output.stdout),
+                null, "    "));
         } else {
             text_content();
             add_text_output(this.output.stdout);
+            console.log(this.anti_XSS(this.output.stdout));
         }
     }
 
     /*
     This function cleans and adds the string content to the container.
     */
-    add_content () {
-        this.code.innerText += this.universal_new_line(this.unescape(this.text));
+    add_content() {
+        this.code.innerText += this.universal_new_line(this.unescape(this
+            .text));
         this.new_output.innerHTML += this.html;
         this.console_div.appendChild(this.new_output);
         ShortTable.prototype.add_listeners();
@@ -998,20 +1067,42 @@ class OutputBuilder {
     /*
     This function adds the string content to the download content.
     */
-    add_to_download () {
+    add_to_download() {
         download_text += `${this.text}\n${this.html}${download_separator}`;
     }
 
     /*
-    This function changes the color theme of the child elements of the container.
+    This function changes the color theme of the child elements of the
+    container.
     */
-    theme () {
-        if (localStorage.getItem('theme') === "light" || (localStorage.getItem('theme') === null && !dark_theme)) {
+    theme() {
+        if (localStorage.getItem('theme') === "light" || (localStorage
+                .getItem('theme') === null && !dark_theme)) {
             Theme.prototype.change_elements('light', this.new_output);
         }
         /* else if (localStorage.getItem('theme') === null) {
-                change_theme(class_name = 'default_theme', element = this.new_output);
-            }*/
+            change_theme(
+                class_name = 'default_theme',
+                element = this.new_output,
+            );
+        }*/
+    }
+
+    /*
+    This function protects the browser against the XSS
+    vulnerabilities based on the user inputs only.
+    */
+    anti_XSS(content) {
+        for (let value of Object.values(this.user_inputs)) {
+            value = value.value;
+            if (value.constructor.name !== "String") continue;
+            let secure_value = this.escape(value);
+            if (value !== secure_value) {
+                content = content.replaceAll(value, secure_value);
+            }
+        }
+
+        return content;
     }
 }
 
@@ -1075,109 +1166,118 @@ class History {
 This class parses a CSV file.
 */
 class ParserCSV {
-  constructor (quote = '"', value_delimiter = ',', line_delimiter = "\n") {
-    let value_regex_string = `(${quote}([^${quote}]|${quote}${quote})*${quote}|[^${quote}${value_delimiter}${line_delimiter}]*)`;
-    this.regex_line = new RegExp('((' + value_regex_string + value_delimiter + ')*' + value_regex_string + '+|(' + value_regex_string + value_delimiter + ')+' + value_regex_string + ')', "gm");
-    this.regex_value = new RegExp(`((${quote}([^${quote}]|${quote}${quote})*${quote}|[^${quote}${value_delimiter}${line_delimiter}]+)|${value_delimiter})`, "gm");
-  }
-
-  /*
-  This function parses CSV and build an HTML output.
-  */
-  csv_to_html (headers, data, ...args) {
-    let csv_parser = new ParserCSV(...args);
-    let arrays = csv_parser.parse(data);
-
-    headers = headers || arrays.shift();
-
-    let table = document.createElement("table");
-    let thead = table.createTHead();
-    let tbody = table.createTBody();
-
-    let line = document.createElement("tr");
-    thead.appendChild(line);
-
-    for (let header of headers) {
-        let column = document.createElement("th");
-        line.appendChild(column);
-        column.innerText = header;
+    constructor(quote = '"', value_delimiter = ',', line_delimiter = "\n") {
+        let value_regex_string =
+            `(${quote}([^${quote}]|${quote}${quote})*${quote}|` +
+            `[^${quote}${value_delimiter}${line_delimiter}]*)`;
+        this.regex_line = new RegExp('((' + value_regex_string +
+            value_delimiter + ')*' + value_regex_string + '+|(' +
+            value_regex_string + value_delimiter + ')+' +
+            value_regex_string + ')', "gm");
+        this.regex_value = new RegExp(
+            `((${quote}([^${quote}]|${quote}${quote})*${quote}|[^${quote}` +
+            `${value_delimiter}${line_delimiter}]+)|${value_delimiter})`,
+            "gm");
     }
 
-    for (let line_values of arrays) {
-        line = document.createElement("tr");
-        tbody.appendChild(line);
-        for (let column_value of line_values) {
-            let column = document.createElement("td");
+    /*
+    This function parses CSV and build an HTML output.
+    */
+    csv_to_html(headers, data, ...args) {
+        let csv_parser = new ParserCSV(...args);
+        let arrays = csv_parser.parse(data);
+
+        headers = headers || arrays.shift();
+
+        let table = document.createElement("table");
+        let thead = table.createTHead();
+        let tbody = table.createTBody();
+
+        let line = document.createElement("tr");
+        thead.appendChild(line);
+
+        for (let header of headers) {
+            let column = document.createElement("th");
             line.appendChild(column);
-            column.innerText = column_value;
+            column.innerText = header;
         }
+
+        for (let line_values of arrays) {
+            line = document.createElement("tr");
+            tbody.appendChild(line);
+            for (let column_value of line_values) {
+                let column = document.createElement("td");
+                line.appendChild(column);
+                column.innerText = column_value;
+            }
+        }
+
+        return table;
     }
 
-    return table;
-  }
+    /*
+    This function parses a CSV file.
+    */
+    parse(data) {
+        let lines = data.matchAll(this.regex_line);
 
-  /*
-  This function parses a CSV file.
-  */
-  parse(data) {
-    let lines = data.matchAll(this.regex_line);
+        let arrays = [];
+        let array = [];
 
-    let arrays = [];
-    let array = [];
+        for (let line of lines) {
+            let text_line = line[0];
+            if (text_line) {
+                this.parse_line(text_line, array);
+                arrays.push(array);
+                array = [];
+            }
+        }
 
-    for (let line of lines) {
-      let text_line = line[0];
-      if (text_line) {
-        this.parse_line(text_line, array);
-        arrays.push(array);
-        array = [];
-      }
+        if (array.length) {
+            arrays.push(array);
+        }
+
+        return arrays;
     }
 
-    if (array.length) {
-      arrays.push(array);
-    }
+    /*
+    This function parses a CSV line.
+    */
+    parse_line(line, array) {
+        let values = line.matchAll(this.regex_value);
+        let not_empty = false;
 
-    return arrays;
-  }
+        for (let value of values) {
+            let data = value[0];
 
-  /*
-  This function parses a CSV line.
-  */
-  parse_line(line, array) {
-    let values = line.matchAll(this.regex_value);
-    let not_empty = false;
+            if (data === ",") {
+                if (!not_empty) {
+                    array.push("");
+                }
+                not_empty = false;
+                continue;
+            }
 
-    for (let value of values) {
-      let data = value[0];
+            not_empty = true;
+            this.parse_value(data, array);
+        }
 
-      if (data === ",") {
         if (!not_empty) {
-          array.push("");
+            array.push("");
         }
-        not_empty = false;
-        continue;
-      }
-
-      not_empty = true;
-      this.parse_value(data, array);
     }
 
-    if (!not_empty) {
-      array.push("");
+    /*
+    This function parses a CSV value.
+    */
+    parse_value(data, array) {
+        if (data[0] === '"') {
+            array.push(data.substring(1, data.length - 1).replace('""',
+                '"'));
+        } else {
+            array.push(data);
+        }
     }
-  }
-
-  /*
-  This function parses a CSV value.
-  */
-  parse_value (data, array) {
-    if (data[0] === '"') {
-      array.push(data.substring(1, data.length - 1).replace('""', '"'));
-    } else {
-      array.push(data);
-    }
-  }
 }
 
 /*
@@ -1189,15 +1289,16 @@ class ShortTable {
     /*
     This function returns the column value.
     */
-    get_value (line, id) {
+    get_value(line, id) {
         return line.children[id].innerText || line.children[id].textContent;
     }
 
     /*
     This function compares two values.
     */
-    compare (value1, value2) {
-        if (value1 !== '' && value2 !== '' && !isNaN(value1) && !isNaN(value2)) {
+    compare(value1, value2) {
+        if (value1 !== '' && value2 !== '' && !isNaN(value1) && !isNaN(
+                value2)) {
             return value1 - value2;
         } else {
             return value1.toString().localeCompare(value2)
@@ -1207,15 +1308,17 @@ class ShortTable {
     /*
     This function generates the event listener callback.
     */
-    get_callback (id, ascendant) {
-        return function short_callback (line1, line2) {
+    get_callback(id, ascendant) {
+        return function short_callback(line1, line2) {
             if (!ascendant) {
                 let temp = line1;
                 line1 = line2;
                 line2 = temp;
             }
 
-            return ShortTable.prototype.compare(ShortTable.prototype.get_value(line1, id), ShortTable.prototype.get_value(line2, id));
+            return ShortTable.prototype.compare(ShortTable.prototype
+                .get_value(line1, id), ShortTable.prototype
+                .get_value(line2, id));
         };
     }
 
@@ -1227,22 +1330,27 @@ class ShortTable {
         let id = Array.from(this.parentNode.children).indexOf(this);
 
         Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-            .sort(ShortTable.prototype.get_callback(id, window.ascendant = !window.ascendant))
+            .sort(ShortTable.prototype.get_callback(id, window.ascendant = !
+                window.ascendant))
             .forEach(line => table.appendChild(line));
     }
 
     /*
     This function adds listeners on each table headers.
     */
-    add_listeners () {
+    add_listeners() {
 
         document.querySelectorAll('th').forEach((header) => {
             if (!header.have_short_event) {
-                header.addEventListener('click', ShortTable.prototype.event.bind(header));
+                header.addEventListener('click', ShortTable
+                    .prototype.event.bind(header));
                 header.innerText = "⋁ " + header.innerText;
                 header.have_short_event = true;
                 header.style.cursor = "pointer";
-                setTimeout(() => {let search = new TableSearch(header.closest('table'))}, 500);
+                setTimeout(() => {
+                    let search = new TableSearch(header
+                        .closest('table'))
+                }, 500);
             }
         });
     }
@@ -1252,7 +1360,7 @@ class ShortTable {
 This class implements a tool to search lines in HTML table.
 */
 class TableSearch {
-    constructor (table) {
+    constructor(table) {
         if (table.have_search) {
             return;
         }
@@ -1283,7 +1391,7 @@ class TableSearch {
     /*
     This function adds a select box to headers to filter only on this column.
     */
-    add_selects (is_light) {
+    add_selects(is_light) {
         let counter = 0;
 
         for (let header of this.headers) {
@@ -1292,7 +1400,9 @@ class TableSearch {
             select.innerText = "☐";
             select.classList.add("webscripts_column_select");
             if (is_light) select.classList.add('light');
-            select.addEventListener('click', () => {this.select_column(id);});
+            select.addEventListener('click', () => {
+                this.select_column(id);
+            });
             header.appendChild(select);
             header.selected = false;
             header.select = select;
@@ -1304,7 +1414,7 @@ class TableSearch {
     /*
     This function unselects columns.
     */
-    unselect_column () {
+    unselect_column() {
         this.selected_column = null;
 
         for (let header of this.headers) {
@@ -1319,7 +1429,7 @@ class TableSearch {
     /*
     This function selects columns.
     */
-    select_column (id) {
+    select_column(id) {
         if (this.selected_column !== null) {
             this.unselect_column();
             return;
