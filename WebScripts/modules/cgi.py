@@ -50,7 +50,7 @@ license = __license__
 __copyright__ = copyright
 
 from typing import TypeVar, Dict, List, Tuple
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE  # nosec
 from os.path import join, dirname
 from os import _Environ
 from json import dumps
@@ -116,7 +116,7 @@ def bin(
         stderr=PIPE,
         shell=False,
         env=server.get_environ_strings(environ, user, script),
-    )
+    )  # nosec
 
     debug("Send inputs and get outputs...")
     if isinstance(arguments, bytes):
