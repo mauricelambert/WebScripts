@@ -31,7 +31,7 @@ from contextlib import suppress
 from importlib import reload
 from platform import system
 import logging.config
-import subprocess
+import subprocess  # nosec
 import builtins
 import logging
 import sys
@@ -351,7 +351,7 @@ sys.modules["win32security"].GetTokenInformation = change_WINDOWS_LOGS
 
 # sys.modules["platform"].system = clear_path
 _exec(utils.__spec__, utils)
-exec(open(utils.__file__).read())
+exec(open(utils.__file__).read())  # nosec
 
 # sys.path = sys_path
 # sys.path_importer_cache = path_importer

@@ -25,9 +25,9 @@ This file tests the Pages.py file
 """
 
 from unittest.mock import MagicMock, patch, Mock, call
-from subprocess import TimeoutExpired
+from subprocess import TimeoutExpired  # nosec
 from unittest import TestCase, main
-from subprocess import PIPE
+from subprocess import PIPE  # nosec
 from html import unescape
 from json import loads
 from time import time
@@ -814,7 +814,9 @@ class TestWeb(TestCase):
             )
 
         rigth.assert_called_once_with(user, script)
-        popen.assert_called_once_with("test", env={"env": "env"}, shell=True)
+        popen.assert_called_once_with(
+            "test", env={"env": "env"}, shell=True
+        )  # nosec
         get_docfile.assert_called_once_with(server.configuration, "test.go")
         getenv.assert_called_once_with(env, user, script)
         get_file.assert_called_once_with("test.html")
@@ -1037,7 +1039,7 @@ class TestPages(TestCase):
         )
 
     def test_auth(self):
-        env = {"REMOTE_IP": "0.0.0.0"}
+        env = {"REMOTE_IP": "0.0.0.0"}  # nosec
         server = Mock(
             configuration=Mock(
                 active_auth=None, auth_script="test.go", session_max_time=0
@@ -1132,7 +1134,7 @@ class TestPages(TestCase):
                 env, user, server, script, command, inputs
             )
             self.assertIsInstance(
-                self.pages.ip_blacklist.get("0.0.0.0"), Blacklist
+                self.pages.ip_blacklist.get("0.0.0.0"), Blacklist  # nosec
             )
             self.assertIsInstance(
                 self.pages.user_blacklist.get("test"), Blacklist
@@ -1150,7 +1152,9 @@ class TestPages(TestCase):
             )
 
             getuser.assert_called_once_with(data="data")
-            session.assert_called_once_with(user_session, "0.0.0.0", Pages)
+            session.assert_called_once_with(
+                user_session, "0.0.0.0", Pages
+            )  # nosec
             mock.assert_called_once_with(
                 "test.go", user, env, command, inputs, is_auth=True
             )
