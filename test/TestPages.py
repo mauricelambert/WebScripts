@@ -815,8 +815,8 @@ class TestWeb(TestCase):
 
         rigth.assert_called_once_with(user, script)
         popen.assert_called_once_with(
-            "test", env={"env": "env"}, shell=True
-        )  # nosec
+            "test", env={"env": "env"}, shell=True  # nosec
+        )
         get_docfile.assert_called_once_with(server.configuration, "test.go")
         getenv.assert_called_once_with(env, user, script)
         get_file.assert_called_once_with("test.html")
@@ -1153,8 +1153,8 @@ class TestPages(TestCase):
 
             getuser.assert_called_once_with(data="data")
             session.assert_called_once_with(
-                user_session, "0.0.0.0", Pages
-            )  # nosec
+                user_session, "0.0.0.0", Pages  # nosec
+            )
             mock.assert_called_once_with(
                 "test.go", user, env, command, inputs, is_auth=True
             )
