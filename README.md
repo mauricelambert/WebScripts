@@ -63,6 +63,8 @@ Create a safe, secure and easy way to share CLI (console) scripts and scripting 
         - ubuntu && python [3.8, 3.9, 3.10, 3.11]
         - windows && python [3.8, 3.9, 3.10, 3.11]
         - MacOS && python [3.8, 3.9, 3.10, 3.11]
+    - Javascript parser and formatter for `text`, `json` and `csv` content type (XSS protection)
+    - XSS active protection for `html` content type based on user inputs analysis and script outputs
  - Customizable
     - [Authentication](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Script/#build-the-script) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#build-the-script))
     - Web Interface: HTML, CSS and JS [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))
@@ -252,11 +254,11 @@ WebScripts38.main()
 
 ## Pictures
 
-![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_index.PNG "Index page (dark)")
+![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts3_dark_mode_index.PNG "Index page (dark)")
 *Index page (dark)*
-![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_dark_mode_script_text.PNG "Text script (dark)")
+![Text script (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts3_dark_mode_script_text.PNG "Text script (dark)")
 *Text script (dark)*
-![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts_light_mode_script_html.PNG "HTML script (light)")
+![HTML script (light)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts3_light_mode_script_html.PNG "HTML script (light)")
 *HTML script (light)*
 
 ## License
