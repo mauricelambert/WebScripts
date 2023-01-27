@@ -2114,7 +2114,7 @@ def prepare_server(secure: bool = True) -> Server:
     logger_debug("Build server with configurations...")
     server = Server(configuration)
 
-    return server
+    return server, debug
 
 def main() -> int:
 
@@ -2131,7 +2131,7 @@ def main() -> int:
 
     secure: bool = "--security" not in argv
 
-    server = prepare_server(secure)
+    server, debug = prepare_server(secure)
     httpd = simple_server.make_server(
         server.interface, server.port, server.app
     )
