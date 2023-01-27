@@ -19,7 +19,14 @@ jobs:
 
       - name: Launch WebScripts
         run: |
-          python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+          mkdir WebScripts/hardening
+          echo "{}" > WebScripts/hardening/logs_checks.json
+          echo "{}" > WebScripts/hardening/uploads_file_integrity.json
+          echo "{}" > WebScripts/hardening/webscripts_file_integrity.json
+          echo "{}" > WebScripts/hardening/audit.html
+          echo "{}" > WebScripts/hardening/audit.txt
+          echo "{}" > WebScripts/hardening/audit.json
+          python3.9 -m WebScripts --security --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
 
       - name: Nuclei - DAST Scan
         uses: projectdiscovery/nuclei-action@main
