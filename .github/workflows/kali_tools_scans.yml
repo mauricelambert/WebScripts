@@ -33,11 +33,13 @@ jobs:
           wget http://apt.nuxeo.org/nuxeo.key -O - | sudo apt-key add
           sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic releases"
           sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic fasttracks"
-          sudo apt install wget libc6 libidn11 libpcre3 zlib1g debconf perl-base -y
+          sudo apt install wget libc6 libpcre3 zlib1g debconf perl-base -y
+          wget -O libidn.deb http://archive.ubuntu.com/ubuntu/pool/universe/libi/libidn/idn_1.33-2.2ubuntu2_amd64.deb
           wget -O debconf.deb http://archive.ubuntu.com/ubuntu/pool/main/d/debconf/debconf_1.5.66_all.deb
           wget -O libssl.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5_amd64.deb
           wget -O skipfish.deb http://archive.ubuntu.com/ubuntu/pool/universe/s/skipfish/skipfish_2.10b-1.1_amd64.deb
           sudo dpkg -i debconf.deb
+          sudo dpkg -i libidn.deb
           sudo dpkg -i libssl.deb
           sudo dpkg -i skipfish.deb
 
