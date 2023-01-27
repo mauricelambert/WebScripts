@@ -49,7 +49,7 @@ from typing import List
 content2 = b64encode(b'\x00version 2\xff').decode()
 
 write_file(
-    content2,                 # file content, if is binary you can use base64 ou decode it with latin-1
+    content2,                 # file content, if is binary you can use base64 or decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     1000,                     # Write access (1000 == Admin can write it)

@@ -17,32 +17,30 @@ Containers contain complete deployment solutions and are hardened.
 
 ## Python virtual environment
 
-### Linux
+### Linux (Debian)
 
 ```bash
 sudo apt update
 sudo apt upgrade
 sudo apt install python3-venv
 
-python3 -m venv WebScripts
-cd WebScripts
-source bin/activate
-
-mkdir logs
-
-chmod -R 600 /path/to/virtualenv/lib/python3.9/site-packages/WebScripts/
-chmod -R 600 logs
-find /path/to/virtualenv/lib/python3.9/site-packages/WebScripts/ -type d -exec chmod 700 {} +
-chmod 700 logs
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o '<my webscripts user>' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ### Windows
 
 ```bash
-python -m venv WebScripts
-cd WebScripts
-Scripts\activate
-python -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
+python -m venv WebScripts        # Make a virtual environment for WebScripts
+WebScripts/Scripts/activate    # Activate your virtual environment
+WebScripts/Scripts/python -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+WebScripts/Scripts/python -m WebScripts.harden -p '<my admin password>' -o '' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ## Web Server (Using Debian)
@@ -53,7 +51,13 @@ python -m pip install WebScripts --install-option "--admin-password=<your passwo
 
 ```bash
 useradd --system --no-create-home --shell /bin/false WebScripts
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts"  --install-option "--directory=<directory>"
+
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'WebScripts' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 
 nano /lib/systemd/system/WebScripts.service
 ```
@@ -145,10 +149,14 @@ sudo systemctl restart nginx
 sudo apt install libexpat1
 sudo apt install apache2 apache2-utils ssl-cert libapache2-mod-wsgi-py3
 
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data" --install-option "--directory=<directory>"
-
 sudo mkdir /var/www/WebScripts
-sudo chown -R www-data:www-data /var/www/WebScripts
+
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'www-data' -d '/var/www/WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 #### Configure Apache
@@ -159,11 +167,9 @@ sudo chmod 600 /path/to/virtualenv/bin/wsgi.py
 sudo chown www-data:www-data /path/to/virtualenv/bin/activate_this.py
 sudo chmod 600 /path/to/virtualenv/bin/activate_this.py
 
-sudo mkdir /var/www/WebScripts/logs
 sudo touch /var/www/WebScripts/logs/apache-errors.logs
 sudo touch /var/www/WebScripts/logs/apache-custom.logs
 sudo touch /var/www/WebScripts/logs/root.logs
-sudo chown -R www-data:www-data /var/www/WebScripts/logs
 
 sudo apt install openssl
 openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out WebScripts.crt -keyout WebScripts.pem
@@ -325,3 +331,4 @@ for item in list(sys.path):
         sys.path.remove(item)
 sys.path[:0] = new_sys_path
 ```
+

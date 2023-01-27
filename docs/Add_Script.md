@@ -147,7 +147,7 @@ from WebScripts.scripts.uploads.modules.uploads_management import (
 from base64 import b64decode, b64encode
 
 write_file(
-    "\x00string content\xff", # if is binary you can use base64 ou decode it with latin-1
+    "\x00string content\xff", # if is binary you can use base64 or decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     0,                        # Write access (0 == everyone can write it)
@@ -170,7 +170,7 @@ assert "my_filename.txt" in filenames
 # file is not hidden and not deleted
 
 write_file(
-    content2,                 # if is binary you can use base64 ou decode it with latin-1
+    content2,                 # if is binary you can use base64 or decode it with latin-1
     "my_filename.txt",        # File name
     0,                        # Read access (0 == everyone can read it)
     1000,                     # Write access (1000 == Admin can write it)

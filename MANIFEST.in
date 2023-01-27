@@ -19,3 +19,4 @@ recursive-include WebScripts/static *.css *.js *.html *.jpg *.png *.pdf
 exclude audit.*
 prune WebScripts/logs
 prune test/modules/__pycache__
+

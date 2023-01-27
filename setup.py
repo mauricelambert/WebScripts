@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tool run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021, 2022  Maurice Lambert
+#    This tool runs CLI scripts and displays output in a Web Interface.
+#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,22 +20,20 @@
 ###################
 
 """
-This tool run scripts and display the result in a Web Interface.
+This tool runs CLI scripts and displays output in a Web Interface.
 """
 
-__version__ = "2.3.4"
+__version__ = "2.3.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = (
-    """This tool run scripts and display the result in a Web Interface."""
-)
+__description__ = "This tool runs CLI scripts and displays output in a Web Interface."
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -49,7 +47,6 @@ from os.path import join, exists, basename, splitext, split, abspath, dirname
 from importlib.machinery import SourceFileLoader
 from setuptools.command.install import install
 
-# from setuptools.command.develop import develop
 from os import path, makedirs, getcwd, environ
 from setuptools import setup, find_packages
 from getpass import getuser
@@ -215,18 +212,6 @@ class PostInstallScript(install):
         os.chmod(directory, 0o755)  # nosec
         os.chown(directory, 0, 0)
 
-        # if file == "wsgi.py" or extension in (".json", ".ini"):
-        #     # logging.debug(
-        #     #     f"Add the execution permission for the owner on {filename}"
-        #     # )
-        #     # os.chmod(filename, 0o400)
-
-        #     logging.debug(
-        #         f'Change permissions and owner on directory "{directory}"'
-        #     )
-        #     os.chmod(directory, 0o755)  # nosec
-        #     os.chown(directory, 0, 0)
-        # elif file == "WebScripts":
         if file == "WebScripts":
             logging.debug(
                 f"Add the execution permissions for the owner on {filename}"
@@ -301,12 +286,13 @@ class PostInstallScript(install):
                     logging.debug("Add the launcher")
                     script["launcher"] = launcher
 
-                    script_name, _ = splitext(basename(filename))
-                    logging.info(f"Configure script named: {script_name}")
-                    for py_filename in self.py_scripts_files:
-                        if py_filename.endswith(f"{script_name}.py"):
-                            logging.debug("Add the script absolute path.")
-                            script["path"] = py_filename
+                    if "build" not in self.directory:   # if not in temp install directory
+                        script_name, _ = splitext(basename(filename))
+                        logging.info(f"Configure script named: {script_name}")
+                        for py_filename in self.py_scripts_files:
+                            if py_filename.endswith(f"{script_name}.py"):
+                                logging.debug("Add the script absolute path.")
+                                script["path"] = py_filename
 
                 PostInstallScript.save_scripts_configurations(
                     filename, configurations
@@ -328,14 +314,15 @@ class PostInstallScript(install):
                 logging.debug("Add launcher")
                 section["launcher"] = launcher
 
-                for py_filename in self.py_scripts_files:
-                    if py_filename.endswith(name):
-                        logging.debug("Add the script absolute path.")
-                        section["path"] = py_filename
+                if "build" not in self.directory:
+                    for py_filename in self.py_scripts_files:
+                        if py_filename.endswith(name):
+                            logging.debug("Add the script absolute path.")
+                            section["path"] = py_filename
 
             server = configurations.get("server")
 
-            if server is not None:
+            if server is not None and "build" not in self.directory:
                 path_ = [dirname(filename), "..", "modules"]
 
                 if self.is_windows:
@@ -428,7 +415,9 @@ class PostInstallScript(install):
 
     def run_custom_install(self) -> None:
 
-        """This function launch custom install."""
+        """
+        This function launch custom install.
+        """
 
         logging.basicConfig(
             filename="install.log",
@@ -468,11 +457,6 @@ class PostInstallScript(install):
         PostInstallScript.run_custom_install(self)
         return return_value
 
-
-# class PostDevelopScript(develop):
-#    user_options = develop.user_options + arguments
-#    is_windows = PostInstallScript.is_windows
-#    run = PostInstallScript.run
 
 setup(
     name=package.__name__,
@@ -537,3 +521,4 @@ setup(
         "install": PostInstallScript,
     },
 )
+

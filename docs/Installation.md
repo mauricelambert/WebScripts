@@ -17,7 +17,12 @@ Optional on Windows:
 ## Linux
 
 ```bash
-python3 -m pip install WebScripts
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o '<my webscripts user>' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ### Recommendations
@@ -27,9 +32,12 @@ python3 -m pip install WebScripts
 [Apache Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
 
 ```bash
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data" --install-option "--directory=<directory>"
-# OR
-python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-owww-data" --install-option "--d<directory>"
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'www-data' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 #### Debian using NGINX as HTTPS proxy 
@@ -37,28 +45,29 @@ python3 -m pip install WebScripts --install-option "-p<your password>" --install
 [NGINX Deployment](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https)) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
 
 ```bash
-python3 -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts" --install-option "--directory=<directory>"
-# OR
-python3 -m pip install WebScripts --install-option "-p<your password>" --install-option "-oWebScripts" --install-option "--d<directory>"
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'WebScripts' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ## Windows
 
 ```bash
-python -m pip install WebScripts
-```
-
-### Recommendations
-
-```bash
-python -m pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
-# OR
-python -m pip install WebScripts --install-option "-p<your password>" --install-option "--d<directory>"
+python -m venv WebScripts        # Make a virtual environment for WebScripts
+WebScripts/Scripts/activate    # Activate your virtual environment
+WebScripts/Scripts/python -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+WebScripts/Scripts/python -m WebScripts.harden -p '<my admin password>' -o '' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ### Optional
 
 To centralize logs in Event Viewer.
+
 ```bash
 python -m pip install pywin32
 ```
@@ -67,8 +76,7 @@ python -m pip install pywin32
 
  - `--admin-password=` or `-p`: The administrator password (password of the default account named *Admin*)
  - `--owner=` or `-o`: Owner of installation files (used on UNIX systems only), to change the owner and permissions run the command with privileges
- - `--json-only` or `-j`: Delete INI configuration files (used with the `--no-hardening/-n` argument only)
- - `--no-hardening` or `-n`: Does not harden the installation of WebScripts **not recommended**
+ - `--directory` or `-d`: Location where WebScripts will be launched, to have secure owner and permissions and to add hardening files
 
 ## Upgrade
 
@@ -164,13 +172,14 @@ WebScripts38.main()
 ## Start the server
 
 You can now start the server with this simple command:
+
 ```bash
 WebScripts
 ```
 
 ## First connection
 
-1. Install without `--admin-password=` option: to log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `127.0.*,192.168.*,172.16.*,10.*` by default.
+1. Install without `--admin-password=` option: to log in for the first time, use the `Admin` account (username: `Admin`, password: `Admin`). I recommend changing the password **immediately**. The `Admin` account is restricted on `127.0.*,192.168.*,172.16.*,10.*` IP addresses by default.
 2. Install with `--admin-password=` option: to log in for the first time, use the `Admin` account (username: `Admin`).
 
 ## Logs directory
@@ -184,3 +193,4 @@ mkdir logs
 ## License
 
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
+
