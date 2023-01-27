@@ -26,7 +26,7 @@ jobs:
           echo "{}" > WebScripts/hardening/webscripts_file_integrity.json
           echo "{}" > WebScripts/hardening/audit.html
           echo "{}" > WebScripts/hardening/audit.txt
-          echo "{}" > WebScripts/hardening/audit.jsonmkdir WebScripts/hardening
+          echo "{}" > WebScripts/hardening/audit.json
           python -m unittest discover -s test -p Test*.py -v
           python -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
           python -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
