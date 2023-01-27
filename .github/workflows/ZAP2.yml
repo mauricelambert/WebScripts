@@ -19,9 +19,16 @@ jobs:
 
       - name: Launch WebScripts
         run: |
+          mkdir WebScripts/hardening
+          echo "{}" > WebScripts/hardening/logs_checks.json
+          echo "{}" > WebScripts/hardening/uploads_file_integrity.json
+          echo "{}" > WebScripts/hardening/webscripts_file_integrity.json
+          echo "{}" > WebScripts/hardening/audit.html
+          echo "{}" > WebScripts/hardening/audit.txt
+          echo "{}" > WebScripts/hardening/audit.json
           python3.9 -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
           python3.9 -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
-          python3.9 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 & 
+          python3.9 -m WebScripts --security --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 & 
         
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.2.0
