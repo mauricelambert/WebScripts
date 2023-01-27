@@ -2139,7 +2139,7 @@ def main() -> int:
 
     logger_debug("Trying to send email notification...")
     send_mail(
-        configuration,
+        server.configuration,
         f"Server is up on http://{server.interface}:{server.port}/.",
     )
 
@@ -2150,7 +2150,7 @@ def main() -> int:
     if debug:
         # second export to get all configurations
         logger_debug("Debug mode detected: export configuration...")
-        configuration.export_as_json()
+        server.configuration.export_as_json()
 
     logger_warning(
         f"Starting server on http://{server.interface}:{server.port}/ ..."
@@ -2172,7 +2172,7 @@ def main() -> int:
 
     logger_debug("Trying to send email notification...")
     send_mail(
-        configuration,
+        server.configuration,
         f"Server is down on http://{server.interface}:{server.port}/.",
     )
     logger_debug("Exit with code 0.")
