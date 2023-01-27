@@ -19,9 +19,9 @@ jobs:
           python-version: 3.8
       - name: Test WebScripts with unittest
         run: |
-          python -m WebScripts.harden -p 'Admin' -o "$(whoami)" -d '.'
           python WebScripts/scripts/to_3.8/to_3.8.py
           python -c "from os import replace;from shutil import rmtree,copytree;rmtree('WebScripts');copytree('WebScripts38', 'WebScripts');replace('setup38.py', 'setup.py')"
+          python -m WebScripts.harden -p 'Admin' -o "$(whoami)" -d '.'
           python -m unittest discover -s test -p Test*.py -v
           python -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
           python -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
