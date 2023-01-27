@@ -34,12 +34,12 @@ jobs:
           sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic releases"
           sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic fasttracks"
           sudo apt install wget libc6 libpcre3 zlib1g debconf perl-base -y
-          wget -O libidn.deb http://archive.ubuntu.com/ubuntu/pool/universe/libi/libidn/libidn11-java_1.33-2.2ubuntu2_all.deb
+          wget -O libidn11.deb hhttp://ubuntu.cs.utah.edu/ubuntu/pool/main/libi/libidn/libidn11_1.33-2.1ubuntu1_amd64.deb
           wget -O debconf.deb http://archive.ubuntu.com/ubuntu/pool/main/d/debconf/debconf_1.5.66_all.deb
           wget -O libssl.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5_amd64.deb
           wget -O skipfish.deb http://archive.ubuntu.com/ubuntu/pool/universe/s/skipfish/skipfish_2.10b-1.1_amd64.deb
           sudo dpkg -i debconf.deb
-          sudo dpkg -i libidn.deb
+          sudo dpkg -i libidn11.deb
           sudo dpkg -i libssl.deb
           sudo dpkg -i skipfish.deb
 
