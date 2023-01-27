@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tool run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021, 2022  Maurice Lambert
+#    This tool runs CLI scripts and displays output in a Web Interface.
+#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,20 +20,19 @@
 ###################
 
 """
-This tool run scripts and display the result in a Web Interface.
+This tool runs CLI scripts and displays output in a Web Interface.
 
 This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tool run scripts and display the result in a Web
-Interface.
+This tool runs CLI scripts and displays output in a Web Interface.
 
 This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
@@ -42,7 +41,7 @@ license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -64,8 +63,6 @@ from json.decoder import JSONDecodeError
 from logging.config import fileConfig
 from collections import defaultdict
 from wsgiref import simple_server
-
-# from logging import basicConfig
 from urllib.parse import quote
 from threading import Thread
 from base64 import b64decode
@@ -97,10 +94,6 @@ if __package__:
         get_environ,
         get_file_content,
         get_arguments_count,
-        # doRollover,
-        # rotator,
-        # namer,
-        # Handler,
         get_real_path,
         WebScriptsSecurityError,
         WebScriptsArgumentError,
@@ -138,10 +131,6 @@ else:
         get_environ,
         get_file_content,
         get_arguments_count,
-        # doRollover,
-        # rotator,
-        # namer,
-        # Handler,
         get_real_path,
         WebScriptsSecurityError,
         WebScriptsArgumentError,
@@ -164,9 +153,6 @@ Content = TypeVar(
     "Content", List[Dict[str, JsonValue]], Dict[str, JsonValue], bytes
 )
 
-# current_directory: str = getcwd()
-# log_path: str = join(current_directory, "logs")
-
 
 class Configuration(DefaultNamespace):
 
@@ -181,6 +167,7 @@ class Configuration(DefaultNamespace):
         "urls": {},
         "modules": [],
         "js_path": [],
+        "cgi_path": [],
         "log_level": 0,
         "statics_path": [],
         "scripts_path": [],
@@ -193,6 +180,7 @@ class Configuration(DefaultNamespace):
         "documentations_path": [],
         "accept_unknow_user": True,
         "force_file_permissions": True,
+        "auth_failures_to_blacklist": None,
         "accept_unauthenticated_user": True,
     }
     __required__ = ("interface", "port")
@@ -238,11 +226,9 @@ class Configuration(DefaultNamespace):
         "accept_unknow_user": bool,
         "accept_unauthenticated_user": bool,
         "admin_groups": List[int],
-        # "urls": dict,
         "modules": list,
         "modules_path": list,
         "js_path": list,
-        # "log_level": int,
         "statics_path": list,
         "documentations_path": list,
         "exclude_auth_paths": list,
@@ -336,7 +322,6 @@ class Server:
         self.port: int = configuration.port
 
         logger_debug("Create default value for WebScripts server...")
-        # self.user: Dict[str, User] = {}
         self.unknow: Dict = {"id": 1, "name": "Unknow", "groups": [0, 1]}
         self.not_authenticated: Dict = {
             "id": 0,
@@ -876,13 +861,11 @@ class Server:
         logger_debug("Extract inputs from WebScripts arguments...")
         for i, argument in enumerate(arguments):
             if argument["input"]:
-                # logger_debug(f"Input found: {argument}")
                 # To protect secrets, do not log arguments !
                 append(argument)
 
         logger_debug("Remove inputs from arguments...")
         for i, input_ in enumerate(inputs):
-            # logger_debug(f"Remove {input_}")
             # To protect secrets, do not log arguments !
             remove(input_)
             inputs[i] = str(input_["value"])
@@ -1087,17 +1070,20 @@ class Server:
         return HTTP errors.
         """
 
-        environ = self.environ._data.copy()
+        # environ: _Environ = self.environ
+        # encodevalue: Callable = environ.encodevalue
+        # encodekey: Callable = environ.encodekey
+        environ = {key: value for key, value in self.environ.items()}
         # environ = _Environ(
-        #     environ._data,
-        #     environ.encodekey,
+        #     environ._data.copy(),
+        #     encodekey,
         #     environ.decodekey,
-        #     environ.encodevalue,
+        #     encodevalue,
         #     environ.decodevalue
         # )
 
         # d_setitem: Callable = environ._data.__setitem__
-        # [d_setitem(encode_key(key), encode_value(value)) if isinstance(value, str) else d_setitem(encode_key(key), value) for key, value in environ_.items()]
+        # [d_setitem(encodekey(key), encodevalue(value)) if isinstance(value, str) else d_setitem(encodekey(key), value) for key, value in environ_.items()]
 
         environ.update(environ_)
 
@@ -1556,7 +1542,6 @@ class Server:
             return function(environ, user, self, filename, error)
 
         packages = self.pages.packages
-        # for package in self.pages.packages.__dict__.values():
         for package in dir(packages):
             package = getattr(packages, package)
 
@@ -1808,7 +1793,7 @@ def parse_args(argv: List[str] = argv) -> Namespace:
 
 
 @log_trace
-def get_server_config(arguments: Namespace) -> Iterator[dict]:
+def get_server_config(arguments: Namespace, secure: bool = False) -> Iterator[dict]:
 
     """
     This generator return configurations dict.
@@ -1822,7 +1807,7 @@ def get_server_config(arguments: Namespace) -> Iterator[dict]:
     insert = paths.insert
 
     temp_config = Configuration()
-    temp_config.force_file_permissions = True
+    temp_config.force_file_permissions = secure
 
     if system() == "Windows":
         logger_debug("Add default server configuration for Windows...")
@@ -1954,7 +1939,7 @@ def add_configuration(
     return configuration
 
 
-def configure_logs_system() -> Tuple[Set[str], Set[str]]:
+def configure_logs_system(secure: bool = False) -> Tuple[Set[str], Set[str]]:
 
     """
     This function try to create the logs directory
@@ -1976,7 +1961,7 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
     log_file = get_real_path(join("config", "loggers.ini"))
 
     temp_config = Configuration()
-    temp_config.force_file_permissions = True
+    temp_config.force_file_permissions = secure
 
     if not check_file_permission(temp_config, log_file):
         raise WebScriptsSecurityError(
@@ -1990,18 +1975,6 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
     )
 
     Logs.log_response.handlers[0].baseFilename
-
-    # basicConfig(
-    #     format=(
-    #         "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> "
-    #         "%(filename)s:%(lineno)d)"
-    #     ),
-    #     datefmt="%d/%m/%Y %H:%M:%S",
-    #     encoding="utf-8",
-    #     level=0,
-    #     filename=join(get_real_path("logs", is_dir=True), "root.logs"),
-    #     force=True,
-    # )
 
     logs_path = set()
     log_files = set()
@@ -2038,11 +2011,6 @@ def configure_logs_system() -> Tuple[Set[str], Set[str]]:
     environ["WEBSCRIPTS_LOGS_FILES"] = "|".join(log_files)
     return logs_path, log_files
 
-    #     if logger.hasHandlers() and len(logger.handlers):
-    #         logger.handlers[0].doRollover = Handler.doRollover
-    #         logger.handlers[0].rotator = Handler.rotator
-    #         logger.handlers[0].namer = Handler.namer
-
 
 def send_mail(*args, **kwargs) -> int:
 
@@ -2068,13 +2036,13 @@ def send_mail(*args, **kwargs) -> int:
     return 1
 
 
-def default_configuration(argv: List[str] = argv) -> Configuration:
+def default_configuration(argv: List[str] = argv, secure: bool = False) -> Configuration:
 
     """
     This function builds the default configuration.
     """
 
-    log_paths, log_files = configure_logs_system()
+    log_paths, log_files = configure_logs_system(secure)
     environ["WEBSCRIPTS_PATH"] = server_path
     args = parse_args(argv)
 
@@ -2083,11 +2051,10 @@ def default_configuration(argv: List[str] = argv) -> Configuration:
     configuration = Configuration()
     configuration.logs_path = list(log_paths)
     configuration.log_files = list(log_files)
-    for config in get_server_config(args):
+    for config in get_server_config(args, secure):
         configuration = add_configuration(configuration, config)
 
     configuration = add_configuration(configuration, args.__dict__)
-    # logs_configuration(configuration)
 
     logger_debug("Check and type configurations...")
     configuration.set_defaults()
@@ -2121,6 +2088,7 @@ def default_configuration(argv: List[str] = argv) -> Configuration:
     configuration.data_dir = datapath = get_real_path(
         getattr(configuration, "data_dir", "data"), is_dir=True
     )
+
     environ["WEBSCRIPTS_DATA_PATH"] = datapath
     environ["WEBSCRIPTS_DOCUMENTATION_PATH"] = ":".join(
         configuration.documentations_path
@@ -2130,6 +2098,23 @@ def default_configuration(argv: List[str] = argv) -> Configuration:
 
     return configuration
 
+def prepare_server(secure: bool = True) -> Server:
+
+    """
+    This function prepares server to be launched securly.
+    """
+
+    configuration = default_configuration(argv, secure)
+    debug = getattr(configuration, "debug", None)
+
+    if debug:
+        logger_debug("Debug mode detected: export configuration...")
+        configuration.export_as_json()
+
+    logger_debug("Build server with configurations...")
+    server = Server(configuration)
+
+    return server
 
 def main() -> int:
 
@@ -2144,18 +2129,9 @@ def main() -> int:
     else:
         NO_START = False
 
-    configuration = default_configuration(argv)
-    debug = getattr(configuration, "debug", None)
+    secure: bool = "--security" not in argv
 
-    if debug:
-        # first export to get server configuration on
-        # Script Configuration Error
-        logger_debug("Debug mode detected: export configuration...")
-        configuration.export_as_json()
-
-    logger_debug("Build server with configurations...")
-    server = Server(configuration)
-
+    server = prepare_server(secure)
     httpd = simple_server.make_server(
         server.interface, server.port, server.app
     )
@@ -2168,7 +2144,8 @@ def main() -> int:
     )
 
     logger_info("Check hardening of the WebScripts server...")
-    hardening(server)
+    if secure:
+        hardening(server)
 
     if debug:
         # second export to get all configurations

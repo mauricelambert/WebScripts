@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This tool run scripts and display the result in a Web Interface.
-#    Copyright (C) 2021, 2022  Maurice Lambert
+#    This tool runs CLI scripts and displays output in a Web Interface.
+#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 ###################
 
 """
-This tool run scripts and display the result in a Web Interface.
+This tool runs CLI scripts and displays output in a Web Interface.
 
 This file implements a CGI server to customize resquests
 and responses with non-python script or executable.
@@ -32,7 +32,7 @@ __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tool run scripts and display the result in a Web Interface.
+This tool runs CLI scripts and displays output in a Web Interface.
 
 This file implements a CGI server to customize resquests
 and responses with non-python script or executable.
@@ -41,7 +41,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -50,7 +50,7 @@ license = __license__
 __copyright__ = copyright
 
 from typing import TypeVar, Dict, List, Tuple
-from subprocess import Popen, PIPE  # nosec
+from subprocess import Popen, PIPE
 from os.path import join, dirname
 from os import _Environ
 from json import dumps
@@ -116,7 +116,7 @@ def bin(
         stderr=PIPE,
         shell=False,
         env=server.get_environ_strings(environ, user, script),
-    )  # nosec
+    )
 
     debug("Send inputs and get outputs...")
     if isinstance(arguments, bytes):
