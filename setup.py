@@ -322,7 +322,7 @@ class PostInstallScript(install):
 
             server = configurations.get("server")
 
-            if server is not None and "build" not filename:
+            if server is not None and "build" not in filename:
                 path_ = [dirname(filename), "..", "modules"]
 
                 if self.is_windows:
