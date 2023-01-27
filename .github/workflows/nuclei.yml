@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Python 3.9  
+      - name: Setup Python 3.11  
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: Launch WebScripts
         run: |
@@ -26,7 +26,7 @@ jobs:
           echo "{}" > WebScripts/hardening/audit.html
           echo "{}" > WebScripts/hardening/audit.txt
           echo "{}" > WebScripts/hardening/audit.json
-          python3.9 -m WebScripts --security --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+          python3.11 -m WebScripts --security --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
 
       - name: Nuclei - DAST Scan
         uses: projectdiscovery/nuclei-action@main
