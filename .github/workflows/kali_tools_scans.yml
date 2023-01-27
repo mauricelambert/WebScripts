@@ -30,6 +30,9 @@ jobs:
           #
           # INSTALL SKIPFISH
           #
+          wget http://apt.nuxeo.org/nuxeo.key -O - | sudo apt-key add
+          sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic releases"
+          sudo add-apt-repository "deb http://apt.nuxeo.org/ bionic fasttracks"
           sudo apt install wget libc6 libidn11 libpcre3 zlib1g debconf perl-base -y
           wget -O debconf.deb http://archive.ubuntu.com/ubuntu/pool/main/d/debconf/debconf_1.5.66_all.deb
           wget -O libssl.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5_amd64.deb
