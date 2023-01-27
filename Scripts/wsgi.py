@@ -82,7 +82,7 @@ configure_logs_system()
 
 paths = Paths([], [])
 
-server = prepare_server()
+server, _ = prepare_server()
 
 logger_debug("Trying to send email notification...")
 send_mail(

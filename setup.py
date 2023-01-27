@@ -286,7 +286,7 @@ class PostInstallScript(install):
                     logging.debug("Add the launcher")
                     script["launcher"] = launcher
 
-                    if "build" not in self.directory:   # if not in temp install directory
+                    if "build" not in filename:   # if not in temp install directory
                         script_name, _ = splitext(basename(filename))
                         logging.info(f"Configure script named: {script_name}")
                         for py_filename in self.py_scripts_files:
@@ -314,7 +314,7 @@ class PostInstallScript(install):
                 logging.debug("Add launcher")
                 section["launcher"] = launcher
 
-                if "build" not in self.directory:
+                if "build" not in filename:
                     for py_filename in self.py_scripts_files:
                         if py_filename.endswith(name):
                             logging.debug("Add the script absolute path.")
@@ -339,7 +339,9 @@ class PostInstallScript(install):
         filename: str, configurations: Dict[str, dict]
     ) -> None:
 
-        """This function save configuration."""
+        """
+        This function save configuration.
+        """
 
         logging.debug(f"Save new/secure configurations in {filename}")
         with open(filename, "w") as file:
@@ -347,7 +349,9 @@ class PostInstallScript(install):
 
     def remove_configuration_files(self) -> None:
 
-        """This function removes unnecessary configuration files."""
+        """
+        This function removes unnecessary configuration files.
+        """
 
         sub_path = join("config", "nt")
 
