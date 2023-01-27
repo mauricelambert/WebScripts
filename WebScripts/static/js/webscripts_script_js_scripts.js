@@ -912,8 +912,8 @@ class OutputBuilder {
     /*
     This function escapes HTML special characters.
     */
-    escape = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/'/g, "&#x27;").replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+    escape = str => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/'/g, "&#x27;").replace(/"/g, '&quot;');
 
     /*
     This function replaces CRLF by universal new line.
