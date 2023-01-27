@@ -132,3 +132,4 @@ docs/Add_Script.md
 docs/Deployment.md
 docs/File_Share.md
 docs/Installation.md
+docs/index.md

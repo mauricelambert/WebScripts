@@ -100,7 +100,12 @@ Optional on Windows:
 ## Installation
 
 ```bash
-pip install WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=<directory>"
+python3 -m venv WebScripts        # Make a virtual environment for WebScripts
+source WebScripts/bin/activate    # Activate your virtual environment
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o '<my webscripts user>' -d 'WebScripts/'  # Harden default configurations
+cd WebScripts                     # Use your virtual environment to start WebScripts
+WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
 ```
 
 ## Basic Usages
@@ -264,3 +269,4 @@ WebScripts38.main()
 ## License
 
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
+
