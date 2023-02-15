@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -85,7 +85,7 @@ from glob import iglob
 
 
 if name != "nt":
-    from os import chmown, getuid
+    from os import chown, getuid
 
 
 def prepare(arguments: Namespace) -> Tuple[str, List[str]]:
