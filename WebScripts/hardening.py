@@ -174,7 +174,6 @@ class Report:
     def truncate_string(
         string: str, length: int = 13, end: str = "...", separator: str = ","
     ) -> str:
-
         """
         This function truncate a string.
         """
@@ -192,7 +191,6 @@ class Report:
         return string
 
     def as_json(self) -> str:
-
         """
         This function returns a JSON string of audit results.
         """
@@ -219,7 +217,6 @@ class Report:
         }
 
         for rule in self.rules:
-
             audit = {}
             self.reports_dict["ALL"].append(audit)
             self.reports_dict[rule.severity].append(audit)
@@ -232,7 +229,6 @@ class Report:
                 scoring[f"{rule.severity} fail"] += rule.level
 
             for attribut in Rule.__dataclass_fields__.keys():
-
                 if attribut == "is_OK":
                     new_attribut = "state"
                     new_value = "PASS" if getattr(rule, attribut) else "FAIL"
@@ -265,7 +261,6 @@ class Report:
         return self.reports_json
 
     def get_pourcent(self) -> None:
-
         """
         This function calcul pourcent.
         """
@@ -274,7 +269,9 @@ class Report:
 
         self.pourcent = {
             s.value: 100
-            - scoring[f"{s.value} fail"] * 100 / (scoring[f"{s.value} total"] or 1)
+            - scoring[f"{s.value} fail"]
+            * 100
+            / (scoring[f"{s.value} total"] or 1)
             for s in SEVERITY
         }
         self.pourcent["ALL"] = 100 - GETTER.fail(scoring) * 100 / GETTER.total(
@@ -283,7 +280,6 @@ class Report:
 
     @staticmethod
     def get_HTML_table(headers: str, rules: List[Rule]) -> str:
-
         """
         This function returns a HTML table with rule attributes as columns.
         """
@@ -299,7 +295,6 @@ class Report:
         return table
 
     def as_html(self) -> str:
-
         """
         This function return a HTML string of audit results.
         """
@@ -521,7 +516,6 @@ class Report:
     def get_text_table(
         headers: str, rules: List[Rule], joiner: str = "    "
     ) -> str:
-
         """
         This function return a text table with rule attributes as columns.
         """
@@ -537,7 +531,6 @@ class Report:
         )
 
     def as_text(self) -> str:
-
         """This function return a HTML string of audit results."""
 
         if self.reports_dict is None:
@@ -623,7 +616,6 @@ scoring[f"{SEVERITY.INFORMATION.value} total"]:0>4},  Fail:\
         return self.reports_text
 
     def notification(self) -> None:
-
         """
         This function send an email notification
         to administrator with the audit report.
@@ -691,7 +683,6 @@ class Audit:
     latest = []
 
     def audit_in_venv(server: Server) -> Rule:
-
         """
         This function checks the virtualenv.
         """
@@ -707,7 +698,6 @@ class Audit:
         )
 
     def audit_config_files(server: Server) -> Rule:
-
         """
         This function checks the configurations files.
         """
@@ -738,7 +728,6 @@ class Audit:
         )
 
     def audit_venv_modules(server: Server) -> Rule:
-
         """
         This function checks the virtualenv modules.
         """
@@ -927,7 +916,6 @@ class Audit:
         )
 
     def audit_system_user(server: Server) -> Rule:
-
         """
         This function checks the user.
         """
@@ -948,7 +936,6 @@ class Audit:
         )
 
     def audit_interface(server: Server) -> Rule:
-
         """
         This function checks the network interface.
         """
@@ -964,7 +951,6 @@ class Audit:
         )
 
     def audit_force_auth(server: Server) -> Rule:
-
         """
         This function checks authentication is forced.
         """
@@ -981,7 +967,6 @@ class Audit:
         )
 
     def audit_active_auth(server: Server) -> Rule:
-
         """
         This function checks authentication is enabled.
         """
@@ -998,7 +983,6 @@ class Audit:
         )
 
     def audit_limit_exclude_auth(server: Server) -> Rule:
-
         """
         This function checks exclusions for authentication.
         """
@@ -1024,7 +1008,6 @@ class Audit:
         )
 
     def audit_webproxy_number(server: Server) -> Rule:
-
         """
         This function checks exclusions for authentication.
         """
@@ -1040,7 +1023,6 @@ class Audit:
         )
 
     def audit_security(server: Server) -> Rule:
-
         """
         This function checks the security configuration.
         """
@@ -1056,7 +1038,6 @@ class Audit:
         )
 
     def audit_debug(server: Server) -> Rule:
-
         """
         This function checks the debug configuration.
         """
@@ -1072,7 +1053,6 @@ class Audit:
         )
 
     def audit_blacklist(server: Server) -> Rule:
-
         """
         This function checks the blacklist configuration.
         """
@@ -1089,7 +1069,6 @@ class Audit:
         )
 
     def audit_smtp_password(server: Server) -> Rule:
-
         """
         This function checks the SMTP password protection.
         """
@@ -1109,7 +1088,6 @@ class Audit:
         )
 
     def audit_log_level(server: Server) -> Rule:
-
         """
         This function checks the log level.
         """
@@ -1125,7 +1103,6 @@ class Audit:
         )
 
     def audits_module_path(server: Server) -> Rule:
-
         """
         This function checks the modules paths.
         """
@@ -1142,7 +1119,6 @@ class Audit:
             )
 
     def audits_scripts_logs(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the configuration of the script log.
         """
@@ -1159,7 +1135,6 @@ class Audit:
             )
 
     def audits_scripts_stderr_content_type(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the configuration of the script stderr content
         type.
@@ -1178,7 +1153,6 @@ class Audit:
             )
 
     def audits_scripts_content_type(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the configuration of the script content type.
         """
@@ -1196,7 +1170,6 @@ class Audit:
             )
 
     def audits_scripts_path(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the configuration of the script path.
         """
@@ -1216,7 +1189,6 @@ class Audit:
             delattr(script, "path_is_defined")
 
     def audits_launcher(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the configuration of the script launcher.
         """
@@ -1234,7 +1206,6 @@ class Audit:
             )
 
     def audit_admin_account(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the admin password.
         """
@@ -1264,7 +1235,6 @@ class Audit:
         )
 
     def get_owner(filename: str) -> str:
-
         """
         This function return the owner of a file.
         """
@@ -1286,7 +1256,6 @@ class Audit:
             return getpwuid(stat(filename).st_uid).pw_name
 
     def audits_file_owner(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the files owner.
         """
@@ -1356,7 +1325,6 @@ class Audit:
                 )
 
     def get_permissions(filename: str) -> str:
-
         """
         This function returns the file permissions.
         """
@@ -1366,7 +1334,6 @@ class Audit:
     def _audits_directory_permissions(
         server: Server, secure_paths: Set[str]
     ) -> Iterator[Rule]:
-
         """
         This function checks owner and permissions on bin directory.
         """
@@ -1416,7 +1383,6 @@ class Audit:
             )
 
     def audits_timeout(server: Server) -> Iterator[Rule]:
-
         """
         This function checks scripts timeout.
         """
@@ -1433,7 +1399,6 @@ class Audit:
             )
 
     def audits_file_rights(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the files rights.
         """
@@ -1547,7 +1512,6 @@ class Audit:
                 )
 
     def audit_export_configuration(server: Server) -> Iterator[Rule]:
-
         """
         This function checks the export configuration file.
         """
@@ -1564,7 +1528,6 @@ class Audit:
         )
 
     def log_rule(rule: Rule, logs: Logs) -> None:
-
         """
         This function log rule.
         """
@@ -1592,7 +1555,6 @@ class Audit:
             logs.critical(log)
 
     def run(server: Server) -> List[Rule]:
-
         """
         This function run audit and checks.
         """
@@ -1613,7 +1575,6 @@ class Audit:
         return rules
 
     def check_for_updates(logs: Logs) -> None:
-
         """
         This function runs in a thread indefinitely, it checks the version
         and the latest published version of WebScripts every hour.
@@ -1634,7 +1595,6 @@ class Audit:
         version = [int(i) for i in str_version.split(".")]
 
         def get_latest() -> str:
-
             """
             This function request github api and return the latest version.
             """
@@ -1696,7 +1656,6 @@ class FilesIntegrity:
         self.hashes = {}
 
     def get_hardening_filename(self, filename: str) -> str:
-
         """
         This function returns the path of the filename.
         """
@@ -1732,7 +1691,6 @@ class FilesIntegrity:
     def get_old_files(
         self, filename: str, hash_: str
     ) -> Tuple[Dict[str, str], Dict[str, Dict[str, str]]]:
-
         """
         This function returns file data to check integrity
         from JSON file (previous check).
@@ -1757,13 +1715,11 @@ class FilesIntegrity:
         return to_yield, files
 
     def get_files(self) -> Dict[str, Dict[str, str]]:
-
         """
         This functions gets used files.
         """
 
         def build_file(path: str) -> Dict[str, str]:
-
             """
             This function makes file JSON object from path.
             """
@@ -1852,7 +1808,6 @@ class FilesIntegrity:
 
         for base in (server_path, "."):
             for directory in configuration.cgi_path:
-
                 full_path = join(base, directory)
                 if not exists(full_path):
                     continue
@@ -1866,7 +1821,6 @@ class FilesIntegrity:
         return files
 
     def check_webscripts_file_integrity(self) -> Iterator[Dict[str, str]]:
-
         """
         This function compares old files data to new files data.
         """
@@ -1895,7 +1849,6 @@ class FilesIntegrity:
                 # if the file changes, these three checks should fail.
                 ("modification", "~~", "!!", 10),
             ):
-
                 old = data.get(check, old_default)
                 new = new_data.get(check, new_default)
 
@@ -1923,7 +1876,6 @@ class FilesIntegrity:
             }
 
     def check_data_file_integrity(self) -> Iterator[Dict[str, str]]:
-
         """
         This function checks uploads file integrity
         (uploads can not be changed from WebScripts Server).
@@ -1973,9 +1925,7 @@ class FilesIntegrity:
                 or data.get("modification", "") != modif
                 or hash_ != data.get("hash", "")
             ):
-                self.logs.warning(
-                    repr(name) + " has been modified."
-                )
+                self.logs.warning(repr(name) + " has been modified.")
                 yield {
                     "File": name,
                     "Reason": "A database has been modified.",
@@ -2043,7 +1993,6 @@ class FilesIntegrity:
             }
 
     def check_logs_files(self) -> Iterator[Dict[str, str]]:
-
         """
         This function checks logs file.
         """
@@ -2061,9 +2010,7 @@ class FilesIntegrity:
         files = [logfile for logfile in self.server.configuration.log_files]
 
         for filename in files:
-            if (
-                isfile(filename)
-            ):
+            if isfile(filename):
                 self.logs.debug(f"Check log file: '{filename}'...")
                 metadata = stat(filename)
                 size = metadata.st_size
@@ -2110,7 +2057,6 @@ class FilesIntegrity:
                 self.logs.debug(f"Log file: '{filename}' is checked.")
 
     def save(self) -> None:
-
         """
         This function saves data to check file integrity.
         """
@@ -2137,7 +2083,6 @@ class FilesIntegrity:
     def check_logs_ok(
         path: str, temp_file: TemporaryFile, metadata: stat_result
     ) -> bool:
-
         """
         This function checks the log file integrity.
         """
@@ -2156,10 +2101,7 @@ class FilesIntegrity:
         read_check_log = temp_file.readline
         write_check_log = temp_file.write
 
-        if (
-            temp_metadata.st_size
-            > metadata.st_size
-        ):
+        if temp_metadata.st_size > metadata.st_size:
             restore(temp_file)
             return False
 
@@ -2186,7 +2128,6 @@ class FilesIntegrity:
 
 
 def sha512sum(path: str, length: int = DEFAULT_BUFFER_SIZE) -> str:
-
     """
     This function returns the SHA512 of a file.
     """
@@ -2208,7 +2149,6 @@ def daemon_func(
     server: Server,
     file_integrity: FilesIntegrity,
 ) -> None:
-
     """
     This function implements a daemon thread to
     check WebScripts version, update and integrity.
@@ -2290,7 +2230,6 @@ def daemon_func(
 
 
 def get_files_recursive(path: str) -> Iterator[Tuple[str, str]]:
-
     """
     This function returns path and file names recursively.
     """
@@ -2306,7 +2245,6 @@ def get_files_recursive(path: str) -> Iterator[Tuple[str, str]]:
 
 
 def main(server: Server) -> Report:
-
     """
     The main function to perform WebScripts Server hardening audit.
     """
@@ -2330,10 +2268,14 @@ def main(server: Server) -> Report:
     report.as_html()
     report.as_text()
 
-    with open(file_integrity.get_hardening_filename("audit.json"), "w") as file:
+    with open(
+        file_integrity.get_hardening_filename("audit.json"), "w"
+    ) as file:
         file.write(report.reports_json)
 
-    with open(file_integrity.get_hardening_filename("audit.html"), "w") as file:
+    with open(
+        file_integrity.get_hardening_filename("audit.html"), "w"
+    ) as file:
         file.write(report.reports_html)
 
     with open(file_integrity.get_hardening_filename("audit.txt"), "w") as file:

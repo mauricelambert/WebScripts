@@ -149,7 +149,6 @@ test_frame: Callable = (
 
 
 def get_log_frame() -> FrameType:
-
     """
     This function returns the frame
     to get file and line of the log call.
@@ -201,7 +200,6 @@ class _Logs:
     log_command: Logger = getLogger("WebScripts.command")
 
     def debug(log: str) -> None:
-
         """
         This function implements basic python debug logs for WebScripts.
         """
@@ -212,7 +210,6 @@ class _Logs:
         debug(log)
 
     def info(log: str) -> None:
-
         """
         This function implements basic python info logs for WebScripts.
         """
@@ -223,7 +220,6 @@ class _Logs:
         info(log)
 
     def warning(log: str) -> None:
-
         """
         This function implements basic python warning logs for WebScripts.
         """
@@ -234,7 +230,6 @@ class _Logs:
         warning(log)
 
     def error(log: str) -> None:
-
         """
         This function implements basic python error logs for WebScripts.
         """
@@ -245,7 +240,6 @@ class _Logs:
         error(log)
 
     def critical(log: str) -> None:
-
         """
         This function implements basic python critical logs for WebScripts.
         """
@@ -256,7 +250,6 @@ class _Logs:
         critical(log)
 
     def exception(log: str) -> None:
-
         """
         This function implements basic python exception (error) logs for
         WebScripts.
@@ -268,7 +261,6 @@ class _Logs:
         exception(log)
 
     def trace(log: str) -> None:
-
         """
         This function implements trace logs for WebScripts.
         """
@@ -277,7 +269,6 @@ class _Logs:
         log_(5, log)
 
     def access(log: str) -> None:
-
         """
         This function implements access logs for WebScripts.
         """
@@ -289,7 +280,6 @@ class _Logs:
         log_(25, log)
 
     def response(log: str) -> None:
-
         """
         This function implements response logs for WebScripts.
         """
@@ -301,7 +291,6 @@ class _Logs:
         log_(26, log)
 
     def command(log: str) -> None:
-
         """
         This function implements response logs for WebScripts.
         """
@@ -313,7 +302,6 @@ class _Logs:
         log_(27, log)
 
     def config(*args, **kwargs):
-
         """
         This function config ROOT logger.
         """
@@ -330,7 +318,6 @@ class WindowsLogs(_Logs):
     app: str = __package__ or "WebScripts"
 
     def access(log: str) -> None:
-
         """
         This function logs access on Windows.
         """
@@ -347,7 +334,6 @@ class WindowsLogs(_Logs):
         )
 
     def response(log: str) -> None:
-
         """
         This function logs response on Windows.
         """
@@ -364,7 +350,6 @@ class WindowsLogs(_Logs):
         )
 
     def command(log: str) -> None:
-
         """
         This function logs commands on Windows.
         """
@@ -381,7 +366,6 @@ class WindowsLogs(_Logs):
         )
 
     def debug(log: str) -> None:
-
         """
         This function logs debugs on Windows.
         """
@@ -398,7 +382,6 @@ class WindowsLogs(_Logs):
         )
 
     def info(log: str) -> None:
-
         """
         This function logs infos on Windows.
         """
@@ -415,7 +398,6 @@ class WindowsLogs(_Logs):
         )
 
     def warning(log: str) -> None:
-
         """
         This function logs warnings on Windows.
         """
@@ -432,7 +414,6 @@ class WindowsLogs(_Logs):
         )
 
     def error(log: str) -> None:
-
         """
         This function logs errors on Windows.
         """
@@ -449,7 +430,6 @@ class WindowsLogs(_Logs):
         )
 
     def critical(log: str) -> None:
-
         """
         This function logs criticals on Windows.
         """
@@ -473,7 +453,6 @@ class LinuxLogs(_Logs):
     """
 
     def access(log: str) -> None:
-
         """
         This function logs access on Linux.
         """
@@ -482,7 +461,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_INFO, log)
 
     def response(log: str) -> None:
-
         """
         This function logs response on Linux.
         """
@@ -491,7 +469,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_INFO, log)
 
     def command(log: str) -> None:
-
         """
         This function logs command on Linux.
         """
@@ -500,7 +477,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_INFO, log)
 
     def debug(log: str) -> None:
-
         """
         This function logs debugs on Linux.
         """
@@ -509,7 +485,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_DEBUG, log)
 
     def info(log: str) -> None:
-
         """
         This function logs infos on Linux.
         """
@@ -518,7 +493,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_INFO, log)
 
     def warning(log: str) -> None:
-
         """
         This function logs warnings on Linux.
         """
@@ -527,7 +501,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_WARNING, log)
 
     def error(log: str) -> None:
-
         """
         This function logs errors on Linux.
         """
@@ -536,7 +509,6 @@ class LinuxLogs(_Logs):
         ReportEvent(LOG_ERR, log)
 
     def critical(log: str) -> None:
-
         """
         This function logs criticals on Linux.
         """
@@ -548,7 +520,6 @@ class LinuxLogs(_Logs):
 def log_trace(
     function: Union[FunctionType, MethodType]
 ) -> Union[FunctionType, MethodType]:
-
     """
     This decorator traces functions (start and end).
     """
@@ -576,7 +547,6 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
     """
 
     def doRollover(self):
-
         """
         Do a rollover, as described in __init__().
         """
@@ -585,7 +555,6 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
             self.stream.close()
             self.stream = None
         if self.backupCount > 0:
-
             filename = self.baseFilename
             i = 0
             while exists(filename):
@@ -599,7 +568,6 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
             self.stream = self._open()
 
     def namer(self, name: str) -> str:
-
         """
         This function returns the new name of the old log files.
         """
@@ -607,7 +575,6 @@ class CustomLogHandler(logging.handlers.RotatingFileHandler):
         return f"{name}.gz"
 
     def rotator(self, source: str, destination: str) -> None:
-
         """
         This function compresses old log files.
         """
@@ -737,7 +704,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def update(self, **kwargs):
-
         """
         This function add/update attributes with **kwargs arguments.
         """
@@ -746,7 +712,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def check_required(self) -> None:
-
         """
         This function checks required attributes
         if one of required attributes is missing this
@@ -761,7 +726,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def get_missings(self) -> List[str]:
-
         """
         This function checks required attributes
         and return a List[str] of missing required attributes.
@@ -777,7 +741,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def get_unexpecteds(self, log: bool = True) -> List[str]:
-
         """
         This function return a List[str] of
         all attributes not in optional and
@@ -804,7 +767,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def get_dict(self) -> None:
-
         """
         This function return a dict of attributes.
         """
@@ -826,7 +788,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def export_as_json(self, name: str = None) -> None:
-
         """
         This function export namespace values (useful for debugging).
         """
@@ -841,7 +802,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def build_types(self) -> None:
-
         """
         This function builds type from configuration values.
         """
@@ -858,7 +818,6 @@ class DefaultNamespace(SimpleNamespace):
     def build_type(
         self, attribut: str, value: Any, type_: type = None
     ) -> None:
-
         """
         This function builds type from configuration value.
         """
@@ -968,7 +927,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def set_defaults(self) -> None:
-
         """
         This function set defaults attribut with defaults values.
         """
@@ -978,7 +936,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def get(self, key: str, default=None):
-
         """
         Compatibility with dict.
         """
@@ -987,7 +944,6 @@ class DefaultNamespace(SimpleNamespace):
 
     @log_trace
     def __getitem__(self, key: str):
-
         """
         Compatibility with dict.
         """
@@ -997,7 +953,6 @@ class DefaultNamespace(SimpleNamespace):
     @classmethod
     @log_trace
     def default_build(cls, **kwargs) -> DefaultNamespace:
-
         """
         Default build for DefaultNamespace (set defaults, add values,
         check requirements and unexpected values and build types).
@@ -1014,7 +969,6 @@ class DefaultNamespace(SimpleNamespace):
 
 @log_trace
 def get_encodings():
-
     """
     This function returns the probable encodings.
     """
@@ -1035,7 +989,6 @@ def get_encodings():
 
 @log_trace
 def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
-
     """
     This function return a dict from ini filename.
     """
@@ -1049,7 +1002,6 @@ def get_ini_dict(filename: str) -> Dict[str, Dict[str, str]]:
 def get_ip(
     environ: _Environ, ip_number: int = None, protected: bool = True
 ) -> str:
-
     """
     This function return the real IP.
     """
@@ -1086,7 +1038,6 @@ def get_ip(
 def get_file_content(
     file_path, *args, as_iterator: bool = False, **kwargs
 ) -> StrOrBytes:
-
     """
     This function return the file content.
     """
@@ -1128,7 +1079,6 @@ def get_file_content(
 
 @log_trace
 def get_arguments_count(object_: Callable):
-
     """
     This function return the number of argument to call this Callable object.
     """
@@ -1159,7 +1109,6 @@ def get_arguments_count(object_: Callable):
 def get_real_path(
     file_path: str, is_dir: bool = False, no_error: bool = False
 ) -> str:
-
     """
     This function return the real path for files.
     """
@@ -1208,13 +1157,11 @@ def check_file_permission(
     executable: bool = False,
     dir_check: bool = True,
 ) -> bool:
-
     """
     This function checks files and directories permissions for security.
     """
 
     if not IS_WINDOWS and configuration.force_file_permissions:
-
         metadata = stat(filepath)
         mode = filemode(metadata.st_mode)
         owner = getpwuid(metadata.st_uid).pw_name

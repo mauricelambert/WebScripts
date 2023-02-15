@@ -248,7 +248,6 @@ class Configuration(DefaultNamespace):
 
     @log_trace
     def add_conf(self, **kwargs):
-
         """
         Add configurations from other configuration files found.
         """
@@ -256,7 +255,6 @@ class Configuration(DefaultNamespace):
         logger_info("Add configurations...")
 
         for key, value in kwargs.items():
-
             if value is not None:
                 dict_ = self.__dict__
 
@@ -264,7 +262,6 @@ class Configuration(DefaultNamespace):
                 default_value = dict_.get(key)
 
                 if isinstance(default_value, list):
-
                     if isinstance(value, str):
                         logger_debug(
                             "Add configuration list using INI/CFG syntax."
@@ -381,7 +378,6 @@ class Server:
     def set_default_headers(
         headers: Dict[str, str], security: bool, configuration: Configuration
     ) -> None:
-
         """
         This function sets defaults headers.
         """
@@ -442,7 +438,6 @@ class Server:
 
     @log_trace
     def check_blacklist(self, user: User, ip: str) -> bool:
-
         """
         This function checks that the IP and the
         username are not in the blacklist.
@@ -475,7 +470,6 @@ class Server:
 
     @log_trace
     def get_session(self, cookies: List[str], ip: str) -> User:
-
         """
         This function return User from cookies.
         """
@@ -513,7 +507,6 @@ class Server:
     def use_basic_auth(
         credentials: str, pages: Pages, *args
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function decodes basic auth and
         authenticates user with it.
@@ -539,7 +532,6 @@ class Server:
 
     @log_trace
     def check_auth(self, environ: _Environ) -> Tuple[User, bool]:
-
         """
         This function check if user is authenticated and blacklisted.
         """
@@ -629,7 +621,6 @@ class Server:
 
     @log_trace
     def add_module_or_package(self) -> None:
-
         """
         This function add packages and modules to build custom page.
         """
@@ -667,7 +658,6 @@ class Server:
 
     @log_trace
     def add_paths(self) -> None:
-
         """
         This function add js, static and scripts paths.
         """
@@ -696,7 +686,6 @@ class Server:
                     statics_paths,
                 ),
             ):
-
                 for glob in globs:
                     glob = join(dirname_, normpath(glob))
                     logger_debug(
@@ -725,7 +714,6 @@ class Server:
     def get_function_page(
         self, path: str, filename: str
     ) -> Tuple[FunctionOrNone, str, bool]:
-
         """
         This function find function from URL path.
         If the function is a WebScripts built-in function,
@@ -761,7 +749,6 @@ class Server:
 
     @log_trace
     def get_URLs(self) -> List[str]:
-
         """
         This function return a list of urls (scripts, documentation...)
         and the start of the URL of custom packages.
@@ -799,7 +786,6 @@ class Server:
         attributes: List[str],
         is_not_package: bool = True,
     ) -> Tuple[FunctionOrNone, bool]:
-
         """
         This function get recursive attribute from object.
         """
@@ -849,7 +835,6 @@ class Server:
     def get_inputs(
         arguments: List[Dict[str, JsonValue]]
     ) -> Tuple[List[str], List[str]]:
-
         """
         This function returns inputs and arguments from arguments.
         """
@@ -879,7 +864,6 @@ class Server:
     @staticmethod
     @log_trace
     def get_content_length(environ: _Environ) -> int:
-
         """
         This function returns the content length.
         """
@@ -898,7 +882,6 @@ class Server:
     def try_get_command(
         body: Dict[str, JsonValue]
     ) -> Union[None, Tuple[Content, str, bool]]:
-
         """
         This function returns arguments, CSRF token and True if is WebScripts
         request. If is not a WebScripts request because there's no "arguments"
@@ -927,7 +910,6 @@ class Server:
     @staticmethod
     @log_trace
     def get_baseurl(environ_getter: Callable, environ: _Environ) -> str:
-
         """
         This function returns URL base.
         """
@@ -946,7 +928,6 @@ class Server:
     @staticmethod
     @log_trace
     def get_fullurl(environ: _Environ) -> str:
-
         """
         This function returns the full URL (based on the PEP 3333).
 
@@ -982,7 +963,6 @@ class Server:
     @staticmethod
     @log_trace
     def check_origin(environ_getter: Callable, environ: _Environ) -> bool:
-
         """
         This function checks Origin of POST methods.
         """
@@ -1001,7 +981,6 @@ class Server:
     @staticmethod
     @log_trace
     def get_json_content(body: bytes, content_type: str) -> JsonValue:
-
         """
         This functions returns the loaded JSON content.
         """
@@ -1021,7 +1000,6 @@ class Server:
 
     @log_trace
     def parse_body(self, environ: _Environ) -> Tuple[Content, str, bool]:
-
         """
         This function returns arguments from body.
         """
@@ -1063,7 +1041,6 @@ class Server:
 
     @log_trace
     def app(self, environ_: _Environ, respond: MethodType) -> List[bytes]:
-
         """
         This function get function page,
         return content page, catch errors and
@@ -1233,7 +1210,6 @@ class Server:
     def set_default_values_for_response(
         self, error: str, headers: Dict[str, str]
     ) -> Tuple[str, Dict[str, str]]:
-
         """
         This function returns default error if not defined and
         default headers updated with custom headers.
@@ -1252,7 +1228,6 @@ class Server:
     @staticmethod
     @log_trace
     def return_page(page: Union[bytes, str, Iterable[bytes]]) -> List[bytes]:
-
         """
         This function returns response as a list of bytes.
         """
@@ -1273,7 +1248,6 @@ class Server:
         arguments: List[Dict[str, JsonValue]],
         is_webscripts_request: bool,
     ) -> Tuple[List[str], List[str]]:
-
         """
         This function returns inputs (using Server.get_inputs).
         """
@@ -1298,7 +1272,6 @@ class Server:
         error: str = None,
         headers: Dict[str, str] = None,
     ) -> None:
-
         """
         This function send error code, message and headers.
         """
@@ -1329,7 +1302,6 @@ class Server:
         error: Union[str, bytes, Iterable[bytes]],
         respond: MethodType,
     ) -> List[bytes]:
-
         """
         This function return error 500 web page.
         """
@@ -1354,7 +1326,6 @@ class Server:
         url: str,
         respond: MethodType,
     ):
-
         """
         This function return error 404 web page.
         """
@@ -1381,7 +1352,6 @@ class Server:
         method: str,
         respond: MethodType,
     ):
-
         """
         This function return error 400 web page.
         """
@@ -1405,7 +1375,6 @@ class Server:
         error_description: str,
         respond: MethodType,
     ):
-
         """
         This function return error 401 web page.
         """
@@ -1426,7 +1395,6 @@ class Server:
         error_description: str,
         respond: MethodType,
     ):
-
         """
         This function return error 403 web page.
         """
@@ -1447,7 +1415,6 @@ class Server:
         error_description: str,
         respond: MethodType,
     ):
-
         """
         This function return error 406 web page.
         """
@@ -1471,7 +1438,6 @@ class Server:
         data: bytes,
         respond: MethodType,
     ) -> List[bytes]:
-
         """
         This function send HTTP errors.
         """
@@ -1526,7 +1492,6 @@ class Server:
         error: str,
         code: str,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function call custom errors pages.
         """
@@ -1565,7 +1530,6 @@ class Server:
 
 @log_trace
 def parse_args(argv: List[str] = argv) -> Namespace:
-
     """
     This function parse command line arguments.
     """
@@ -1793,8 +1757,9 @@ def parse_args(argv: List[str] = argv) -> Namespace:
 
 
 @log_trace
-def get_server_config(arguments: Namespace, secure: bool = False) -> Iterator[dict]:
-
+def get_server_config(
+    arguments: Namespace, secure: bool = False
+) -> Iterator[dict]:
     """
     This generator return configurations dict.
     """
@@ -1867,7 +1832,6 @@ def get_server_config(arguments: Namespace, secure: bool = False) -> Iterator[di
 
 @log_trace
 def logs_configuration(configuration: NameSpace) -> None:
-
     """
     This function configure ROOT logger from
     configuration files and command line arguments.
@@ -1906,7 +1870,6 @@ def logs_configuration(configuration: NameSpace) -> None:
 def add_configuration(
     configuration: Configuration, config: Dict[str, JsonValue]
 ) -> Configuration:
-
     """
     This function add configuration in ServerConfiguration.
     """
@@ -1940,7 +1903,6 @@ def add_configuration(
 
 
 def configure_logs_system(secure: bool = False) -> Tuple[Set[str], Set[str]]:
-
     """
     This function try to create the logs directory
     if not found and configure logs.
@@ -2013,7 +1975,6 @@ def configure_logs_system(secure: bool = False) -> Tuple[Set[str], Set[str]]:
 
 
 def send_mail(*args, **kwargs) -> int:
-
     """
     This function send a mail to adminitrators
     using the error_pages modules.
@@ -2036,8 +1997,9 @@ def send_mail(*args, **kwargs) -> int:
     return 1
 
 
-def default_configuration(argv: List[str] = argv, secure: bool = False) -> Configuration:
-
+def default_configuration(
+    argv: List[str] = argv, secure: bool = False
+) -> Configuration:
     """
     This function builds the default configuration.
     """
@@ -2098,8 +2060,8 @@ def default_configuration(argv: List[str] = argv, secure: bool = False) -> Confi
 
     return configuration
 
-def prepare_server(secure: bool = True) -> Server:
 
+def prepare_server(secure: bool = True) -> Server:
     """
     This function prepares server to be launched securly.
     """
@@ -2116,8 +2078,8 @@ def prepare_server(secure: bool = True) -> Server:
 
     return server, debug
 
-def main() -> int:
 
+def main() -> int:
     """
     Main function to build the
     configurations and launch the server.

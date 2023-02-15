@@ -186,7 +186,6 @@ class Argument(DefaultNamespace):
     def get_command(
         name: str, argument: Dict[str, JsonValue]
     ) -> List[Dict[str, JsonValue]]:
-
         """
         This function return list for command line execution.
         """
@@ -227,7 +226,6 @@ class Argument(DefaultNamespace):
                 return []
 
             for arg in value:
-
                 if isinstance(arg, int):
                     arg = str(arg)
 
@@ -293,7 +291,6 @@ class ScriptConfig(DefaultNamespace):
 
     @log_trace
     def build_args(self, configuration: Configuration):
-
         """
         This function build Arguments from self.args: List[Dict[str, str]]
         """
@@ -325,7 +322,6 @@ class ScriptConfig(DefaultNamespace):
     def build_scripts_from_configuration(
         cls, server_configuration: ServerConfiguration
     ) -> Dict[str, ScriptConfig]:
-
         """
         This function build scripts from server
         configuration and configurations files.
@@ -346,7 +342,6 @@ class ScriptConfig(DefaultNamespace):
         ) = getattr(server_configuration, "configuration_files", {})
 
         for dirname_ in (lib_directory, current_directory):
-
             for config_path in ini_scripts_config:
                 config_path = join(dirname_, normcase(config_path))
 
@@ -400,7 +395,6 @@ class ScriptConfig(DefaultNamespace):
         configuration: Configuration,
         server_configuration: ServerConfiguration,
     ) -> Dict[str, ScriptConfig]:
-
         """
         This function build scripts from ServerConfiguration.
         """
@@ -480,7 +474,6 @@ class ScriptConfig(DefaultNamespace):
     def get_Windows_default_script_launcher(
         script_config: Dict[str, JsonValue]
     ) -> str:
-
         """
         This function gets the Windows default launcher to execute a file.
         """
@@ -557,7 +550,6 @@ class ScriptConfig(DefaultNamespace):
         server_configuration: ServerConfiguration,
         script_config: Dict[str, JsonValue],
     ) -> str:
-
         """
         This function return a script path from configuration.
         """
@@ -583,7 +575,6 @@ class ScriptConfig(DefaultNamespace):
     def get_documentation_from_configuration(
         script_config: Dict[str, JsonValue], name: str, paths: List[str]
     ) -> str:
-
         """
         This function get documentation from script configuration
         or search it in documentation path.
@@ -607,7 +598,6 @@ class ScriptConfig(DefaultNamespace):
     def get_arguments_from_config(
         arguments_section: str, configuration: Dict[str, Dict[str, JsonValue]]
     ) -> List[Dict[str, JsonValue]]:
-
         """
         This function get arguments list of script.
         """
@@ -647,7 +637,6 @@ class ScriptConfig(DefaultNamespace):
         configuration: Dict[str, JsonValue],
         server_configuration: Dict[str, JsonValue],
     ) -> Tuple[dict, dict]:
-
         """
         This function return all configuration and
         script configuration from configuration.
@@ -685,7 +674,6 @@ class ScriptConfig(DefaultNamespace):
 
     @log_trace
     def get_JSON_API(self) -> Dict:
-
         """
         This function return a dict for JSON API
         (visible configuration for user).
@@ -724,7 +712,6 @@ class ScriptConfig(DefaultNamespace):
     def get_docfile_from_configuration(
         configuration: ServerConfiguration, filename: str
     ) -> str:
-
         """
         This method returns the script documentation
         path if it exists.
@@ -732,10 +719,8 @@ class ScriptConfig(DefaultNamespace):
 
         for dirname_ in (lib_directory, current_directory):
             for doc_glob in configuration.documentations_path:
-
                 doc_glob = join(dirname_, normcase(doc_glob))
                 for doc in iglob(doc_glob):
-
                     doc_dirname, doc_filename = split(doc)
                     no_extension, extension = splitext(doc_filename)
 
@@ -935,7 +920,6 @@ class CallableFile(Callable):
             # )
 
     def is_xml(self) -> bool:
-
         """
         This function compare extension with xml extensions.
         """
@@ -951,7 +935,6 @@ class CallableFile(Callable):
         )
 
     def is_html(self) -> bool:
-
         """
         This function compare extension with html extensions.
         """
@@ -959,7 +942,6 @@ class CallableFile(Callable):
         return self.extension in (".html", ".htm", ".shtml", ".xhtml")
 
     def is_jpeg(self) -> bool:
-
         """
         This function compare extension with jpeg extensions.
         """
@@ -967,7 +949,6 @@ class CallableFile(Callable):
         return self.extension in (".jpg", ".jpeg", ".jpe")
 
     def is_tiff(self) -> bool:
-
         """
         This function compare extension with tif extensions.
         """
@@ -1013,7 +994,6 @@ class Blacklist:
 
     @log_trace
     def is_blacklist(self, configuration: ServerConfiguration) -> bool:
-
         """
         This function return True if this object is blacklisted.
         """
@@ -1046,7 +1026,6 @@ class Blacklist:
             return False
 
     def __str__(self) -> str:
-
         """
         This function returns a string to represent the Blacklist object.
         """
@@ -1066,7 +1045,6 @@ class TokenCSRF:
     @staticmethod
     @log_trace
     def build_token(user: User) -> str:
-
         """
         This function build a CSRF token for a user.
         """
@@ -1084,7 +1062,6 @@ class TokenCSRF:
         referer: str = None,
         baseurl: str = None,
     ) -> bool:
-
         """
         This function check the validity of a csrf token.
         """
@@ -1113,7 +1090,6 @@ class TokenCSRF:
     @staticmethod
     @log_trace
     def clean(user: User, max_time: float) -> None:
-
         """
         This function clean all old CSRF tokens for a user.
         """
@@ -1121,7 +1097,6 @@ class TokenCSRF:
         to_delete = []
 
         for token, timestamp in user.csrf.items():
-
             if timestamp <= max_time:
                 to_delete.append(token)
 
@@ -1142,7 +1117,6 @@ class Session:
         self.ip = ip
 
     def __str__(self) -> str:
-
         """
         This function returns a string to represent the Session object.
         """
@@ -1155,7 +1129,6 @@ class Session:
     @classmethod
     @log_trace
     def build_session(cls, user: User, ip: str, Pages: Pages) -> str:
-
         """
         This function build and add session and return the cookie.
         """
@@ -1173,7 +1146,6 @@ class Session:
         default_user: User,
         session_max_time: float = 3600,
     ) -> User:
-
         """
         This function check session validity and return user.
         """

@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -51,14 +51,13 @@ __all__ = ["Hardening"]
 
 print(copyright)
 
+from os import name
+
 from os import (
-    name,
     getcwd,
     chmod,
-    chown,
     remove,
     mkdir,
-    getuid,
     makedirs,
     environ,
 )
@@ -85,25 +84,28 @@ from shutil import copytree
 from glob import iglob
 
 
-def prepare(arguments: Namespace) -> Tuple[str, List[str]]:
+if name != "nt":
+    from os import chmown, getuid
 
+
+def prepare(arguments: Namespace) -> Tuple[str, List[str]]:
     """
     This function prepares WebScripts to be hardened.
     """
 
     path = dirname(__file__)
-    
+
     files = []
 
     for directory in (arguments.directory, path):
         hardening_path = join(directory, "hardening")
         log_path = join(directory, "logs")
-        
+
         if not isdir(hardening_path):
             mkdir(hardening_path)
         if not isdir(log_path):
             mkdir(log_path)
-    
+
         for filename in (
             "logs_checks.json",
             "uploads_file_integrity.json",
@@ -122,7 +124,6 @@ def prepare(arguments: Namespace) -> Tuple[str, List[str]]:
 
 
 def get_custom_logger(path: str, name: str = None) -> Logger:
-
     """
     This function creates a custom logger.
     """
@@ -239,7 +240,6 @@ class Hardening:
     def get_configurations(
         self, filename: str, script_name: str = None
     ) -> None:
-
         """
         This method gets scripts from configurations file.
         """
@@ -273,7 +273,6 @@ class Hardening:
         Hardening.save_scripts_configurations(filename, configurations)
 
     def harden_server(self, section: dict, directory: str) -> None:
-
         """
         This method hardens server configuration.
         """
@@ -288,7 +287,6 @@ class Hardening:
         section["data_dir"] = abspath(join(self.directory, "data"))
 
     def harden_script(self, section: dict, filename: str) -> None:
-
         """
         This method hardens script configuration.
         """
@@ -316,7 +314,6 @@ class Hardening:
                 break
 
     def linux_hardening_file_permissions(self) -> None:
-
         """
         This method changes files permissions for hardening file.
         """
@@ -332,23 +329,22 @@ class Hardening:
         logger_warning(f"Change permissions and owner of {self.directory}")
         chmod(self.directory, 0o755)  # nosec
         chown(self.directory, 0, 0)
-        
+
         chmod(hardening_path, 0o755)  # nosec
         chown(hardening_path, 0, 0)
-        
+
         chmod(log_path, 0o700)  # nosec
         chown(log_path, pw_uid, pw_gid)
-        
-        hardening = join(directory, 'hardening')
+
+        hardening = join(directory, "hardening")
         chmod(hardening, 0o755)  # nosec
         chown(hardening, 0, 0)
-        
-        logs = join(directory, 'logs')
+
+        logs = join(directory, "logs")
         chmod(logs, 0o700)  # nosec
         chown(logs, pw_uid, pw_gid)
 
     def linux_file_permissions(self, filename: str) -> None:
-
         """
         This method changes files permissions on Linux.
         """
@@ -415,7 +411,6 @@ class Hardening:
     def save_scripts_configurations(
         filename: str, configurations: Dict[str, dict]
     ) -> None:
-
         """
         This function saves a configuration file.json_only
         """
@@ -425,7 +420,6 @@ class Hardening:
             dump(configurations, file, indent=4)
 
     def remove_configuration_files(self) -> None:
-
         """
         This function removes unnecessary configuration files.
         """
@@ -458,7 +452,6 @@ class Hardening:
             self.json_config_files.remove(file)
 
     def change_admin_password(self) -> None:
-
         """
         This function change the administrator
         password (default account named Admin).
@@ -508,24 +501,22 @@ class Hardening:
             "2", self.admin_password
         )
         logger_info("Administrator is changed.")
-        
+
     def add_data_directory(self) -> None:
-    
         """
         This method adds a data directory
         based on the WebScripts data directory.
         """
-        
+
         new_data_path = join(self.directory, "data")
-    
+
         if not isdir(new_data_path):
             copytree(join(path, "data"), new_data_path)
-            
+
         for file in iglob(join(new_data_path, "**"), recursive=True):
             chown(file, self.owner_property.pw_uid, self.owner_property.pw_gid)
 
     def hardening(self) -> None:
-
         """
         This function starts hardening.
         """
@@ -554,13 +545,15 @@ class Hardening:
             elif extension == ".csv":
                 logger_debug("Add CSV file " + repr(filename))
                 self.csv_files.append(filename)
-                
+
         for config_file in self.json_config_files:
             self.get_configurations(config_file)
 
         self.remove_configuration_files()
         self.change_admin_password()
-        self.linux_hardening_file_permissions()
-        self.add_data_directory()
+        if linux_hardening:
+            self.linux_hardening_file_permissions()
+            self.add_data_directory()
+
 
 Hardening(**arguments.__dict__).hardening()

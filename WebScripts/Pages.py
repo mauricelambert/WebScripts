@@ -156,7 +156,6 @@ def execute_scripts(
     inputs: List[str],
     is_auth: bool = False,
 ) -> Tuple[bytes, bytes, str, int, str]:
-
     """
     This function execute script from script name and return output and
     errors.
@@ -199,7 +198,6 @@ def execute_scripts(
 def start_process(
     script: ScriptConfig, process: Popen, user: User, inputs: List[str]
 ) -> Tuple[bytes, bytes, str, str, int]:
-
     """
     This function starts a process.
     """
@@ -232,7 +230,6 @@ def start_process(
 
 @log_trace
 def anti_XSS(json_value: JsonValue) -> JsonValue:
-
     """
     This function clean a JSON object.
     """
@@ -260,7 +257,6 @@ def anti_XSS(json_value: JsonValue) -> JsonValue:
 def execution_logs(
     script: ScriptConfig, user: User, process: Popen, stderr: bytes
 ) -> None:
-
     """
     This function logs the script execution.
     """
@@ -284,7 +280,6 @@ def execution_logs(
 def get_environ(
     environ: _Environ, user: User, script: ScriptConfig
 ) -> Dict[str, str]:
-
     """
     This function builds the environment variables for the new process.
     """
@@ -334,7 +329,6 @@ def get_environ(
 
 @log_trace
 def check_right(user: User, configuration: ScriptConfig) -> bool:
-
     """
     This function check rights for script/user and return boolean.
     """
@@ -371,7 +365,6 @@ def check_right(user: User, configuration: ScriptConfig) -> bool:
 def check_categories_scripts_access(
     user: User, configuration: ScriptConfig
 ) -> bool:
-
     """
     This function check access on script and categories.
     """
@@ -400,7 +393,6 @@ def check_categories_scripts_access(
 
 @log_trace
 def decode_output(data: bytes) -> str:
-
     """
     This function decodes outputs (try somes encoding).
     """
@@ -443,7 +435,6 @@ class Process:
             self.timer.start()
 
     def get_line(self, read: bool = True) -> Tuple[bytes, bytes, str]:
-
         """
         This function gets a new line from the script execution.
         """
@@ -503,7 +494,6 @@ class Process:
             return stdout, stderr, self.error
 
     def send_inputs(self, inputs: List[str]) -> None:
-
         """
         This function send inputs to the child process.
         """
@@ -536,7 +526,6 @@ class Script:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
-
         """
         This method send a new line of script execution in API response.
         """
@@ -597,7 +586,6 @@ class Api:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function return a json string with script informations and
         arguments.
@@ -658,7 +646,6 @@ class Api:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
-
         """
         This function execute scripts with command line,
         get output, build the response error, headers and body
@@ -741,7 +728,6 @@ class Web:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function return the index page (error code, headers, content).
         """
@@ -777,7 +763,6 @@ class Web:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes, Iterable[bytes]]]:
-
         """
         This function return Web Page with scripts documentation.
         """
@@ -845,7 +830,6 @@ class Web:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, str, Iterable[bytes]]]:
-
         """
         This function return Web (HTML) response
         (error code, headers and page) to call script
@@ -895,7 +879,6 @@ class Web:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
-
         """
         This function return authentication page.
         """
@@ -942,7 +925,6 @@ class Pages:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], bytes]:
-
         """
         A redirect page (Error code 301, javascript redirect and redirect
         title) to /web/ or /api/.
@@ -961,7 +943,6 @@ class Pages:
     def webfile(
         files: Dict[str, CallableFile], user: User, filename: str, base: str
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
-
         """
         This function builds response for Web files.
         """
@@ -985,7 +966,6 @@ class Pages:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
-
         """
         This function get Javascripts Scripts and send it.
         """
@@ -1003,7 +983,6 @@ class Pages:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
-
         """
         This function get static file and send it.
         """
@@ -1021,7 +1000,6 @@ class Pages:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], bytes]:
-
         """
         This function return check auth and return headers, error and page.
         """
@@ -1091,7 +1069,6 @@ class Pages:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function is a simple URL to reload scripts
         (useful for developpers to add/modify a script).
