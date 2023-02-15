@@ -85,7 +85,6 @@ DIRECTORY = path.join(
 
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
-
     """
     This function returns a namedtuple without HTML special characters.
     """
@@ -97,7 +96,6 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
 
 def get_requests() -> Iterator[Request]:
-
     """This function build Request from database."""
 
     yield from map(
@@ -110,7 +108,6 @@ def get_requests() -> Iterator[Request]:
 
 
 def get_request(id_: str) -> Request:
-
     """This function return a specific request."""
 
     for request in get_requests():
@@ -121,7 +118,6 @@ def get_request(id_: str) -> Request:
 
 
 def delete_request(id_: str) -> Request:
-
     """
     This function rewrite the request database without the specified request.
     """

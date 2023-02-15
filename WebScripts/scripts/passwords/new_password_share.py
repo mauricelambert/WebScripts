@@ -75,7 +75,6 @@ SIZE = 60
 
 
 def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
-
     """This function encrypts and hashes the password."""
 
     key = token_bytes(SIZE)
@@ -95,7 +94,6 @@ def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
 
 
 def get_passwords() -> List[List[str]]:
-
     """This function returns a list of encrypted passwords."""
 
     with open(filename, newline="") as file:
@@ -104,7 +102,6 @@ def get_passwords() -> List[List[str]]:
 
 
 def save(passwords: List[List[str]], id_: int) -> None:
-
     """This function save passwords and ID."""
 
     with open(filename, "w", newline="") as file:
@@ -117,7 +114,6 @@ def save(passwords: List[List[str]], id_: int) -> None:
 
 
 def get_id() -> int:
-
     """This function return the password ID."""
 
     if not path.isfile(file_id):
@@ -130,7 +126,6 @@ def get_id() -> int:
 
 
 def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
-
     """This function return a printable password and key (using base64)."""
 
     password = b64encode(password).decode()
@@ -139,7 +134,6 @@ def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
 
 
 def get_url(token: str) -> str:
-
     """This function build an URL to get
     the password share.
 
@@ -166,7 +160,6 @@ def get_url(token: str) -> str:
 
 
 def main() -> None:
-
     """Main function to add secure password sharing."""
 
     chdir(path.join(path.dirname(__file__), "..", ".."))

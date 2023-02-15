@@ -61,7 +61,6 @@ from html import escape
 
 
 def main() -> None:
-
     """
     This function prints the HTML link to download the file.
     """

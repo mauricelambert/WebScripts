@@ -63,7 +63,6 @@ def write_line(
     columns: List[str],
     table: Dict[str, Dict[str, int]],
 ) -> None:
-
     """
     This function creates an HTML table row.
     """
@@ -81,7 +80,6 @@ def write_line(
 
 
 def write_csv(table: Dict[str, Dict[str, int]]) -> None:
-
     """
     This function builds the HTML table.
     """
@@ -98,7 +96,6 @@ def write_csv(table: Dict[str, Dict[str, int]]) -> None:
 
 
 def main() -> int:
-
     """
     This function read the logfile and parse lines.
     """

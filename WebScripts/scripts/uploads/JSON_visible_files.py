@@ -55,7 +55,6 @@ from json import dump
 
 
 def main() -> int:
-
     """
     This function prints the JSON object of uploaded files.
     """

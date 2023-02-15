@@ -53,7 +53,6 @@ from os import chdir
 
 
 def main() -> int:
-
     """
     Main function to display license and copyright of WebScripts.
     """

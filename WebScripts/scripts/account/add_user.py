@@ -59,7 +59,6 @@ from sys import exit, stderr
 
 
 def parse_args() -> Namespace:
-
     """
     This function parse command line arguments.
     """
@@ -115,7 +114,6 @@ def parse_args() -> Namespace:
 
 
 def main() -> int:
-
     """
     This function adds a new user using the
     default user manager.

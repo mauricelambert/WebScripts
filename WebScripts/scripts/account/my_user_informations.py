@@ -56,7 +56,6 @@ from sys import exit
 
 
 def main() -> int:
-
     """
     This function prints user configurations.
     """

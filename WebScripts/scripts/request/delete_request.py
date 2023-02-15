@@ -52,7 +52,6 @@ import sys
 
 
 def main() -> None:
-
     """Print and delete the user request."""
 
     if len(sys.argv) != 2:

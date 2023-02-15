@@ -52,7 +52,6 @@ import sys
 
 
 def main() -> None:
-
     """This file write HTML documentation using pydoc."""
 
     if len(sys.argv) != 2:

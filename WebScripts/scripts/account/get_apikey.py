@@ -53,7 +53,6 @@ import sys
 
 
 def main() -> None:
-
     """Main function to print the API key of the current user."""
 
     if len(sys.argv) != 2:

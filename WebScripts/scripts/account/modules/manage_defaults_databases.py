@@ -97,6 +97,7 @@ DIRECTORY = environ["WEBSCRIPTS_DATA_PATH"]
 USERFILE = "users.csv"
 GROUPFILE = "groups.csv"
 
+
 class UserError(Exception):
 
     """
@@ -112,7 +113,6 @@ class GroupError(Exception):
 
 
 def upgrade_database() -> None:
-
     """
     This function upgrade the database.
 
@@ -147,7 +147,6 @@ def upgrade_database() -> None:
 
 
 def get_users() -> Iterator[User]:
-
     """
     This function get users from CSV database.
     """
@@ -162,7 +161,6 @@ def get_users() -> Iterator[User]:
 
 
 def get_groups() -> Iterator[Group]:
-
     """
     This function get groups from CSV database.
     """
@@ -177,7 +175,6 @@ def get_groups() -> Iterator[Group]:
 
 
 def get_dict_groups(by_name: bool = False) -> Dict[str, str]:
-
     """
     This function returns the dict of groups (ID: Name or Name: ID).
     """
@@ -200,7 +197,6 @@ def get_dict_groups(by_name: bool = False) -> Dict[str, str]:
 
 
 def get_apikey(id_: str, password: str) -> str:
-
     """
     This function returns the API key after verification of authentication.
     """
@@ -216,7 +212,6 @@ def get_apikey(id_: str, password: str) -> str:
 
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
-
     """
     This function returns a namedtuple without HTML special characters.
     """
@@ -233,7 +228,6 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 def change_user_password(
     id_: str, new_password: str, old_password: str = None
 ) -> User:
-
     """
     This function change a user password.
     """
@@ -281,7 +275,6 @@ def add_user(
     categories: List[str] = ["*"],
     scripts: List[str] = ["*"],
 ) -> User:
-
     """
     This function add user in database or raise a UserError.
     """
@@ -323,7 +316,6 @@ def add_user(
 
 
 def check_ip(user: User) -> Union[User, None]:
-
     """
     This function performs an IP address
     filtering for authentication.
@@ -338,7 +330,6 @@ def check_ip(user: User) -> Union[User, None]:
 
 
 def auth_username_password(name: str, password: str) -> User:
-
     """
     This function verifies the authentication
     with user name and password.
@@ -363,7 +354,6 @@ def auth_username_password(name: str, password: str) -> User:
 
 
 def auth_apikey(apikey: str) -> User:
-
     """
     This function verifies the authentication
     with api key.
@@ -377,7 +367,6 @@ def auth_apikey(apikey: str) -> User:
 def auth(
     username: str = None, password: str = None, api_key: str = None
 ) -> User:
-
     """
     This function returns a User from credentials
     (username and password) or an api key.
@@ -397,7 +386,6 @@ def auth(
 
 
 def add_group(name: str, id_: int) -> Group:
-
     """
     This function add group in database or raise a GroupError.
     """
@@ -424,7 +412,6 @@ def add_group(name: str, id_: int) -> Group:
 
 
 def delete_user(id_: int) -> User:
-
     """
     This function delete a user by id and return the deleted user.
     """
@@ -459,7 +446,6 @@ def delete_user(id_: int) -> User:
 
 
 def rewrite_users(users: List[User]) -> None:
-
     """
     This function rewrite a list of User.
     """
@@ -472,7 +458,6 @@ def rewrite_users(users: List[User]) -> None:
 
 
 def delete_group(id_: int) -> Group:
-
     """
     This function delete a group by id and return the deleted group.
     """
@@ -497,7 +482,6 @@ def delete_group(id_: int) -> Group:
 
 
 def create_default_databases() -> None:
-
     """
     This function create defaults users and groups.
     """

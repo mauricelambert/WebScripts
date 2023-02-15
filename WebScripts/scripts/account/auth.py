@@ -57,7 +57,6 @@ from json import dumps
 
 
 def parse_args() -> Namespace:
-
     """
     This function parses command line arguments.
     """
@@ -71,7 +70,6 @@ def parse_args() -> Namespace:
 
 
 def main() -> None:
-
     """
     This function authenticates a user.
     """

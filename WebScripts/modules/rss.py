@@ -72,7 +72,6 @@ class FIELDS(Enum):
 
 
 def get_rss_path(server: Server) -> str:
-
     """
     This function returns the rss path.
     """
@@ -103,7 +102,6 @@ class Feed:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function prints the RSS feed content as CSV.
         """
@@ -163,7 +161,6 @@ class Feed:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function prints the RSS feed content as JSON.
         """
@@ -195,7 +192,6 @@ class Feed:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Iterable[bytes]]:
-
         """
         This function prints the RSS feed.
         """
@@ -216,7 +212,6 @@ class Feed:
     def generator(
         cls: type, full_url: str, base_url: str, rss_path: str, category: str
     ) -> Iterable[bytes]:
-
         """
         This generator returns RSS feed content.
         """

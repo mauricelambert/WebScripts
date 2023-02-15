@@ -55,7 +55,6 @@ from os import environ
 
 
 def main() -> int:
-
     """
     Main function to display the latest logs.
     """

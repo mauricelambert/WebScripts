@@ -83,7 +83,6 @@ NoneType = type(None)
 
 
 class Reload:
-
     html: str = """
         <html><head><title>WebScripts Server configuration</title></head>
         <body><pre><code>{}</code></pre><br><label>Configuration:</label>
@@ -111,7 +110,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function reloads the configuration.
         """
@@ -149,7 +147,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function reloads a script configuration.
         """
@@ -195,7 +192,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function reloads a argument configuration.
         """
@@ -217,7 +213,6 @@ class Reload:
         argument = argument[0]
 
         if arguments and isinstance(arguments, bytes):
-
             builder = argument.build_type
             values = parse_qs(arguments.decode("ascii", "ignore"))
             for name, values in values.items():
@@ -240,7 +235,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function adds new modules.
         """
@@ -261,7 +255,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function reloads web files (JS, CSS and HTML).
         """
@@ -311,7 +304,6 @@ class Reload:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function reloads a module.
         """
@@ -321,7 +313,6 @@ class Reload:
         print(module)
 
         if module is not None:
-
             try:
                 packages[name] = module_reload(module)
                 print("Reload", module)

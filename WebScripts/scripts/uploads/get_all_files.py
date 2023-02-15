@@ -54,7 +54,6 @@ import sys
 
 
 def main() -> None:
-
     """Print the HTML table of uploaded files."""
 
     fields = [

@@ -81,7 +81,6 @@ def add(
     inputs: List[str],
     csrf_token: str = None,
 ) -> Tuple[str, Dict[str, str], str]:
-
     """
     This function adds a new notification
     in WebScripts pages.

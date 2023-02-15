@@ -52,7 +52,6 @@ import sys
 
 
 def main() -> None:
-
     """Print the JSON object of uploaded files."""
 
     fields = [

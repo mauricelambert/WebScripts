@@ -55,7 +55,6 @@ from html import escape
 
 
 def main() -> int:
-
     """
     Print the HTML link to download the file or
     exit with an error code.

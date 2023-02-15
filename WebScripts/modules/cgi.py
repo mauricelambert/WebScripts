@@ -50,7 +50,7 @@ license = __license__
 __copyright__ = copyright
 
 from typing import TypeVar, Dict, List, Tuple
-from subprocess import Popen, PIPE # nosec
+from subprocess import Popen, PIPE  # nosec
 from os.path import join, dirname
 from os import _Environ
 from json import dumps
@@ -69,7 +69,6 @@ def bin(
     inputs: List[str],
     csrf_token: str = None,
 ) -> Tuple[str, Dict[str, str], str]:
-
     """
     This function reloads the configuration.
     """

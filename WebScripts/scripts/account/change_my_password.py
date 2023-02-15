@@ -54,7 +54,6 @@ import sys
 
 
 def parse_args() -> Namespace:
-
     """This function parse command line arguments."""
 
     parser = ArgumentParser()
@@ -67,7 +66,6 @@ def parse_args() -> Namespace:
 
 
 def main() -> None:
-
     """Main function to change your password."""
 
     arguments = parse_args()

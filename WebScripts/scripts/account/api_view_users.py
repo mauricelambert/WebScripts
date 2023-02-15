@@ -56,7 +56,6 @@ from json import dump
 
 
 def parse_args() -> Namespace:
-
     """
     This function parse command line arguments.
     """
@@ -80,7 +79,6 @@ def parse_args() -> Namespace:
 
 
 def main() -> int:
-
     """
     Main function to print users using default manager for user database.
     """

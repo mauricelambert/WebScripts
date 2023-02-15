@@ -113,7 +113,6 @@ class FileMetadata:
         self.version = 0
 
     def add(self, stat: stat_result, timestamp: float):
-
         """
         This function add a version to file metadata.
         """
@@ -148,7 +147,6 @@ class UploadedFile:
         no_compression: bool,
         with_access: bool = True,
     ):
-
         owner = get_user()
         uploads, counter = get_file(name)
 
@@ -220,7 +218,6 @@ def write_file(
     is_b64: bool,
     with_access: bool = True,
 ) -> Upload:
-
     """
     This function uploads a file.
     """
@@ -247,7 +244,6 @@ def write_file(
 
 
 def upgrade_uploads() -> None:
-
     """
     This function upgrade the database.
 
@@ -264,7 +260,6 @@ def upgrade_uploads() -> None:
 
         for row in csvreader:
             if len(row) == 11:
-
                 if first:
                     row.insert(8, "")
                 else:
@@ -281,7 +276,6 @@ def upgrade_uploads() -> None:
 
 
 def anti_XSS(named_tuple: namedtuple) -> namedtuple:
-
     """
     This function returns a namedtuple
     without HTML special characters.
@@ -294,7 +288,6 @@ def anti_XSS(named_tuple: namedtuple) -> namedtuple:
 
 
 def get_files() -> Iterator[Upload]:
-
     """
     This function build Uploads from database.
     """
@@ -309,7 +302,6 @@ def get_files() -> Iterator[Upload]:
 
 
 def get_metadata() -> Dict[str, FileMetadata]:
-
     """
     This function returns metadata of
     each uploaded files and versions.
@@ -327,7 +319,6 @@ def get_metadata() -> Dict[str, FileMetadata]:
 
 
 def get_visible_files() -> Iterator[Upload]:
-
     """
     This function return upload if not hidden.
     """
@@ -347,7 +338,6 @@ def get_visible_files() -> Iterator[Upload]:
 
 
 def unicode_to_bytes(string: str) -> bytes:
-
     """
     This function return bytes from unicode strings."""
 
@@ -360,7 +350,6 @@ def unicode_to_bytes(string: str) -> bytes:
 
 
 def delete_file(name: str) -> Upload:
-
     """
     This function delete an uploaded file.
     """
@@ -397,7 +386,6 @@ def delete_file(name: str) -> Upload:
 
 
 def write_action(upload: Upload) -> None:
-
     """
     This function write a new line in CSV database.
     """
@@ -412,7 +400,6 @@ def write_action(upload: Upload) -> None:
 
 
 def check_permissions(file: Upload, owner: User, attr: str) -> None:
-
     """
     This function raises a PermissionError if
     the user does not have write permission.
@@ -441,7 +428,6 @@ def check_permissions(file: Upload, owner: User, attr: str) -> None:
 
 
 def get_user() -> User:
-
     """
     This function return the user.
     """
@@ -450,7 +436,6 @@ def get_user() -> User:
 
 
 def read_file(name: str) -> str:
-
     """
     This function check permission and
     return a base64 of the file content.
@@ -469,7 +454,6 @@ def read_file(name: str) -> str:
 
 
 def get_reader(file: Upload) -> _TextIOBase:
-
     """
     This function returns a reader
     of the uploaded file.
@@ -489,7 +473,6 @@ def get_reader(file: Upload) -> _TextIOBase:
 
 
 def get_content(file: Upload) -> str:
-
     """
     This function read, decompress and
     encode/decode the file content.
@@ -502,7 +485,6 @@ def get_content(file: Upload) -> str:
 
 
 def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
-
     """
     This function return a base64 of the file
     content and the filename (without check permissions).
@@ -542,7 +524,6 @@ def get_file_content(name: str = None, id_: str = None) -> Tuple[str, str]:
 
 
 def get_file(name: str, id_: str = None) -> Tuple[List[Upload], Counter]:
-
     """
     This function return the history of a file.
 
@@ -562,7 +543,6 @@ def get_file(name: str, id_: str = None) -> Tuple[List[Upload], Counter]:
 
 
 def get_real_file_name(filename: str, timestamp: float) -> str:
-
     """
     This function return the real filename of a file.
     """

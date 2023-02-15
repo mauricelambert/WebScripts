@@ -51,7 +51,6 @@ import sys
 
 
 def main() -> None:
-
     """This function uploads a file on a WebScripts Server."""
 
     if len(sys.argv) != 2:

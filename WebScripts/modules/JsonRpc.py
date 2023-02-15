@@ -80,7 +80,6 @@ class JsonRpc:
 
     @classmethod
     def register_function(cls: type, function: Callable, name: str = None):
-
         """
         This function adds a new function in the JSON RPC calls.
         """
@@ -89,7 +88,6 @@ class JsonRpc:
 
     @classmethod
     def execute_call(cls: type, json: Dict[str, Any]) -> Dict[str, Any]:
-
         """
         This function performs a JSON RPC call.
         """
@@ -166,10 +164,8 @@ class JsonRpc:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         execute_call = cls.execute_call
         if isinstance(calls, list):
-
             if not calls:
                 return (
                     "400 Bad Request",

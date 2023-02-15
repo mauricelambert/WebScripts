@@ -109,7 +109,6 @@ class Download:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[Iterable[bytes], bytes]]:
-
         """
         This funtion download file by filename.
         """
@@ -143,7 +142,6 @@ class Download:
 
     @staticmethod
     def get_data(file: Upload) -> Iterable[bytes]:
-
         """
         This function get file and manage the compression.
         """
@@ -174,7 +172,6 @@ class Download:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[Iterable[bytes], bytes]]:
-
         """
         This funtion download file by ID.
         """
@@ -220,7 +217,6 @@ def upload(
     none: None,
     csrf_token: str = None,
 ) -> Tuple[str, Dict[str, str], str]:
-
     """
     This funtion upload file.
     """

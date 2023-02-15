@@ -65,7 +65,6 @@ filename = path.join("data", "passwords.csv")
 def decrypt(
     key: bytes, password: bytes, hash_: str, iteration: int
 ) -> PasswordOrFalse:
-
     """This function checks the integrity of the
     password and returns the decrypted password."""
 
@@ -86,7 +85,6 @@ def decrypt(
 def get_passwords(
     id_: int,
 ) -> Tuple[List[List[PasswordInfo]], List[PasswordInfo]]:
-
     """This function returns a list of passwords
     and the requested password."""
 
@@ -109,7 +107,6 @@ def get_passwords(
 
 
 def main() -> None:
-
     """Main function to obtain secure password sharing:
     - Check the validity of the token
     - Check the validity of the password
@@ -173,7 +170,6 @@ def main() -> None:
 
 
 def delete(passwords: List[List[PasswordInfo]]) -> List[List[PasswordInfo]]:
-
     """This function delete old passwords."""
 
     for password in passwords:
@@ -183,7 +179,6 @@ def delete(passwords: List[List[PasswordInfo]]) -> List[List[PasswordInfo]]:
 
 
 def save(passwords: List[List[PasswordInfo]]) -> None:
-
     """This function re-saves passwords."""
 
     with open(filename, "w", newline="") as file:

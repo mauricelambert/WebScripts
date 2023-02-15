@@ -57,7 +57,6 @@ from html import escape
 
 
 def main() -> int:
-
     """
     Print the HTML table of file history.
     """

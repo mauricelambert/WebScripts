@@ -150,7 +150,6 @@ def page_500(
     filename: str,
     error: str,
 ) -> Tuple[str, Dict[str, str], List[bytes]]:
-
     """
     This function uses send_error_page to return the page 500 by default.
     """
@@ -165,7 +164,6 @@ def page_401(
     filename: str,
     error: str,
 ) -> Tuple[str, Dict[str, str], List[bytes]]:
-
     """
     This function uses send_error_page to return the page 401 by default.
     """
@@ -180,7 +178,6 @@ def page_403(
     filename: str,
     error: str,
 ) -> Tuple[str, Dict[str, str], List[bytes]]:
-
     """
     This function uses send_error_page to return the page 403 by default.
     """
@@ -195,7 +192,6 @@ def page_404(
     filename: str,
     error: str,
 ) -> Tuple[str, Dict[str, str], List[bytes]]:
-
     """
     This function uses send_error_page to return the page 404 by default.
     """
@@ -212,7 +208,6 @@ def send_error_page(
     code: str,
     filepath: str = None,
 ) -> Tuple[str, Dict[str, str], List[bytes]]:
-
     """
     This function returns the default errors responses.
     """
@@ -253,7 +248,6 @@ class Report:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function returns the report page by default.
         """
@@ -276,7 +270,6 @@ class Request:
         content_type: str = None,
         attachments: List[Tuple[List[Any], Dict[str, Any]]] = [],
     ) -> None:
-
         """
         This function send a notification mail.
 
@@ -338,7 +331,6 @@ class Request:
         name: str,
         reason: str,
     ) -> None:
-
         """
         This function save the report/request to a CSV file.
         """
@@ -348,7 +340,6 @@ class Request:
         )
 
         def get_requests() -> Iterator[_Request]:
-
             """
             This function build Request from database.
             """
@@ -394,7 +385,6 @@ class Request:
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
-
         """
         This function save and send request or report.
         """

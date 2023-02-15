@@ -54,7 +54,6 @@ from sys import exit
 
 
 def main() -> int:
-
     """
     This function prints an HTML table of uploaded files sizes.
     """

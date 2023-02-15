@@ -52,7 +52,6 @@ import sys
 
 
 def parse_args() -> Namespace:
-
     """This function parse command line arguments."""
 
     owner = get_user()
@@ -113,7 +112,6 @@ def parse_args() -> Namespace:
 
 
 def main() -> None:
-
     """This function uploads a file on a WebScripts Server."""
 
     arguments = parse_args()

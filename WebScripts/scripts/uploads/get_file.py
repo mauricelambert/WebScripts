@@ -58,7 +58,6 @@ import sys
 
 
 def main() -> None:
-
     """Print the HTML link to download the file or
     exit with an error code."""
 

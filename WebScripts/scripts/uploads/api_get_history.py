@@ -54,7 +54,6 @@ from json import dumps
 
 
 def main() -> int:
-
     """
     Print the JSON objects of file history.
     """

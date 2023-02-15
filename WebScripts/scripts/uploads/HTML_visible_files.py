@@ -57,7 +57,6 @@ from html import escape
 
 
 def main() -> int:
-
     """
     This function prints the HTML table of uploaded files.
     """
