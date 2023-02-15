@@ -8,7 +8,7 @@ For temp configuration or tests i recommend to use [command line arguments](http
 
 ## Debug the Content Security Policy
 
-To debug the CSP you may use the `--security` arguments (i should not change the `security` configuration for security reason) and configure the email notification. You have a `application/json` page on `http(s)://<server>:<port>/csp/debug/` with the `Content Security Policy Report`
+To debug the CSP you may use the `--security` arguments (you should not change the `security` configuration for security reason) and configure the email notification. You have a `application/json` page on `http(s)://<server>:<port>/csp/debug/` with the *Content Security Policy Report*
 
 ```bash
 WebScripts --security --admin-adresses "admin@email.com" --n-adr "notification@email.com" --s-server "smtp.email.com"
@@ -32,11 +32,12 @@ python -m unittest discover -s test -p Test*.py -v
 | TOTAL         | 2151       | 5       | 99.76%   |
 
 
-### Hardening audit
+### Hardening
 
-1. To harden the WebScripts installation: run the installation command with privileges using these arguments: `--admin-password=\-p` and `--owner=\-o`. See the examples on [installation page](https://webscripts.readthedocs.io/en/latest/Installation/) and [deployment page](https://webscripts.readthedocs.io/en/latest/Deployment/).
-2. The hardening audit is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
+1. To *harden* the WebScripts installation run this command with privileges: `sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o '<my webscripts user>' -d 'WebScripts/'`. See examples on [installation page](https://webscripts.readthedocs.io/en/latest/Installation/) and [deployment page](https://webscripts.readthedocs.io/en/latest/Deployment/).
+2. The *hardening audit* is performed when WebScripts server starts. The audit report is written in `audit.html`, `audit.json` and `audit.txt` and emailed to Administrators.
 HTML report examples:
+
     - [Windows](https://mauricelambert.github.io/info/python/code/WebScripts/audit_windows.html)
     - [Linux](https://mauricelambert.github.io/info/python/code/WebScripts/audit_linux.html)
     - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html)
@@ -49,11 +50,11 @@ HTML report examples:
 | HIGH          | WebScripts Server compromisssion and bypass of critical hardening rules                                           |
 | MEDIUM        | Denial of service of WebScripts server and administrator access (violation of data confidentiality and integrity) |
 | LOW           | Good practice to avoid an unexplained crash of the service                                                        |
-| INFORMATION   | Risky features you need to secure (you should not activate it if it is not necessary)                             |
+| INFORMATION   | Risky features you need to secure (you should not activate these features if it is not necessary)                             |
 
 ### File integrity
 
-The WebScripts file integrity is checked hourly since version *2.5.0* (location, size, modification/creation date and content), since version *3.0.0* modules, cgi scripts and logs are checked too.
+The *WebScripts file integrity* is checked hourly since version *2.5.0* (location, size, modification/creation date and content), since version *3.0.0* modules, cgi scripts and logs are checked too.
 
  - [+] Scripts are checked
  - [+] Static files are checked

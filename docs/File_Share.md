@@ -7,6 +7,7 @@
 ### Add file
 
 Using data string with default option values:
+
 ```python
 from WebScripts.scripts.uploads.modules.uploads_management import (
     Upload,
@@ -38,6 +39,7 @@ assert "my_filename.txt" in filenames
 ```
 
 Using base64 data with hidden option and binary option:
+
 ```python
 from WebScripts.scripts.uploads.modules.uploads_management import (
     write_file,
@@ -84,19 +86,23 @@ assert counter["my_filename.txt"] == 2
 ### Read a file
 
 With verification of permissions:
+
 ```python
 assert b64decode(read_file("my_filename.txt").encode()) == b"\x00version 2\xff"
 # the read_file function checks permissions
 ```
 
 Without verification of permissions:
+
 ```python
 data, filename = get_file_content(name="my_filename.txt")
 assert b64decode(data.encode()) == b"\x00version 2\xff"
-# the get_file_content don't checks permissions
+# the get_file_content don't checks permissions, you should use it for Admin access ONLY
 ```
 
 ### Delete a file
+
+On WebScripts server a file is **never deleted on the disk**, for security reason you can't delete a file from the WebScripts interface (it's useful for *Forensics*, *Investigations* or *Incident Response* on a WebScripts compromission).
 
 ```python
 delete_file("my_filename.txt")
@@ -110,6 +116,8 @@ except FileNotFoundError:
 ```
 
 ### Read a file using its ID
+
+This feature allow **administrator only** to read any version of uploaded file and deleted file.
 
 ```python
 data, filename = get_file_content(id_="1")
@@ -184,6 +192,7 @@ with open("my_filename.txt", "wb") as file:
      - `Delete-Permission`
 
 Without options:
+
 ```python
 from urllib.request import urlopen, Request
 
@@ -205,6 +214,7 @@ with open("my_filename.txt", 'rb') as file:
 ```
 
 Using all options:
+
 ```python
 from urllib.request import urlopen, Request
 from base64 import b64encode
@@ -260,13 +270,13 @@ curl --insecure -H "Origin: http://127.0.0.1:8000" -H 'Is-Base64: yes' -H 'No-Co
 
 ##### Download
 
-```bash
+```powershell
 [System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.txt").Content) | Out-File -FilePath .\file.txt
 ```
 
 ##### Upload
 
-```bash
+```powershell
 Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.txt
 Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body $(Get-Content file.txt) -Uri http://127.0.0.1:8000/share/upload/file.txt
 ```

@@ -9,11 +9,13 @@ WebScripts
 Using the python module:
 
 ### Linux
+
 ```bash
 python3 -m WebScripts
 ```
 
 ### Windows
+
 ```bash
 python -m WebScripts
 ```
@@ -21,12 +23,14 @@ python -m WebScripts
 ## Arguments
 
 ### Help message
+
 ```bash
 WebScripts --help
 WebScripts -h
 ```
 
 ### Change interface and port
+
 ```bash
 WebScripts --interface "192.168.1.2" --port 80
 WebScripts -i "192.168.1.2" -p 80
@@ -152,6 +156,7 @@ WebScripts --e-auth-pages "/auth/page.py" "/help/page.html" --e-auth-pages "/con
  - To get the existing URLs on page 404.
  - To export the full (since version *3.0.0*) server configuration to a JSON file named export_Configuration.json.
  - Active unsecure module to see and change configurations
+
 ```bash
 WebScripts --debug
 WebScripts -d
@@ -162,6 +167,8 @@ WebScripts -d
  - Do not use HTTP security headers, useful for debugging web scripts (*javascript*)
  - Active the Content-Security-Policy-Report-Only header
  - Active the debug module for Content-Security-Policy (URL: "/csp/debug/")
+ - Don't raise `WebScripts.Errors.WebScriptsSecurityError: Logs configuration file/directory permissions are insecure. Remote code execution can be exploited.`. This error is raised when the *WebScripts Server* is not hardened (file permissions on the *log configuration file*), **be careful it's a security problem** (it can be used to bypass hardening in development environment **only**).
+
 ```bash
 WebScripts --security
 WebScripts -s
@@ -172,7 +179,8 @@ WebScripts -s
 #### Level
 
  - Configure the *root* logger (other loggers are not impacted)
- - Level must be in {0 DEBUG INFO WARNING ERROR CRITICAL}
+ - Level must be in `0`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+
 ```bash
 WebScripts --log-level DEBUG
 WebScripts -l DEBUG
@@ -181,6 +189,7 @@ WebScripts -l DEBUG
 #### Filename
 
  - Configure the *root* logger (other loggers are not impacted)
+
 ```bash
 WebScripts --log-filename "logs.log"
 WebScripts -f "logs.log"
@@ -189,6 +198,7 @@ WebScripts -f "logs.log"
 #### Encoding
 
  - Configure the *root* logger (other loggers are not impacted)
+
 ```bash
 WebScripts --log-encoding "utf-8"
 ```
@@ -196,6 +206,7 @@ WebScripts --log-encoding "utf-8"
 #### Format
 
  - Configure the *root* logger (other loggers are not impacted)
+
 ```bash
 WebScripts --log-format "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> %(filename)s:%(lineno)d)"
 ```
@@ -203,6 +214,7 @@ WebScripts --log-format "%(asctime)s %(levelname)s %(message)s (%(funcName)s -> 
 #### Date format
 
  - Configure the *root* logger (other loggers are not impacted)
+
 ```bash
 WebScripts --log-date-format "%d/%m/%Y %H:%M:%S"
 ```
@@ -212,6 +224,7 @@ WebScripts --log-date-format "%d/%m/%Y %H:%M:%S"
 #### Server
 
  - Configure the SMTP server name to send email notifications
+
 ```bash
 WebScripts --smtp-server "my.smtp.server"
 WebScripts --s-server "my.smtp.server"
@@ -220,6 +233,7 @@ WebScripts --s-server "my.smtp.server"
 #### StartTLS
 
  - Configure the secure connection with StartTLS
+
 ```bash
 WebScripts --smtp-starttls
 WebScripts --s-tls
@@ -228,6 +242,7 @@ WebScripts --s-tls
 #### Password
 
  - Configure the SMTP login (username is the `notification_address` configuration), if password is None the WebScripts Server send the email notifications without authentication.
+
 ```bash
 WebScripts --smtp-password "password"
 WebScripts --s-password "password"
@@ -236,6 +251,7 @@ WebScripts --s-password "password"
 #### Port
 
  - Configure the SMTP server port
+
 ```bash
 WebScripts --smtp-port 25
 WebScripts --s-port 25
@@ -244,6 +260,7 @@ WebScripts --s-port 25
 #### SSL
 
  - Configure the secure connection with SSL
+
 ```bash
 WebScripts --smtp-ssl
 WebScripts --s-ssl
@@ -252,6 +269,7 @@ WebScripts --s-ssl
 #### Receivers/Administrators email addresses
 
  - Configure the receivers email addresses (should be the administrators addresses)
+
 ```bash
 WebScripts --admin-adresses "admin1@my.smtp.server" "admin2@my.smtp.server" --admin-adresses "admin3@my.smtp.server"
 WebScripts --a-adr "admin1@my.smtp.server" "admin2@my.smtp.server" --a-adr "admin3@my.smtp.server"
@@ -260,10 +278,12 @@ WebScripts --a-adr "admin1@my.smtp.server" "admin2@my.smtp.server" --a-adr "admi
 #### Sender
 
  - Configure the sender email address
+
 ```bash
 WebScripts --notification-address "notification@my.smtp.server"
 WebScripts --n-adr "notification@my.smtp.server"
 ```
 
 ## License
+
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).

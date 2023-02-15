@@ -2,7 +2,7 @@
 
 ## SAST alerts
 
-1. A vulnerability is found with: `Popen(..., shell=True, ...)` used for generating documentation. The vulnerability is not dangerous if the configrations files are protected by the system (rights and write permissions to these files).
+1. A vulnerability is found with: `Popen(..., shell=True, ...)` used for generating documentation. The vulnerability is not dangerous if the configrations files are protected by the system (rights and write permissions to these files, there is hardening rule that check your *system file permission* on configurations file and it's a **CRITICAL** rule).
 
 ## DAST alerts
 

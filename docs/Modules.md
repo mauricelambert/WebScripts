@@ -9,11 +9,11 @@ Module is useful to send custom response:
  - Custom authentication and permissions
  - ...
 
-Module is a python file or a *package* imported in *WebScripts Server*.
+Module is a python *module* or a *package* imported in *WebScripts Server*.
 
 ## Custom functions
 
-Signature:
+Signatures:
 
 ```python
 from typing import TypeVar, List, Dict, Tuple, Union
@@ -21,13 +21,13 @@ from collections.abc import Iterator
 from os import _Environ
 
 Json = TypeVar("Json", dict, list, str, int, None)
-ServerConfiguration = TypeVar("ServerConfiguration")
+Server = TypeVar("Server")
 User = TypeVar("User")
 
 def example1(
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         arguments: List[str],       # Arguments is a list of str, if you send a "WebScripts request" (a JSON object with "arguments" as attribute)
         inputs: List[str],          # Value of inputs
@@ -43,7 +43,7 @@ def example1(
 def example2(
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         arguments: Json,            # Arguments is a loaded JSON, if you send a JSON content without attribute named "arguments" 
         inputs: List[str],          # Inputs will be a empty list
@@ -59,7 +59,7 @@ def example2(
 def example3(
         environ: _Environ,
         user: User,
-        server_configuration: ServerConfiguration,
+        server: Server,
         filename: str,
         arguments: bytes,           # Arguments is bytes, if you send a non JSON request
         inputs: List[str],          # Inputs will be a empty list
@@ -78,9 +78,9 @@ def example3(
  1. `environ` (no default value): WSGI environment variables for this request
  2. `user` (no default value): User object (attributes: `["id", "name", "groups", "csrf", "ip", "check_csrf"]`
 , optional: *your custom user configurations*)
- 3. `server_configuration` (no default value): Server configurations (attributes: `["interface", "port", "debug", "security", "active_auth", "auth_script", "accept_unknow_user", "accept_unauthenticated_user", "modules", "modules_path", "js_path", "statics_path", "documentations_path", "scripts_path", "json_scripts_config", "ini_scripts_config", "log_level", "log_filename", "log_level", "log_format", "log_date_format", "log_encoding", "auth_failures_to_blacklist", "blacklist_time"]`)
+ 3. `server` (no default value): it's the *WebScripts Server* object and contains configurations, useful functions, you can change the WebScripts behaviour from this object. **Be careful, it's an advanced usages and you can break the server or security features.**
  4. `filename` (no default value): element after the last `/`
- 5. `arguments` (no default value): list of command line arguments (to launch a *script*) or a loaded JSON (JSON content without "arguments" attribute) or bytes (non-JSON content)
+ 5. `arguments` (no default value): list of command line arguments (to launch a *script*) or a loaded JSON (for JSON content without "arguments" attribute) or bytes (for non-JSON content)
  6. `inputs` (no default value): list of inputs (for *stdin* of the script) or empty list (if the content is a non WebScripts request: non-JSON content or JSON without "arguments" attribute)
  7. `csrf_token` (optional: default value is `None`)
 
@@ -99,12 +99,14 @@ In the `PATH_INFO` the character `/` is like `.` (object attribute) in python co
 ### Examples
 
 URLs to call a function named `hello` in a `hello` module:
+
 ```
 /hello/hello/                   # python code equivalent: hello.hello(..., filename='', ...)
 /hello/hello/abc                # python code equivalent: hello.hello(..., filename='abc', ...)
 ```
 
 URLs to call a function named `test` in a class named `Test` in a module named `Tests` in a package named `Example`:
+
 ```
 /Example/Tests/Test/test/       # python code equivalent: Example.Tests.Test.test(..., filename='', ...)
 /Example/Tests/Test/test/abc    # python code equivalent: Example.Tests.Test.test(..., filename='abc', ...)
@@ -112,7 +114,7 @@ URLs to call a function named `test` in a class named `Test` in a module named `
 
 ## Headers
 
-Some default security headers are sended for all response, you can change the value but you can't delete these headers.
+Some default security headers are sended for all response, you can override the value but you can't delete these headers.
 
 ## Custom error pages
 
@@ -142,7 +144,7 @@ Get the code in `/path/of/WebScripts/project/scripts/py/hello.py`.
 
 ## Default modules
 
- - `cgi`, make your own web pages and responses with any executable files and scripts
+ - `cgi`, make your own web pages and responses with any executable files and scripts (it's like modules for non python syntax, but you can't access to WebScripts server and configurations)
  - `Configuration`, activated with the *debug mode*, read and change your configurations in the web page without stop and restart the WebScripts server.
  - `csp`, activated with the *debug mode*, debug the CSP errors and get the CSP report.
  - `error_pages`, default error pages with requests to WebScripts administrators.

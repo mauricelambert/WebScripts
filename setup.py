@@ -23,12 +23,14 @@
 This tool runs CLI scripts and displays output in a Web Interface.
 """
 
-__version__ = "2.3.6"
+__version__ = "2.3.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = "This tool runs CLI scripts and displays output in a Web Interface."
+__description__ = (
+    "This tool runs CLI scripts and displays output in a Web Interface."
+)
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -129,7 +131,6 @@ class PostInstallScript(install):
         self.csv_files = []
 
     def linux_files_permissions(self, filename: str) -> None:
-
         """
         This function changes the owner and permissions on
         UNIX system files if you perform the installation
@@ -264,14 +265,12 @@ class PostInstallScript(install):
             )
 
     def add_absolute_paths_in_configuration(self) -> None:
-
         """
         This function adds absolute paths on configurations.
         """
 
         launcher = sys.executable
         for filename in self.json_config_files:
-
             logging.debug(f"Open and loads {filename}")
             with open(filename) as file:
                 configurations: Dict[str, dict] = json.load(file)
@@ -286,7 +285,9 @@ class PostInstallScript(install):
                     logging.debug("Add the launcher")
                     script["launcher"] = launcher
 
-                    if "build" not in filename:   # if not in temp install directory
+                    if (
+                        "build" not in filename
+                    ):  # if not in temp install directory
                         script_name, _ = splitext(basename(filename))
                         logging.info(f"Configure script named: {script_name}")
                         for py_filename in self.py_scripts_files:
@@ -338,7 +339,6 @@ class PostInstallScript(install):
     def save_scripts_configurations(
         filename: str, configurations: Dict[str, dict]
     ) -> None:
-
         """
         This function save configuration.
         """
@@ -348,7 +348,6 @@ class PostInstallScript(install):
             json.dump(configurations, file, indent=4)
 
     def remove_configuration_files(self) -> None:
-
         """
         This function removes unnecessary configuration files.
         """
@@ -383,7 +382,6 @@ class PostInstallScript(install):
             self.json_config_files.remove(file)
 
     def change_admin_password(self) -> None:
-
         """
         This function change the administrator
         password (default account named Admin).
@@ -418,7 +416,6 @@ class PostInstallScript(install):
         logging.info("Administrator is changed.")
 
     def run_custom_install(self) -> None:
-
         """
         This function launch custom install.
         """
@@ -503,6 +500,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     keywords=[
@@ -525,4 +523,3 @@ setup(
         "install": PostInstallScript,
     },
 )
-

@@ -32,9 +32,9 @@ fi
 
 if [ "${1}" == "Admin" ] && [ "${2}" == "Admin" ]
 then
-	echo "{\"ip\":\"${X_REAL_IP}\",\"id\":\"2\",\"name\":\"Admin\",\"groups\":\"50,1000\"}"
+	echo "{\"ip\":\"${REMOTE_IP}\",\"id\":\"2\",\"name\":\"Admin\",\"groups\":\"50,1000\"}"       # you can add 'categories' and 'scripts' permissions and any custom attributes you need in your scripts and modules
 else
-	echo "{\"ip\":\"${X_REAL_IP}\",\"id\":\"0\",\"name\":\"Not Authenticated\",\"groups\":\"0\"}"
+	echo "{\"ip\":\"${REMOTE_IP}\",\"id\":\"0\",\"name\":\"Not Authenticated\",\"groups\":\"0\"}"
 fi
 
 exit 0
@@ -42,7 +42,7 @@ exit 0
 
 ## Add configuration
 
-Two methods can be used to configure a script, using a *specific configuration file* or tha *main configuration file*.
+Two methods can be used to configure a script, using a *specific configuration file* or the *main configuration file*.
 
 ### Specific configuration file
 

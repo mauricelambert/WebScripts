@@ -293,7 +293,6 @@ class TestDefaultNamespace(TestCase):
             self.default_namespace.build_types()
 
     def test_build_type(self):
-
         self.default_namespace.__types__ = {
             "ListInt": List[int],
             "ListStr": List[str],
@@ -543,7 +542,6 @@ class TestFunctions(TestCase):
         self.assertEqual(get_ip(env, 1, False), "ip5")
 
     def test_get_ini_dict(self):
-
         with open("test.ini", "w") as file:
             file.write("[test]\ntest=test")
 

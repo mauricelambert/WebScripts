@@ -80,6 +80,14 @@ python -m pip install pywin32
 
 ## Upgrade
 
+### Since version 3.0.0
+
+Your data directory is moved into your working directory by the *hardening script*. You don't need to move it to keep data when you upgrade python. Is not recommended to change the library configuration/static files (you can override it with your own configuration files in the wworking directory), so you don't need to backup it and restore it.
+
+Run: `python3 -m pip install --upgrade WebScripts`
+
+### Before WebScripts3
+
 1. Backup data files: `<WebScripts env>/lib/python3.*/site-packages/WebScripts/data`
 2. This is not recommended, but if you have modified the library configuration files, back them up: `<WebScripts env>/lib/python3.9/site-packages/WebScripts/config/**/*.{json,ini}`
 3. This is not recommended, but if you have modified the library static files, back them up: `<WebScripts env>/lib/python3.9/site-packages/WebScripts/static`
@@ -193,4 +201,3 @@ mkdir logs
 ## License
 
 Licensed under the [GPL, version 3](https://www.gnu.org/licenses/).
-

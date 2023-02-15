@@ -123,7 +123,6 @@ class TestScriptConfig(TestCase):
             config.build_args(configuration)
 
     def test_build_scripts_from_configuration(self):
-
         with open("unittests_configuration.ini", "w") as file:
             file.write("[scripts]\ntest.py=test\n\n[test]\n")
 

@@ -1,6 +1,7 @@
 # Deployment
 
 I propose two complete and secure deployment solutions:
+
  - WebScripts with Apache and mod_wsgi
  - WebScripts with Nginx as HTTPS proxy
 
@@ -126,6 +127,7 @@ server {
 ```
 
 Add `WebScripts.conf` in `nginx.conf` (in *section* named `http`) and comment defaults configurations:
+
 ```bash
 sudo nano /etc/nginx/nginx.conf
 ```
@@ -137,6 +139,7 @@ include /etc/nginx/sites-available/WebScripts.conf;
 ```
 
 Restart nginx:
+
 ```bash
 sudo systemctl restart nginx
 ```
@@ -234,66 +237,108 @@ sudo systemctl restart apache2
 >> This script can be customized (examples: to generate WebScripts configurations)
 
 ```python
-#!/path/to/virtualenv/bin/python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-from os import path, chdir
-chdir('/path/to/virtualenv/')
+###################
+#    This tool runs CLI scripts and displays output in a Web Interface.
+#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
 
-activator = '/path/to/virtualenv/bin/activate_this.py'
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+###################
+
+"""
+This tool runs CLI scripts and displays output in a Web Interface.
+"""
+
+__version__ = "1.0.1"
+__author__ = "Maurice Lambert"
+__author_email__ = "mauricelambert434@gmail.com"
+__maintainer__ = "Maurice Lambert"
+__maintainer_email__ = "mauricelambert434@gmail.com"
+__description__ = (
+    "This tool runs CLI scripts and displays output in a Web Interface."
+)
+__license__ = "GPL-3.0 License"
+__url__ = "https://github.com/mauricelambert/WebScripts"
+
+copyright = """
+WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+"""
+license = __license__
+__copyright__ = copyright
+
+print(copyright)
+
+from os.path import join, dirname
+from typing import List
+import atexit
+
+activator = join(dirname(__file__), "activate_this.py")
+
 with open(activator) as f:
-    exec(f.read(), {'__file__': activator})
+    exec(f.read(), {"__file__": activator})  # nosec # nosemgrep
 
 from WebScripts.WebScripts import (
-    server_path, 
-    Configuration, 
-    get_server_config, 
-    add_configuration,
-    logs_configuration,
     Server,
     configure_logs_system,
     send_mail,
     hardening,
     Logs,
+    logger_debug,
+    logger_info,
+    logger_warning,
+    prepare_server,
 )
-from typing import List
-import logging
-import atexit
+
 
 class Paths:
 
-    """This class define configuration files."""
+    """
+    This class define configuration files.
+    """
 
     def __init__(self, config_cfg: List[str], config_json: List[str]):
         self.config_cfg = config_cfg
         self.config_json = config_json
 
+
 configure_logs_system()
+
 paths = Paths([], [])
 
-configuration = Configuration()
-for config in get_server_config(paths):
-    configuration = add_configuration(configuration, config)
+server, _ = prepare_server()
 
-logs_configuration(configuration)
-
-configuration.set_defaults()
-configuration.check_required()
-configuration.get_unexpecteds()
-configuration.build_types()
-
-server = Server(configuration)
-
+logger_debug("Trying to send email notification...")
 send_mail(
-    configuration, f"Server is up on http://{server.interface}:{server.port}/."
+    server.configuration, f"Server is up on http://{server.interface}:{server.port}/."
 )
 
+logger_debug("Configure email notification on server exit...")
 atexit.register(
-    send_mail, 
-    configuration, 
-    f"Server is down on http://{server.interface}:{server.port}/."
+    send_mail,
+    server.configuration,
+    f"Server is down on http://{server.interface}:{server.port}/.",
 )
 
-hardening(server, Logs)
+logger_info("WebScripts server hardening audit...")
+hardening(server)
+
+logger_warning("Starting server...")
 application = server.app
 ```
 
@@ -312,14 +357,18 @@ try:
     __file__
 except NameError:
     raise AssertionError(
-        "You must run this like execfile('path/to/active_this.py', dict(__file__='path/to/activate_this.py'))")
+        "You must run this like execfile('path/to/active_this.py', dict(__file__='path/to/activate_this.py'))"
+    )
 import sys
 import os
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-site_packages = os.path.join(base, 'lib', 'python%s' % sys.version[:3], 'site-packages')
+site_packages = os.path.join(
+    base, "lib", "python%s" % ".".join(sys.version.split(".", 2)[:2]), "site-packages"
+)
 prev_sys_path = list(sys.path)
 import site
+
 site.addsitedir(site_packages)
 sys.real_prefix = sys.prefix
 sys.prefix = base

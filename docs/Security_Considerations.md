@@ -1,12 +1,13 @@
 # Security Considerations
 
-An example of deployment for production is available [here](https://webscripts.readthedocs.io/en/latest/Deployment/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)) using NGINX and python virtual environment. This example respect all security considerations defined in this page.
+An example of deployment for production is available [here](https://webscripts.readthedocs.io/en/latest/Deployment/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment)) using NGINX/Apache and python virtual environment. This example respect all security considerations defined in this page.
 
 ## Installations
 
 ### Secure server and connection
 
- - I recommend using a **HTTPS proxy** on production environments (to protect against `MiM` attacks and protect the *WebScripts Server*).
+ - I recommend using a **HTTPS proxy** or **HTTPS Server with WSGI module** on production environments (to protect against `MiM` attacks and protect the *WebScripts Server*).
+ - Set `webproxy_number` to the number of *HTTP proxy* used, it's important for *IP Spoofing protection*.
 
 ### Virtual environments
 
@@ -16,7 +17,7 @@ An example of deployment for production is available [here](https://webscripts.r
 
 ### Interface
 
- - The *WebScripts Server* **is not secure enough** to be used directly on public interface (the proxy is very important). It **should not** use an interface other than `127.0.0.1`. 
+ - The *WebScripts Server* **is not secure enough** to be used directly on public interface (the proxy is very important). It **should not** use an interface other than `127.0.0.1`.
 
 ### HTTP headers
 
@@ -90,8 +91,8 @@ To protect your files the read and write files, you need to change permissions o
 
 The files and directories that need protection:
 
- - `<lib path>/data/`: encrypted or hashed passwords are stored here, user permissions are also set here
- - `./logs/`: logs contains informations about configurations
+ - `./data/`, `<lib path>/data/`: encrypted or hashed passwords are stored here, user permissions are also set here
+ - `./logs/`, `<lib path>/logs/`: logs contains informations about configurations
 
 ### Delete files
 
@@ -112,11 +113,16 @@ A remote code execution is **very dangerous**.
 ### Python
 
 Some examples of **Remote Code Execution** on *WebScripts custom module*:
+
 ```python
+import os, pickle
+
 def page(environ, user, configuration, filename, arguments, inputs, *args, csrf_token=None):
 
-    """Some examples of remote code executions are shown in this function, 
-    you should never use this example or an equivalent."""
+    """
+    Some examples of remote code executions are shown in this function, 
+    you should never use this example or an equivalent.
+    """
     
     eval(environ["HTTP_COMMAND"]) # Run the Command HTTP headers as python code
     exec(filename)                # Run the URL parameter as python code
@@ -129,9 +135,9 @@ def page(environ, user, configuration, filename, arguments, inputs, *args, csrf_
 ```
 
 Some examples of **Remote Code Execution** on python script:
+
 ```python
-import pickle
-import sys
+import pickle, sys, os
 
 eval(environ["HTTP_COMMAND"])        # Run the Command HTTP headers as python code
 eval(sys.argv[1])                    # Run the first argument as python code
@@ -153,6 +159,7 @@ pickle.loads(input())                # De-serailize the Command HTTP headers as 
 ### Bash
 
 Some examples of **Remote Code Execution** in bash script:
+
 ```bash
 eval $1                           # Run the first argument as a command line
 $1                                # Run the first argument as a command line
@@ -164,6 +171,7 @@ php -r "${1}"                     # Run the first argument as php code
 ### PHP
 
 Some examples of **Remote Code Execution** in php script:
+
 ```php
 <?php 
   shell_exec($argv[1]);           // Run the first argument as a command line
@@ -173,13 +181,12 @@ Some examples of **Remote Code Execution** in php script:
 
 ## XSS
 
-You should never print a user entry (headers, arguments, inputs, URLs, content, username, cookie, ...), when the output `content-type` is set to `text/html`,  without change HTML scpecial characters.
+You should never print a user entry (headers, arguments, inputs, URLs, content, username, cookie, ...), when the output `content-type` is set to `text/html`,  without escape HTML scpecial characters.
 
 ### Python
 
 ```python
 import html
-
 print(html.escape(user.name))
 ```
 
@@ -198,7 +205,7 @@ print(html.escape(user.name))
 The *WebScripts Server* use `HTTP Cookies` for *session*.
 The session are generated with `secrets.token_hex(64)`.
 The cookie is set with this HTTP header: `Set-Cookie: SessionID=<user id>:<64 random byte hexadecimal>; Path=/; SameSite=Strict; Max-Age=3600; Secure; HttpOnly`.
-Sessions can be used with only one IP address and expire after one hours.
+Sessions can be used with only one IP address and expire after one hours and there is an IP spoofing protection.
 
 ### CSRF token
 

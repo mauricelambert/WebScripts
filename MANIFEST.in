@@ -13,6 +13,7 @@ include WebScripts/doc/empty.html
 include WebScripts/data/uploads/*.txt
 recursive-include test test.*
 recursive-include .github *.yml
+recursive-include WebScripts/cgi-bin *.py
 recursive-include WebScripts/scripts *.py
 recursive-include WebScripts/config *.ini *.json
 recursive-include WebScripts/static *.css *.js *.html *.jpg *.png *.pdf

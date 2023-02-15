@@ -11,6 +11,7 @@ mkdir logs
 ## Default logging
 
 ### Level
+
 The logs level is "0" (all logs are written).
 You can change the logging level in configuration files or by using command line arguments.
 
@@ -69,15 +70,15 @@ On linux *WebScripts* logs with level `DEBUG`, `INFO`, `ACCESS`, `RESPONSE`, `CO
 
 ## Windows
 
-On Windows if `pywin32` is installed logs with level `DEBUG`, `INFO`, `ACCESS`, `RESPONSE`, `COMMAND`, `WARNING`, `ERROR` and `CRITICAL` are redirected in **EventViewer**.
+On Windows if `pywin32` is installed logs with level `DEBUG`, `INFO`, `ACCESS`, `RESPONSE`, `COMMAND`, `WARNING`, `ERROR` and `CRITICAL` are redirected in **Windows Events**.
 
-## Scripts
+## Write logs in your own scripts
 
 To group the logs you can use the following environment variable: `LOG_PATH`. This is the path of the WebScripts logs. I recommend using the following path for your script: `LOG_PATH/<script category>/<script name>.log`.
 
 You can use the [WebScriptsTools](https://github.com/mauricelambert/WebScriptsTools) package to get the log file. It's possible to get it using command line or import it in python script. Read the [README.md](https://github.com/mauricelambert/WebScriptsTools#readme), you have some examples on this repository.
 
-**Caution:** To protect your WebScripts server and your system is recommended to change the directory permissions and owner (`root:root 755`), your script can not create a file in this directory (current directory of the script). **You can not make a log file in the current directory.**
+**Caution:** To protect your WebScripts server and your system is recommended to change the working directory permissions and owner (`root:root 755`), your script can not create a file in script directory and working directory. **You can not make a log file in the working directory or script directory.**
 
 ## Configuration
 

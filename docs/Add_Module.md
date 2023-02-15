@@ -4,7 +4,7 @@
 
 Write in `./scripts/py/hello.py`:
 ```python
-def hello(environ, user, configuration, filename, arguments, inputs, csrf_token=None):
+def hello(environ, user, server, filename, arguments, inputs, csrf_token=None):
     return "200 OK", {"Content-Type": "text/plain"}, f"Hello {user.name} !"
 
 def page_500(error):

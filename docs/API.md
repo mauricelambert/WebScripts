@@ -4,7 +4,7 @@
 
  - `/api/` (**HTTP GET METHOD**): JSON response with scripts details/informations
  - `/api/scripts/<script name>` (**HTTP POST METHOD**): JSON response with script *stdout* (outputs), *stderr* (errors) and *exitcode*. A *csrf token* is added if you use the WEB interface.
- - `/api/script/get/<key>` (**HTTP GET METHOD**): JSON response 
+ - `/api/script/get/<key>` (**HTTP GET METHOD**): JSON response with single line *stdout* scripts with output configured in real time
 
 ## Structures
 
@@ -15,7 +15,7 @@
 ```json
 {
 	"<script name>": {
-		"content_type": "text/<plain or html>", 
+		"content_type": "text/<html, plain, csv or json>", 
 		"documentation_content_type": "text/<html or plain>", 
 		"description": "<short description>", 
 		"category": "<category>", 
@@ -94,15 +94,15 @@ For client API:
 
 Some *HTTP Headers* are **required** to use scripts with *WebScripts API*:
 
- - `Content-Type` should be `application/json` (or `application/json; charset=utf-8`).
+ - `Content-Type` should be `application/json` (you can had charset like this: `application/json; charset=utf-8`).
  - `Origin` should be `<scheme>://<host>` (examples: `http://webscript.local`, `http://webscript.local:8000`, `https://webscript.local`, `https://webscript.local:4430`).
  - `Referer` should be the last visited page, **required for webbrowser only**.
 
-Recommandation:
-
- - `Api-Token` should be the *session cookie* (example: `SessionID=2:0123456789abcdef`). Session cookie is sent by the server on the response of `/auth/` script (the `/auth/` script should accept `--username` and `--password` arguments **OR** `--api-key` argument). You can use `Api-Token` as much as you want but *Basic Auth* and `Api-Key` will be blacklisted if you exceed the anti bruteforce configuration.
+For authentication you 3 methods: *Basic Auth* to execute a simple script from a script with credentials prompts, *Api-Key* to execute a simple script from service and *Api Token* (use the *Session Cookie* in `Api-Token` HTTP header) to execute multiple scripts. The reason why you can't use *Basic Auth* and *Api-Key* for multiple executions is the *bruteforce* protection.
 
 ## Authentication
+
+The `Api-Token` HTTP header should be the *session cookie* (example: `SessionID=2:0123456789abcdef`). Session cookie is sent by the server on the response of `/auth/` script (the `/auth/` script should accept `--username` and `--password` arguments **OR** `--api-key` argument). You can use `Api-Token` as much as you want but *Basic Auth* and `Api-Key` will be blacklisted if you exceed the anti bruteforce configuration.
 
 To use the *WebScripts* API you can use HTTP **BasicAuth** or an *API key* in a `Api-Key` header.
 You **should never** use these authentication methods with a *Web Browser* because CSRF protection is not enabled.
@@ -114,6 +114,7 @@ You **should never** use these authentication methods with a *Web Browser* becau
 #### Using Username and Password
 
 Request **/auth/** to authenticate user using username and password:
+
 ```text
 POST /auth/ HTTP/1.1
 Accept-Encoding: identity
@@ -128,6 +129,7 @@ Connection: close
 ```
 
 Response:
+
 ```text
 HTTP/1.0 302 Found
 Date: Thu, 22 Jun 2016 02:43:52 GMT
@@ -154,7 +156,8 @@ Content-Length: 0
 
 #### Using API key
 
-Request **/auth/** to authenticate user using API keu:
+Request **/auth/** to authenticate user using API key:
+
 ```text
 POST /auth/ HTTP/1.1
 Accept-Encoding: identity
@@ -169,6 +172,7 @@ Connection: close
 ```
 
 Response:
+
 ```text
 HTTP/1.0 302 Found
 Date: Thu, 22 Jun 2016 05:09:45 GMT
@@ -196,6 +200,7 @@ Content-Length: 0
 ### Execute script after authentication
 
 Request script execution after authentication:
+
 ```text
 POST /api/scripts/test_config.py HTTP/1.1
 Accept-Encoding: identity
@@ -210,7 +215,8 @@ Connection: close
 {"arguments": {"select": {"value": "test", "input": false}, "--timeout": {"value": true, "input": false}, "password": {"value": ["Admin", "Admin"], "input": false}, "--test-date": {"value": "2016-06-22", "input": false}, "test_input": {"value": "abc", "input": false}, "test_number": {"value": 8.8, "input": false}, "test_file": {"value": "file content", "input": true}, "select-input": {"value": ["test", "select"], "input": true}}}
 ```
 
-Response:
+Response (this is a special example with *real time output* configuration, that send a key to request output lines by lines, it's the reason why `stdout` and `stderr` are empty and `code` is `null`):
+
 ```text
 HTTP/1.0 200 OK
 Date: Thu, 22 Jun 2016 02:43:53 GMT
@@ -238,7 +244,8 @@ Content-Length: 191
 
 ### Execute script with BasicAuth
 
-Request script execution with BasicAuth:
+Request script execution with *Basic Auth*:
+
 ```text
 POST /api/scripts/test_config.py HTTP/1.1
 Accept-Encoding: identity
@@ -254,6 +261,7 @@ Connection: close
 ```
 
 Response:
+
 ```text
 HTTP/1.0 200 OK
 Date: Thu, 22 Jun 2016 04:22:10 GMT
@@ -281,7 +289,8 @@ Content-Length: 191
 
 ### Execute script with API Key
 
-Request /api/ to get information about scripts and arguments with API key:
+Request `/api/` to get informations about scripts and arguments using *API key*:
+
 ```text
 GET /api/ HTTP/1.1
 Accept-Encoding: identity
@@ -293,6 +302,7 @@ Connection: close
 ```
 
 Response:
+
 ```text
 HTTP/1.0 200 OK
 Date: Thu, 22 Jun 2016 05:09:12 GMT
@@ -320,7 +330,8 @@ Content-Length: 22610
 
 ### Request real time output
 
-Request real time output:
+Request lines for *real time output* script configuration:
+
 ```text
 GET /api/script/get/GKUBELTPuZbF2GIWBFll1kojTnnp-eyrX5y1UgFEO2xRC7kGqPQg3g== HTTP/1.1
 Accept-Encoding: identity
@@ -332,6 +343,7 @@ Connection: close
 ```
 
 Response:
+
 ```text
 HTTP/1.0 200 OK
 Date: Thu, 22 Jun 2016 05:09:52 GMT

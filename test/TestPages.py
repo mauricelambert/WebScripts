@@ -81,7 +81,6 @@ class TestFunctions(TestCase):
             "check_right",
             return_value=False,
         ) as mock_method:
-
             out, err, key, code, error = execute_scripts(
                 "test", "User", None, None, None
             )
@@ -110,7 +109,6 @@ class TestFunctions(TestCase):
         ) as m_start_process, patch.object(
             Module, "execution_logs"
         ) as m_logs:
-
             out, err, key, code, error = execute_scripts(
                 "test",
                 "User",
@@ -158,7 +156,6 @@ class TestFunctions(TestCase):
         ) as m_start_process, patch.object(
             Module, "execution_logs"
         ) as m_logs:
-
             out, err, key, code, error = execute_scripts(
                 "test",
                 "User",

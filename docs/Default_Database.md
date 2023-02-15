@@ -91,6 +91,7 @@ The RSS database columns:
 ## Default database
 
 users.csv
+
 ```csv
 ID,name,password,salt,enumerations,IPs,groups,apikey
 0,Not Authenticated,,,,*,0,
@@ -100,6 +101,7 @@ ID,name,password,salt,enumerations,IPs,groups,apikey
 ```
 
 groups.csv
+
 ```csv
 ID,name
 0,Not Authenticated
@@ -112,6 +114,7 @@ ID,name
 ```
 
 To reset it:
+
 ```bash
 python3 scripts/account/modules/manage_defaults_databases.py
 ```

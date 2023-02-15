@@ -110,7 +110,6 @@ class TestConfiguration(TestCase):
         self.conf = Configuration()
 
     def test_add_conf(self):
-
         self.conf.List = ["0", "1"]
         self.conf.ListString = ["0", "1"]
         self.conf.Dict = {"0": "0", "1": "0"}
@@ -189,7 +188,6 @@ class TestServer(TestCase):
             "is_blacklist",
             return_value=True,
         ) as mock_method:
-
             self.server.pages.ip_blacklist["ip"] = Blacklist(self.conf)
             self.assertFalse(self.server.check_blacklist(None, "ip"))
 
@@ -198,7 +196,6 @@ class TestServer(TestCase):
             "is_blacklist",
             return_value=False,
         ) as mock_method:
-
             self.server.pages.ip_blacklist["ip"] = Blacklist(self.conf)
             self.assertTrue(self.server.check_blacklist(None, "ip"))
 
@@ -213,7 +210,6 @@ class TestServer(TestCase):
             "is_blacklist",
             return_value=True,
         ) as mock_method:
-
             self.server.pages.user_blacklist[0] = Blacklist(self.conf)
             self.assertFalse(self.server.check_blacklist(user, ""))
 
@@ -222,7 +218,6 @@ class TestServer(TestCase):
             "is_blacklist",
             return_value=False,
         ) as mock_method:
-
             self.server.pages.user_blacklist[0] = Blacklist(self.conf)
             self.assertTrue(self.server.check_blacklist(user, ""))
 
@@ -238,7 +233,6 @@ class TestServer(TestCase):
             "check_session",
             return_value=user,
         ) as mock_method:
-
             self.assertEqual(
                 self.server.get_session(["SessionID="], "ip"), user
             )
@@ -249,7 +243,6 @@ class TestServer(TestCase):
             "check_session",
             return_value=user,
         ) as mock_method:
-
             user = self.server.get_session(["SessionID="], "")
             self.assertEqual(user.id, 1)
             self.assertEqual(user.ip, "")
@@ -441,7 +434,6 @@ class TestServer(TestCase):
             "get_session",
             return_value=user,
         ) as mock_method:
-
             user_2, not_blacklisted = self.server.check_auth(environ)
             self.assertTrue(not_blacklisted)
             self.assertEqual(user_2, user)
@@ -482,13 +474,11 @@ class TestServer(TestCase):
             "auth",
             return_value=(None, {}, None),
         ) as mock_method:
-
             with patch.object(
                 Session,
                 "check_session",
                 return_value=user,
             ) as mock_method:
-
                 environ["HTTP_AUTHORIZATION"] += b64encode(b":").decode()
                 user_2, not_blacklisted = self.server.check_auth(environ)
 
@@ -507,13 +497,11 @@ class TestServer(TestCase):
             "auth",
             return_value=(None, {}, None),
         ) as mock_method:
-
             with patch.object(
                 self.server,
                 "check_blacklist",
                 return_value=False,
             ) as mock_method:
-
                 user_2, not_blacklisted = self.server.check_auth(environ)
 
                 self.assertEqual(user_2.id, 0)
@@ -926,7 +914,6 @@ class TestServer(TestCase):
             "check_auth",
             return_value=(Mock(name="a", ip="ip", id=0, groups=[0]), False),
         ) as mock_method:
-
             response = self.server.app(environ, Mock())
             self.assertEqual("403", response)
 
@@ -1084,7 +1071,6 @@ class TestServer(TestCase):
         self.assertEqual(h, h2)
 
     def test_get_content_length(self):
-
         v = self.server.get_content_length({"CONTENT_LENGTH": "10"})
         self.assertEqual(v, 10)
 
@@ -1170,7 +1156,6 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"400",
         ) as mock_method:
-
             self.assertEqual(
                 self.server.page_400(environ, None, "", "AUTH", a), b"400"
             )
@@ -1192,7 +1177,6 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"500",
         ) as mock_method:
-
             self.assertEqual(
                 self.server.page_500(environ, None, "", "500", a), b"500"
             )
@@ -1259,7 +1243,6 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"403",
         ) as mock_method:
-
             self.assertEqual(
                 self.server.page_403(environ, None, "", "403", a), b"403"
             )
@@ -1281,7 +1264,6 @@ class TestServer(TestCase):
             "send_error_page",
             return_value=b"406",
         ) as mock_method:
-
             self.assertEqual(
                 self.server.page_406(environ, None, "", "406", a), b"406"
             )
@@ -1311,7 +1293,6 @@ class TestServer(TestCase):
             "send_custom_error",
             return_value=None,
         ) as mock_method:
-
             self.assertEqual(
                 self.server.send_error_page(
                     environ,
@@ -1342,7 +1323,6 @@ class TestServer(TestCase):
                 b"401",
             ),
         ) as mock_method:
-
             self.assertEqual(
                 self.server.send_error_page(
                     environ,
@@ -1378,7 +1358,6 @@ class TestServer(TestCase):
                 b"401",
             ),
         ) as mock_method:
-
             self.assertEqual(
                 self.server.send_error_page(
                     environ,

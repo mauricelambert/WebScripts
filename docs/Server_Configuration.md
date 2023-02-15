@@ -242,3 +242,4 @@ With this configuration, the *server configuration object* will have a `custom_c
  - `exclude_auth_paths` configuration should be equal to `["/static/", "/js/"]`.
  - `exclude_auth_pages` configuration should be equal to `["/api/", "/auth/", "/web/auth/"]`.
  - `modules_path` configuration should be absolute paths
+ - `webproxy_number` configuration should be the number of *HTTP proxy* used

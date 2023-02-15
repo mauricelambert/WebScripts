@@ -2,12 +2,12 @@
 
 ## WebScriptsClient
 
-I developed a WebScripts client in Python with a CLI (command-line tool). I recommend using it for advanced uses.
+I developed a WebScripts client in Python with a CLI (command-line tool). I recommend using it for advanced usages.
 
 ##### Features implemented:
 
  - Get scripts, arguments and informations
- - Execute scripts on WebScripts Server (simple script output + real time script output)
+ - Execute scripts on WebScripts Server (simple script output + *real time* script *output*)
  - Download file from WebScripts Server
  - Upload file on WebScripts Server
  - Send requests or reports to WebScripts Administrator
@@ -32,6 +32,7 @@ curl -u 'Admin:Admin' -H "Content-Type: application/json" -H "Origin: http://127
 ```
 
 Response:
+
 ```json
 {"stdout": "<critical logs>", "stderr": "", "code": 0, "Content-Type": "text/plain", "error": "No errors"}
 ```
@@ -99,12 +100,14 @@ For more details and other examples, see the [sharing documentation](https://web
 ### Linux
 
 #### Download
+
 ```bash
 curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/LICENSE.txt                                # for uncompressed file
 curl -u 'Admin:Admin' http://127.0.0.1:8000/share/Download/filename/file.text --output - | gzip -d > file.txt  # for compressed file
 ```
 
 #### Upload
+
 ```bash
 curl -u 'Admin:Admin' -H "Origin: http://127.0.0.1:8000" -d 'data' http://127.0.0.1:8000/share/upload/file.txt
 
@@ -118,12 +121,14 @@ curl --insecure -H "Origin: http://127.0.0.1:8000" -H 'Is-Base64: yes' -H 'No-Co
 ### Windows
 
 #### Download
-```bash
+
+```powershell
 [System.Text.Encoding]::ASCII.GetString((Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Uri "http://127.0.0.1:8000/share/Download/filename/file.txt").Content) | Out-File -FilePath .\file.txt
 ```
 
 #### Upload
-```bash
+
+```powershell
 Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body 'data' -Uri http://127.0.0.1:8000/share/upload/file.txt
 Invoke-WebRequest -Headers @{ Authorization = "Basic QWRtaW46QWRtaW4="; Origin = "http://127.0.0.1:8000" } -Method 'Post' -Body $(Get-Content file.txt) -Uri http://127.0.0.1:8000/share/upload/file.txt
 ```

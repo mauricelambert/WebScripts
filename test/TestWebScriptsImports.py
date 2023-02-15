@@ -168,7 +168,6 @@ from types import ModuleType
 
 
 def import_from_filename(filename: str) -> ModuleType:
-
     """
     This function returns a module from path/filename.
     """

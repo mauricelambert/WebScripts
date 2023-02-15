@@ -1,6 +1,6 @@
 # Script Configuration
 
-The configuration of the script is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)).
+The configurations of scripts is presented in this file, in the `WebScripts` project these files return an error because the *arguments section* is required. For more information on configuring arguments [click here](https://webscripts.readthedocs.io/en/latest/Argument_Configuration/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Argument-Configuration)).
 
 ## Using a specific file
 
@@ -112,33 +112,33 @@ timeout=10                                                                      
 command_generate_documentation=python "%(dirname)s/../doc/py_doc.py" "%(path)s"                # Command line to generate the documentation file
 ```
 
-All users can access the authentication script, permissions are not used for this script (this is a simple example).
+All users can access the authentication script, permissions are not used for this script (i add it for example).
 In this configuration:
 
    1. All users with a group greater than 0 can access this script
    2. All users in group 0 (group named *Not Authenticated*) or 1 (group named *Unknow*)
    3. Users with ID 0 (user named *Not Authenticated*) or ID 1 (user named *Unknow*) or ID 2 (user named *Admin*)
 
-This configuration makes no sense because with `minimum_access=0` all user can access it, it's just an example.
+This configuration makes no sense because with `minimum_access=0` all user can access it, (i add it for example).
 
 ## Configurations
 
- - `launcher`: executable to launch a script (not required and not necessary if the script is executable on **Linux**, on Windows the *WebScripts Server* search the default launcher for the file extension of the script)
- - `path`: the path of the script (absolute or relative path) (not required and not necessary if the script is in `scripts_path`, a server configuration)
- - `content_type`: The content type of *stdout* (script output) should be `text/html` or `text/plain` (not required, default is `text/plain`)
- - `minimum_access`: Define who can access it (view the *access* subtitle) (not required)
- - `access_groups`: Define who can access it (view the *access* subtitle) (not required)
- - `access_users`: Define who can access it (view the *access* subtitle) (not required)
+ - `launcher`: executable to launch a script (not required and not necessary if the script is executable on **Linux**, on Windows the *WebScripts Server* search the default launcher for the file extension)
+ - `path`: the path of the script, (absolute or relative path) (not required and not necessary if the script is in `scripts_path`, a server configuration) it's recommended to defined it for security reason with absolute path, hardening will report a security problem if you don't defined it with absolute path.
+ - `content_type`: The content type of *stdout* (script output) should be `text/plain`, `text/csv`, `text/json` or `text/html` (not required, default is `text/plain`). **Be careful** with `text/html` output because you can implements *XSS vulnerabilites*, escape HTML scpecial characters to protect against *XSS*.
+ - `minimum_access`: Define who can access it (not required) [access documentation](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#access) [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#user-content-access)
+ - `access_groups`: Define who can access it (not required) [access documentation](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#access) [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#user-content-access)
+ - `access_users`: Define who can access it (not required) [access documentation](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#access) [wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#user-content-access)
  - `args`: Define the *arguments section name* (not required with no argument)
  - `description`: A short description to help users (not required)
  - `category`: To add a link on the index page (Web Interface), if not defined this script will be *hidden* in the web interface (not in API) (not required)
- - `timeout`: A timeout to kill the process execution of the script (not required)
+ - `timeout`: A timeout to kill the process execution of the script (not required). For security reason you should defined it, if not defined it will be reported in the hardening report.
  - `documentation_file`: documentation path and file name (absolute or relative path) (not required and not necessary if the documentation is in `documentations_path`, a server configuration)
  - `documentation_content_type`: The content type for documentation page (not required, default is `text/html`)
  - `command_generate_documentation`: A command to build the documentation file (not required)
- - `no_password`: If `no_password` is `true` the command line will be written to the logs (not required, default is `false`)
- - `stderr_content_type`: The content type of *stderr* (script erreurs) should be `text/plain` (not required, default is `text/plain`). Possible values: `text/plain` and `text/html`, for security reason you should never set the `stderr_content_type` to `text/html`.
- - `print_real_time`: the *stdout* (script output) is sent line after line (useful for long scripts and long output). Flsh th stdout is **necessary** to use this configuration (add a few lines as in these [examples](https://webscripts.readthedocs.io/en/latest/Add_Script/#real-time-output) [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#using-python))
+ - `no_password`: If `no_password` is `true` the command line will be written to the logs (not required, default is `false`). It's important for security reason to log all commands where there is no passwords as arguments (it can be useful for *investigation*, *forensic* and *incident response*).
+ - `stderr_content_type`: The content type of *stderr* (script erreurs) should be `text/plain` (not required, default is `text/plain`). Possible values: `text/plain` and `text/html`, for security reason you should **never set** the `stderr_content_type` to `text/html`.
+ - `print_real_time`: the *stdout* (script output) is sent line after line (useful for long scripts and long output). Flush the stdout is **necessary** to use this configuration (add a few lines as in these [examples](https://webscripts.readthedocs.io/en/latest/Add_Script/#real-time-output) [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#using-python))
 
 ### Command to generate the documentation file
 
@@ -156,7 +156,8 @@ Example: `python "%(dirname)s/../doc/py_doc.py" "%(path)s"`.
 
 ### Examples
 
-All administraters (group ID: `1000`), the users with ID 5 and 7, all groups with ID greater than 1050 need to acces this script:
+All administrators (group ID: `1000`), the users with ID 5 and 7, all groups with ID greater or equal than 1050 need to acces this script:
+
 ```json
 {
     "access_groups": [1000],
@@ -180,17 +181,18 @@ minimum_access=1050
  - Never use the `stderr_content_type` configuration.
  - Scripts should have the `timeout` configuration defined
 
-## Custom configurations
+## Custom script attributes
 
-You can add your custom configurations and get it in your script.
-Be careful with custom configurations as they are sent to the `/api/` URL.
+You can add your custom attributes and get it in your script.
+Be careful with custom attributes as they are sent to the `/api/` URL.
 The `secrets` custom configuration is not sent in `/api/`.
 
 ### Example
 
-In this example i add a key.
+In this example i add two keys (`secrets` is not send in *WebScripts API*, and `web_interface_color` is send in *WebScripts API*).
 
 The configuration:
+
 ```json
 {
     "scripts": {
@@ -208,6 +210,7 @@ The configuration:
 ```
 
 The python script:
+
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-

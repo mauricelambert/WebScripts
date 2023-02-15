@@ -3,6 +3,7 @@
 ## Structure
 
 JSON configuration:
+
 ```json
 {
     "config_delete_user": {
@@ -32,6 +33,7 @@ JSON configuration:
 ```
 
 INI configuration:
+
 ```ini
 [config_auth]
 args=auth_args                                                                                 # The arguments are defined in section named "auth_args"
@@ -55,8 +57,8 @@ title=Your username (to log in)                                                 
 
 1. In the script section, add the `args` configuration to define the name of the *arguments section*
 2. Create your *arguments section*
-3. Add all *arguments* by *argument name* for this script (if *argument name* starts with `-`, it will be added in the command line) and set the *section name* of the argument.
-4. Create your *argument section* and add your configurations
+3. Add all *arguments* by *argument name* for this script (if *argument name* starts with `-`, it will be added in the command line) and set the *section section* of the argument.
+4. Create your *argument section* and add your argument configurations
 
 ## Configurations
 
