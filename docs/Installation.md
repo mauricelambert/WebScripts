@@ -5,6 +5,7 @@
 *Install WebScripts - Youtube video*
 
 ## Requirements
+
 This package require:
 
  - python3
@@ -19,7 +20,7 @@ Optional on Windows:
 ```bash
 python3 -m venv WebScripts        # Make a virtual environment for WebScripts
 source WebScripts/bin/activate    # Activate your virtual environment
-sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=<owner>" --install-option "--directory=./WebScripts"     # Install WebScripts using setup.py with pip
 sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o '<my webscripts user>' -d 'WebScripts/'  # Harden default configurations
 cd WebScripts                     # Use your virtual environment to start WebScripts
 WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
@@ -34,7 +35,7 @@ WebScripts                        # Start WebScripts server for demonstration (f
 ```bash
 python3 -m venv WebScripts        # Make a virtual environment for WebScripts
 source WebScripts/bin/activate    # Activate your virtual environment
-sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=www-data" --install-option "--directory=./WebScripts"     # Install WebScripts using setup.py with pip
 sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'www-data' -d 'WebScripts/'  # Harden default configurations
 cd WebScripts                     # Use your virtual environment to start WebScripts
 WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
@@ -47,7 +48,7 @@ WebScripts                        # Start WebScripts server for demonstration (f
 ```bash
 python3 -m venv WebScripts        # Make a virtual environment for WebScripts
 source WebScripts/bin/activate    # Activate your virtual environment
-sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+sudo WebScripts/bin/python3 -m pip install --use-pep517 WebScripts --install-option "--admin-password=<your password>" --install-option "--owner=WebScripts" --install-option "--directory=./WebScripts"     # Install WebScripts using setup.py with pip
 sudo WebScripts/bin/python3 -m WebScripts.harden -p '<my admin password>' -o 'WebScripts' -d 'WebScripts/'  # Harden default configurations
 cd WebScripts                     # Use your virtual environment to start WebScripts
 WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
@@ -58,7 +59,7 @@ WebScripts                        # Start WebScripts server for demonstration (f
 ```bash
 python -m venv WebScripts        # Make a virtual environment for WebScripts
 WebScripts/Scripts/activate    # Activate your virtual environment
-WebScripts/Scripts/python -m pip install --use-pep517 WebScripts     # Install WebScripts using setup.py with pip
+WebScripts/Scripts/python -m pip install --use-pep517 WebScripts --install-option "--admin-password=<your password>" --install-option "--directory=.\WebScripts"     # Install WebScripts using setup.py with pip
 WebScripts/Scripts/python -m WebScripts.harden -p '<my admin password>' -o '' -d 'WebScripts/'  # Harden default configurations
 cd WebScripts                     # Use your virtual environment to start WebScripts
 WebScripts                        # Start WebScripts server for demonstration (for production see deployment documentation)
