@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -767,6 +767,7 @@ class Audit:
                 and not package.startswith("WebScripts==")
                 and not package.startswith("WebScriptsTools==")
                 and not package.startswith("pkg-resources==")
+                and not package.startswith("wheel==")
             ]
             return Rule(
                 "Virtualenv modules",
