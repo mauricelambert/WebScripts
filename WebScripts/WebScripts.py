@@ -26,7 +26,7 @@ This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -971,7 +971,11 @@ class Server:
         origin = environ_getter("HTTP_ORIGIN")
         url = Server.get_baseurl(environ_getter, environ)
 
-        if origin != url:
+        if origin != url or (
+            origin.startswith("https://")
+            and url.startswith("http://")
+            and origin[7:] == url[6:]
+        ):
             logger_info(f'Bad Origin detected: "{origin}" != "{url}"')
             return False
 
