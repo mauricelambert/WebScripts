@@ -39,6 +39,7 @@ class Argument {
         this.description = argument.description;
         this.is_advanced = argument.is_advanced;
         this.html_type = argument.html_type;
+        this.example = argument.example;
         this.name = argument.name;
         this.list = argument.list;
 
@@ -144,13 +145,8 @@ class Argument {
         input.name = name;
         input.type = this.html_type;
 
-        if (default_value !== undefined && default_value !== null) {
-            input.value = default_value;
-        }
-
-        if (example !== undefined && example !== null) {
-            input.placeholder = example;
-        }
+        input.value = default_value || "";
+        input.placeholder = example || "";
 
         if (this.list) {
             input.id = name + document.getElementsByName(name).length;
@@ -1049,7 +1045,6 @@ class OutputBuilder {
         } else {
             text_content();
             add_text_output(this.output.stdout);
-            console.log(this.anti_XSS(this.output.stdout));
         }
     }
 
