@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implements commons functions and class for WebScripts package.
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1068,7 +1068,11 @@ class TokenCSRF:
 
         max_time = time() - csrf_max_time
 
-        if referer and baseurl and not referer.startswith(baseurl):
+        if (
+            referer
+            and baseurl
+            and not referer.lstrip("htps").startswith(baseurl.lstrip("htps"))
+        ):
             logger_error(
                 f"Referrer error: referer ({referer!r}) "
                 f"do not start with baseurl ({baseurl!r})."
