@@ -1090,10 +1090,13 @@ class OutputBuilder {
     anti_XSS(content) {
         for (let value of Object.values(this.user_inputs)) {
             value = value.value;
-            if (value.constructor.name !== "String") continue;
-            let secure_value = this.escape(value);
-            if (value !== secure_value) {
-                content = content.replaceAll(value, secure_value);
+            if (value.constructor.name !== "String" && value.constructor.name !== "Array") continue;
+            if (value.constructor.name !== "Array") value = [value];
+            for (let v of value) {
+                let secure_value = this.escape(v);
+                if (v !== secure_value) {
+                    content = content.replaceAll(v, secure_value);
+                }
             }
         }
 

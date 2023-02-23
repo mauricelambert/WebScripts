@@ -174,6 +174,7 @@ button {
 	background-color: #2F2F2F;
 	border: 1px solid #181818;
 	padding: 1%;
+	transition: 0.5s;
 }
 
 .search_result_description {
@@ -226,6 +227,20 @@ div.category.light {
 	background-color: #DDDDDD;
 	border: 0px solid #CCCCCC;
 	color: #3F0D78;
+}
+
+.search_result:hover {
+	background-color: #222222;
+}
+
+.search_result.light {
+	background-color: rgb(221, 221, 221);
+	color: #100B60;
+	border-color: #615CB9;
+}
+
+.search_result.light:hover {
+	background-color: #CCCCCC;
 }
 
 .list.footer {

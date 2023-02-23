@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""#    This tool runs CLI scripts and displays output in a Web Interface.
+"""
+This tool runs CLI scripts and displays output in a Web Interface.
 
-This file can change the password of current user."""
+This file can change the password of current user.
+"""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -48,32 +50,35 @@ __all__ = []
 
 from modules.manage_defaults_databases import change_user_password
 from argparse import ArgumentParser, Namespace
+from sys import stderr, exit
 from os import environ
-import json
-import sys
+from json import loads
 
 
 def parse_args() -> Namespace:
     """This function parse command line arguments."""
 
-    parser = ArgumentParser()
-    parser.add_argument("old_password", help="Your current password")
-    parser.add_argument("password", help="New password")
-    parser.add_argument(
+    parser = ArgumentParser(
+        description="This script change your WebScripts password."
+    )
+    parser_add_argument = parser.add_argument
+    parser_add_argument("old_password", help="Your current password")
+    parser_add_argument("password", help="New password")
+    parser_add_argument(
         "password_confirmation", help="New password configuration"
     )
     return parser.parse_args()
 
 
-def main() -> None:
+def main() -> int:
     """Main function to change your password."""
 
     arguments = parse_args()
-    user_id = str(json.loads(environ["USER"])["id"])
+    user_id = str(loads(environ["USER"])["id"])
 
     if arguments.password != arguments.password_confirmation:
-        print("Password and password confirmation do not match.")
-        sys.exit(3)
+        print("Password and password confirmation do not match.", file=stderr)
+        return 3
 
     try:
         user = change_user_password(
@@ -81,14 +86,14 @@ def main() -> None:
         )
     except Exception as error:
         print(error)
-        sys.exit(127)
+        return 127
 
     if user is None:
-        print(f"User ID: {user_id} doesn't exist.")
-        sys.exit(2)
+        print(f"User ID: {user_id} doesn't exist.", file=stderr)
+        return 2
     elif user is False:
-        print("Authentication failed: Old password is not valid.")
-        sys.exit(3)
+        print("Authentication failed: Old password is not valid.", file=stderr)
+        return 3
 
     print(
         f"Password changed for user:\n\t - Name: {user.name}\n\t - ID:"
@@ -97,5 +102,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())

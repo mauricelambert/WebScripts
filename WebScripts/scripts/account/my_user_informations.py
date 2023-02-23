@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file adds a new user.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -66,13 +66,12 @@ def main() -> int:
     print(
         f"""
 Username: {user['name']!r}
-ID: {user['ID']!r}
+ID: {user['id']!r}
 Groups (defined permissions): \
 {
-    [f'{groups.get(str(group), "UNKNOWN")!r} ({group})'
-    for group in user['groups']]
+    ', '.join([f'{groups.get(str(group), "UNKNOWN")!r} ({group})'
+    for group in user['groups']])
 }
-IP adresses (allowed for authentication): {user['IPs']!r}
 Categories (defined access): {', '.join(user['categories'])}
 Scripts (defined access): {', '.join(user['scripts'])}
         """

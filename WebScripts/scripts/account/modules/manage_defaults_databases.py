@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implement some functions to manage WebScript default databases.
 """
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -205,7 +205,7 @@ def get_apikey(id_: str, password: str) -> str:
         if id_ == user.ID:
             user = auth_username_password(user.name, password)
 
-            if user.ID == "0":
+            if not user or user.ID == "0":
                 return None
 
             return escape(user.apikey)
@@ -234,15 +234,19 @@ def change_user_password(
 
     users = []
     user_ = None
+    has_old_password = old_password is not None
 
     for user in get_users():
         if id_ == user.ID:
-            user_ = user
-
+            user_ = has_old_password and auth_username_password(
+                user.name, old_password
+            )
             if (
-                old_password is not None
-                and auth_username_password(user.name, old_password)[0] != "0"
-            ) or old_password is None:
+                has_old_password
+                and user_
+                and user_[0] != "0"
+                and user_[0] != "1"
+            ) or not has_old_password:
                 enumerations = 90000 + randbelow(20000)
                 salt = token_bytes(32)
                 password = b64encode(
@@ -257,13 +261,14 @@ def change_user_password(
                     salt=b64encode(salt).decode(),
                     apikey=b64encode(token_bytes(125)).decode(),
                 )
-
             else:
-                user_ = False
+                raise PermissionError("Password is incorrect.")
 
         users.append(user)
 
-    rewrite_users(users)
+    if user_:
+        rewrite_users(users)
+
     return anti_XSS(user_)
 
 

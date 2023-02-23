@@ -25,14 +25,16 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file may display the license and copyright of WebScripts.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """#    This tool runs CLI scripts and displays output in a Web Interface.
+__description__ = """
+This tool runs CLI scripts and displays output in a Web Interface.
 
-This file may display the license and copyright of WebScripts."""
+This file may display the license and copyright of WebScripts.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
@@ -80,7 +82,7 @@ def main() -> int:
     if "codeheader" in argv:
         remove("codeheader")
         print(
-            """    Copyright (C) 2021, 2022  Maurice Lambert
+            """    Copyright (C) 2021, 2022, 2023  Maurice Lambert
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

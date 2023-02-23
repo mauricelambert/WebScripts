@@ -85,6 +85,7 @@ class Script {
     on a script page or/and the index page.
     */
     search() {
+        let is_light = document.getElementsByClassName('light').length;
         let getElementById = document.getElementById.bind(document);
 
         let path = url.pathname;
@@ -139,7 +140,13 @@ class Script {
                 }
 
                 if (search_value) {
-                    console.log(script.search_button);
+                    let button = script.search_button;
+                    if (is_light && !button.classList.contains("light") || !is_light && button.classList.contains("light")) {
+                        let div = button.firstChild;
+                        button.classList.toggle("light");
+                        div.classList.toggle("light");
+                        div.getElementsByClassName("search_result_description")[0].classList.toggle("light");
+                    }
                     result_container_appendChild(script.search_button);
                 }
             }
@@ -244,6 +251,7 @@ class Theme {
                 getElementById("webscripts_menu"),
                 ...getElementByClass('border'),
                 ...getElementByClass('category'),
+                ...getElementByClass('search_result'),
                 ...getElementByClass('category_content'),
                 ...getElementByClass('webscripts_column_select'),
                 ...getElementByClass('search_result_description'),
