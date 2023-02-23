@@ -1,0 +1,248 @@
+{
+	"scripts": {
+		"upload_file.py": "config_upload_file",
+		"delete_file.py": "config_delete_file",
+		"download_filename.py": "config_get_file",
+		"HTML_visible_files.py": "config_get_files",
+		"HTML_all_files.py": "config_get_all_files",
+		"HTML_file_history.py": "config_get_history",
+		"download_all_files.py": "config_get_any_file",
+		"JSON_visible_files.py": "config_api_get_files",
+		"JSON_all_files.py": "config_api_get_all_files",
+		"JSON_file_history.py": "config_api_get_history",
+		"HTML_uploads_properties.py": "config_web_upload_size",
+		"JSON_uploads_properties.py": "config_api_upload_size"
+	},
+	"config_get_file": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"minimum_access": 50,
+		"args": "args_get_file",
+		"content_type": "text/html",
+		"description": "This script returns a download link for a file.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/download_filename.py"
+	},
+	"args_get_file": {
+		"filename": "arg_filename"
+	},
+	"config_get_files": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"minimum_access": 50,
+		"content_type": "text/html",
+		"description": "This script returns a HTML table of uploaded files.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/HTML_visible_files.py"
+	},
+	"arg_filename": {
+		"example": "LICENSE.txt",
+		"description": "The filename of the uploaded file."
+	},
+	"config_delete_file": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"minimum_access": 50,
+		"args": "args_get_file",
+		"description": "This script delete an uploaded file.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/delete_file.py"
+	},
+	"arg_read_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to read this file.",
+		"is_advanced": true
+	},
+	"arg_write_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to write this file.",
+		"is_advanced": true
+	},
+	"arg_delete_permission": {
+		"example": "255",
+		"html_type": "number",
+		"description": "The minimum group ID to delete this file.",
+		"is_advanced": true
+	},
+	"arg_hidden": {
+		"html_type": "checkbox",
+		"description": "Hide the uploaded file (not visible in the Web Interface).",
+		"is_advanced": true
+	},
+	"arg_binary": {
+		"html_type": "checkbox",
+		"description": "The uploaded file is binary file (not human readable).",
+		"is_advanced": true
+	},
+	"arg_is_b64": {
+		"html_type": "checkbox",
+		"description": "Using base64 to upload the file.",
+		"javascript_section": "javascript_b64",
+		"is_advanced": true
+	},
+	"javascript_b64": {
+		"disabled": true,
+		"checked": true
+	},
+	"arg_compression": {
+		"html_type": "checkbox",
+		"description": "Do not compress the file (use it for compressed file like ZIP, GZ, BZ2, XZ).",
+		"is_advanced": true
+	},
+	"arg_content": {
+		"input": true,
+		"html_type": "file",
+		"description": "Content of the uploaded file."
+	},
+	"config_get_history": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"args": "args_get_file",
+		"access_groups": [
+			1000
+		],
+		"content_type": "text/html",
+		"description": "This script list all versions for an uploaded file.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/HTML_file_history.py"
+	},
+	"config_upload_file": {
+		"timeout": 300,
+		"no_password": true,
+		"minimum_access": 50,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"args": "args_upload_file",
+		"description": "This script uploads a file on the WebScripts Server.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/upload_file.py"
+	},
+	"args_upload_file": {
+		"name": "arg_filename",
+		"content": "arg_content",
+		"--read-permission": "arg_read_permission",
+		"--write-permission": "arg_write_permission",
+		"--delete-permission": "arg_delete_permission",
+		"--hidden": "arg_hidden",
+		"--binary": "arg_binary",
+		"--no-compression": "arg_compression",
+		"--is-b64": "arg_is_b64"
+	},
+	"config_api_get_files": {
+		"timeout": 15,
+		"no_password": true,
+		"minimum_access": 50,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"content_type": "text/json",
+		"description": "This script returns a JSON object of uploaded files.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/JSON_visible_files.py"
+	},
+	"config_get_all_files": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"content_type": "text/html",
+		"description": "This script returns a HTML table of all uploaded files.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/HTML_all_files.py"
+	},
+	"config_api_get_history": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"args": "args_get_file",
+		"content_type": "text/json",
+		"description": "This script list all groups to get IDs, access level and names.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/JSON_file_history.py"
+	},
+	"config_api_get_all_files": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"content_type": "text/json",
+		"description": "This script list all versions for an uploaded file.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/JSON_all_files.py"
+	},
+	"config_get_any_file": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"args": "args_get_any_file",
+		"content_type": "text/html",
+		"description": "This script returns a download link for any file (old version and without permission).",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/download_all_files.py"
+	},
+	"args_get_any_file": {
+		"type": "arg_identifier_type",
+		"identifier": "arg_identifier"
+	},
+	"arg_identifier_type": {
+		"description": "Type o the identifier (ID or name).",
+		"example": "name",
+		"predefined_values": [
+			"name",
+			"ID"
+		]
+	},
+	"arg_identifier": {
+		"description": "The name of the file or the ID of the version.",
+		"example": "LICENSE.txt"
+	},
+	"config_web_upload_size": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"content_type": "text/csv",
+		"description": "This script prints a HTML table of uploaded file metadata.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/HTML_uploads_properties.py"
+	},
+	"config_api_upload_size": {
+		"timeout": 15,
+		"no_password": true,
+		"launcher": "/usr/bin/python3",
+		"category": "Upload",
+		"access_groups": [
+			1000
+		],
+		"content_type": "text/json",
+		"description": "This script returns a JSON object of uploaded file metadata.",
+		"command_generate_documentation": "python3 \"%(dirname)s/../doc/py_doc.py\" \"%(path)s\"",
+		"path": "./scripts/uploads/JSON_uploads_properties.py"
+	}
+}
