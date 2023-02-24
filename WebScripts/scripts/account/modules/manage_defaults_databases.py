@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implement some functions to manage WebScript default databases.
 """
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -241,12 +241,13 @@ def change_user_password(
             user_ = has_old_password and auth_username_password(
                 user.name, old_password
             )
-            if (
+            modify_password = (
                 has_old_password
                 and user_
                 and user_[0] != "0"
                 and user_[0] != "1"
-            ) or not has_old_password:
+            ) or not has_old_password
+            if modify_password:
                 enumerations = 90000 + randbelow(20000)
                 salt = token_bytes(32)
                 password = b64encode(
@@ -266,7 +267,7 @@ def change_user_password(
 
         users.append(user)
 
-    if user_:
+    if modify_password:
         rewrite_users(users)
 
     return anti_XSS(user_)
