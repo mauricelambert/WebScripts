@@ -266,17 +266,20 @@ class ScriptInterface {
     */
     set_url_values() {
         let event;
-        let element;
+        let element, element_id;
         let query = location.search;
+        let counters = {};
 
         query = query.substr(1);
         query.split("&").forEach(function(part) {
             let item = part.split("=");
-            element = decodeURIComponent(item[0].replaceAll("+",
+            element_id = element = decodeURIComponent(item[0].replaceAll("+",
                 " "));
+            counters[element] = counters[element] ? counters[element] : 0;
 
             if (element) {
-                element = document.getElementById(element);
+                element = document.getElementById(element) || document.getElementById(element + counters[element]);
+                counters[element_id] += 1;
 
                 if (element) {
                     if (element.type === "checkbox" && item[1] ===
@@ -287,6 +290,10 @@ class ScriptInterface {
                             .replaceAll("+", " "));
                         event = new Event('change');
                         element.dispatchEvent(event);
+                    }
+
+                    if (element.onkeyup) {
+                        element.onkeyup({'target': element})
                     }
                 }
             }
