@@ -26,7 +26,7 @@ This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -430,8 +430,14 @@ class Server:
                 configuration.exclude_auth_pages.append("/csp/debug/")
 
             headers["Content-Security-Policy-Report-Only"] = (
-                "default-src 'self'; form-action 'none'; "
-                "frame-ancestors 'none'; report-uri /csp/debug/"
+                "default-src 'self'; navigate-to 'self'; worker-src "
+                "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                " style-src 'self'; script-src-attr 'none'; object-src"
+                " 'none'; media-src 'none'; manifest-src 'none'; "
+                "frame-ancestors 'none'; connect-src 'self'; font-src"
+                " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                " 'none'; form-action 'none'; script-src 'self' "
+                "'require-trusted-types-for'; report-uri /csp/debug/"
             )
 
         logger_info("Default HTTP headers are set.")

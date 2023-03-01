@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implements commons functions and class for WebScripts package.
 """
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -779,11 +779,17 @@ class CallableFile(Callable):
 
     @log_trace
     def __init__(
-        self, type_: str, path_: str, filename: str, config: dict = None
+        self,
+        type_: str,
+        path_: str,
+        filename: str,
+        config: dict = None,
+        security: bool = True,
     ):
         self.path = path_
         self.type = type_
         self.config = config
+        self.security = security
         self.filename = filename
         self.extension = splitext(path_)[1].lower()
 
@@ -886,7 +892,11 @@ class CallableFile(Callable):
                 "200 OK",
                 {
                     "Content-Type": "text/html; charset=utf-8",
-                    "Content-Security-Policy": (
+                    (
+                        "Content-Security-Policy"
+                        if self.security
+                        else "Content-Security-Policy-Report-Only"
+                    ): (
                         "default-src 'self'; navigate-to 'self'; worker-src "
                         "'none'; style-src-elem 'self'; style-src-attr 'none';"
                         " style-src 'self'; script-src-attr 'none'; object-src"
@@ -897,7 +907,14 @@ class CallableFile(Callable):
                         f"'nonce-{nonce}' 'require-trusted-types-for'"
                     ),
                 },
-                CallableFile.template_script
+                (
+                    CallableFile.template_script
+                    if self.security
+                    else CallableFile.template_script.replace(
+                        "Content-Security-Policy",
+                        "Content-Security-Policy-Report-Only",
+                    )
+                )
                 % {
                     "name": self.filename,
                     "user": user.name,

@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -744,8 +744,28 @@ class Web:
                     "'self'; base-uri 'none'; child-src 'none'; form-action "
                     "'none'; script-src 'self' 'require-trusted-types-for'"
                 )
+            }
+            if server.security
+            else {
+                "Content-Security-Policy-Report-Only": (
+                    "default-src 'self'; navigate-to 'self'; worker-src "
+                    "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                    " style-src 'self'; script-src-attr 'none'; object-src"
+                    " 'none'; media-src 'none'; manifest-src 'none'; "
+                    "frame-ancestors 'none'; connect-src 'self'; font-src"
+                    " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                    " 'none'; form-action 'none'; script-src 'self' "
+                    "'require-trusted-types-for'; report-uri /csp/debug/"
+                )
             },
-            CallableFile.template_index
+            (
+                CallableFile.template_index
+                if server.security
+                else CallableFile.template_index.replace(
+                    "Content-Security-Policy",
+                    "Content-Security-Policy-Report-Only",
+                )
+            )
             % {
                 "footer": CallableFile.template_footer,
                 "header": CallableFile.template_header,
@@ -860,7 +880,9 @@ class Web:
             )
             return "403", {}, b""
 
-        callable_file = CallableFile("script", filename, filename)
+        callable_file = CallableFile(
+            "script", filename, filename, security=server.security
+        )
 
         if callable_file is not None:
             return callable_file(user)
