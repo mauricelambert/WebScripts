@@ -163,8 +163,14 @@ class TestServer(TestCase):
             self.server_unsecure.headers[
                 "Content-Security-Policy-Report-Only"
             ],
-            "default-src 'self'; form-action 'none'; frame-ancestors 'none'"
-            "; report-uri /csp/debug/",
+            "default-src 'self'; navigate-to 'self'; worker-src "
+            "'none'; style-src-elem 'self'; style-src-attr 'none';"
+            " style-src 'self'; script-src-attr 'none'; object-src"
+            " 'none'; media-src 'none'; manifest-src 'none'; "
+            "frame-ancestors 'none'; connect-src 'self'; font-src"
+            " 'none'; img-src 'self'; base-uri 'none'; child-src"
+            " 'none'; form-action 'none'; script-src 'self' "
+            "'require-trusted-types-for'; report-uri /csp/debug/",
         )
         self.assertListEqual(
             self.conf_unsecure.modules, ["csp", "Configurations"]
@@ -368,8 +374,14 @@ class TestServer(TestCase):
             h,
             {
                 "Content-Security-Policy-Report-Only": (
-                    "default-src 'self'; form-action 'none'; "
-                    "frame-ancestors 'none'; report-uri /csp/debug/"
+                    "default-src 'self'; navigate-to 'self'; worker-src "
+                    "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                    " style-src 'self'; script-src-attr 'none'; object-src"
+                    " 'none'; media-src 'none'; manifest-src 'none'; "
+                    "frame-ancestors 'none'; connect-src 'self'; font-src"
+                    " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                    " 'none'; form-action 'none'; script-src 'self' "
+                    "'require-trusted-types-for'; report-uri /csp/debug/"
                 )
             },
         )
