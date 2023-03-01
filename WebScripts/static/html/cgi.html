@@ -6,21 +6,311 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>cgi</strong></big></big> (version 0.0.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>cgi</strong></big></big> (version 2.6)</font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="cgi.py">cgi.py</a></font></td></tr></table>
-    <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cprogram%20files%5Cpython310%5Clib%5Ccgi.py">c:\program files\python310\lib\cgi.py</a><br><a href="https://docs.python.org/3.10/library/cgi.html">Module Reference</a></font></td></tr></table>
+    <p><tt>Support&nbsp;module&nbsp;for&nbsp;CGI&nbsp;(Common&nbsp;Gateway&nbsp;Interface)&nbsp;scripts.<br>
 &nbsp;<br>
-This&nbsp;file&nbsp;implements&nbsp;a&nbsp;CGI&nbsp;server&nbsp;to&nbsp;customize&nbsp;resquests<br>
-and&nbsp;responses&nbsp;with&nbsp;non-python&nbsp;script&nbsp;or&nbsp;executable.</tt></p>
+This&nbsp;module&nbsp;defines&nbsp;a&nbsp;number&nbsp;of&nbsp;utilities&nbsp;for&nbsp;use&nbsp;by&nbsp;CGI&nbsp;scripts<br>
+written&nbsp;in&nbsp;Python.</tt></p>
 <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="html.html">html</a><br>
+<a href="locale.html">locale</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="tempfile.html">tempfile</a><br>
+<a href="urllib.html">urllib</a><br>
+</td><td width="25%" valign=top><a href="warnings.html">warnings</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="cgi.html#FieldStorage">FieldStorage</a>
+</font></dt><dt><font face="helvetica, arial"><a href="cgi.html#MiniFieldStorage">MiniFieldStorage</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FieldStorage">class <strong>FieldStorage</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#FieldStorage">FieldStorage</a>(fp=None,&nbsp;headers=None,&nbsp;outerboundary=b'',&nbsp;{},&nbsp;keep_blank_values=0,&nbsp;strict_parsing=0,&nbsp;limit=None,&nbsp;encoding='utf-8',&nbsp;errors='replace',&nbsp;max_num_fields=None,&nbsp;separator='&amp;amp;')<br>
+&nbsp;<br>
+Store&nbsp;a&nbsp;sequence&nbsp;of&nbsp;fields,&nbsp;reading&nbsp;multipart/form-data.<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;provides&nbsp;naming,&nbsp;typing,&nbsp;files&nbsp;stored&nbsp;on&nbsp;disk,&nbsp;and<br>
+more.&nbsp;&nbsp;At&nbsp;the&nbsp;top&nbsp;level,&nbsp;it&nbsp;is&nbsp;accessible&nbsp;like&nbsp;a&nbsp;dictionary,&nbsp;whose<br>
+keys&nbsp;are&nbsp;the&nbsp;field&nbsp;names.&nbsp;&nbsp;(Note:&nbsp;None&nbsp;can&nbsp;occur&nbsp;as&nbsp;a&nbsp;field&nbsp;name.)<br>
+The&nbsp;items&nbsp;are&nbsp;either&nbsp;a&nbsp;Python&nbsp;list&nbsp;(if&nbsp;there's&nbsp;multiple&nbsp;values)&nbsp;or<br>
+another&nbsp;<a href="#FieldStorage">FieldStorage</a>&nbsp;or&nbsp;<a href="#MiniFieldStorage">MiniFieldStorage</a>&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;If&nbsp;it's&nbsp;a&nbsp;single<br>
+<a href="builtins.html#object">object</a>,&nbsp;it&nbsp;has&nbsp;the&nbsp;following&nbsp;attributes:<br>
+&nbsp;<br>
+name:&nbsp;the&nbsp;field&nbsp;name,&nbsp;if&nbsp;specified;&nbsp;otherwise&nbsp;None<br>
+&nbsp;<br>
+filename:&nbsp;the&nbsp;filename,&nbsp;if&nbsp;specified;&nbsp;otherwise&nbsp;None;&nbsp;this&nbsp;is&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;client&nbsp;side&nbsp;filename,&nbsp;*not*&nbsp;the&nbsp;file&nbsp;name&nbsp;on&nbsp;which&nbsp;it&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;stored&nbsp;(that's&nbsp;a&nbsp;temporary&nbsp;file&nbsp;you&nbsp;don't&nbsp;deal&nbsp;with)<br>
+&nbsp;<br>
+value:&nbsp;the&nbsp;value&nbsp;as&nbsp;a&nbsp;*string*;&nbsp;for&nbsp;file&nbsp;uploads,&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transparently&nbsp;reads&nbsp;the&nbsp;file&nbsp;every&nbsp;time&nbsp;you&nbsp;request&nbsp;the&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;returns&nbsp;*bytes*<br>
+&nbsp;<br>
+file:&nbsp;the&nbsp;file(-like)&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;which&nbsp;you&nbsp;can&nbsp;read&nbsp;the&nbsp;data&nbsp;*as<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bytes*&nbsp;;&nbsp;None&nbsp;if&nbsp;the&nbsp;data&nbsp;is&nbsp;stored&nbsp;a&nbsp;simple&nbsp;string<br>
+&nbsp;<br>
+type:&nbsp;the&nbsp;content-type,&nbsp;or&nbsp;None&nbsp;if&nbsp;not&nbsp;specified<br>
+&nbsp;<br>
+type_options:&nbsp;dictionary&nbsp;of&nbsp;options&nbsp;specified&nbsp;on&nbsp;the&nbsp;content-type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;line<br>
+&nbsp;<br>
+disposition:&nbsp;content-disposition,&nbsp;or&nbsp;None&nbsp;if&nbsp;not&nbsp;specified<br>
+&nbsp;<br>
+disposition_options:&nbsp;dictionary&nbsp;of&nbsp;corresponding&nbsp;options<br>
+&nbsp;<br>
+headers:&nbsp;a&nbsp;dictionary(-like)&nbsp;<a href="builtins.html#object">object</a>&nbsp;(sometimes&nbsp;email.message.Message&nbsp;or&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subclass&nbsp;thereof)&nbsp;containing&nbsp;*all*&nbsp;headers<br>
+&nbsp;<br>
+The&nbsp;class&nbsp;is&nbsp;subclassable,&nbsp;mostly&nbsp;for&nbsp;the&nbsp;purpose&nbsp;of&nbsp;overriding<br>
+the&nbsp;<a href="#FieldStorage-make_file">make_file</a>()&nbsp;method,&nbsp;which&nbsp;is&nbsp;called&nbsp;internally&nbsp;to&nbsp;come&nbsp;up&nbsp;with<br>
+a&nbsp;file&nbsp;open&nbsp;for&nbsp;reading&nbsp;and&nbsp;writing.&nbsp;&nbsp;This&nbsp;makes&nbsp;it&nbsp;possible&nbsp;to<br>
+override&nbsp;the&nbsp;default&nbsp;choice&nbsp;of&nbsp;storing&nbsp;all&nbsp;files&nbsp;in&nbsp;a&nbsp;temporary<br>
+directory&nbsp;and&nbsp;unlinking&nbsp;them&nbsp;as&nbsp;soon&nbsp;as&nbsp;they&nbsp;have&nbsp;been&nbsp;opened.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="FieldStorage-__bool__"><strong>__bool__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__contains__"><strong>__contains__</strong></a>(self, key)</dt><dd><tt>Dictionary&nbsp;style&nbsp;__contains__&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__enter__"><strong>__enter__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__exit__"><strong>__exit__</strong></a>(self, *args)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__getattr__"><strong>__getattr__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__getitem__"><strong>__getitem__</strong></a>(self, key)</dt><dd><tt>Dictionary&nbsp;style&nbsp;indexing.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-__init__"><strong>__init__</strong></a>(self, fp=None, headers=None, outerboundary=b'', {}, keep_blank_values=0, strict_parsing=0, limit=None, encoding='utf-8', errors='replace', max_num_fields=None, separator='&amp;')</dt><dd><tt>Constructor.&nbsp;&nbsp;Read&nbsp;multipart/*&nbsp;until&nbsp;last&nbsp;part.<br>
+&nbsp;<br>
+Arguments,&nbsp;all&nbsp;optional:<br>
+&nbsp;<br>
+fp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;file&nbsp;pointer;&nbsp;default:&nbsp;sys.stdin.buffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(not&nbsp;used&nbsp;when&nbsp;the&nbsp;request&nbsp;method&nbsp;is&nbsp;GET)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Can&nbsp;be&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;a&nbsp;TextIOWrapper&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;whose&nbsp;read()&nbsp;and&nbsp;readline()&nbsp;methods&nbsp;return&nbsp;bytes<br>
+&nbsp;<br>
+headers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;header&nbsp;dictionary-like&nbsp;<a href="builtins.html#object">object</a>;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;taken&nbsp;from&nbsp;environ&nbsp;as&nbsp;per&nbsp;CGI&nbsp;spec<br>
+&nbsp;<br>
+outerboundary&nbsp;&nbsp;&nbsp;:&nbsp;terminating&nbsp;multipart&nbsp;boundary<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(for&nbsp;internal&nbsp;use&nbsp;only)<br>
+&nbsp;<br>
+environ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;environment&nbsp;dictionary;&nbsp;default:&nbsp;os.environ<br>
+&nbsp;<br>
+keep_blank_values:&nbsp;flag&nbsp;indicating&nbsp;whether&nbsp;blank&nbsp;values&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;percent-encoded&nbsp;forms&nbsp;should&nbsp;be&nbsp;treated&nbsp;as&nbsp;blank&nbsp;strings.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;true&nbsp;value&nbsp;indicates&nbsp;that&nbsp;blanks&nbsp;should&nbsp;be&nbsp;retained&nbsp;as<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blank&nbsp;strings.&nbsp;&nbsp;The&nbsp;default&nbsp;false&nbsp;value&nbsp;indicates&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blank&nbsp;values&nbsp;are&nbsp;to&nbsp;be&nbsp;ignored&nbsp;and&nbsp;treated&nbsp;as&nbsp;if&nbsp;they&nbsp;were<br>
+&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;included.<br>
+&nbsp;<br>
+strict_parsing:&nbsp;flag&nbsp;indicating&nbsp;what&nbsp;to&nbsp;do&nbsp;with&nbsp;parsing&nbsp;errors.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;false&nbsp;(the&nbsp;default),&nbsp;errors&nbsp;are&nbsp;silently&nbsp;ignored.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;true,&nbsp;errors&nbsp;raise&nbsp;a&nbsp;ValueError&nbsp;exception.<br>
+&nbsp;<br>
+limit&nbsp;:&nbsp;used&nbsp;internally&nbsp;to&nbsp;read&nbsp;parts&nbsp;of&nbsp;multipart/form-data&nbsp;forms,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;exit&nbsp;from&nbsp;the&nbsp;reading&nbsp;loop&nbsp;when&nbsp;reached.&nbsp;It&nbsp;is&nbsp;the&nbsp;difference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;between&nbsp;the&nbsp;form&nbsp;content-length&nbsp;and&nbsp;the&nbsp;number&nbsp;of&nbsp;bytes&nbsp;already<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read<br>
+&nbsp;<br>
+encoding,&nbsp;errors&nbsp;:&nbsp;the&nbsp;encoding&nbsp;and&nbsp;error&nbsp;handler&nbsp;used&nbsp;to&nbsp;decode&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;binary&nbsp;stream&nbsp;to&nbsp;strings.&nbsp;Must&nbsp;be&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;charset&nbsp;defined<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;the&nbsp;page&nbsp;sending&nbsp;the&nbsp;form&nbsp;(content-type&nbsp;:&nbsp;meta&nbsp;http-equiv&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;header)<br>
+&nbsp;<br>
+max_num_fields:&nbsp;int.&nbsp;If&nbsp;set,&nbsp;then&nbsp;__init__&nbsp;throws&nbsp;a&nbsp;ValueError<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;there&nbsp;are&nbsp;more&nbsp;than&nbsp;n&nbsp;fields&nbsp;read&nbsp;by&nbsp;parse_qsl().</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-__iter__"><strong>__iter__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="FieldStorage-__len__"><strong>__len__</strong></a>(self)</dt><dd><tt>Dictionary&nbsp;style&nbsp;len(x)&nbsp;support.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;a&nbsp;printable&nbsp;representation.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-getfirst"><strong>getfirst</strong></a>(self, key, default=None)</dt><dd><tt>Return&nbsp;the&nbsp;first&nbsp;value&nbsp;received.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-getlist"><strong>getlist</strong></a>(self, key)</dt><dd><tt>Return&nbsp;list&nbsp;of&nbsp;received&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-getvalue"><strong>getvalue</strong></a>(self, key, default=None)</dt><dd><tt>Dictionary&nbsp;style&nbsp;get()&nbsp;method,&nbsp;including&nbsp;'value'&nbsp;lookup.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-keys"><strong>keys</strong></a>(self)</dt><dd><tt>Dictionary&nbsp;style&nbsp;<a href="#FieldStorage-keys">keys</a>()&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-make_file"><strong>make_file</strong></a>(self)</dt><dd><tt>Overridable:&nbsp;return&nbsp;a&nbsp;readable&nbsp;&amp;&nbsp;writable&nbsp;file.<br>
+&nbsp;<br>
+The&nbsp;file&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;follows:<br>
+-&nbsp;data&nbsp;is&nbsp;written&nbsp;to&nbsp;it<br>
+-&nbsp;seek(0)<br>
+-&nbsp;data&nbsp;is&nbsp;read&nbsp;from&nbsp;it<br>
+&nbsp;<br>
+The&nbsp;file&nbsp;is&nbsp;opened&nbsp;in&nbsp;binary&nbsp;mode&nbsp;for&nbsp;files,&nbsp;in&nbsp;text&nbsp;mode<br>
+for&nbsp;other&nbsp;fields<br>
+&nbsp;<br>
+This&nbsp;version&nbsp;opens&nbsp;a&nbsp;temporary&nbsp;file&nbsp;for&nbsp;reading&nbsp;and&nbsp;writing,<br>
+and&nbsp;immediately&nbsp;deletes&nbsp;(unlinks)&nbsp;it.&nbsp;&nbsp;The&nbsp;trick&nbsp;(on&nbsp;Unix!)&nbsp;is<br>
+that&nbsp;the&nbsp;file&nbsp;can&nbsp;still&nbsp;be&nbsp;used,&nbsp;but&nbsp;it&nbsp;can't&nbsp;be&nbsp;opened&nbsp;by<br>
+another&nbsp;process,&nbsp;and&nbsp;it&nbsp;will&nbsp;automatically&nbsp;be&nbsp;deleted&nbsp;when&nbsp;it<br>
+is&nbsp;closed&nbsp;or&nbsp;when&nbsp;the&nbsp;current&nbsp;process&nbsp;terminates.<br>
+&nbsp;<br>
+If&nbsp;you&nbsp;want&nbsp;a&nbsp;more&nbsp;permanent&nbsp;file,&nbsp;you&nbsp;derive&nbsp;a&nbsp;class&nbsp;which<br>
+overrides&nbsp;this&nbsp;method.&nbsp;&nbsp;If&nbsp;you&nbsp;want&nbsp;a&nbsp;visible&nbsp;temporary&nbsp;file<br>
+that&nbsp;is&nbsp;nevertheless&nbsp;automatically&nbsp;deleted&nbsp;when&nbsp;the&nbsp;script<br>
+terminates,&nbsp;try&nbsp;defining&nbsp;a&nbsp;__del__&nbsp;method&nbsp;in&nbsp;a&nbsp;derived&nbsp;class<br>
+which&nbsp;unlinks&nbsp;the&nbsp;temporary&nbsp;files&nbsp;you&nbsp;have&nbsp;created.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_binary"><strong>read_binary</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;binary&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_lines"><strong>read_lines</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;lines&nbsp;until&nbsp;EOF&nbsp;or&nbsp;outerboundary.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_lines_to_eof"><strong>read_lines_to_eof</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;lines&nbsp;until&nbsp;EOF.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_lines_to_outerboundary"><strong>read_lines_to_outerboundary</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;lines&nbsp;until&nbsp;outerboundary.<br>
+Data&nbsp;is&nbsp;read&nbsp;as&nbsp;bytes:&nbsp;boundaries&nbsp;and&nbsp;line&nbsp;ends&nbsp;must&nbsp;be&nbsp;converted<br>
+to&nbsp;bytes&nbsp;for&nbsp;comparisons.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_multi"><strong>read_multi</strong></a>(self, environ, keep_blank_values, strict_parsing)</dt><dd><tt>Internal:&nbsp;read&nbsp;a&nbsp;part&nbsp;that&nbsp;is&nbsp;itself&nbsp;multipart.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_single"><strong>read_single</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;an&nbsp;atomic&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-read_urlencoded"><strong>read_urlencoded</strong></a>(self)</dt><dd><tt>Internal:&nbsp;read&nbsp;data&nbsp;in&nbsp;query&nbsp;string&nbsp;format.</tt></dd></dl>
+
+<dl><dt><a name="FieldStorage-skip_lines"><strong>skip_lines</strong></a>(self)</dt><dd><tt>Internal:&nbsp;skip&nbsp;lines&nbsp;until&nbsp;outer&nbsp;boundary&nbsp;if&nbsp;defined.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>FieldStorageClass</strong> = None</dl>
+
+<dl><dt><strong>bufsize</strong> = 8192</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MiniFieldStorage">class <strong>MiniFieldStorage</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#MiniFieldStorage">MiniFieldStorage</a>(name,&nbsp;value)<br>
+&nbsp;<br>
+Like&nbsp;<a href="#FieldStorage">FieldStorage</a>,&nbsp;for&nbsp;use&nbsp;when&nbsp;no&nbsp;file&nbsp;uploads&nbsp;are&nbsp;possible.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MiniFieldStorage-__init__"><strong>__init__</strong></a>(self, name, value)</dt><dd><tt>Constructor&nbsp;from&nbsp;field&nbsp;name&nbsp;and&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="MiniFieldStorage-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;printable&nbsp;representation.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>disposition</strong> = None</dl>
+
+<dl><dt><strong>disposition_options</strong> = {}</dl>
+
+<dl><dt><strong>file</strong> = None</dl>
+
+<dl><dt><strong>filename</strong> = None</dl>
+
+<dl><dt><strong>headers</strong> = {}</dl>
+
+<dl><dt><strong>list</strong> = None</dl>
+
+<dl><dt><strong>type</strong> = None</dl>
+
+<dl><dt><strong>type_options</strong> = {}</dl>
+
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#A57927">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-bin"><strong>bin</strong></a>(environ: os._Environ, user: ~User, server: ~Server, script_name: str, arguments: Dict[str, Dict[str, str]], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;reloads&nbsp;the&nbsp;configuration.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-parse"><strong>parse</strong></a>(fp=None, {}, keep_blank_values=0, strict_parsing=0, separator='&amp;')</dt><dd><tt>Parse&nbsp;a&nbsp;query&nbsp;in&nbsp;the&nbsp;environment&nbsp;or&nbsp;from&nbsp;a&nbsp;file&nbsp;(default&nbsp;stdin)<br>
+&nbsp;<br>
+Arguments,&nbsp;all&nbsp;optional:<br>
+&nbsp;<br>
+fp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;file&nbsp;pointer;&nbsp;default:&nbsp;sys.stdin.buffer<br>
+&nbsp;<br>
+environ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;environment&nbsp;dictionary;&nbsp;default:&nbsp;os.environ<br>
+&nbsp;<br>
+keep_blank_values:&nbsp;flag&nbsp;indicating&nbsp;whether&nbsp;blank&nbsp;values&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;percent-encoded&nbsp;forms&nbsp;should&nbsp;be&nbsp;treated&nbsp;as&nbsp;blank&nbsp;strings.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;true&nbsp;value&nbsp;indicates&nbsp;that&nbsp;blanks&nbsp;should&nbsp;be&nbsp;retained&nbsp;as<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blank&nbsp;strings.&nbsp;&nbsp;The&nbsp;default&nbsp;false&nbsp;value&nbsp;indicates&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blank&nbsp;values&nbsp;are&nbsp;to&nbsp;be&nbsp;ignored&nbsp;and&nbsp;treated&nbsp;as&nbsp;if&nbsp;they&nbsp;were<br>
+&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;included.<br>
+&nbsp;<br>
+strict_parsing:&nbsp;flag&nbsp;indicating&nbsp;what&nbsp;to&nbsp;do&nbsp;with&nbsp;parsing&nbsp;errors.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;false&nbsp;(the&nbsp;default),&nbsp;errors&nbsp;are&nbsp;silently&nbsp;ignored.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;true,&nbsp;errors&nbsp;raise&nbsp;a&nbsp;ValueError&nbsp;exception.<br>
+&nbsp;<br>
+separator:&nbsp;str.&nbsp;The&nbsp;symbol&nbsp;to&nbsp;use&nbsp;for&nbsp;separating&nbsp;the&nbsp;query&nbsp;arguments.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Defaults&nbsp;to&nbsp;&amp;.</tt></dd></dl>
+ <dl><dt><a name="-parse_header"><strong>parse_header</strong></a>(line)</dt><dd><tt>Parse&nbsp;a&nbsp;Content-type&nbsp;like&nbsp;header.<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;main&nbsp;content-type&nbsp;and&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;options.</tt></dd></dl>
+ <dl><dt><a name="-parse_multipart"><strong>parse_multipart</strong></a>(fp, pdict, encoding='utf-8', errors='replace', separator='&amp;')</dt><dd><tt>Parse&nbsp;multipart&nbsp;input.<br>
+&nbsp;<br>
+Arguments:<br>
+fp&nbsp;&nbsp;&nbsp;:&nbsp;input&nbsp;file<br>
+pdict:&nbsp;dictionary&nbsp;containing&nbsp;other&nbsp;parameters&nbsp;of&nbsp;content-type&nbsp;header<br>
+encoding,&nbsp;errors:&nbsp;request&nbsp;encoding&nbsp;and&nbsp;error&nbsp;handler,&nbsp;passed&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#FieldStorage">FieldStorage</a><br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;just&nbsp;like&nbsp;parse_qs():&nbsp;keys&nbsp;are&nbsp;the&nbsp;field&nbsp;names,&nbsp;each<br>
+value&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;values&nbsp;for&nbsp;that&nbsp;field.&nbsp;For&nbsp;non-file&nbsp;fields,&nbsp;the&nbsp;value<br>
+is&nbsp;a&nbsp;list&nbsp;of&nbsp;strings.</tt></dd></dl>
+ <dl><dt><a name="-print_arguments"><strong>print_arguments</strong></a>()</dt></dl>
+ <dl><dt><a name="-print_directory"><strong>print_directory</strong></a>()</dt><dd><tt>Dump&nbsp;the&nbsp;current&nbsp;directory&nbsp;as&nbsp;HTML.</tt></dd></dl>
+ <dl><dt><a name="-print_environ"><strong>print_environ</strong></a>({})</dt><dd><tt>Dump&nbsp;the&nbsp;shell&nbsp;environment&nbsp;as&nbsp;HTML.</tt></dd></dl>
+ <dl><dt><a name="-print_environ_usage"><strong>print_environ_usage</strong></a>()</dt><dd><tt>Dump&nbsp;a&nbsp;list&nbsp;of&nbsp;environment&nbsp;variables&nbsp;used&nbsp;by&nbsp;CGI&nbsp;as&nbsp;HTML.</tt></dd></dl>
+ <dl><dt><a name="-print_exception"><strong>print_exception</strong></a>(type=None, value=None, tb=None, limit=None)</dt></dl>
+ <dl><dt><a name="-print_form"><strong>print_form</strong></a>(form)</dt><dd><tt>Dump&nbsp;the&nbsp;contents&nbsp;of&nbsp;a&nbsp;form&nbsp;as&nbsp;HTML.</tt></dd></dl>
+ <dl><dt><a name="-test"><strong>test</strong></a>({})</dt><dd><tt>Robust&nbsp;test&nbsp;CGI&nbsp;script,&nbsp;usable&nbsp;as&nbsp;main&nbsp;program.<br>
+&nbsp;<br>
+Write&nbsp;minimal&nbsp;HTTP&nbsp;headers&nbsp;and&nbsp;dump&nbsp;all&nbsp;information&nbsp;provided&nbsp;to<br>
+the&nbsp;script&nbsp;in&nbsp;HTML&nbsp;form.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#18675F">
@@ -28,26 +318,5 @@ and&nbsp;responses&nbsp;with&nbsp;non-python&nbsp;script&nbsp;or&nbsp;executable
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>Dict</strong> = typing.Dict<br>
-<strong>List</strong> = typing.List<br>
-<strong>PIPE</strong> = -1<br>
-<strong>Server</strong> = ~Server<br>
-<strong>Tuple</strong> = typing.Tuple<br>
-<strong>User</strong> = ~User<br>
-<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022, 2023  Mau...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool runs CLI scripts and displays output ... responses with non-python script or executable.<font color="#c040c0">\n</font>'<br>
-<strong>__license__</strong> = 'GPL-3.0 License'<br>
-<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
-<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
-<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'<br>
-<strong>copyright</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022, 2023  Mau...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
-<strong>license</strong> = 'GPL-3.0 License'</td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#9286C2">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+<td width="100%"><strong>__all__</strong> = ['MiniFieldStorage', 'FieldStorage', 'parse', 'parse_multipart', 'parse_header', 'test', 'print_exception', 'print_environ', 'print_form', 'print_directory', 'print_arguments', 'print_environ_usage']</td></tr></table>
 </body></html>

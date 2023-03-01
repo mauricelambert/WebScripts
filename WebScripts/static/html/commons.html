@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.4)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.5)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -187,7 +187,7 @@ Data descriptors defined here:<br>
 <font color="#000000" face="helvetica, arial"><a name="CallableFile">class <strong>CallableFile</strong></a>(<a href="collections.abc.html#Callable">collections.abc.Callable</a>)</font></td></tr>
     
 <tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#CallableFile">CallableFile</a>(type_:&nbsp;str,&nbsp;path_:&nbsp;str,&nbsp;filename:&nbsp;str,&nbsp;config:&nbsp;dict&nbsp;=&nbsp;None)<br>
+<td colspan=2><tt><a href="#CallableFile">CallableFile</a>(type_:&nbsp;str,&nbsp;path_:&nbsp;str,&nbsp;filename:&nbsp;str,&nbsp;config:&nbsp;dict&nbsp;=&nbsp;None,&nbsp;security:&nbsp;bool&nbsp;=&nbsp;True)<br>
 &nbsp;<br>
 This&nbsp;class&nbsp;build&nbsp;callable&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;return<br>
 Web&nbsp;files&nbsp;content&nbsp;or&nbsp;script&nbsp;output.<br>&nbsp;</tt></td></tr>
@@ -201,7 +201,7 @@ Web&nbsp;files&nbsp;content&nbsp;or&nbsp;script&nbsp;output.<br>&nbsp;</tt></td>
 Methods defined here:<br>
 <dl><dt><a name="CallableFile-__call__"><strong>__call__</strong></a>(self, user: commons.User) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>Call&nbsp;self&nbsp;as&nbsp;a&nbsp;function.</tt></dd></dl>
 
-<dl><dt><a name="CallableFile-__init__"><strong>__init__</strong></a>(self, type_: str, path_: str, filename: str, config: dict = None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="CallableFile-__init__"><strong>__init__</strong></a>(self, type_: str, path_: str, filename: str, config: dict = None, security: bool = True)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
 <dl><dt><a name="CallableFile-is_html"><strong>is_html</strong></a>(self) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;compare&nbsp;extension&nbsp;with&nbsp;html&nbsp;extensions.</tt></dd></dl>
 
