@@ -206,3 +206,13 @@ test/test.json
 test/modules/test.py
 test/static/css/test.css
 test/static/js/test.js
+tests/test_RCE.py
+tests/test_api.py
+tests/test_dos_length.py
+tests/test_enfant.py
+tests/test_enfant2.py
+tests/test_enfant3.py
+tests/test_multiple_stdout.py
+tests/test_parent.py
+tests/test_parent2.py
+tests/test_parent3.py
