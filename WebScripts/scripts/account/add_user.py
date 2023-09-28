@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file adds a new user.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -74,16 +74,13 @@ def parse_args() -> Namespace:
         help="List of groups IDs to add permissions to the new user.",
         type=int,
         nargs="+",
-        required=True,
         default=[],
     )
     add_argument(
         "--group-names",
         "-n",
         help="List of groups names to add permissions to the new user.",
-        type=int,
         nargs="+",
-        required=True,
         default=[],
     )
     add_argument(
@@ -127,11 +124,20 @@ def main() -> int:
         groups[name] for name in arguments.group_names if name in groups
     ]
 
+    groups = arguments.groups + user_namedgroups
+    if not groups:
+        print(
+            "A group is required you must use [--groups/-g] or/and "
+            "[--group-names/-n] option.",
+            file=stderr,
+        )
+        return 3
+
     try:
         user = add_user(
             arguments.username,
             arguments.password,
-            arguments.groups + user_namedgroups,
+            groups,
             arguments.ips,
             arguments.categories,
             arguments.scripts,
@@ -149,10 +155,8 @@ def main() -> int:
         f"User added:\n\t - Name: {user.name!r}\n\t - ID: {user.ID}\n\t - IPs:"
         f" {user.IPs}\n\t - Groups: "
         + ",".join(
-            [
-                f'{groups.get(group, "UNKNOWN")!r} ({group})'
-                for group in user.groups.split(",")
-            ]
+            f'{groups.get(group, "UNKNOWN")!r} ({group})'
+            for group in user.groups.split(",")
         )
     )
 
