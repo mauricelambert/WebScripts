@@ -75,6 +75,7 @@
 		"password": "arg_password",
 		"--ips": "arg_ips",
 		"--groups": "arg_group_ids",
+		"--group-names": "arg_group_names",
 		"--categories": "arg_categories",
 		"--scripts": "arg_scripts"
 	},
@@ -89,6 +90,11 @@
 		"example": "50",
 		"html_type": "number",
 		"description": "List of groups IDs to add permissions to the new user."
+	},
+	"arg_group_names": {
+		"list": true,
+		"example": "User",
+		"description": "List of groups names to add permissions to the new user."
 	},
 	"arg_ips": {
 		"list": true,

@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file adds a new user.
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -118,11 +118,16 @@ def main() -> int:
 
     arguments = parse_args()
 
-    groups = get_dict_groups(by_name=True)
+    groups = {k.casefold(), v for k, v in get_dict_groups(by_name=True)}
+    user_namedgroups = []
 
-    user_namedgroups = [
-        groups[name] for name in arguments.group_names if name in groups
-    ]
+    for name in arguments.group_names:
+        name = name.casefold()
+        if name in groups:
+            user_namedgroups.append(groups[name])
+        else:
+            print("Group name not found:", name, file=stderr)
+            return 4
 
     groups = arguments.groups + user_namedgroups
     if not groups:
