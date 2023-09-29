@@ -5,6 +5,7 @@
 	"config_add_news": {
 		"timeout": 10,
 		"launcher": "/usr/bin/python3",
+		"no_password": true,
 		"access_groups": [
 			500,
 			750,

@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -60,6 +60,7 @@ from os import (
     mkdir,
     makedirs,
     environ,
+    listdir,
 )
 from os.path import (
     isdir,
@@ -545,6 +546,14 @@ class Hardening:
             elif extension == ".csv":
                 logger_debug("Add CSV file " + repr(filename))
                 self.csv_files.append(filename)
+
+        executable_path = dirname(executable)
+        for filename in listdir(executable_path):
+            if filename == "wsgi.py" or filename == "activate_this.py":
+                filename = join(executable_path, filename)
+                if linux_hardening:
+                    self.linux_file_permissions(filename)
+                self.py_scripts_files.append(filename)
 
         for config_file in self.json_config_files:
             self.get_configurations(config_file)

@@ -258,6 +258,7 @@
 	},
 	"config_my_user_informations": {
 		"timeout": 15,
+		"no_password": true,
 		"minimum_access": 50,
 		"launcher": "/usr/bin/python3",
 		"category": "My Account",
