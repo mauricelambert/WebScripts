@@ -23,7 +23,7 @@
 This tool runs CLI scripts and displays output in a Web Interface.
 """
 
-__version__ = "2.3.7"
+__version__ = "2.3.8"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,7 +49,7 @@ from os.path import join, exists, basename, splitext, split, abspath, dirname
 from importlib.machinery import SourceFileLoader
 from setuptools.command.install import install
 
-from os import path, makedirs, getcwd, environ
+from os import path, makedirs, getcwd, environ, sep
 from setuptools import setup, find_packages
 from getpass import getuser
 from typing import Dict
@@ -286,7 +286,7 @@ class PostInstallScript(install):
                     script["launcher"] = launcher
 
                     if (
-                        "build" not in filename
+                        "build" + sep not in filename
                     ):  # if not in temp install directory
                         script_name, _ = splitext(basename(filename))
                         logging.info(f"Configure script named: {script_name}")
@@ -308,14 +308,18 @@ class PostInstallScript(install):
                 if specific_config_file:
                     specific_config_file = basename(specific_config_file)
                     for config_file in self.json_config_files:
-                        if config_file.endswith(specific_config_file):
+                        config_file = abspath(config_file)
+                        if (
+                            config_file.endswith(specific_config_file)
+                            and sep + "build" + sep not in config_file
+                        ):
                             section["configuration_file"] = config_file
                     continue
 
                 logging.debug("Add launcher")
                 section["launcher"] = launcher
 
-                if "build" not in filename:
+                if "build" + sep not in filename:
                     for py_filename in self.py_scripts_files:
                         if py_filename.endswith(name):
                             logging.debug("Add the script absolute path.")
@@ -323,7 +327,7 @@ class PostInstallScript(install):
 
             server = configurations.get("server")
 
-            if server is not None and "build" not in filename:
+            if server is not None and "build" + sep not in filename:
                 path_ = [dirname(filename), "..", "modules"]
 
                 if self.is_windows:
