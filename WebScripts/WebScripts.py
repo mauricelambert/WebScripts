@@ -797,7 +797,7 @@ class Server:
         """
 
         def check_argument_count():
-            if isinstance(object_, FunctionType) or type(object_) == type:
+            if isinstance(object_, FunctionType) or type(object_) is type:
                 if arg_count == 7:
                     logger_info(f"Function page found {object_}.")
                     return object_, is_not_package
