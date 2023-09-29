@@ -23,7 +23,7 @@
 This tool runs CLI scripts and displays output in a Web Interface.
 """
 
-__version__ = "3.0.17"
+__version__ = "3.0.18"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
