@@ -87,6 +87,10 @@ jobs:
           skipfish -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
           zip -r skipfish.zip skipfish
 
+      - name: WebScripts logs
+        run: |
+          tar -czvf logs.tar.gz WebScripts/logs
+
       #
       # UPLOAD REPORTS
       #
@@ -114,3 +118,9 @@ jobs:
         with:
             name: dirb_report
             path: dirb.txt
+
+      - name: logs uploads
+        uses: actions/upload-artifact@v1
+        with:
+          name: webscripts_logs
+          path: logs.tar.gz
