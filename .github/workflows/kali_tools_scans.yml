@@ -63,7 +63,7 @@ jobs:
           echo "{}" > WebScripts/hardening/audit.json
           python3.11 -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
           python3.11 -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = secure','force_file_permissions=False');open(f,'w').write(d)"
-          python3.11 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+          python3.11 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &>output.txt  &
           sleep 15
 
       #
@@ -76,7 +76,7 @@ jobs:
 
       - name: nikto scan
         run: |
-          nikto -o nikto.html -Format html -Tuning x -evasion 12345678AB -id Admin:Admin -C all -h http://127.0.0.1:8000/web/auth/
+          nikto -o nikto.html -Format html -Tuning x -evasion 12345678AB -id Admin:Admin -Display V -C all -h http://127.0.0.1:8000/web/auth/
 
       - name: whatweb scan
         run: |
@@ -84,7 +84,7 @@ jobs:
 
       - name: skipfish scan
         run: |
-          skipfish -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
+          skipfish -v -u -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
           zip -r skipfish.zip skipfish
 
       - name: WebScripts logs
@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
             name: skipfish_report
-            path: skipfish.zip
+            path: skipfish/
 
       - name: whatweb uploads
         uses: actions/upload-artifact@v1
@@ -123,4 +123,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: webscripts_logs
-          path: logs.tar.gz
+          path: logs/
