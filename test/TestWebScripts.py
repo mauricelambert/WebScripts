@@ -348,8 +348,11 @@ class TestServer(TestCase):
         headers["X-XSS-Protection"] = "1; mode=block"
         headers["X-Content-Type-Options"] = "nosniff"
         headers["Referrer-Policy"] = "origin-when-cross-origin"
-        headers["Cache-Control"] = "no-store"
-        headers["Pragma"] = "no-store"
+        headers[
+            "Cache-Control"
+        ] = "no-cache, no-store, must-revalidate, private"
+        headers["Pragma"] = "no-cache"
+        headers["Expires"] = "0"
         headers["Clear-Site-Data"] = '"cache", "executionContexts"'
         headers["Feature-Policy"] = (
             "payment 'none'; geolocation 'none'; "
@@ -361,6 +364,10 @@ class TestServer(TestCase):
         headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         headers["Cross-Origin-Opener-Policy"] = "same-origin"
         headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        headers["Sec-Fetch-Mode"] = "document"
+        headers["Sec-Fetch-Site"] = "same-site"
+        headers["Sec-Fetch-Mode"] = "navigate"
+        headers["Sec-Fetch-User"] = "?1"
         headers["X-Server"] = "WebScripts"
 
         self.assertDictEqual(h, headers)

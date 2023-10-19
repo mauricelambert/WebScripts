@@ -553,12 +553,10 @@ class TestCallableFile(TestCase):
             user.name = "test"
             user.csrf = {}
 
-            CallableFile.template_script = (
-                "%(name)s_%(user)s_%(csrf)s_%(nonce)s"
-            )
+            CallableFile.template_script = '%(name)s_%(user)s_%(csrf)s_%(nonce)ssrc="../js/href="../static/'
 
             file = CallableFile("script", "file.py", "file.py")
-            code, headers, content = file(user)
+            code, headers, content = file(user, 5)
             self.assertEqual(code, "200 OK")
             self.assertEqual(
                 headers["Content-Type"], "text/html; charset=utf-8"
@@ -569,13 +567,17 @@ class TestCallableFile(TestCase):
                 "'none'; style-src-elem 'self'; style-src-attr 'none';"
                 " style-src 'self'; script-src-attr 'none'; object-src"
                 " 'none'; media-src 'none'; manifest-src 'none'; "
-                "frame-ancestors 'none'; connect-src 'self'; font-src"
+                "connect-src 'self'; font-src"
                 " 'none'; img-src 'self'; base-uri 'none'; child-src"
                 " 'none'; form-action 'none'; script-src 'self' "
                 r"'nonce-[\da-fA-F]{40}' 'require-trusted-types-for'",
             )
             self.assertRegex(
-                content, r"file\.py_test_[\w\d+/]+={0,2}_[\da-fA-F]{20}"
+                content,
+                (
+                    r"file\.py_test_[\w\d+/]+={0,2}_[\da-fA-F]{20,}"
+                    r'src="(\.\./){5}js/href="(\.\./){5}static/'
+                ),
             )
 
 
