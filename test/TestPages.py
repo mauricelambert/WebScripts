@@ -889,25 +889,27 @@ class TestWeb(TestCase):
         server = Mock(
             configuration=Mock(active_auth=True, auth_script="test.go")
         )
-        function = Mock()
+        function = Mock(return_value=("200", {}, b""))
         user = Mock()
+        env = {"PATH_INFO": "//"}
 
         with patch.object(
             Module, "CallableFile", return_value=function
         ) as file:
-            self.web.auth(Mock(), user, server, Mock(), Mock(), Mock())
+            self.web.auth(env, user, server, Mock(), Mock(), Mock())
 
-        function.assert_called_once_with(user)
+        function.assert_called_once_with(user, 2)
         file.assert_called_once_with("script", "test.go", "/auth/")
 
         server.configuration.active_auth = False
+        env = {"PATH_INFO": "////"}
 
         code, headers, data = self.web.auth(
-            Mock(), user, server, Mock(), Mock(), Mock()
+            env, user, server, Mock(), Mock(), Mock()
         )
 
         self.assertEqual(data, b"")
-        self.assertEqual(code, "403")
+        self.assertEqual(code, "404")
         self.assertDictEqual(headers, {})
 
     def test_scripts(self):
