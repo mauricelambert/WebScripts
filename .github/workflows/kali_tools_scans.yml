@@ -118,9 +118,9 @@ jobs:
         with:
             name: dirb_report
             path: dirb.txt
-
-      - name: logs uploads
+      
+      - name: WebScripts output uploads
         uses: actions/upload-artifact@v1
         with:
-          name: webscripts_logs
-          path: logs/
+          name: webscripts_output
+          path: output.txt
