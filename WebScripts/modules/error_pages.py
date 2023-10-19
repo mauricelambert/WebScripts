@@ -59,7 +59,7 @@ _Request = namedtuple(
     ],
 )
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -220,7 +220,9 @@ def send_error_page(
     )
     text = escape(filepath or ("Error " + code + " (" + error + ")"))
     error_page = CallableFile("script", __file__, text)
-    _, headers, page = error_page(user)
+    _, headers, page = error_page(
+        user, len(environ["PATH_INFO"].split("/")) - 1
+    )
     page = Template(page)
     CallableFile.template_script = template_script
 
