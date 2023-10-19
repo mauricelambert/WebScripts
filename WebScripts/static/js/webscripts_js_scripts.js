@@ -19,6 +19,7 @@
 */
 
 let scripts;
+let subpath = "../";
 let is_index = false;
 let url = new URL(window.location);
 let dark_theme = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -57,9 +58,9 @@ class Script {
         let name = this.name;
 
         if (name === "/auth/") {
-            link_script_card.href = "/web/auth/";
+            link_script_card.href = "../web/auth/";
         } else {
-            link_script_card.href = "/web/scripts/" + name;
+            link_script_card.href = "../web/scripts/" + name;
         }
 
         link_script_card.style.textDecoration = 'none';
@@ -89,9 +90,9 @@ class Script {
         let getElementById = document.getElementById.bind(document);
 
         let path = url.pathname;
-        let path_split = path.split('/');
-        let path_search = path.startsWith("/web/") && path_split.length ===
-            3 && path_split[2];
+        let path_split = path.split('/web/');
+        let path_search = path_split.length === 2 && !
+        path_split[1].includes("/") && path_split[1];
         let search_value = getElementById("webscripts_search_bar").value;
         let pattern = search_value || path_search || "";
         pattern = pattern.toLowerCase();
@@ -141,11 +142,16 @@ class Script {
 
                 if (search_value) {
                     let button = script.search_button;
-                    if (is_light && !button.classList.contains("light") || !is_light && button.classList.contains("light")) {
+                    if (
+                        is_light && !button.classList.contains("light") ||
+                        !is_light && button.classList.contains("light")
+                    ) {
                         let div = button.firstChild;
                         button.classList.toggle("light");
                         div.classList.toggle("light");
-                        div.getElementsByClassName("search_result_description")[0].classList.toggle("light");
+                        div.getElementsByClassName(
+                            "search_result_description"
+                        )[0].classList.toggle("light");
                     }
                     result_container_appendChild(script.search_button);
                 }
@@ -218,7 +224,7 @@ function get_scripts(...functions) {
         }
     };
 
-    xhttp.open("GET", "/api/", true);
+    xhttp.open("GET", "../../api/", true);
     xhttp.send();
 }
 
@@ -419,7 +425,7 @@ class Menu {
     This function go back ton index page.
     */
     index() {
-        window.location = new URL("/web/", window.location);
+        window.location = new URL("../web/", window.location);
     }
 
     /*

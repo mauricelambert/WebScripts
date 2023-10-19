@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.5)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>commons</strong></big></big> (version 0.1.6)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="commons.py">commons.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -199,7 +199,7 @@ Web&nbsp;files&nbsp;content&nbsp;or&nbsp;script&nbsp;output.<br>&nbsp;</tt></td>
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="CallableFile-__call__"><strong>__call__</strong></a>(self, user: commons.User) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>Call&nbsp;self&nbsp;as&nbsp;a&nbsp;function.</tt></dd></dl>
+<dl><dt><a name="CallableFile-__call__"><strong>__call__</strong></a>(self, user: commons.User, subdirectory: int = 2) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>Call&nbsp;self&nbsp;as&nbsp;a&nbsp;function.</tt></dd></dl>
 
 <dl><dt><a name="CallableFile-__init__"><strong>__init__</strong></a>(self, type_: str, path_: str, filename: str, config: dict = None, security: bool = True)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
 
@@ -233,11 +233,11 @@ Data and other attributes defined here:<br>
 
 <dl><dt><strong>template_header_path</strong> = r'/home/WebScripts\static\templates\header.html'</dl>
 
-<dl><dt><strong>template_index</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page for index.<font color="#c040c0">\n</font>    Copyright (C)...(build_categories);&lt;/script&gt; --&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
+<dl><dt><strong>template_index</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page for index.<font color="#c040c0">\n</font>    Copyright (C)...content"&gt;<font color="#c040c0">\n\t\t</font>&lt;/div&gt;<font color="#c040c0">\n\n\t\t</font>%(footer)s<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
 
 <dl><dt><strong>template_index_path</strong> = r'/home/WebScripts\static\templates\index.html'</dl>
 
-<dl><dt><strong>template_script</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page to launch scripts.<font color="#c040c0">\n</font>    Copyr...script_name="%(name)s";&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
+<dl><dt><strong>template_script</strong> = '&lt;!--<font color="#c040c0">\n\n</font>    HTML page to launch scripts.<font color="#c040c0">\n</font>    Copyr...path = "%(subpath)s"<font color="#c040c0">\n\t\t</font>&lt;/script&gt;<font color="#c040c0">\n\t</font>&lt;/body&gt;<font color="#c040c0">\n</font>&lt;/html&gt;'</dl>
 
 <dl><dt><strong>template_script_path</strong> = r'/home/WebScripts\static\templates\script.html'</dl>
 

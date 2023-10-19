@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implements commons functions and class for WebScripts package.
 """
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -794,7 +794,9 @@ class CallableFile(Callable):
         self.extension = splitext(path_)[1].lower()
 
     @log_trace
-    def __call__(self, user: User) -> Tuple[str, Dict[str, str], List[bytes]]:
+    def __call__(
+        self, user: User, subdirectory: int = 2
+    ) -> Tuple[str, Dict[str, str], List[bytes]]:
         if self.type == "js":
             return (
                 "200 OK",
@@ -888,6 +890,10 @@ class CallableFile(Callable):
                 )
         elif self.type == "script":
             nonce = token_hex(20)
+            subpath = "../" * subdirectory
+            template = CallableFile.template_script.replace(
+                'src="../js/', 'src="' + subpath + "js/"
+            ).replace('href="../static/', 'href="' + subpath + "static/")
             return (
                 "200 OK",
                 {
@@ -908,9 +914,9 @@ class CallableFile(Callable):
                     ),
                 },
                 (
-                    CallableFile.template_script
+                    template
                     if self.security
-                    else CallableFile.template_script.replace(
+                    else template.replace(
                         "Content-Security-Policy",
                         "Content-Security-Policy-Report-Only",
                     )
@@ -920,21 +926,15 @@ class CallableFile(Callable):
                     "user": user.name,
                     "csrf": TokenCSRF.build_token(user),
                     "nonce": nonce,
-                    "header": self.template_header,
-                    "footer": self.template_footer,
+                    "header": self.template_header.replace(
+                        'href="../web/', 'href="' + subpath + "web/"
+                    ),
+                    "footer": self.template_footer.replace(
+                        'href="../static/', 'href="' + subpath + "static/"
+                    ),
+                    "subpath": subpath,
                 },
             )
-            # return (
-            #     "200 OK",
-            #     {"Content-Type": "text/html"},
-            #     CallableFile.template_script
-            #     % {
-            #         "name": self.filename,
-            #         "user": user.name,
-            #         "csrf": TokenCSRF.build_token(user),
-            #         "nonce": nonce,
-            #     },
-            # )
 
     def is_xml(self) -> bool:
         """

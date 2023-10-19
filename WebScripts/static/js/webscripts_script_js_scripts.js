@@ -646,7 +646,7 @@ class ScriptExecution {
         let referrer = document.referrer;
         window.location = (referrer && referrer.startsWith(window.location
                 .origin) && !referrer.endsWith("/web/auth/")) ? referrer :
-            window.location = new URL("/web/", window.location);
+            window.location = new URL("../web/", window.location);
     }
 
     /*
@@ -668,7 +668,7 @@ class ScriptExecution {
             link.classList.add(class_link);
         }
 
-        link.href = "/error_pages/Report/new/" + status;
+        link.href = "../error_pages/Report/new/" + status;
         link.innerText = "on the local report page";
         this.error_container.appendChild(link);
 
@@ -706,8 +706,10 @@ class ScriptExecution {
             }
         }
 
-        let url = script_name[0] === "/" ? script_name : "/api/scripts/" +
-            script_name;
+        let url = subpath + (
+            script_name[0] === "/" ? script_name : "/api/scripts/" +
+            script_name
+        );
 
         xhttp.open("POST", url, true);
         xhttp.setRequestHeader('Content-Type', 'application/json');
@@ -723,7 +725,7 @@ class ScriptExecution {
     get a new line for "real time output".
     */
     get_new_line(response) {
-        this.xhttp.open('GET', `/api/script/get/${response.key}`, true);
+        this.xhttp.open('GET', `../api/script/get/${response.key}`, true);
         this.xhttp.send();
     }
 
@@ -915,8 +917,8 @@ class OutputBuilder {
     /*
     This function escapes HTML special characters.
     */
-    escape = str => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/'/g, "&#x27;").replace(/"/g, '&quot;');
+    escape = str => str.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/'/g, "&#x27;").replace(/"/g, '&quot;');
 
     /*
     This function replaces CRLF by universal new line.

@@ -23,11 +23,11 @@
 	<head>
 		<meta charset="utf-8">
 		<title>%(name)s of WebScripts Server</title>
-		<link rel="shortcut icon" type="image/png" href="/static/webscripts_icon.png"/>
-		<link rel="stylesheet" type="text/css" href="/static/webscripts_style.css" integrity="sha512-hn9MUcYe4YQLkgIXDHwxakJ89R4IZl/M3RbJLcJsw8NjkPKyviVLuGj/TVQ016w7upj6x2TVbOhXqJBRwhZ5Cg==">
-		<link rel="stylesheet" type="text/css" href="/static/webscripts_script_style.css" integrity="sha512-sRgxcUILghgOO/kSIGuJ/GaTsu0IMhKPMCeToWrQHjm1puraV0yqi476xMZrVNiKd+hAWCxrR39jxJdyylmDnA==">
-		<script type="text/javascript" src="/js/webscripts_js_scripts.js" integrity="sha512-s2xOVWzaZAZ3ZLKACFGf9XnVgnSMTERSqv64Zgo8hIuWavmY74MAfrQGjHNst8C7G0Mbw5Uo2ty+XlqajV5jJQ=="></script>
-		<script type="text/javascript" src="/js/webscripts_script_js_scripts.js" integrity="sha512-jGaw2rdS1EA1fdOWY0Roynlo2Heyk1XdjgpQiD5k7gacazzSZ7Wo6VBqV/s+YrLmSGGwLIGpjHJG64wbHvMrbQ=="></script>
+		<link rel="shortcut icon" type="image/png" href="%(subpath)sstatic/webscripts_icon.png"/>
+		<link rel="stylesheet" type="text/css" href="%(subpath)sstatic/webscripts_style.css" integrity="sha512-hn9MUcYe4YQLkgIXDHwxakJ89R4IZl/M3RbJLcJsw8NjkPKyviVLuGj/TVQ016w7upj6x2TVbOhXqJBRwhZ5Cg==">
+		<link rel="stylesheet" type="text/css" href="%(subpath)sstatic/webscripts_script_style.css" integrity="sha512-sRgxcUILghgOO/kSIGuJ/GaTsu0IMhKPMCeToWrQHjm1puraV0yqi476xMZrVNiKd+hAWCxrR39jxJdyylmDnA==">
+		<script type="text/javascript" src="%(subpath)sjs/webscripts_js_scripts.js" integrity="sha512-Vrvlo0JMyH7vXot4iEQ+oJD2p4UhfSvTe1pzM7/ltlcncQ1CPh8roySE6J1I1VvUhBqEWGU0v0l+5k2TdBEThg=="></script>
+		<script type="text/javascript" src="%(subpath)sjs/webscripts_script_js_scripts.js" integrity="sha512-iCarNkToQ0mRNn3vNKGjFvPyil2lgLLUWqPXlD5zyAC/D6WBOgZPKaI7Kt2HRWV+VhPgOIXy6IQCMJaRpnkjXg=="></script>
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; navigate-to 'self'; worker-src 'none'; style-src-elem 'self'; style-src-attr 'none'; style-src 'self'; script-src-attr 'none'; object-src 'none'; media-src 'none'; manifest-src 'none'; frame-ancestors 'none'; connect-src 'self'; font-src 'none'; img-src 'self'; base-uri 'none'; child-src 'none'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s' 'require-trusted-types-for'">
 	</head>
 
@@ -38,7 +38,7 @@
 		<div id="webscripts_content">
 			<div id="script_presentation">
 				<h1 id="script_title">Script: %(name)s</h1>
-				<p class="description" id="script_description"></p><a href="/web/doc/%(name)s">Documentation</a>
+				<p class="description" id="script_description"></p><a href="%(subpath)sweb/doc/%(name)s">Documentation</a>
 			</div>
 
 			<p>Welcome on script "%(name)s" user "%(user)s" !</p>
@@ -74,6 +74,9 @@
 
 		%(footer)s
 
-		<script type="text/javascript" nonce="%(nonce)s">script_name="%(name)s";</script>
+		<script type="text/javascript" nonce="%(nonce)s">
+			script_name="%(name)s"
+			subpath = "%(subpath)s"
+		</script>
 	</body>
 </html>

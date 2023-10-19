@@ -26,7 +26,7 @@ This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -164,10 +164,10 @@ def get_log_frame() -> FrameType:
         line: int = frame.f_lineno
         counter += 1
 
-    return _getframe(counter)
+    return _getframe(counter - 2)
 
 
-logging.currentframe = lambda: _getframe(5)
+logging.currentframe = get_log_frame  # lambda: _getframe(5)
 
 IS_WINDOWS = system() == "Windows"
 IP_HEADERS = [

@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -902,22 +902,22 @@ class Web:
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
         """
-        This function return authentication page.
+        This function returns authentication page (URL: /web/auth/).
         """
 
         server_configuration = server.configuration
 
         if server_configuration.active_auth:
-            callable_file = CallableFile(
+            code, headers, content = CallableFile(
                 "script", server_configuration.auth_script, "/auth/"
-            )
-            return callable_file(user)
+            )(user, len(environ["PATH_INFO"].split("/")) - 1)
+            return code, headers, content
         else:
             logger_error(
-                f"HTTP 403 for {user.name} on /web/auth/ (active_auth"
+                f"HTTP 404 for {user.name} on /web/auth/ (active_auth"
                 " configuration is not True)"
             )
-            return "403", {}, b""
+            return "404", {}, b""
 
 
 class Pages:
