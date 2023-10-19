@@ -27,8 +27,8 @@ jobs:
           echo "{}" > WebScripts/hardening/audit.txt
           echo "{}" > WebScripts/hardening/audit.json
           python3.11 -c "import json as j,os;f=os.path.join('WebScripts','config','server.json');d=j.load(open(f));d['server']['force_file_permissions']=False;j.dump(d,open(f,'w'))"
-          python3.11 -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
-          python3.11 -m WebScripts --security --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
+          python3.11 -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = secure','force_file_permissions=False');open(f,'w').write(d)"
+          python3.11 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &
       
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.4.0

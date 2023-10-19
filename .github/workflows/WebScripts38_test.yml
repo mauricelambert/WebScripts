@@ -1,0 +1,33 @@
+name: WebScripts38 Tests
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    
+    name: "Run test on ${{ matrix.os }} with 3.8"
+    runs-on: "${{ matrix.os }}"
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Test WebScripts with unittest
+        run: |
+          python WebScripts/scripts/to_3.8/to_3.8.py
+          python -c "from os import rename;from shutil import rmtree;rmtree('WebScripts');rename('WebScripts38', 'WebScripts')"
+          python -m unittest discover -s test -p Test*.py -v
+          python -m WebScripts --test-running

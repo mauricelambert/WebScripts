@@ -32,5 +32,5 @@ jobs:
           python -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = True','force_file_permissions=False');open(f,'w').write(d)"
           python -m WebScripts --test-running --security
           python -m pip install .
-          python -m WebScripts.harden -o `whoami` -p 'abc' -d '.'
+          python -m pip install --force-reinstall --install-option "-pabc" --install-option "-d." .
           python setup.py install --admin-password=abc --directory=.
