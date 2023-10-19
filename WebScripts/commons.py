@@ -907,7 +907,7 @@ class CallableFile(Callable):
                         "'none'; style-src-elem 'self'; style-src-attr 'none';"
                         " style-src 'self'; script-src-attr 'none'; object-src"
                         " 'none'; media-src 'none'; manifest-src 'none'; "
-                        "frame-ancestors 'none'; connect-src 'self'; font-src"
+                        "connect-src 'self'; font-src"
                         " 'none'; img-src 'self'; base-uri 'none'; child-src"
                         " 'none'; form-action 'none'; script-src 'self' "
                         f"'nonce-{nonce}' 'require-trusted-types-for'"
