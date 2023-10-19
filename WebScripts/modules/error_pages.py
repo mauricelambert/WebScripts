@@ -215,7 +215,10 @@ def send_error_page(
     code = escape(code)
 
     CallableFile.template_script = template_script.replace(
-        '<script type="text/javascript" nonce="%(nonce)s">script_name="%(name)s";</script>',
+        """<script type="text/javascript" nonce="%(nonce)s">
+            script_name="%(name)s"
+            subpath = "%(subpath)s"
+        </script>""",
         script,
     )
     text = escape(filepath or ("Error " + code + " (" + error + ")"))
