@@ -89,7 +89,7 @@ jobs:
 
       - name: WebScripts logs
         run: |
-          tar -czvf logs.tar.gz WebScripts/logs
+          tar -czvf logs.tar.gz logs/
 
       #
       # UPLOAD REPORTS
