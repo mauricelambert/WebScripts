@@ -273,6 +273,10 @@ class TestServer(TestCase):
         result = Server.check_origin(environ_get, environ)
         self.assertFalse(result)
 
+        del environ["HTTP_ORIGIN"]
+        result = Server.check_origin(environ_get, environ)
+        self.assertFalse(result)
+
     def test_get_json_content(self):
         content = Server.get_json_content(
             b"{}", "application/json; charset=utf-8"

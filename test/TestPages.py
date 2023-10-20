@@ -308,21 +308,29 @@ class TestFunctions(TestCase):
             "wsgi.input": "test",
             "wsgi.errors": "abc",
             "wsgi.file_wrapper": "test",
+            "bad characters": "\0abc\1",
             "wsgi.version": (0, 1, 2),
             "int": 10,
         }
         new_env = get_environ(
             env,
-            Mock(get_dict=lambda: "user"),
+            Mock(
+                get_dict=lambda: {
+                    "name": "user",
+                    "csrf": "abc",
+                    "check_csrf": "qwerty",
+                }
+            ),
             Mock(get_JSON_API=lambda: "script"),
         )
 
         self.assertIsNot(env, new_env)
         self.assertNotEqual(env, new_env)
 
-        self.assertEqual(new_env["USER"], '"user"')
+        self.assertEqual(new_env["USER"], '{"name": "user"}')
         self.assertEqual(new_env["SCRIPT_CONFIG"], '"script"')
 
+        self.assertEqual(new_env["bad characters"], "abc")
         self.assertEqual(new_env["wsgi.version"], "0.1.2")
         self.assertEqual(new_env["int"], "10")
         self.assertNotIn("wsgi.run_once", new_env)
@@ -1038,7 +1046,7 @@ class TestPages(TestCase):
         )
 
     def test_auth(self):
-        env = {"REMOTE_IP": "0.0.0.0"}  # nosec
+        env = {"REMOTE_IP": "0.0.0.0", "PATH_INFO": "tralala"}  # nosec
         server = Mock(
             configuration=Mock(
                 active_auth=None, auth_script="test.go", session_max_time=0
