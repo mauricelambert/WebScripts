@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Pages</strong></big></big> (version 2.0.2)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Pages</strong></big></big> (version 2.0.3)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="pages.py">pages.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -46,17 +46,17 @@ system.</tt></p>
 <td colspan=2><tt>This&nbsp;class&nbsp;implement&nbsp;Web&nbsp;<a href="#Pages">Pages</a>&nbsp;for&nbsp;WebScripts&nbsp;server.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Pages-__call__"><strong>__call__</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], bytes]</dt><dd><tt>A&nbsp;redirect&nbsp;page&nbsp;(Error&nbsp;code&nbsp;301,&nbsp;javascript&nbsp;redirect&nbsp;and&nbsp;redirect<br>
+<dl><dt><a name="Pages-__call__"><strong>__call__</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, command: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], bytes]</dt><dd><tt>A&nbsp;redirect&nbsp;page&nbsp;(Error&nbsp;code&nbsp;301,&nbsp;javascript&nbsp;redirect&nbsp;and&nbsp;redirect<br>
 title)&nbsp;to&nbsp;/web/&nbsp;or&nbsp;/api/.</tt></dd></dl>
 
-<dl><dt><a name="Pages-auth"><strong>auth</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;check&nbsp;auth&nbsp;and&nbsp;return&nbsp;headers,&nbsp;error&nbsp;and&nbsp;page.</tt></dd></dl>
+<dl><dt><a name="Pages-auth"><strong>auth</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, command: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;check&nbsp;auth&nbsp;and&nbsp;return&nbsp;headers,&nbsp;error&nbsp;and&nbsp;page.</tt></dd></dl>
 
-<dl><dt><a name="Pages-js"><strong>js</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;Javascripts&nbsp;Scripts&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
+<dl><dt><a name="Pages-js"><strong>js</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, command: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;Javascripts&nbsp;Scripts&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
 
-<dl><dt><a name="Pages-reload"><strong>reload</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;is&nbsp;a&nbsp;simple&nbsp;URL&nbsp;to&nbsp;reload&nbsp;scripts<br>
+<dl><dt><a name="Pages-reload"><strong>reload</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, command: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;is&nbsp;a&nbsp;simple&nbsp;URL&nbsp;to&nbsp;reload&nbsp;scripts<br>
 (useful&nbsp;for&nbsp;developpers&nbsp;to&nbsp;add/modify&nbsp;a&nbsp;script).</tt></dd></dl>
 
-<dl><dt><a name="Pages-static"><strong>static</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, commande: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;static&nbsp;file&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
+<dl><dt><a name="Pages-static"><strong>static</strong></a>(self, environ: os._Environ, user: commons.User, server: ~Server, filename: str, command: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;static&nbsp;file&nbsp;and&nbsp;send&nbsp;it.</tt></dd></dl>
 
 <hr>
 Static methods defined here:<br>

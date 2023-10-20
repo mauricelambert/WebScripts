@@ -646,7 +646,7 @@ class ScriptExecution {
         let referrer = document.referrer;
         window.location = (referrer && referrer.startsWith(window.location
                 .origin) && !referrer.endsWith("/web/auth/")) ? referrer :
-            window.location = new URL("../web/", window.location);
+            window.location = new URL(subpath + "web/", window.location);
     }
 
     /*
@@ -668,7 +668,7 @@ class ScriptExecution {
             link.classList.add(class_link);
         }
 
-        link.href = "../error_pages/Report/new/" + status;
+        link.href = subpath + "error_pages/Report/new/" + status;
         link.innerText = "on the local report page";
         this.error_container.appendChild(link);
 
@@ -725,7 +725,7 @@ class ScriptExecution {
     get a new line for "real time output".
     */
     get_new_line(response) {
-        this.xhttp.open('GET', `../api/script/get/${response.key}`, true);
+        this.xhttp.open('GET', subpath + `api/script/get/${response.key}`, true);
         this.xhttp.send();
     }
 

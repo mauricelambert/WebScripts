@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -53,11 +53,12 @@ __all__ = ["Pages"]
 
 from typing import Tuple, List, Dict, TypeVar, Iterable, Union
 from subprocess import Popen, PIPE, TimeoutExpired  # nosec
+from os import _Environ, path, environ as base_environ
 from base64 import urlsafe_b64encode
 from contextlib import suppress
 from secrets import token_bytes
-from os import _Environ, path
 from json import dumps, loads
+from string import printable
 from fnmatch import fnmatch
 from threading import Timer
 from html import escape
@@ -97,6 +98,7 @@ try:
         WebScriptsConfigurationTypeError,
         logger_debug,
         logger_info,
+        logger_auth,
         logger_access,
         logger_response,
         logger_command,
@@ -137,6 +139,7 @@ except ImportError:
         WebScriptsConfigurationTypeError,
         logger_debug,
         logger_info,
+        logger_auth,
         logger_access,
         logger_response,
         logger_command,
@@ -284,31 +287,16 @@ def get_environ(
     This function builds the environment variables for the new process.
     """
 
-    # script_env = environ.copy()
-
-    # script_env["USER"] = dumps(user.get_dict())
-    # script_env["SCRIPT_CONFIG"] = dumps(script.get_JSON_API())
-
-    # to_delete = [
-    #     key
-    #     for key in script_env.keys()
-    #     if key
-    #     in (
-    #         "wsgi.run_once", "wsgi.input",
-    #         "wsgi.errors", "wsgi.file_wrapper"
-    #     )
-    # ]
-    # for key in to_delete:
-    #     del script_env[key]
-
-    # script_env["wsgi.version"] = ".".join(
-    #     [str(version) for version in script_env["wsgi.version"]]
-    # )
-
-    # return {key: str(value) for key, value in script_env.items()}
+    for var_name, value in environ.items():
+        if var_name not in base_environ:
+            environ
 
     script_env = {
-        key: str(value)
+        key: (
+            str(value)
+            if key in base_environ
+            else "".join(x for x in str(value) if x in printable)
+        )
         if key != "wsgi.version"
         else ".".join([str(version) for version in value])
         for key, value in environ.items()
@@ -321,7 +309,10 @@ def get_environ(
         )
     }
 
-    script_env["USER"] = dumps(user.get_dict())
+    user_dict = user.get_dict()
+    user_dict.pop("csrf", None)
+    user_dict.pop("check_csrf", None)
+    script_env["USER"] = dumps(user_dict)
     script_env["SCRIPT_CONFIG"] = dumps(script.get_JSON_API())
 
     return script_env
@@ -522,7 +513,7 @@ class Script:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
@@ -582,7 +573,7 @@ class Api:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
@@ -642,7 +633,7 @@ class Api:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes]]:
@@ -676,7 +667,7 @@ class Api:
             return "403", {}, b""
 
         stdout, stderr, key, code, error = execute_scripts(
-            filename, user, environ, commande, inputs
+            filename, user, environ, command, inputs
         )
 
         if stdout is None:
@@ -724,7 +715,7 @@ class Web:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:
@@ -779,7 +770,7 @@ class Web:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[str, bytes, Iterable[bytes]]]:
@@ -846,7 +837,7 @@ class Web:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, str, Iterable[bytes]]]:
@@ -897,7 +888,7 @@ class Web:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
@@ -943,7 +934,7 @@ class Pages:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], bytes]:
@@ -984,7 +975,7 @@ class Pages:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
@@ -1001,7 +992,7 @@ class Pages:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], Union[bytes, Iterable[bytes]]]:
@@ -1018,7 +1009,7 @@ class Pages:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], bytes]:
@@ -1041,7 +1032,7 @@ class Pages:
             server_configuration.auth_script,
             user,
             environ,
-            commande,
+            command,
             inputs,
             is_auth=True,
         )
@@ -1058,13 +1049,17 @@ class Pages:
             Pages.ip_blacklist[ip] = Blacklist(
                 server_configuration, Pages.ip_blacklist.pop(ip, None)
             )
-            if "--username" in commande:
-                user_index = commande.index("--username") + 1
-                username = commande[user_index]
+            if "--username" in command:
+                user_index = command.index("--username") + 1
+                username = command[user_index]
                 Pages.user_blacklist[username] = Blacklist(
                     server_configuration,
                     Pages.user_blacklist.pop(username, None),
                 )
+            logger_auth(
+                f"{user.name!r} ({user.id}) successfully authenticated"
+                f" from {ip} on {environ['PATH_INFO']}"
+            )
 
         cookie = Session.build_session(user, ip, Pages)
 
@@ -1087,7 +1082,7 @@ class Pages:
         user: User,
         server: Server,
         filename: str,
-        commande: List[str],
+        command: List[str],
         inputs: List[str],
         csrf_token: str = None,
     ) -> Tuple[str, Dict[str, str], str]:

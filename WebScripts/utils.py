@@ -26,7 +26,7 @@ This file implements some tools for WebScripts server
 and scripts (Logs, Namespace for configuration, ...).
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -67,6 +67,7 @@ __all__ = [
     # "namer",
     "logger_debug",
     "logger_info",
+    "logger_auth",
     "logger_access",
     "logger_response",
     "logger_command",
@@ -195,6 +196,7 @@ class _Logs:
     log_critical: Logger = getLogger("WebScripts.critical")
 
     log_trace: Logger = getLogger("WebScripts.trace")
+    log_authentication: Logger = getLogger("WebScripts.authentication")
     log_access: Logger = getLogger("WebScripts.access")
     log_response: Logger = getLogger("WebScripts.response")
     log_command: Logger = getLogger("WebScripts.command")
@@ -268,6 +270,17 @@ class _Logs:
         logs_log_trace_log(5, log)
         log_(5, log)
 
+    def authentication(log: str) -> None:
+        """
+        This function implements authentication logs for WebScripts.
+        """
+
+        logs_log_info_info(log)
+        logs_log_auth_log(24, log)
+        logs_console_log(24, f"\x1b[36m{log}\x1b[0m")
+        logs_file_log(24, log)
+        log_(24, log)
+
     def access(log: str) -> None:
         """
         This function implements access logs for WebScripts.
@@ -316,6 +329,22 @@ class WindowsLogs(_Logs):
     """
 
     app: str = __package__ or "WebScripts"
+
+    def authentication(log: str) -> None:
+        """
+        This function logs authentication on Windows.
+        """
+
+        super(WindowsLogs, WindowsLogs).authentication(log)
+        ReportEvent(
+            WindowsLogs.app,
+            0x960,
+            eventCategory=1,
+            eventType=EVENTLOG_INFORMATION_TYPE,
+            strings=[log],
+            data=log.encode(),
+            sid=SID,
+        )
 
     def access(log: str) -> None:
         """
@@ -451,6 +480,14 @@ class LinuxLogs(_Logs):
     """
     This class logs on Linux.
     """
+
+    def authentication(log: str) -> None:
+        """
+        This function logs authentication on Linux.
+        """
+
+        super(LinuxLogs, LinuxLogs).authentication(log)
+        ReportEvent(LOG_INFO, log)
 
     def access(log: str) -> None:
         """
@@ -668,6 +705,7 @@ logs_log_error_exception: Callable = Logs.log_error.exception
 logs_console_exception: Callable = Logs.console.exception
 logs_file_exception: Callable = Logs.file.exception
 logs_log_trace_log: Callable = Logs.log_trace.log
+logs_log_auth_log: Callable = Logs.log_authentication.log
 logs_log_access_log: Callable = Logs.log_access.log
 logs_log_response_log: Callable = Logs.log_response.log
 logs_log_command_log: Callable = Logs.log_command.log
@@ -1227,6 +1265,7 @@ user: str = getuser()
 
 date_format: str = "%Y-%m-%d %H:%M:%S"
 addLevelName(5, "TRACE")
+addLevelName(24, "AUTH")
 addLevelName(25, "ACCESS")
 addLevelName(26, "RESPONSE")
 addLevelName(27, "COMMAND")
@@ -1234,6 +1273,7 @@ addLevelName(27, "COMMAND")
 logger_trace: Callable = Logs.trace
 logger_debug: Callable = Logs.debug
 logger_info: Callable = Logs.info
+logger_auth: Callable = Logs.authentication
 logger_access: Callable = Logs.access
 logger_response: Callable = Logs.response
 logger_command: Callable = Logs.command

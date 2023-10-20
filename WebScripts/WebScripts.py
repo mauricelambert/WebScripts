@@ -26,7 +26,7 @@ This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -984,8 +984,12 @@ class Server:
         origin = environ_getter("HTTP_ORIGIN")
         url = Server.get_baseurl(environ_getter, environ)
 
+        if origin is None:
+            logger_info("No origin detected, rejected request.")
+            return False
+
         if origin.lstrip("htps") != url.lstrip("htps"):
-            logger_info(f"Bad Origin detected: {origin!r} != {url!r}")
+            logger_warning(f"Bad Origin detected: {origin!r} != {url!r}")
             return False
 
         logger_info("Correct Origin detected.")
@@ -1060,21 +1064,7 @@ class Server:
         return HTTP errors.
         """
 
-        # environ: _Environ = self.environ
-        # encodevalue: Callable = environ.encodevalue
-        # encodekey: Callable = environ.encodekey
         environ = {key: value for key, value in self.environ.items()}
-        # environ = _Environ(
-        #     environ._data.copy(),
-        #     encodekey,
-        #     environ.decodekey,
-        #     encodevalue,
-        #     environ.decodevalue
-        # )
-
-        # d_setitem: Callable = environ._data.__setitem__
-        # [d_setitem(encodekey(key), encodevalue(value)) if isinstance(value, str) else d_setitem(encodekey(key), value) for key, value in environ_.items()]
-
         environ.update(environ_)
 
         path_info = environ["PATH_INFO"]
@@ -1084,7 +1074,9 @@ class Server:
         ip = environ["REMOTE_IP"] = get_ip(
             environ, configuration.webproxy_number
         )
-        logger_access(f"Request ({method}) from {ip!r}:{port} on {path_info}.")
+        logger_access(
+            f"Request ({method}) from {ip!r}:{port} on {path_info!r}."
+        )
 
         if ip is None:
             logger_critical("IP Spoofing: Error 403.")
@@ -1110,8 +1102,8 @@ class Server:
 
         if not not_blacklisted:
             logger_critical(
-                f'Blacklist: Error 403 on "{path_info}" for '
-                f'"{user.name}" (ID: {user.id}).'
+                f"Blacklist: Error 403 on {path_info!r} for "
+                f"{user.name!r} (ID: {user.id})."
             )
             return self.page_403(environ, user, filename, None, respond)
 
@@ -1132,7 +1124,7 @@ class Server:
         )
 
         if is_not_package and not is_webscripts_request:
-            logger_error(f'HTTP 406: for "{user.name}" on "{path_info}"')
+            logger_error(f"HTTP 406: for {user.name!r} on {path_info!r}")
             error = "406"
         else:
             logger_info("Request is not rejected as HTTP error 406.")
@@ -1154,7 +1146,9 @@ class Server:
                 for x in configuration.exclude_auth_paths
             )
         ):
-            logger_warning(f"Unauthenticated try to get access to {path_info}")
+            logger_warning(
+                f"Unauthenticated try to get access to {path_info!r}"
+            )
             self.send_headers(
                 environ, respond, "302 Found", {"Location": "/web/auth/"}
             )
@@ -1202,12 +1196,16 @@ class Server:
             return self.page_500(environ, user, filename, page, respond)
         elif not page:
             logger_debug(f"Get custom response for code {error}")
-            response = self.send_custom_error(
-                environ, user, filename, "", error
-            )
-            if response is not None:
+            (
+                custom_error,
+                custom_headers,
+                custom_content,
+            ) = self.send_custom_error(environ, user, filename, "", error)
+            if custom_content is not None:
                 logger_info(f"Get a response for code {error}")
-                error, headers, page = response
+                error = custom_error
+                headers = custom_headers
+                page = custom_content
 
         error, headers = self.set_default_values_for_response(error, headers)
 
@@ -1504,7 +1502,9 @@ class Server:
         filename: str,
         error: str,
         code: str,
-    ) -> Tuple[str, Dict[str, str], str]:
+    ) -> Tuple[
+        Union[str, None], Union[Dict[str, str], None], Union[str, None]
+    ]:
         """
         This function call custom errors pages.
         """
@@ -1539,6 +1539,8 @@ class Server:
                         filename,
                         error,
                     )
+
+        return None, {}, None
 
 
 @log_trace
@@ -2104,7 +2106,7 @@ def main() -> int:
     else:
         NO_START = False
 
-    secure: bool = "--security" not in argv
+    secure: bool = "--security" not in argv and "-s" not in argv
 
     server, debug = prepare_server(secure)
     httpd = simple_server.make_server(

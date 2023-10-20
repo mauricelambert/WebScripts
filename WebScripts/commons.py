@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file implements commons functions and class for WebScripts package.
 """
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -96,6 +96,7 @@ if __package__:
         WebScriptsSecurityError,
         logger_debug,
         logger_info,
+        logger_auth,
         logger_access,
         logger_response,
         logger_command,
@@ -128,6 +129,7 @@ else:
         WebScriptsSecurityError,
         logger_debug,
         logger_info,
+        logger_auth,
         logger_access,
         logger_response,
         logger_command,

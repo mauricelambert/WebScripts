@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 1.0.4)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>WebScripts</strong></big></big> (version 1.0.5)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="webscripts.py">webscripts.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -209,7 +209,7 @@ function,&nbsp;filename&nbsp;and&nbsp;False.</tt></dd></dl>
 
 <dl><dt><a name="Server-return_inputs"><strong>return_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]], is_webscripts_request: bool) -&gt; Tuple[List[str], List[str]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;(using&nbsp;<a href="#Server">Server</a>.get_inputs).</tt></dd></dl>
 
-<dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, environ: os._Environ, user: commons.User, filename: str, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
+<dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, environ: os._Environ, user: commons.User, filename: str, error: str, code: str) -&gt; Tuple[Optional[str], Optional[Dict[str, str]], Optional[str]]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
 
 <dl><dt><a name="Server-send_error_page"><strong>send_error_page</strong></a>(self, environ: os._Environ, user: commons.User, filename: str, error: str, data: bytes, respond: method) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
 
