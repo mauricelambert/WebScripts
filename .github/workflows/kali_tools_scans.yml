@@ -26,7 +26,7 @@ jobs:
           #
           # INSTALL KALI TOOLS
           #
-          sudo apt install -y dirb nikto whatweb zip
+          sudo apt install -y dirb nikto whatweb zip wapiti
           #
           # INSTALL SKIPFISH
           #
@@ -42,7 +42,6 @@ jobs:
           sudo dpkg -i libidn11.deb
           sudo dpkg -i libssl.deb
           sudo dpkg -i skipfish.deb
-
       - name: Setup Python 3.11  
         uses: actions/setup-python@v2
         with:
@@ -65,7 +64,6 @@ jobs:
           python3.11 -c "import os;f=os.path.join('WebScripts','WebScripts.py');d=open(f).read().replace('force_file_permissions = secure','force_file_permissions=False');open(f,'w').write(d)"
           python3.11 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 &>output.txt  &
           sleep 15
-
       #
       # LAUNCH SCANS
       #
@@ -73,20 +71,20 @@ jobs:
       - name: dirb scan
         run: |
           dirb http://127.0.0.1:8000/ -u Admin:Admin -o dirb.txt
-
       - name: nikto scan
         run: |
           nikto -o nikto.html -Format html -Tuning x -evasion 12345678AB -id Admin:Admin -Display V -C all -h http://127.0.0.1:8000/web/auth/
-
       - name: whatweb scan
         run: |
           whatweb -u Admin:Admin -v -a 4 http://127.0.0.1:8000/ --log-json=whatweb.json
-
       - name: skipfish scan
         run: |
           skipfish -v -u -H Api-Key=AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin -o skipfish http://127.0.0.1:8000/
           zip -r skipfish.zip skipfish
-
+      - name: wapiti scan
+        run: |
+          wapiti --update
+          wapiti -u http://127.0.0.1:8000/ -m all -a Admin%Admin --auth-type basic -S insane -f html -o wapiti
       - name: WebScripts logs
         run: |
           tar -czvf logs.tar.gz logs/
@@ -107,6 +105,12 @@ jobs:
             name: skipfish_report
             path: skipfish/
 
+      - name: wapiti uploads
+        uses: actions/upload-artifact@v1
+        with:
+            name: wapiti_report
+            path: wapiti
+
       - name: whatweb uploads
         uses: actions/upload-artifact@v1
         with:
@@ -119,6 +123,12 @@ jobs:
             name: dirb_report
             path: dirb.txt
       
+      - name: WebScripts logs uploads
+        uses: actions/upload-artifact@v1
+        with:
+          name: webscripts_logs
+          path: logs/
+
       - name: WebScripts output uploads
         uses: actions/upload-artifact@v1
         with:
