@@ -899,7 +899,7 @@ class TestWeb(TestCase):
         )
         function = Mock(return_value=("200", {}, b""))
         user = Mock()
-        env = {"PATH_INFO": "//"}
+        env = {"PATH_INFO": "//", "SUB_DIRECTORIES_NUMBER": 2}
 
         with patch.object(
             Module, "CallableFile", return_value=function
@@ -910,7 +910,7 @@ class TestWeb(TestCase):
         file.assert_called_once_with("script", "test.go", "/auth/")
 
         server.configuration.active_auth = False
-        env = {"PATH_INFO": "////"}
+        env = {"PATH_INFO": "////", "SUB_DIRECTORIES_NUMBER": 1}
 
         code, headers, data = self.web.auth(
             env, user, server, Mock(), Mock(), Mock()
@@ -983,16 +983,21 @@ class TestPages(TestCase):
 
     def test___call__(self):
         code, headers, data = self.pages(
-            Mock(), Mock(), Mock(), Mock(), Mock(), Mock()
+            {"SUB_DIRECTORIES_NUMBER": 2},
+            Mock(),
+            Mock(),
+            Mock(),
+            Mock(),
+            Mock(),
         )
 
         self.assertEqual("301 Moved Permanently", code)
-        self.assertDictEqual({"Location": "/web/"}, headers)
+        self.assertDictEqual({"Location": "../../web/"}, headers)
         self.assertEqual(
             (
-                b"<!-- To use API go to this URL: /api/ --><html><body><h1>"
-                b'Index page is /web/</h1><a href="/web/">Please click here'
-                b'</a><script>window.location="/web/"</script></html>'
+                b"<!-- To use API go to this URL: ../../api/ --><html><body><h1>"
+                b'Index page is ../../web/</h1><a href="../../web/">Please click here'
+                b'</a><script>window.location="../../web/"</script></html>'
             ),
             data,
         )
