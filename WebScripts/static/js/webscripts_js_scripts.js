@@ -58,9 +58,9 @@ class Script {
         let name = this.name;
 
         if (name === "/auth/") {
-            link_script_card.href = "../web/auth/";
+            link_script_card.href = subpath + "web/auth/";
         } else {
-            link_script_card.href = "../web/scripts/" + name;
+            link_script_card.href = subpath + "web/scripts/" + name;
         }
 
         link_script_card.style.textDecoration = 'none';
@@ -425,7 +425,7 @@ class Menu {
     This function go back ton index page.
     */
     index() {
-        window.location = new URL("../web/", window.location);
+        window.location = new URL(subpath + "web/", window.location);
     }
 
     /*
@@ -509,7 +509,13 @@ class Menu {
     }
 }
 
+/*
+This class implements notification system.
+*/
 class Notification {
+    /*
+    This function closes a notification.
+    */
     close() {
         this.style.display = "none";
         let notifications = JSON.parse(localStorage.getItem(
@@ -553,7 +559,7 @@ window.onload = (first, script_onload = null, ...functions) => {
 
     if (notifications) {
         for (let notification of notifications) {
-            let div = getById(notification)
+            let div = getById(notification);
 
             if (div) {
                 div.style.display = "none";

@@ -26,7 +26,7 @@ This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -210,6 +210,7 @@ class Configuration(DefaultNamespace):
         "auth_failures_to_blacklist",
         "blacklist_time",
         "webproxy_number",
+        "base_url",
         "smtp_server",
         "smtp_starttls",
         "smtp_password",
@@ -1064,10 +1065,18 @@ class Server:
         return HTTP errors.
         """
 
-        environ = {key: value for key, value in self.environ.items()}
+        environ = self.environ.copy()
         environ.update(environ_)
 
-        path_info = environ["PATH_INFO"]
+        base_url = getattr(self.configuration, "base_url", "").rstrip("/")
+
+        environ["URL_PATH"] = path_info = environ["PATH_INFO"]
+        environ["PATH_INFO"] = path_info = (
+            path_info[len(base_url) :]
+            if path_info.startswith(base_url)
+            else path_info
+        )
+        environ["SUB_DIRECTORIES_NUMBER"] = len(path_info.split("/")) - 2
         method = environ["REQUEST_METHOD"]
         configuration = self.configuration
         port = environ.setdefault("REMOTE_PORT", "0")
@@ -1150,7 +1159,13 @@ class Server:
                 f"Unauthenticated try to get access to {path_info!r}"
             )
             self.send_headers(
-                environ, respond, "302 Found", {"Location": "/web/auth/"}
+                environ,
+                respond,
+                "302 Found",
+                {
+                    "Location": environ["SUB_DIRECTORIES_NUMBER"] * "../"
+                    + "web/auth/"
+                },
             )
             return [
                 b"Authentication required:\n\t",

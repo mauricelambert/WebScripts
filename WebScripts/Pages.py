@@ -26,7 +26,7 @@ This file implement Pages (Api and Web system), script execution and right
 system.
 """
 
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -901,7 +901,7 @@ class Web:
         if server_configuration.active_auth:
             code, headers, content = CallableFile(
                 "script", server_configuration.auth_script, "/auth/"
-            )(user, len(environ["PATH_INFO"].split("/")) - 1)
+            )(user, environ["SUB_DIRECTORIES_NUMBER"])
             return code, headers, content
         else:
             logger_error(
@@ -943,12 +943,17 @@ class Pages:
         title) to /web/ or /api/.
         """
 
+        subpath = "../" * environ["SUB_DIRECTORIES_NUMBER"]
+
         return (
             "301 Moved Permanently",
-            {"Location": "/web/"},
-            b"<!-- To use API go to this URL: /api/ --><html><body><h1>"
-            b'Index page is /web/</h1><a href="/web/">Please click here'
-            b'</a><script>window.location="/web/"</script></html>',
+            {"Location": subpath + "web/"},
+            (
+                f"<!-- To use API go to this URL: {subpath}api/ --><html>"
+                f'<body><h1>Index page is {subpath}web/</h1><a href="{subpath}'
+                'web/">Please click here</a><script>window.location='
+                f'"{subpath}web/"</script></html>'
+            ).encode(),
         )
 
     @staticmethod

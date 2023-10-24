@@ -707,7 +707,7 @@ class ScriptExecution {
         }
 
         let url = subpath + (
-            script_name[0] === "/" ? script_name : "/api/scripts/" +
+            script_name[0] === "/" ? script_name.slice(1) : "api/scripts/" +
             script_name
         );
 
@@ -725,7 +725,9 @@ class ScriptExecution {
     get a new line for "real time output".
     */
     get_new_line(response) {
-        this.xhttp.open('GET', subpath + `api/script/get/${response.key}`, true);
+        this.xhttp.open(
+            'GET', subpath + `api/script/get/${response.key}`, true
+        );
         this.xhttp.send();
     }
 
