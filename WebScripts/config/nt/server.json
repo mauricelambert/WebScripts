@@ -69,6 +69,7 @@
 		"notification_address": "notification@webscripts.local",
 
 		"webproxy_number": 0,
+		"base_url": "/test/",
 
 		"data_dir": "data",
 		"cgi_path": ["cgi-bin"]

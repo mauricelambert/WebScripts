@@ -96,7 +96,7 @@ TokenCSRF = commons.TokenCSRF
 
 template_script = CallableFile.template_script
 
-script: str = """<script type="text/javascript" nonce="%(nonce)s">
+script: str = """
             script_name = "/error_pages/Request/send/${code}";
             script =  {
                 "content_type": "text/plain",
@@ -139,7 +139,6 @@ script: str = """<script type="text/javascript" nonce="%(nonce)s">
             script.build_category();
             script.build_card("link_card", "script_cards", "category_content"); // "category"
             script.build_card("search_button", "search_result");
-        </script>
 """
 
 
@@ -215,17 +214,12 @@ def send_error_page(
     code = escape(code)
 
     CallableFile.template_script = template_script.replace(
-        """<script type="text/javascript" nonce="%(nonce)s">
-            script_name="%(name)s"
-            subpath = "%(subpath)s"
-        </script>""",
+        """script_name="%(name)s";""",
         script,
     )
     text = escape(filepath or ("Error " + code + " (" + error + ")"))
     error_page = CallableFile("script", __file__, text)
-    _, headers, page = error_page(
-        user, len(environ["PATH_INFO"].split("/")) - 1
-    )
+    _, headers, page = error_page(user, environ["SUB_DIRECTORIES_NUMBER"])
     page = Template(page)
     CallableFile.template_script = template_script
 
