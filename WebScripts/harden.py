@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -282,9 +282,9 @@ class Hardening:
         """
 
         return [
-            abspath(join(*path_, y))
+            abspath(join(path[0], y))
             for g in globsyntax
-            for x in iglob(g)
+            for x in iglob(join(path[1:], g))
             for y in x
         ]
 
