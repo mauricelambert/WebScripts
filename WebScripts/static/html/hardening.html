@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#9286C2">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.6)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>hardening</strong></big></big> (version 1.1.7)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="hardening.py">hardening.py</a></font></td></tr></table>
     <p><tt>This&nbsp;tool&nbsp;runs&nbsp;CLI&nbsp;scripts&nbsp;and&nbsp;displays&nbsp;output&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
@@ -66,7 +66,7 @@ configuration.</tt></p>
 
 <dl><dt><a name="Audit-audit_debug"><strong>audit_debug</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;debug&nbsp;configuration.</tt></dd></dl>
 
-<dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; collections.abc.Iterator[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
+<dl><dt><a name="Audit-audit_export_configuration"><strong>audit_export_configuration</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;export&nbsp;configuration&nbsp;file.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audit_force_auth"><strong>audit_force_auth</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;authentication&nbsp;is&nbsp;forced.</tt></dd></dl>
 
@@ -95,6 +95,9 @@ configuration.</tt></p>
 <dl><dt><a name="Audit-audits_launcher"><strong>audits_launcher</strong></a>(server: ~Server) -&gt; collections.abc.Iterator[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;launcher.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_module_path"><strong>audits_module_path</strong></a>(server: ~Server) -&gt; hardening.Rule</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;modules&nbsp;paths.</tt></dd></dl>
+
+<dl><dt><a name="Audit-audits_script_configuration_file_path"><strong>audits_script_configuration_file_path</strong></a>(server: ~Server) -&gt; collections.abc.Iterator[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;scripts&nbsp;configurations&nbsp;files&nbsp;path<br>
+for&nbsp;absolute&nbsp;path&nbsp;configurations.</tt></dd></dl>
 
 <dl><dt><a name="Audit-audits_scripts_content_type"><strong>audits_scripts_content_type</strong></a>(server: ~Server) -&gt; collections.abc.Iterator[hardening.Rule]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;the&nbsp;configuration&nbsp;of&nbsp;the&nbsp;script&nbsp;content&nbsp;type.</tt></dd></dl>
 

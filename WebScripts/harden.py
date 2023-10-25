@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.4"
+__version__ = "0.0.6"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -245,7 +245,7 @@ class Hardening:
         This method gets scripts from configurations file.
         """
 
-        logger_debug(f"Open and loads {filename}")
+        logger_debug(f"Open and loads {filename!r}")
         with open(filename) as file:
             configurations: Dict[str, dict] = load(file)
 
@@ -273,6 +273,21 @@ class Hardening:
 
         Hardening.save_scripts_configurations(filename, configurations)
 
+    def get_files_from_glob_path(
+        self, path: List[str], globsyntax: List[str]
+    ) -> List[str]:
+        """
+        This method returns all files (with absolute path) matching
+        a list of glob syntax.
+        """
+
+        return [
+            abspath(join(*path_, y))
+            for g in globsyntax
+            for x in iglob(g)
+            for y in x
+        ]
+
     def harden_server(self, section: dict, directory: str) -> None:
         """
         This method hardens server configuration.
@@ -286,6 +301,21 @@ class Hardening:
 
         section["modules_path"] = abspath(join(*path_, "modules"))
         section["data_dir"] = abspath(join(self.directory, "data"))
+        section["json_scripts_config"] = self.get_files_from_glob_path(
+            path_, section["json_scripts_config"]
+        )
+        section["ini_scripts_config"] = self.get_files_from_glob_path(
+            path_, section["ini_scripts_config"]
+        )
+        section["documentations_path"] = self.get_files_from_glob_path(
+            path_, section["documentations_path"]
+        )
+        section["js_path"] = self.get_files_from_glob_path(
+            path_, section["js_path"]
+        )
+        section["statics_path"] = self.get_files_from_glob_path(
+            path_, section["statics_path"]
+        )
 
     def harden_script(self, section: dict, filename: str) -> None:
         """
@@ -327,9 +357,9 @@ class Hardening:
             chmod(file, 0o600)
             chown(file, pw_uid, pw_gid)
 
-        logger_warning(f"Change permissions and owner of {self.directory}")
-        chmod(self.directory, 0o755)  # nosec
-        chown(self.directory, 0, 0)
+        logger_warning(f"Change permissions and owner of {directory}")
+        chmod(directory, 0o755)  # nosec
+        chown(directory, 0, 0)
 
         chmod(hardening_path, 0o755)  # nosec
         chown(hardening_path, 0, 0)

@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.6"
+__version__ = "1.1.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1415,7 +1415,7 @@ class Audit:
                 "Files",
                 "Files rights is not check on Windows.",
             )
-            return
+            return None
 
         current_dir = Audit.current_dir
 
@@ -1435,6 +1435,12 @@ class Audit:
         r_filenames.append(join(server_path, "config", "loggers.ini"))
         r_filenames.append(join(current_dir, "config", "server.ini"))
         r_filenames.append(join(current_dir, "config", "server.json"))
+
+        for globsyntax in server.configuration.json_scripts_config:
+            r_filenames.extend(glob(globsyntax))
+
+        for globsyntax in server.configuration.ini_scripts_config:
+            r_filenames.extend(glob(globsyntax))
 
         r_filenames += [
             file.path
@@ -1513,7 +1519,7 @@ class Audit:
                     "for group and 0 for other (r-x --- ---).",
                 )
 
-    def audit_export_configuration(server: Server) -> Iterator[Rule]:
+    def audit_export_configuration(server: Server) -> Rule:
         """
         This function checks the export configuration file.
         """
@@ -1528,6 +1534,40 @@ class Audit:
             "The export configuration file exist, "
             "should be deleted on production.",
         )
+
+    def audits_script_configuration_file_path(
+        server: Server,
+    ) -> Iterator[Rule]:
+        """
+        This function checks the scripts configurations files path
+        for absolute path configurations.
+        """
+
+        for globsyntax in server.configuration.json_scripts_config:
+            yield Rule(
+                "Configurations files",
+                19,
+                not isabs(globsyntax) or not isfile(globsyntax),
+                7,
+                SEVERITY.HIGH.value,
+                "Script Configuration",
+                f"The configuration for configuration files: {globsyntax!r},"
+                " is not absolute or is not an existing file (probably a glob "
+                "syntax or file doesn't exists).",
+            )
+
+        for globsyntax in server.configuration.ini_scripts_config:
+            yield Rule(
+                "Configurations files",
+                19,
+                not isabs(globsyntax) or not isfile(globsyntax),
+                7,
+                SEVERITY.HIGH.value,
+                "Script Configuration",
+                f"The configuration for configuration files: {globsyntax!r},"
+                " is not absolute or is not an existing file (probably a glob "
+                "syntax or file doesn't exists).",
+            )
 
     def log_rule(rule: Rule, logs: Logs) -> None:
         """

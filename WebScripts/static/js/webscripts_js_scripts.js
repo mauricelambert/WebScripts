@@ -224,7 +224,7 @@ function get_scripts(...functions) {
         }
     };
 
-    xhttp.open("GET", "../../api/", true);
+    xhttp.open("GET", subpath + "api/", true);
     xhttp.send();
 }
 
@@ -348,7 +348,7 @@ class HeaderSticker {
 
         let image = this.image = new Image();
         image.onload = this.add.bind(this);
-        image.src = '/static/webscripts_icon.png';
+        image.src = subpath + 'static/webscripts_icon.png';
     }
 
     /*
