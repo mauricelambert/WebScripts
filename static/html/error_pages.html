@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module error_pages</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#9286C2">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>error_pages</strong></big></big> (version 0.0.4)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="error_pages.py">error_pages.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;tool&nbsp;run&nbsp;scripts&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;in&nbsp;a&nbsp;Web&nbsp;Interface.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;implement&nbsp;error,&nbsp;report&nbsp;and&nbsp;request&nbsp;pages&nbsp;by&nbsp;default.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#75B4AD">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#75B4AD"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
+</td><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="ntpath.html">ntpath</a><br>
+</td><td width="25%" valign=top><a href="secrets.html">secrets</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="error_pages.html#Report">Report</a>
+</font></dt><dt><font face="helvetica, arial"><a href="error_pages.html#Request">Request</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Report">class <strong>Report</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;implements&nbsp;pages&nbsp;for&nbsp;the&nbsp;report&nbsp;feature&nbsp;by&nbsp;default.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Report-new"><strong>new</strong></a>(environ: os._Environ, user: ~User, configuration: ~ServerConfiguration, code: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;the&nbsp;report&nbsp;page&nbsp;by&nbsp;default.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Request">class <strong>Request</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;implements&nbsp;pages&nbsp;for&nbsp;the&nbsp;report&nbsp;feature&nbsp;by&nbsp;default.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Request-save"><strong>save</strong></a>(username: str, code: str, url: str, user_agent: str, subject: str, name: str, reason: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;save&nbsp;the&nbsp;report/request&nbsp;to&nbsp;a&nbsp;CSV&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="Request-send"><strong>send</strong></a>(environ: os._Environ, user: ~User, configuration: ~ServerConfiguration, code: str, arguments: List[str], inputs: List[str], csrf_token: str = None) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;save&nbsp;and&nbsp;send&nbsp;request&nbsp;or&nbsp;report.</tt></dd></dl>
+
+<dl><dt><a name="Request-send_mail"><strong>send_mail</strong></a>(configuration: ~ServerConfiguration, notification: str) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;a&nbsp;notification&nbsp;mail.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#A57927">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#A57927"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-page_401"><strong>page_401</strong></a>(error: str) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;uses&nbsp;send_error_page&nbsp;to&nbsp;return&nbsp;the&nbsp;page&nbsp;401&nbsp;by&nbsp;default.</tt></dd></dl>
+ <dl><dt><a name="-page_403"><strong>page_403</strong></a>(error: str) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;uses&nbsp;send_error_page&nbsp;to&nbsp;return&nbsp;the&nbsp;page&nbsp;403&nbsp;by&nbsp;default.</tt></dd></dl>
+ <dl><dt><a name="-page_404"><strong>page_404</strong></a>(error: str) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;uses&nbsp;send_error_page&nbsp;to&nbsp;return&nbsp;the&nbsp;page&nbsp;404&nbsp;by&nbsp;default.</tt></dd></dl>
+ <dl><dt><a name="-page_500"><strong>page_500</strong></a>(error: str) -&gt; Tuple[str, Dict[str, str], List[bytes]]</dt><dd><tt>This&nbsp;function&nbsp;uses&nbsp;send_error_page&nbsp;to&nbsp;return&nbsp;the&nbsp;page&nbsp;500&nbsp;by&nbsp;default.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#18675F">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#18675F"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['page_500', 'page_401', 'page_403', 'page_404', 'Request', 'Report']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021, 2022  Maurice L...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = '<font color="#c040c0">\n</font>This tool run scripts and display the result in...ement errors and report/request pages by default.'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#9286C2">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#9286C2"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>
