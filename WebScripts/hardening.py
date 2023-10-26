@@ -26,7 +26,7 @@ This file implement the hardening audit of the WebScripts installation and
 configuration.
 """
 
-__version__ = "1.1.7"
+__version__ = "1.1.8"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -1547,7 +1547,7 @@ class Audit:
             yield Rule(
                 "Configurations files",
                 19,
-                not isabs(globsyntax) or not isfile(globsyntax),
+                isabs(globsyntax) and isfile(globsyntax),
                 7,
                 SEVERITY.HIGH.value,
                 "Script Configuration",
@@ -1560,7 +1560,7 @@ class Audit:
             yield Rule(
                 "Configurations files",
                 19,
-                not isabs(globsyntax) or not isfile(globsyntax),
+                isabs(globsyntax) and isfile(globsyntax),
                 7,
                 SEVERITY.HIGH.value,
                 "Script Configuration",
