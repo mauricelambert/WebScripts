@@ -1,0 +1,7 @@
+[submodule "DockerContainers"]
+    path = DockerContainers
+    url = https://github.com/mauricelambert/WebScriptsContainers
+
+[submodule "Tools"]
+    path = Tools
+    url = https://github.com/mauricelambert/WebScriptsTools
