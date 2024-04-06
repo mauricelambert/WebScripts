@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML link to download a file
-#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
+#    Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file prints a HTML link to download a file.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -89,7 +89,7 @@ def main() -> None:
         return 127
 
     print(
-        f'<a href="/share/Download/filename/{quote(filename)}">'
+        f'<a href="../../share/Download/filename/{quote(filename)}">'
         f"Click here to download {escape(filename)}</a>"
     )
 

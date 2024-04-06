@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML table of uploaded files
-#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
+#    Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file prints a HTML table of uploaded files.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -39,7 +39,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -87,7 +87,7 @@ def main() -> int:
         print(
             # f'<tr><td><a href="get_file.py?filename={quote(name)}">'
             # f'{escape(name)}</a></td><td>'
-            '<tr><td><a title="download link" href="/share/Download/filename'
+            '<tr><td><a title="download link" href="../../share/Download/filename'
             f'/{quote(name)}">{escape(name)}</a></td><td>'
             + strftime(
                 "%Y-%m-%d %H:%M:%S", localtime(float(file["timestamp"]))

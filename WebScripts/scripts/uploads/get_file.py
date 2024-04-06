@@ -3,7 +3,7 @@
 
 ###################
 #    This file prints a HTML link to download a file
-#    Copyright (C) 2021  Maurice Lambert
+#    Copyright (C) 2021, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""This tool run scripts and display the result in a Web Interface.
+"""
+This tool runs scripts and display the result in a Web Interface.
 
-This file prints a HTML link to download a file."""
+This file prints a HTML link to download a file.
+"""
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -36,7 +38,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2024  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -85,7 +87,7 @@ def main() -> None:
         sys.exit(127)
 
     print(
-        f'<a href="/share/Download/filename/{quote(filename)}">'
+        f'<a href="../../share/Download/filename/{quote(filename)}">'
         f"Click here to download {html.escape(filename)}</a>"
     )
 
