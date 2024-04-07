@@ -199,21 +199,6 @@ WebScripts38.main()
     - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module), [readthedocs](https://webscripts.readthedocs.io/en/latest/Add_Module/)
     - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client), [readthedocs](https://webscripts.readthedocs.io/en/latest/API_Client/)
 
-### PyDoc
-
- - [\_\_init\_\_](https://mauricelambert.github.io/info/python/code/WebScripts/)
- - [WebScripts](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.html)
- - [Pages](https://mauricelambert.github.io/info/python/code/WebScripts/Pages.html)
- - [commons](https://mauricelambert.github.io/info/python/code/WebScripts/commons.html)
- - [utils](https://mauricelambert.github.io/info/python/code/WebScripts/utils.html)
- - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
- - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
- - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
- - [Default Request Manager](https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html)
- - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html)
- - [Default module share](https://mauricelambert.github.io/info/python/code/WebScripts/share.html)
- - [Default module csp](https://mauricelambert.github.io/info/python/code/WebScripts/csp.html)
-
 ## Links
 
  - [Pypi](https://pypi.org/project/WebScripts)
