@@ -14,4 +14,4 @@ jobs:
         uses: actions/checkout@master
 
       - name: Security vulnerabilities scan
-        uses: aufdenpunkt/python-safety-check@master
+        uses: mauricelambert/python-safety-check@master
