@@ -1,0 +1,9 @@
+[submodule "WebScriptsContainers"]
+	path = WebScriptsContainers
+	url = https://github.com/mauricelambert/WebScriptsContainers
+[submodule "WebScriptsTools"]
+	path = WebScriptsTools
+	url = https://github.com/mauricelambert/WebScriptsTools
+[submodule "WebScriptsClient"]
+	path = WebScriptsClient
+	url = https://github.com/mauricelambert/WebScriptsClient
