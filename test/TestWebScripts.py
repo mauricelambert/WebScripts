@@ -335,9 +335,9 @@ class TestServer(TestCase):
 
         Server.set_default_headers(h, True, c)
 
-        headers[
-            "Strict-Transport-Security"
-        ] = "max-age=63072000; includeSubDomains; preload"
+        headers["Strict-Transport-Security"] = (
+            "max-age=63072000; includeSubDomains; preload"
+        )
         headers["Content-Security-Policy"] = (
             "default-src 'self'; navigate-to 'self'; worker-src "
             "'none'; style-src-elem 'self'; style-src-attr 'none';"
@@ -352,9 +352,9 @@ class TestServer(TestCase):
         headers["X-XSS-Protection"] = "1; mode=block"
         headers["X-Content-Type-Options"] = "nosniff"
         headers["Referrer-Policy"] = "origin-when-cross-origin"
-        headers[
-            "Cache-Control"
-        ] = "no-cache, no-store, must-revalidate, private"
+        headers["Cache-Control"] = (
+            "no-cache, no-store, must-revalidate, private"
+        )
         headers["Pragma"] = "no-cache"
         headers["Expires"] = "0"
         headers["Clear-Site-Data"] = '"cache", "executionContexts"'
@@ -362,9 +362,9 @@ class TestServer(TestCase):
             "payment 'none'; geolocation 'none'; "
             "microphone 'none'; camera 'none'"
         )
-        headers[
-            "Permissions-Policy"
-        ] = "microphone=(),camera=(),payment=(),geolocation=()"
+        headers["Permissions-Policy"] = (
+            "microphone=(),camera=(),payment=(),geolocation=()"
+        )
         headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         headers["Cross-Origin-Opener-Policy"] = "same-origin"
         headers["Cross-Origin-Resource-Policy"] = "same-origin"
@@ -1538,9 +1538,11 @@ class TestFunctions(TestCase):
             with patch.object(
                 WebScripts.WebScripts,
                 "system",
-                return_value="Linux"
-                if WebScripts.WebScripts.system() == "Windows"
-                else "Windows",
+                return_value=(
+                    "Linux"
+                    if WebScripts.WebScripts.system() == "Windows"
+                    else "Windows"
+                ),
             ) as mock_method:
                 for configurations in get_server_config(arguments):
                     self.assertTrue(isinstance(configurations, dict))
@@ -1566,9 +1568,14 @@ class TestFunctions(TestCase):
     def test_configure_logs_system(self):
         global WebScripts
 
-        with patch.object(
-            WebScripts.WebScripts, "check_file_permission", return_value=False
-        ), self.assertRaises(WebScriptsSecurityError):
+        with (
+            patch.object(
+                WebScripts.WebScripts,
+                "check_file_permission",
+                return_value=False,
+            ),
+            self.assertRaises(WebScriptsSecurityError),
+        ):
             configure_logs_system()
             self.assertTrue(path.isdir("logs"))
             self.assertFalse(path.isfile(path.join("logs", "root.logs")))

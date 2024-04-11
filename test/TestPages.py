@@ -96,19 +96,20 @@ class TestFunctions(TestCase):
         script = Mock(path="path", launcher=None)
         Pages.scripts = {"test": script}
 
-        with patch.object(
-            Module,
-            "get_environ",
-            return_value={"test": "test1"},
-        ) as m_get_environ, patch.object(
-            Module, "Popen", return_value="process"
-        ) as m_popen, patch.object(
-            Module,
-            "start_process",
-            return_value=("stdout", "stderr", "key", "error", "code"),
-        ) as m_start_process, patch.object(
-            Module, "execution_logs"
-        ) as m_logs:
+        with (
+            patch.object(
+                Module,
+                "get_environ",
+                return_value={"test": "test1"},
+            ) as m_get_environ,
+            patch.object(Module, "Popen", return_value="process") as m_popen,
+            patch.object(
+                Module,
+                "start_process",
+                return_value=("stdout", "stderr", "key", "error", "code"),
+            ) as m_start_process,
+            patch.object(Module, "execution_logs") as m_logs,
+        ):
             out, err, key, code, error = execute_scripts(
                 "test",
                 "User",
@@ -143,19 +144,20 @@ class TestFunctions(TestCase):
         script = Mock(path="path", launcher="launcher")
         Pages.scripts = {"test": script}
 
-        with patch.object(
-            Module,
-            "get_environ",
-            return_value={"test": "test1"},
-        ) as m_get_environ, patch.object(
-            Module, "Popen", return_value="process"
-        ) as m_popen, patch.object(
-            Module,
-            "start_process",
-            return_value=("stdout", "stderr", "key", "error", "code"),
-        ) as m_start_process, patch.object(
-            Module, "execution_logs"
-        ) as m_logs:
+        with (
+            patch.object(
+                Module,
+                "get_environ",
+                return_value={"test": "test1"},
+            ) as m_get_environ,
+            patch.object(Module, "Popen", return_value="process") as m_popen,
+            patch.object(
+                Module,
+                "start_process",
+                return_value=("stdout", "stderr", "key", "error", "code"),
+            ) as m_start_process,
+            patch.object(Module, "execution_logs") as m_logs,
+        ):
             out, err, key, code, error = execute_scripts(
                 "test",
                 "User",
@@ -417,11 +419,14 @@ class TestFunctions(TestCase):
         self.assertFalse(check_categories_scripts_access(user, configuration))
 
     def test_decode_output(self):
-        with patch.object(
-            WebScripts.utils, "getpreferredencoding", return_value=None
-        ) as m1, patch.object(
-            WebScripts.utils, "device_encoding", return_value=None
-        ) as m2:
+        with (
+            patch.object(
+                WebScripts.utils, "getpreferredencoding", return_value=None
+            ) as m1,
+            patch.object(
+                WebScripts.utils, "device_encoding", return_value=None
+            ) as m2,
+        ):
             self.assertEqual("\u2588", decode_output(b"\xe2\x96\x88"))
             self.assertEqual("\xff\xfe\xef", decode_output(b"\xff\xfe\xef"))
             self.assertEqual("€", decode_output(b"\x80"))
@@ -696,14 +701,16 @@ class TestApi(TestCase):
         )
         user.check_csrf = True
 
-        with patch.object(
-            Module,
-            "execute_scripts",
-            return_value=(b"result", b"error", "key", 0, "TimeoutError"),
-        ) as mock, patch.object(
-            Module.TokenCSRF, "check_csrf", return_value=True
-        ), patch.object(
-            Module.TokenCSRF, "build_token", return_value="token"
+        with (
+            patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(b"result", b"error", "key", 0, "TimeoutError"),
+            ) as mock,
+            patch.object(Module.TokenCSRF, "check_csrf", return_value=True),
+            patch.object(
+                Module.TokenCSRF, "build_token", return_value="token"
+            ),
         ):
             code, headers, data = self.api.scripts(
                 Mock(), user, server, "other.sh", Mock(), Mock(), "token"
@@ -795,25 +802,31 @@ class TestWeb(TestCase):
         server = Mock()
         env = Mock()
 
-        with patch.object(
-            Module,
-            "check_right",
-            return_value=True,
-        ) as rigth, patch.object(
-            Module,
-            "Popen",
-            return_value=Mock(),
-        ) as popen, patch.object(
-            Module, "get_environ", return_value={"env": "env"}
-        ) as getenv, patch.object(
-            Module.ScriptConfig,
-            "get_docfile_from_configuration",
-            return_value=None,
-        ) as get_docfile, patch.object(
-            Module,
-            "get_real_path",
-            return_value="file.txt",
-        ) as get_file:
+        with (
+            patch.object(
+                Module,
+                "check_right",
+                return_value=True,
+            ) as rigth,
+            patch.object(
+                Module,
+                "Popen",
+                return_value=Mock(),
+            ) as popen,
+            patch.object(
+                Module, "get_environ", return_value={"env": "env"}
+            ) as getenv,
+            patch.object(
+                Module.ScriptConfig,
+                "get_docfile_from_configuration",
+                return_value=None,
+            ) as get_docfile,
+            patch.object(
+                Module,
+                "get_real_path",
+                return_value="file.txt",
+            ) as get_file,
+        ):
             code, headers, data = self.web.doc(
                 env, user, server, "test.go", Mock(), Mock(), Mock()
             )
@@ -833,23 +846,28 @@ class TestWeb(TestCase):
         script.command_generate_documentation = None
         script.get_dict = None
 
-        with patch.object(
-            Module,
-            "check_right",
-            return_value=True,
-        ) as rigth, patch.object(
-            Module.path,
-            "isfile",
-            return_value=True,
-        ) as isfile, patch.object(
-            Module,
-            "get_file_content",
-            return_value=b"data",
-        ) as getcontent, patch.object(
-            Module,
-            "get_real_path",
-            return_value="file.txt",
-        ) as get_file:
+        with (
+            patch.object(
+                Module,
+                "check_right",
+                return_value=True,
+            ) as rigth,
+            patch.object(
+                Module.path,
+                "isfile",
+                return_value=True,
+            ) as isfile,
+            patch.object(
+                Module,
+                "get_file_content",
+                return_value=b"data",
+            ) as getcontent,
+            patch.object(
+                Module,
+                "get_real_path",
+                return_value="file.txt",
+            ) as get_file,
+        ):
             code, headers, data = self.web.doc(
                 env, user, server, "test.go", Mock(), Mock(), Mock()
             )
@@ -863,23 +881,28 @@ class TestWeb(TestCase):
         self.assertDictEqual(headers, {"Content-Type": "html; charset=utf-8"})
         self.assertEqual(data, b"data")
 
-        with patch.object(
-            Module,
-            "check_right",
-            return_value=True,
-        ) as rigth, patch.object(
-            Module.ScriptConfig,
-            "get_docfile_from_configuration",
-            return_value="file.txt",
-        ) as get_docfile, patch.object(
-            Module,
-            "get_file_content",
-            return_value=b"data",
-        ) as getcontent, patch.object(
-            Module,
-            "get_real_path",
-            return_value="file.txt",
-        ) as get_file:
+        with (
+            patch.object(
+                Module,
+                "check_right",
+                return_value=True,
+            ) as rigth,
+            patch.object(
+                Module.ScriptConfig,
+                "get_docfile_from_configuration",
+                return_value="file.txt",
+            ) as get_docfile,
+            patch.object(
+                Module,
+                "get_file_content",
+                return_value=b"data",
+            ) as getcontent,
+            patch.object(
+                Module,
+                "get_real_path",
+                return_value="file.txt",
+            ) as get_file,
+        ):
             code, headers, data = self.web.doc(
                 env, user, server, "test.go", Mock(), Mock(), Mock()
             )
@@ -944,9 +967,10 @@ class TestWeb(TestCase):
 
         Pages.scripts["other.sh"] = "other"
 
-        with patch.object(
-            Module, "check_right", return_value=True
-        ), patch.object(Module, "CallableFile", return_value=None):
+        with (
+            patch.object(Module, "check_right", return_value=True),
+            patch.object(Module, "CallableFile", return_value=None),
+        ):
             code, headers, data = self.web.scripts(
                 Mock(), Mock(), server, "other.sh", Mock(), Mock()
             )
@@ -964,10 +988,11 @@ class TestWeb(TestCase):
         self.assertDictEqual({}, headers)
         self.assertEqual(data, b"")
 
-        with patch.object(
-            Module, "check_right", return_value=True
-        ), patch.object(
-            Module, "CallableFile", return_value=Mock(return_value="test")
+        with (
+            patch.object(Module, "check_right", return_value=True),
+            patch.object(
+                Module, "CallableFile", return_value=Mock(return_value="test")
+            ),
         ):
             self.assertEqual(
                 "test",
@@ -1127,21 +1152,25 @@ class TestPages(TestCase):
             )
 
         user_session = Mock(id=1)
-        with patch.object(
-            Module,
-            "execute_scripts",
-            return_value=(
-                b'{"data":"data"}',
-                b"",
-                "key",
-                0,
-                "TimeoutError",
-            ),
-        ) as mock, patch.object(
-            Module.User, "default_build", return_value=user_session
-        ) as getuser, patch.object(
-            Module.Session, "build_session", return_value="cookie"
-        ) as session:
+        with (
+            patch.object(
+                Module,
+                "execute_scripts",
+                return_value=(
+                    b'{"data":"data"}',
+                    b"",
+                    "key",
+                    0,
+                    "TimeoutError",
+                ),
+            ) as mock,
+            patch.object(
+                Module.User, "default_build", return_value=user_session
+            ) as getuser,
+            patch.object(
+                Module.Session, "build_session", return_value="cookie"
+            ) as session,
+        ):
             code, headers, data = self.pages.auth(
                 env, user, server, script, command, inputs
             )
