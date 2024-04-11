@@ -293,12 +293,14 @@ def get_environ(
 
     script_env = {
         key: (
-            str(value)
-            if key in base_environ
-            else "".join(x for x in str(value) if x in printable)
+            (
+                str(value)
+                if key in base_environ
+                else "".join(x for x in str(value) if x in printable)
+            )
+            if key != "wsgi.version"
+            else ".".join([str(version) for version in value])
         )
-        if key != "wsgi.version"
-        else ".".join([str(version) for version in value])
         for key, value in environ.items()
         if key
         not in (
@@ -401,7 +403,6 @@ def decode_output(data: bytes) -> str:
 
 
 class Process:
-
     """
     This class implements a running processus.
     """
@@ -501,7 +502,6 @@ class Process:
 
 
 class Script:
-
     """
     This class groups script functions.
     """
@@ -559,7 +559,6 @@ class Script:
 
 
 class Api:
-
     """
     This class groups API functions.
     """
@@ -703,7 +702,6 @@ class Api:
 
 
 class Web:
-
     """
     This class groups Web Pages functions.
     """
@@ -725,30 +723,32 @@ class Web:
 
         return (
             "200 OK",
-            {
-                "Content-Security-Policy": (
-                    "default-src 'self'; navigate-to 'self'; worker-src 'none'"
-                    "; style-src-elem 'self'; style-src-attr 'none'; style-src"
-                    " 'self'; script-src-attr 'none'; object-src 'none'; "
-                    "media-src 'none'; manifest-src 'none'; frame-ancestors "
-                    "'none'; connect-src 'self'; font-src 'none'; img-src "
-                    "'self'; base-uri 'none'; child-src 'none'; form-action "
-                    "'none'; script-src 'self' 'require-trusted-types-for'"
-                )
-            }
-            if server.security
-            else {
-                "Content-Security-Policy-Report-Only": (
-                    "default-src 'self'; navigate-to 'self'; worker-src "
-                    "'none'; style-src-elem 'self'; style-src-attr 'none';"
-                    " style-src 'self'; script-src-attr 'none'; object-src"
-                    " 'none'; media-src 'none'; manifest-src 'none'; "
-                    "frame-ancestors 'none'; connect-src 'self'; font-src"
-                    " 'none'; img-src 'self'; base-uri 'none'; child-src"
-                    " 'none'; form-action 'none'; script-src 'self' "
-                    "'require-trusted-types-for'; report-uri /csp/debug/"
-                )
-            },
+            (
+                {
+                    "Content-Security-Policy": (
+                        "default-src 'self'; navigate-to 'self'; worker-src 'none'"
+                        "; style-src-elem 'self'; style-src-attr 'none'; style-src"
+                        " 'self'; script-src-attr 'none'; object-src 'none'; "
+                        "media-src 'none'; manifest-src 'none'; frame-ancestors "
+                        "'none'; connect-src 'self'; font-src 'none'; img-src "
+                        "'self'; base-uri 'none'; child-src 'none'; form-action "
+                        "'none'; script-src 'self' 'require-trusted-types-for'"
+                    )
+                }
+                if server.security
+                else {
+                    "Content-Security-Policy-Report-Only": (
+                        "default-src 'self'; navigate-to 'self'; worker-src "
+                        "'none'; style-src-elem 'self'; style-src-attr 'none';"
+                        " style-src 'self'; script-src-attr 'none'; object-src"
+                        " 'none'; media-src 'none'; manifest-src 'none'; "
+                        "frame-ancestors 'none'; connect-src 'self'; font-src"
+                        " 'none'; img-src 'self'; base-uri 'none'; child-src"
+                        " 'none'; form-action 'none'; script-src 'self' "
+                        "'require-trusted-types-for'; report-uri /csp/debug/"
+                    )
+                }
+            ),
             (
                 CallableFile.template_index
                 if server.security
@@ -912,7 +912,6 @@ class Web:
 
 
 class Pages:
-
     """
     This class implement Web Pages for WebScripts server.
     """

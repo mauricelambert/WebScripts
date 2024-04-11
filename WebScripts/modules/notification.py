@@ -63,9 +63,11 @@ notification_id: int = 0
 
 module_getter: MethodType = modules.get
 check_right = module_getter(
-    "WebScripts.Pages"
-    if module_getter("WebScripts")
-    else "WebScripts38.Pages",
+    (
+        "WebScripts.Pages"
+        if module_getter("WebScripts")
+        else "WebScripts38.Pages"
+    ),
     module_getter("Pages"),
 ).check_right
 commons = module_getter("commons") or modules["WebScripts.commons"]

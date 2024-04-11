@@ -60,7 +60,6 @@ __all__ = [
 
 
 class WebScriptsError(Exception):
-
     """
     To raise WebScripts errors
     """
@@ -69,7 +68,6 @@ class WebScriptsError(Exception):
 
 
 class WebScriptsConfigurationError(WebScriptsError):
-
     """
     To raise Configuration Error.
     """
@@ -78,7 +76,6 @@ class WebScriptsConfigurationError(WebScriptsError):
 
 
 class WebScriptsConfigurationTypeError(WebScriptsConfigurationError):
-
     """
     To raise Configuration Error.
     """
@@ -87,7 +84,6 @@ class WebScriptsConfigurationTypeError(WebScriptsConfigurationError):
 
 
 class WebScriptsArgumentError(WebScriptsError):
-
     """
     To raise Argument Error.
     """
@@ -96,7 +92,6 @@ class WebScriptsArgumentError(WebScriptsError):
 
 
 class ScriptConfigurationError(WebScriptsConfigurationError):
-
     """
     To raise Script Configuration Error.
     """
@@ -105,7 +100,6 @@ class ScriptConfigurationError(WebScriptsConfigurationError):
 
 
 class MissingAttributesError(WebScriptsError):
-
     """
     To raise Missing Attributes Error.
     """
@@ -114,7 +108,6 @@ class MissingAttributesError(WebScriptsError):
 
 
 class WebScriptsSecurityError(WebScriptsError):
-
     """
     To raise Security Error in WebScripts services.
     """

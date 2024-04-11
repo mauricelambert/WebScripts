@@ -233,7 +233,6 @@ def send_error_page(
 
 
 class Report:
-
     """
     This class implements pages for the report feature by default.
     """
@@ -257,7 +256,6 @@ class Report:
 
 
 class Request:
-
     """
     This class implements pages for the report feature by default.
     """
