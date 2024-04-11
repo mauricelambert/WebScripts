@@ -216,10 +216,9 @@ sys.modules["os.path"] = OsModule.path()
 
 sys.modules["os"].mkdir = OsModule.mkdir
 
-with (
-    patch.object(sys.modules["os.path"], "isdir", return_value=False),
-    patch.object(sys.modules["path"], "isdir", return_value=False),
-):
+with patch.object(
+    sys.modules["os.path"], "isdir", return_value=False
+), patch.object(sys.modules["path"], "isdir", return_value=False):
     import WebScripts
 
 real_check_file_permission = WebScripts.check_file_permission
@@ -375,17 +374,14 @@ sys.modules["pwd"] = Mock(
 #     lambda *x, **y: "Linux" if system() == "Windows" else "Windows"
 # )
 
-with (
-    patch.object(
-        sys.modules["platform"],
-        "system",
-        return_value=("Linux" if system() == "Windows" else "Windows"),
-    ),
-    patch.object(
-        sys.modules["subprocess"],
-        "check_call",
-        return_value=0,
-    ),
+with patch.object(
+    sys.modules["platform"],
+    "system",
+    return_value=("Linux" if system() == "Windows" else "Windows"),
+), patch.object(
+    sys.modules["subprocess"],
+    "check_call",
+    return_value=0,
 ):
     utils.get_real_path("/test/whynot", no_error=True)
     _exec(utils.__spec__, utils)
