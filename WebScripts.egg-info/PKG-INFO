@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: WebScripts
-Version: 3.0.31
+Version: 3.0.32
 Summary: This tool runs CLI scripts and displays output in a Web Interface.
 Home-page: https://github.com/mauricelambert/WebScripts
 Author: Maurice Lambert
@@ -69,55 +69,20 @@ Create a safe, secure and easy way to share CLI (console) scripts and scripting 
     - [DAST - Dynamic Application Security Testing](https://webscripts.readthedocs.io/en/latest/Code_Analysis_for_Security/#dast-alerts) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Code-Analysis-for-Security)) using [ZAP](https://mauricelambert.github.io/info/python/code/WebScripts/ZAP.html) [(Baseline && full scan)](https://github.com/mauricelambert/WebScripts/issues/4), nuclei and some Kali Linux tools.
     - [Web pentest](https://webscripts.readthedocs.io/en/latest/Pentest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Pentest)) using Kali Linux Web tools and my little experience in Web Hacking. Tools are [skipfish](https://mauricelambert.github.io/info/python/code/WebScripts/skipfish/index.html), [nikto](https://mauricelambert.github.io/info/python/code/WebScripts/nikto.html), [dirb](https://mauricelambert.github.io/info/python/code/WebScripts/dirb.txt) and [whatweb](https://mauricelambert.github.io/info/python/code/WebScripts/whatweb.json).
     - [Hardening](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#hardening-audit)([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#hardening-audit)), the WebScripts installation is pre-hardened, an audit is performed at the launch of the WebScripts server and reports are generated. Defaults/examples HTML reports: 
-        - [Linux HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/audit_linux.html), 
-        - [Windows HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/audit_windows.html), 
-        - [docker with Apache and mod_wsgi HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_apache_audit.html), 
-        - [docker with Nginx as HTTPS proxy HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_nginx_audit.html), 
-        - [docker HTML report](https://mauricelambert.github.io/info/python/code/WebScripts/docker_audit.html)
     - [File integrity checks](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#file-integrity)([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#file-integrity)), the WebScripts server implements a daemon thread to check file integrity hourly.
-    - Logs
-        - Centralization (using Syslog on Linux and Event Viewer on Windows)
-        - Levels
-            - Trace    (5)   [Specific file]
-            - Debug    (10)  [Specific file, full logs file, console, centralization]
-            - Info     (20)  [Specific file, full logs file, console, centralization]
-            - Request  (26)  [Specific file, full logs file, console, centralization]
-            - Response (27)  [Specific file, full logs file, console, centralization]
-            - Command  (28)  [Specific file, full logs file, console, centralization]
-            - Warning  (30)  [Specific file, full logs file, console, centralization]
-            - Error    (40)  [Specific file, full logs file, console, centralization]
-            - Critical (50)  [Specific file, full logs file, console, centralization]
-    - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python package)
-    - Easy to deploy securely
-        - [Docker with Apache and mod_wsgi](https://hub.docker.com/r/mauricelambert/webscripts) ([github](https://github.com/mauricelambert/WebScriptsContainers))
-        - [Docker with Nginx as HTTPS proxy](https://hub.docker.com/r/mauricelambert/webscripts) ([github](https://github.com/mauricelambert/WebScriptsContainers))
-        - [Docker](https://hub.docker.com/r/mauricelambert/webscripts) ([github](https://github.com/mauricelambert/WebScriptsContainers))
-        - [Apache and mod_wsgi](https://webscripts.readthedocs.io/en/latest/Deployment/#apache-using-wsgi-mod) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#apache-using-wsgi-mod))
-        - [Nginx as HTTPS proxy](https://webscripts.readthedocs.io/en/latest/Deployment/#nginx-as-a-proxy-https) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Deployment#nginx---as-a-proxy-https))
-    - Easy to configure securely [(read the documentation)](https://webscripts.readthedocs.io/en/latest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/))
-        - INI/CFG syntax
-        - JSON syntax
-    - [Unittest - 99% Code Coverage (2104/2108 lines)](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest))
-        - ubuntu && python [3.8, 3.9, 3.10, 3.11]
-        - windows && python [3.8, 3.9, 3.10, 3.11]
-        - MacOS && python [3.8, 3.9, 3.10, 3.11]
+    - Logs with centralization (using Syslog on Linux and Event Viewer on Windows), some levels and differents files for easiest supervision, controls and investigations
+    - Easy to update and patch security issues on Linux (critical functions are implemented in Standard Library and are updated with your system) (WebScripts does not require any python external package)
+    - Easy to deploy securely (with docker or on your Linux system with Apache and UWSGI or NGINX as reverse proxy)
+    - Easy to configure securely [(read the documentation)](https://webscripts.readthedocs.io/en/latest/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/)), hardening checks and reports for unsecure configurations
+    - [Unittest - 99% Code Coverage (2104/2108 lines)](https://webscripts.readthedocs.io/en/latest/Development_and_Administration_Tools/#unittest) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Development-and-Administration-Tools#unittest)), tests with python3.8 - python3.12
     - Javascript parser and formatter for `text`, `json` and `csv` content type (XSS protection)
     - XSS active protection for `html` content type based on user inputs analysis and script outputs
  - Customizable
     - [Authentication](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Script/#build-the-script) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Script#build-the-script))
     - Web Interface: HTML, CSS and JS [files](https://webscripts.readthedocs.io/en/latest/WEB_Interface/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/WEB-Interface))
     - URL, request, response and error pages using [python modules](https://webscripts.readthedocs.io/en/latest/Modules/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)) - [example](https://webscripts.readthedocs.io/en/latest/Add_Module/#build-the-module) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module))
- - Highly configurable and scalable
-    - [Modules](https://webscripts.readthedocs.io/en/latest/Modules/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules))
-    - Configurations: 
-        - [server](https://webscripts.readthedocs.io/en/latest/Server_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Server-Configuration#custom-configurations))
-        - [scripts](https://webscripts.readthedocs.io/en/latest/Script_Configuration/#custom-configurations) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Script-Configuration#custom-configurations))
- - Pre-installed and configured scripts and modules
-    - Account, [permissions](https://webscripts.readthedocs.io/en/latest/Users_Access_and_Rights/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Access-and-Permissions)) and [authentication system](https://webscripts.readthedocs.io/en/latest/Authentication/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Authentication))
-    - [Share files](https://webscripts.readthedocs.io/en/latest/File_Share/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/File-Share)): upload and download files with permissions (example [here](https://webscripts.readthedocs.io/en/latest/API_Client/#upload-client), [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client#upload-client))
-    - HTTP Error Page Request and Reporting System
-    - Temporary and secure password sharing
-    - Logs viewer and analysis
+ - Highly configurable and scalable with a [python module system](https://webscripts.readthedocs.io/en/latest/Modules/) ([wiki](https://github.com/mauricelambert/WebScripts/wiki/Modules)) and configurations
+ - Pre-installed and configured scripts and modules (user and authentication, secure file sharing with permissions, error pages with requests to administrator system, temporary and secure password share, logs viewer and analyser)
 
 ## Demo
 
@@ -272,21 +237,6 @@ WebScripts38.main()
     - Add a module: [wiki](https://github.com/mauricelambert/WebScripts/wiki/Add-Module), [readthedocs](https://webscripts.readthedocs.io/en/latest/Add_Module/)
     - Make a custom API client: [wiki](https://github.com/mauricelambert/WebScripts/wiki/API-Client), [readthedocs](https://webscripts.readthedocs.io/en/latest/API_Client/)
 
-### PyDoc
-
- - [\_\_init\_\_](https://mauricelambert.github.io/info/python/code/WebScripts/)
- - [WebScripts](https://mauricelambert.github.io/info/python/code/WebScripts/WebScripts.html)
- - [Pages](https://mauricelambert.github.io/info/python/code/WebScripts/Pages.html)
- - [commons](https://mauricelambert.github.io/info/python/code/WebScripts/commons.html)
- - [utils](https://mauricelambert.github.io/info/python/code/WebScripts/utils.html)
- - [Errors](https://mauricelambert.github.io/info/python/code/WebScripts/Errors.html)
- - [Default Database Manager](https://mauricelambert.github.io/info/python/code/WebScripts/manage_defaults_databases.html)
- - [Default Upload Manager](https://mauricelambert.github.io/info/python/code/WebScripts/uploads_management.html)
- - [Default Request Manager](https://mauricelambert.github.io/info/python/code/WebScripts/requests_management.html)
- - [Default module errors](https://mauricelambert.github.io/info/python/code/WebScripts/error_pages.html)
- - [Default module share](https://mauricelambert.github.io/info/python/code/WebScripts/share.html)
- - [Default module csp](https://mauricelambert.github.io/info/python/code/WebScripts/csp.html)
-
 ## Links
 
  - [Pypi](https://pypi.org/project/WebScripts)
@@ -295,7 +245,7 @@ WebScripts38.main()
  - RSS Feed [pypi](https://pypi.org/rss/project/webscripts/releases.xml), [libraries](https://libraries.io/pypi/WebScripts/versions.atom)
  - [WebScripts Server presentation](https://www.slideshare.net/MauriceLambert1/webscripts-server-251581216)
 
-## Pictures
+## Screenshots
 
 ![Index page (dark)](https://mauricelambert.github.io/info/python/code/WebScripts/images/WebScripts3_dark_mode_index.PNG "Index page (dark)")
 *Index page (dark)*

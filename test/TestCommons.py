@@ -204,17 +204,21 @@ class TestScriptConfig(TestCase):
         configuration.scripts = {"test.py": "test"}
         configuration.force_file_permissions = True
 
-        with self.assertRaises(WebScriptsConfigurationError), patch.object(
-            WebScripts.commons, "check_file_permission", return_value=True
+        with (
+            self.assertRaises(WebScriptsConfigurationError),
+            patch.object(
+                WebScripts.commons, "check_file_permission", return_value=True
+            ),
         ):
             ScriptConfig.get_scripts_from_configuration(configuration, None)
 
         configuration.test = {}
 
-        with patch.object(
-            ScriptConfig, "get_script_path"
-        ) as mock_config_path, patch.object(
-            WebScripts.commons, "check_file_permission", return_value=True
+        with (
+            patch.object(ScriptConfig, "get_script_path") as mock_config_path,
+            patch.object(
+                WebScripts.commons, "check_file_permission", return_value=True
+            ),
         ):
             mock_config_path.return_value = "/fake/path/test.py"
             script_configs = ScriptConfig.get_scripts_from_configuration(
@@ -235,8 +239,13 @@ class TestScriptConfig(TestCase):
             WebScripts.commons, "get_real_path"
         ) as mock_real_path:
             mock_real_path.return_value = "/fake/path/test.py"
-            with self.assertRaises(WebScriptsConfigurationError), patch.object(
-                WebScripts.commons, "check_file_permission", return_value=True
+            with (
+                self.assertRaises(WebScriptsConfigurationError),
+                patch.object(
+                    WebScripts.commons,
+                    "check_file_permission",
+                    return_value=True,
+                ),
             ):
                 ScriptConfig.get_scripts_from_configuration(
                     configuration, configuration
