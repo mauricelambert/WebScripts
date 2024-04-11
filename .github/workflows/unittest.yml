@@ -33,4 +33,5 @@ jobs:
           python -m WebScripts --test-running --security
           python -m pip install .
           python -m WebScripts.harden -o `whoami` -p 'abc' -d '.'
+          python --version | grep " 3.12" && python -m pip install setuptools
           python setup.py install --admin-password=abc --directory=.
