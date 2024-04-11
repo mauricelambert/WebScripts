@@ -99,14 +99,12 @@ GROUPFILE = "groups.csv"
 
 
 class UserError(Exception):
-
     """
     This class can raise a UserError.
     """
 
 
 class GroupError(Exception):
-
     """
     This class can raise a GroupError.
     """

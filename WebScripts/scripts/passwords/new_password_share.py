@@ -3,7 +3,7 @@
 
 ###################
 #    This file can share a password securely
-#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
+#    Copyright (C) 2021, 2022, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,25 +20,26 @@
 ###################
 
 """
-This tool runs CLI scripts and displays output in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
 This file can share a password securely.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
 __description__ = """
-This tool runs CLI scripts and displays output in a Web Interface.
+This tool run scripts and display the result in a Web Interface.
 
-This file can share a password securely."""
+This file can share a password securely.
+"""
 __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2024  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -56,16 +57,14 @@ __all__ = [
 ]
 
 from secrets import token_bytes, randbelow
+from csv import reader, writer, QUOTE_ALL
 from os import path, chdir, environ
+from sys import argv, exit, stderr
 from hashlib import pbkdf2_hmac
 from urllib.parse import quote
-from csv import reader, writer
 from typing import Tuple, List
 from base64 import b64encode
 from time import time
-from sys import argv
-import sys
-import csv
 
 
 # csv format: timestamp,password,view_number,hash,iterations,id
@@ -75,7 +74,9 @@ SIZE = 60
 
 
 def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
-    """This function encrypts and hashes the password."""
+    """
+    This function encrypts and hashes the password.
+    """
 
     key = token_bytes(SIZE)
     cipher = []
@@ -94,18 +95,22 @@ def encrypt(password: str) -> Tuple[bytes, str, int, bytes]:
 
 
 def get_passwords() -> List[List[str]]:
-    """This function returns a list of encrypted passwords."""
+    """
+    This function returns a list of encrypted passwords.
+    """
 
     with open(filename, newline="") as file:
-        passwords = list(reader(file, quoting=csv.QUOTE_ALL))
+        passwords = list(reader(file, quoting=QUOTE_ALL))
     return passwords
 
 
 def save(passwords: List[List[str]], id_: int) -> None:
-    """This function save passwords and ID."""
+    """
+    This function save passwords and ID.
+    """
 
     with open(filename, "w", newline="") as file:
-        csvfile = writer(file, quoting=csv.QUOTE_ALL)
+        csvfile = writer(file, quoting=QUOTE_ALL)
         for password in passwords:
             csvfile.writerow(password)
 
@@ -114,7 +119,9 @@ def save(passwords: List[List[str]], id_: int) -> None:
 
 
 def get_id() -> int:
-    """This function return the password ID."""
+    """
+    This function return the password ID.
+    """
 
     if not path.isfile(file_id):
         with open(file_id, "w") as file:
@@ -126,7 +133,9 @@ def get_id() -> int:
 
 
 def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
-    """This function return a printable password and key (using base64)."""
+    """
+    This function return a printable password and key (using base64).
+    """
 
     password = b64encode(password).decode()
     key = b64encode(key).decode()
@@ -134,7 +143,8 @@ def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
 
 
 def get_url(token: str) -> str:
-    """This function build an URL to get
+    """
+    This function build an URL to get
     the password share.
 
     This function comes from PEP-3333:
@@ -155,12 +165,14 @@ def get_url(token: str) -> str:
             if environ["SERVER_PORT"] != "80":
                 url += ":" + environ["SERVER_PORT"]
 
-    url += f"/web/scripts/get_password_share.py?token={quote(token)}"
+    url += f"get_password_share.py?token={quote(token)}"
     return url
 
 
-def main() -> None:
-    """Main function to add secure password sharing."""
+def main() -> int:
+    """
+    Main function to add secure password sharing.
+    """
 
     chdir(path.join(path.dirname(__file__), "..", ".."))
 
@@ -172,9 +184,10 @@ def main() -> None:
         print(
             "USAGE: python3 new_password_share.py [password string required] "
             "[time_in_hours float required] [maximum_number_of_views "
-            "integer required]"
+            "integer required]",
+            file=stderr,
         )
-        sys.exit(1)
+        return 1
 
     password, hours, views = argv[1], float(argv[2]), int(argv[3])
 
@@ -189,7 +202,9 @@ def main() -> None:
 
     for string in passwords:
         if isinstance(string, str) and not string.isprintable():
-            raise ValueError(f"Strings must be printable: '{string}' is not.")
+            print(
+                f"Strings must be printable: {string!r} is not.", file=stderr
+            )
 
     passwords.append(password)
     save(passwords, id_)
@@ -198,8 +213,8 @@ def main() -> None:
         f'<a href="{get_url(f"{id_}:{key}")}">Click on this link or '
         "copy it to access to the password.</a>"
     )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())
