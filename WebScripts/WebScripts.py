@@ -155,7 +155,6 @@ Content = TypeVar(
 
 
 class Configuration(DefaultNamespace):
-
     """
     This class build the configuration from dict(s) with
     configuration files and arguments.
@@ -297,7 +296,6 @@ class Configuration(DefaultNamespace):
 
 
 class Server:
-
     """
     This class implements the WebScripts server.
     """
@@ -386,9 +384,9 @@ class Server:
         logger_debug("Set defaults headers...")
 
         if security:
-            headers[
-                "Strict-Transport-Security"
-            ] = "max-age=63072000; includeSubDomains; preload"
+            headers["Strict-Transport-Security"] = (
+                "max-age=63072000; includeSubDomains; preload"
+            )
             headers["Content-Security-Policy"] = (
                 "default-src 'self'; navigate-to 'self'; worker-src "
                 "'none'; style-src-elem 'self'; style-src-attr 'none';"
@@ -403,9 +401,9 @@ class Server:
             headers["X-XSS-Protection"] = "1; mode=block"
             headers["X-Content-Type-Options"] = "nosniff"
             headers["Referrer-Policy"] = "origin-when-cross-origin"
-            headers[
-                "Cache-Control"
-            ] = "no-cache, no-store, must-revalidate, private"
+            headers["Cache-Control"] = (
+                "no-cache, no-store, must-revalidate, private"
+            )
             headers["Pragma"] = "no-cache"
             headers["Expires"] = "0"
             headers["Clear-Site-Data"] = '"cache", "executionContexts"'
@@ -413,9 +411,9 @@ class Server:
                 "payment 'none'; geolocation 'none'; "
                 "microphone 'none'; camera 'none'"
             )
-            headers[
-                "Permissions-Policy"
-            ] = "microphone=(),camera=(),payment=(),geolocation=()"
+            headers["Permissions-Policy"] = (
+                "microphone=(),camera=(),payment=(),geolocation=()"
+            )
             headers["Cross-Origin-Embedder-Policy"] = "require-corp"
             headers["Cross-Origin-Opener-Policy"] = "same-origin"
             headers["Cross-Origin-Resource-Policy"] = "same-origin"
@@ -681,10 +679,10 @@ class Server:
         js_paths = Pages.js_paths = {}
 
         logger_debug("Add scripts in Web pages...")
-        scripts = (
-            Pages.scripts
-        ) = ScriptConfig.build_scripts_from_configuration(
-            configuration,
+        scripts = Pages.scripts = (
+            ScriptConfig.build_scripts_from_configuration(
+                configuration,
+            )
         )
         logger_info("Scripts are in Web pages.")
 

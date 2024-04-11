@@ -103,7 +103,6 @@ server_path = dirname(__file__)
 
 
 class SEVERITY(Enum):
-
     """
     Severity level of the rules.
     """
@@ -116,7 +115,6 @@ class SEVERITY(Enum):
 
 
 class GETTER:
-
     """
     This class groups getters.
     """
@@ -135,7 +133,6 @@ class GETTER:
 
 @dataclass
 class Rule:
-
     """
     This class implement a rule for hardening.
     """
@@ -150,7 +147,6 @@ class Rule:
 
 
 class Report:
-
     """
     This class implement the report object.
     """
@@ -671,7 +667,6 @@ scoring[f"{SEVERITY.INFORMATION.value} total"]:0>4},  Fail:\
 
 
 class Audit:
-
     """
     This function implement hardening checks.
     """
@@ -705,12 +700,16 @@ class Audit:
         files = [
             join("config", "server.ini"),
             join("config", "server.json"),
-            join(server_path, "config", "nt", "server.ini")
-            if Audit.is_windows
-            else join(server_path, "config", "server.ini"),
-            join(server_path, "config", "nt", "server.json")
-            if Audit.is_windows
-            else join(server_path, "config", "server.json"),
+            (
+                join(server_path, "config", "nt", "server.ini")
+                if Audit.is_windows
+                else join(server_path, "config", "server.ini")
+            ),
+            (
+                join(server_path, "config", "nt", "server.json")
+                if Audit.is_windows
+                else join(server_path, "config", "server.json")
+            ),
         ]
 
         files = [file for file in files if isfile(file)]
@@ -1674,7 +1673,6 @@ class Audit:
 
 
 class FilesIntegrity:
-
     """
     This class checks the file integrity.
     """

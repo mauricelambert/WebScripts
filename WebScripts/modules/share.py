@@ -87,15 +87,16 @@ Server = TypeVar("Server")
 
 module_getter: MethodType = modules.get
 check_right = module_getter(
-    "WebScripts.Pages"
-    if module_getter("WebScripts")
-    else "WebScripts38.Pages",
+    (
+        "WebScripts.Pages"
+        if module_getter("WebScripts")
+        else "WebScripts38.Pages"
+    ),
     module_getter("Pages"),
 ).check_right
 
 
 class Download:
-
     """
     This class implement download functions for filename or ID.
     """

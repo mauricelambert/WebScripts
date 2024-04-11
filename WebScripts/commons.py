@@ -150,7 +150,6 @@ Configuration = TypeVar("Configuration", ServerConfiguration, SimpleNamespace)
 
 
 class Argument(DefaultNamespace):
-
     """
     This class build argument for script.
     """
@@ -242,7 +241,6 @@ class Argument(DefaultNamespace):
 
 
 class ScriptConfig(DefaultNamespace):
-
     """
     This class makes script configurations.
     """
@@ -339,9 +337,9 @@ class ScriptConfig(DefaultNamespace):
         ini_scripts_config = getattr(
             server_configuration, "ini_scripts_config", []
         )
-        server_configuration.configuration_files = (
-            configuration_files
-        ) = getattr(server_configuration, "configuration_files", {})
+        server_configuration.configuration_files = configuration_files = (
+            getattr(server_configuration, "configuration_files", {})
+        )
 
         for dirname_ in (lib_directory, current_directory):
             for config_path in ini_scripts_config:
@@ -362,9 +360,9 @@ class ScriptConfig(DefaultNamespace):
                             configuration, server_configuration
                         )
                     )
-                    configuration_files[
-                        get_real_path(config_filename)
-                    ] = temp_configurations
+                    configuration_files[get_real_path(config_filename)] = (
+                        temp_configurations
+                    )
 
             for config_path in json_scripts_config:
                 config_path = join(dirname_, normcase(config_path))
@@ -428,12 +426,12 @@ class ScriptConfig(DefaultNamespace):
             script_section["args"] = cls.get_arguments_from_config(
                 script_section.pop("args", None), script_configuration
             )
-            script_section[
-                "documentation_file"
-            ] = cls.get_documentation_from_configuration(
-                script_section,
-                name,
-                getattr(server_configuration, "documentations_path", []),
+            script_section["documentation_file"] = (
+                cls.get_documentation_from_configuration(
+                    script_section,
+                    name,
+                    getattr(server_configuration, "documentations_path", []),
+                )
             )
             script_section["name"] = name
 
@@ -450,9 +448,9 @@ class ScriptConfig(DefaultNamespace):
                 )
 
             if script_section.get("launcher") is None:
-                script_section[
-                    "launcher"
-                ] = cls.get_Windows_default_script_launcher(script_section)
+                script_section["launcher"] = (
+                    cls.get_Windows_default_script_launcher(script_section)
+                )
 
             script_section["dirname"] = dirname(script_path)
 
@@ -665,12 +663,12 @@ class ScriptConfig(DefaultNamespace):
                     f'Section "script" is not defined in {configuration_file}'
                 )
 
-            server_configuration.configuration_files = (
-                configuration_files
-            ) = getattr(server_configuration, "configuration_files", {})
-            configuration_files[
-                get_real_path(configuration_file)
-            ] = configuration
+            server_configuration.configuration_files = configuration_files = (
+                getattr(server_configuration, "configuration_files", {})
+            )
+            configuration_files[get_real_path(configuration_file)] = (
+                configuration
+            )
 
         return configuration, script_config
 
@@ -731,7 +729,6 @@ class ScriptConfig(DefaultNamespace):
 
 
 class User(DefaultNamespace):
-
     """
     This class implements User object.
     """
@@ -763,7 +760,6 @@ class User(DefaultNamespace):
 
 
 class CallableFile(Callable):
-
     """
     This class build callable object to return
     Web files content or script output.
@@ -976,7 +972,6 @@ class CallableFile(Callable):
 
 
 class Blacklist:
-
     """
     This class implement blacklist.
     """
@@ -1056,7 +1051,6 @@ class Blacklist:
 
 
 class TokenCSRF:
-
     """
     This class brings together the functions related to the CSRF token
     """
@@ -1128,7 +1122,6 @@ class TokenCSRF:
 
 
 class Session:
-
     """
     Object to implement session.
     """

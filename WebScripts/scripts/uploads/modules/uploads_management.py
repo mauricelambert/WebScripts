@@ -102,7 +102,6 @@ Data = TypeVar("Data", str, bytes)
 
 
 class FileMetadata:
-
     """
     This class implements file metadata for
     uploaded files.
@@ -130,7 +129,6 @@ class FileMetadata:
 
 
 class UploadedFile:
-
     """
     This class implements the file type for
     uploaded files.

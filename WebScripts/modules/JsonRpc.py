@@ -71,7 +71,6 @@ def test_argument_dict(a: int = 1, b: int = 2) -> int:
 
 
 class JsonRpc:
-
     """
     This class implements JSON RPC for the WebScripts Server.
     """

@@ -71,9 +71,11 @@ def write_line(
         dates.add(date)
         csv_writer.writerow(
             [
-                date[1:]
-                if column == "date"
-                else str(table[column].get(date, 0))
+                (
+                    date[1:]
+                    if column == "date"
+                    else str(table[column].get(date, 0))
+                )
                 for column in columns
             ]
         )

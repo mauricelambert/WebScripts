@@ -195,7 +195,6 @@ logger_log: Callable = logger.log
 
 
 class Hardening:
-
     """
     This class hardens WebScripts.
     """

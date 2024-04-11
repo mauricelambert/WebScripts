@@ -4,6 +4,7 @@ LICENSE.txt
 MANIFEST.in
 README.md
 mkdocs.yml
+requirements.txt
 requirenments.txt
 setup.cfg
 setup.py

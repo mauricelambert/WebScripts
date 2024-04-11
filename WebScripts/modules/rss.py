@@ -80,7 +80,6 @@ def get_rss_path(server: Server) -> str:
 
 
 class Feed:
-
     """
     This class implements the RSS feed.
     """

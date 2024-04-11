@@ -181,7 +181,6 @@ IP_HEADERS = [
 
 
 class _Logs:
-
     """
     This class implements basic python logs.
     """
@@ -323,7 +322,6 @@ class _Logs:
 
 
 class WindowsLogs(_Logs):
-
     """
     This class log on Windows.
     """
@@ -476,7 +474,6 @@ class WindowsLogs(_Logs):
 
 
 class LinuxLogs(_Logs):
-
     """
     This class logs on Linux.
     """
@@ -578,7 +575,6 @@ def log_trace(
 
 
 class CustomLogHandler(logging.handlers.RotatingFileHandler):
-
     """
     This class is a custom logging handler.
     """
@@ -718,7 +714,6 @@ if IS_WINDOWS and not WINDOWS_LOGS:
 
 
 class DefaultNamespace(SimpleNamespace):
-
     """
     This class build simple namespace with default
     attributs.

@@ -87,7 +87,6 @@ arguments = [
 
 
 class PostInstallScript(install):
-
     """
     This class installs and hardens the WebScripts project.
     """
