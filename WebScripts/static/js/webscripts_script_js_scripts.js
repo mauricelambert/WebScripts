@@ -1,7 +1,7 @@
 /*
 
         Scripts for script.html
-        Copyright (C) 2021, 2022  Maurice Lambert
+        Copyright (C) 2021, 2022, 2024  Maurice Lambert
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -1338,10 +1338,11 @@ class ShortTable {
         let table = this.closest('table');
         let id = Array.from(this.parentNode.children).indexOf(this);
 
-        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        Array.from(table.querySelectorAll('tbody > tr'))
+            .filter(tr => table == tr.closest('table'))
             .sort(ShortTable.prototype.get_callback(id, window.ascendant = !
                 window.ascendant))
-            .forEach(line => table.appendChild(line));
+            .forEach(line => line.parentNode.appendChild(line));
     }
 
     /*
@@ -1349,7 +1350,7 @@ class ShortTable {
     */
     add_listeners() {
 
-        document.querySelectorAll('th').forEach((header) => {
+        Array.from(document.querySelectorAll('th')).forEach((header) => {
             if (!header.have_short_event) {
                 header.addEventListener('click', ShortTable
                     .prototype.event.bind(header));
