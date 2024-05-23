@@ -622,8 +622,8 @@ class TestFunctions(TestCase):
         getpwuid = getattr(WebScripts.utils, "getpwuid", None)
 
         WebScripts.utils.user = "root"
-        WebScripts.utils.getpwuid = lambda x: (
-            Mock(pw_name="root") if x == 0 else Mock()
+        WebScripts.utils.getpwuid = (
+            lambda x: Mock(pw_name="root") if x == 0 else Mock()
         )
 
         class SpecialMock(Mock):
@@ -634,14 +634,11 @@ class TestFunctions(TestCase):
         isfile = WebScripts.utils.isfile
         mock = WebScripts.utils.isfile = SpecialMock()
 
-        with (
-            patch.object(
-                WebScripts.utils, "stat", return_value=stat_response
-            ) as file,
-            patch.object(
-                WebScripts.utils, "isdir", return_value=True
-            ) as mock2,
-        ):
+        with patch.object(
+            WebScripts.utils, "stat", return_value=stat_response
+        ) as file, patch.object(
+            WebScripts.utils, "isdir", return_value=True
+        ) as mock2:
             self.assertTrue(
                 check_file_permission(config, "test/test", False, False, True)
             )
