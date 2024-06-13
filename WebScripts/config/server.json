@@ -49,7 +49,7 @@
 			"JsonRpc",
 			"notification"
 		],
-		"modules_path": "./modules/",
+		"modules_path": ["./modules/"],
 		"js_path": [
 			"./static/js/*.js"
 		],
