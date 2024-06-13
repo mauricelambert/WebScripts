@@ -31,9 +31,8 @@ jobs:
           python3.11 -m WebScripts --accept-unauthenticated-user --accept-unknow-user --blacklist-time 0 --auth-failures-to-blacklist 99999 & 
         
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.2.0
+        uses: zaproxy/action-full-scan@master
         with:
-          docker_name: 'owasp/zap2docker-stable'
           target: 'http://127.0.0.1:8000'
           cmd_options: '-a'
           fail_action: false

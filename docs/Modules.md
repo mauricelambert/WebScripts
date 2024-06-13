@@ -86,6 +86,56 @@ def example3(
 
 The `arguments` and `inputs` lists are built if you respect the default JSON body of *WebScripts Server*. If the body of the request is JSON without `arguments` *key*/*attribute*, `arguments` will be a *dict* or *list*. If the body of the request is not JSON, `arguments` will be *bytes*.
 
+#### Examples
+
+1. WebScripts request:
+
+```
+POST /ModuleName/ClassName/method_name/little_string_argument HTTP/1.1
+Host: webscripts.local
+User-Agent: WebScripts client
+Origin: http://127.0.0.1:8000
+Content-Type: application/json
+
+{"arguments": {"arg1": {"value": "my argument", "input": false}, "--optional-arg1": {"value": "WebScripts is good !", "input": false}, "arg1": {"value": "my input", "input": true}}}
+```
+
+ - `filename` will be `little_string_argument`
+ - `arguments` will be a list with `my argument`, `--optional-arg1` and `WebScripts is good !` as values (`arg1` don't start with `-`: is not in the list, but `--optional-arg1` start with `-`: is in the arguments list)
+ - `inputs` will be a list with `my input` as values
+
+2. JSON request:
+
+```
+POST /ModuleName/ClassName/method_name/ HTTP/1.1
+Host: webscripts.local
+User-Agent: WebScripts client
+Origin: http://127.0.0.1:8000
+Content-Type: application/json
+
+{"my dict": {"my list": [1, 2.5], "my string": "WebScripts is good !", "my int": 678, "my float": 45.6, "null": null, "true": true, "false": false}}
+```
+
+ - `filename` will be empty string
+ - `arguments` will be a dict: `{"my dict": {"my list": [1, 2.5], "my string": "WebScripts is good !", "my int": 678, "my float": 45.6, "null": None, "true": True, "false": False}}`
+ - `inputs` will be a empty list
+
+3. Others request:
+
+```
+POST /ModuleName/ClassName/method_name/xml_is_bad HTTP/1.1
+Host: webscripts.local
+User-Agent: WebScripts client
+Origin: http://127.0.0.1:8000
+Content-Type: application/xml
+
+<ilove>JSON</ilove>
+```
+
+ - `filename` will be a string with `xml_is_bad` as value
+ - `arguments` will be bytes with `<ilove>JSON</ilove>` as value (you can send binary data, like archives, images, office documents, executables, ect...)
+ - `inputs` will be a empty list
+
 ### Return
 
  1. Response `HTTP code` (`str`): the HTTP status of the response, the first three digits are required (example: `200 OK`)

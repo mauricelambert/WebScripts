@@ -3,7 +3,7 @@
 
 ###################
 #    This file can share a password securely
-#    Copyright (C) 2021, 2022, 2024  Maurice Lambert
+#    Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ This tool run scripts and display the result in a Web Interface.
 This file can share a password securely.
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -39,7 +39,7 @@ __license__ = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022, 2024  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -144,29 +144,11 @@ def get_printable(password: bytes, key: bytes) -> Tuple[str, str]:
 
 def get_url(token: str) -> str:
     """
-    This function build an URL to get
+    This returns the relative URL to get
     the password share.
-
-    This function comes from PEP-3333:
-        - https://www.python.org/dev/peps/pep-3333/#url-reconstruction
     """
 
-    url = environ["wsgi.url_scheme"] + "://"
-
-    if environ.get("HTTP_HOST"):
-        url += environ["HTTP_HOST"]
-    else:
-        url += environ["SERVER_NAME"]
-
-        if environ["wsgi.url_scheme"] == "https":
-            if environ["SERVER_PORT"] != "443":
-                url += ":" + environ["SERVER_PORT"]
-        else:
-            if environ["SERVER_PORT"] != "80":
-                url += ":" + environ["SERVER_PORT"]
-
-    url += f"get_password_share.py?token={quote(token)}"
-    return url
+    return "./get_password_share.py?token=" + quote(token)
 
 
 def main() -> int:
