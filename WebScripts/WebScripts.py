@@ -26,7 +26,7 @@ This file is the "main" file of this package (implements the main function,
 the Server class and the Configuration class).
 """
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -170,16 +170,21 @@ class Configuration(DefaultNamespace):
         "log_level": 0,
         "statics_path": [],
         "scripts_path": [],
+        "json_scripts_config": [],
+        "ini_scripts_config": [],
         "modules_path": [],
         "exclude_auth_paths": ["/static/", "/js/"],
         "exclude_auth_pages": ["/api/", "/auth/", "/web/auth/"],
         "auth_script": None,
         "active_auth": False,
         "webproxy_number": None,
+        "smtp_starttls": None,
+        "smtp_ssl": None,
         "documentations_path": [],
         "accept_unknow_user": True,
         "force_file_permissions": True,
         "auth_failures_to_blacklist": None,
+        "blacklist_time": None,
         "accept_unauthenticated_user": True,
     }
     __required__ = ("interface", "port")
