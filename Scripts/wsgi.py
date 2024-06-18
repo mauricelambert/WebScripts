@@ -23,7 +23,7 @@
 This tool runs CLI scripts and displays output in a Web Interface.
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -77,9 +77,6 @@ class Paths:
         self.config_cfg = config_cfg
         self.config_json = config_json
 
-
-configure_logs_system()
-
 paths = Paths([], [])
 
 server, _ = prepare_server()
@@ -101,4 +98,3 @@ hardening(server)
 
 logger_warning("Starting server...")
 application = server.app
-
