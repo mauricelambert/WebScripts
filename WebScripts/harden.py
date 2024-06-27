@@ -3,7 +3,7 @@
 
 ###################
 #    This tool runs CLI scripts and displays output in a Web Interface.
-#    Copyright (C) 2021, 2022, 2023  Maurice Lambert
+#    Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -39,7 +39,7 @@ license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/WebScripts"
 
 copyright = """
-WebScripts  Copyright (C) 2021, 2022, 2023  Maurice Lambert
+WebScripts  Copyright (C) 2021, 2022, 2023, 2024  Maurice Lambert
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions.
@@ -71,6 +71,7 @@ from os.path import (
     abspath,
     basename,
     exists,
+    normpath,
 )
 from importlib.util import spec_from_loader, module_from_spec
 from logging import FileHandler, Formatter, getLogger, Logger
@@ -207,6 +208,7 @@ class Hardening:
         directory: str = None,
     ):
         self.admin_password = admin_password
+        self.documentation_paths = []
         self.json_only = json_only
         self.owner = owner or getuser()
         self.directory = directory or getcwd()
@@ -293,7 +295,11 @@ class Hardening:
         if self.is_windows:
             path_.insert(1, "..")
 
-        section["modules_path"] = abspath(join(*path_, "modules"))
+        self.documentation_paths = section["documentations_path"] = [
+            normpath(abspath(join(self.directory, x)))
+            for x in section["documentations_path"]
+        ]
+        section["modules_path"] = [normpath(abspath(join(*path_, "modules")))]
         section["data_dir"] = abspath(join(self.directory, "data"))
         section["json_scripts_config"] = self.get_files_from_glob_path(
             path_, section["json_scripts_config"]
@@ -368,6 +374,12 @@ class Hardening:
         logs = join(directory, "logs")
         chmod(logs, 0o700)  # nosec
         chown(logs, pw_uid, pw_gid)
+
+        for documentation_path in self.documentation_paths:
+            documentation_directory = dirname(documentation_path)
+            makedirs(documentation_directory, exist_ok=True)
+            chmod(documentation_directory, 0o700)  # nosec
+            chown(documentation_directory, pw_uid, pw_gid)
 
     def linux_file_permissions(self, filename: str) -> None:
         """
