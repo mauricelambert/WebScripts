@@ -1,0 +1,4 @@
+"ID","name","password","salt","enumerations","IPs","groups","apikey","categories","scripts"
+"0","Not Authenticated","","","","*","0","","*","*"
+"1","Unknow","","","","*","0,1","","*","*"
+"2","Admin","pZo8c8+cKLTHFaUBxGwcYaFDgNRw9HHph4brixOo6OMusFKbfkBEObZiNwda/f9W3+IpiMY8kqiFmQcbkUCbGw==","c2FsdA==","1000","192.168.*,172.16.*,10.*,127.0.*","50,1000","AdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdminAdmin","*","*"
