@@ -25,7 +25,7 @@ This tool runs CLI scripts and displays output in a Web Interface.
 This file hardens the WebScripts installation and configuration.
 """
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -323,7 +323,7 @@ class Hardening:
         """
 
         logger_info("Hardens script " + repr(filename))
-        logger_debug("Add the launcher")
+        logger_debug(f"Add launcher {executable!r} for {filename!r}")
         section["launcher"] = executable
         specific_config_file = section.get("configuration_file")
 
@@ -331,18 +331,28 @@ class Hardening:
             specific_config_file = basename(specific_config_file)
 
             script_name, _ = splitext(basename(filename))
-            logger_info(f"Configure script named: {script_name}")
+            logger_info("Configure script named: " + repr(script_name))
             for config_file in self.json_config_files:
                 if config_file.endswith(specific_config_file):
                     section["configuration_file"] = config_file
                     self.get_configurations(config_file, filename)
                     break
+            else:
+                logger_error(
+                    "Configuration file not found for " + repr(filename)
+                )
 
         for py_filename in self.py_scripts_files:
-            if py_filename.endswith(filename):
-                logger_debug("Add the script absolute path.")
+            py_basename = basename(py_filename)
+            if py_basename == filename:
+                logger_debug(
+                    "Add the script absolute path"
+                    f" {py_filename!r} for {filename!r}."
+                )
                 section["path"] = py_filename
                 break
+        else:
+            logger_error("Script file not found for " + repr(filename))
 
     def linux_hardening_file_permissions(self) -> None:
         """
