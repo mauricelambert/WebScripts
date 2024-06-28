@@ -1,0 +1,82 @@
+<!--
+
+    HTML page to launch scripts.
+    Copyright (C) 2021, 2022  Maurice Lambert
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>%(name)s of WebScripts Server</title>
+		<link rel="shortcut icon" type="image/png" href="%(subpath)sstatic/webscripts_icon.png"/>
+		<link rel="stylesheet" type="text/css" href="%(subpath)sstatic/webscripts_style.css" integrity="sha512-hn9MUcYe4YQLkgIXDHwxakJ89R4IZl/M3RbJLcJsw8NjkPKyviVLuGj/TVQ016w7upj6x2TVbOhXqJBRwhZ5Cg==">
+		<link rel="stylesheet" type="text/css" href="%(subpath)sstatic/webscripts_script_style.css" integrity="sha512-sRgxcUILghgOO/kSIGuJ/GaTsu0IMhKPMCeToWrQHjm1puraV0yqi476xMZrVNiKd+hAWCxrR39jxJdyylmDnA==">
+		<script type="text/javascript" src="%(subpath)sjs/webscripts_js_scripts.js" integrity="sha512-uAGwtr6/fo9DjmY3UipxyYIFWGq4eDPWPa2iYMTFX5TPh3f+LPTyTG+CASiH3z8PK9Qf8VIyfzd8yZmycVJkwg=="></script>
+		<script type="text/javascript" src="%(subpath)sjs/webscripts_script_js_scripts.js" integrity="sha512-qb2wIBtSsCrrs8/Z7hjMDMvKJ6sT4n3NepWhyuHsw0+ncr5xMXTY6Y4bPImjinFtgEPKbubPyK896IreKgM5JA=="></script>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; navigate-to 'self'; worker-src 'none'; style-src-elem 'self'; style-src-attr 'none'; style-src 'self'; script-src-attr 'none'; object-src 'none'; media-src 'none'; manifest-src 'none'; connect-src 'self'; font-src 'none'; img-src 'self'; base-uri 'none'; child-src 'none'; form-action 'none'; script-src 'self' 'nonce-%(nonce)s' 'require-trusted-types-for'">
+	</head>
+
+	<body>
+		<noscript><div class="center border"><span id="prevent_no_javascript">This WebApp requires JavaScript.</span></div></noscript>
+		%(header)s
+
+		<div id="webscripts_content">
+			<div id="script_presentation">
+				<h1 id="script_title">Script: %(name)s</h1>
+				<p class="description" id="script_description"></p><a href="%(subpath)sweb/doc/%(name)s">Documentation</a>
+			</div>
+
+			<p>Welcome on script "%(name)s" user "%(user)s" !</p>
+
+			<div id="script_interface">
+				<div class="advanced_container" id="advanced_container">
+					<div class="advanced_arguments" id="advanced_arguments">
+					</div>
+
+					<div class="advanced_button_arguments" id="advanced_button_arguments">
+						<button class="print_advanced" id="print_advanced">
+							Show advanced arguments
+						</button>
+					</div>
+				</div>
+
+				<div id="submit_row" class="row">
+					<input type="hidden" name="csrf_token" id="csrf_token" value="%(csrf)s">
+					<div class="submit_position">
+						<input id="submit_button" type="submit" class="submit" value="Start script execution">
+					</div>
+				</div>
+			</div>
+
+			<progress id="progressbar" max="100" value="0"></progress>
+
+			<div id="error"></div>
+
+			<div id="script_outputs">
+				
+			</div>
+		</div>
+
+		%(footer)s
+
+		<script type="text/javascript" nonce="%(nonce)s">
+			script_name="%(name)s";
+			subpath = "%(subpath)s";
+		</script>
+	</body>
+</html>
