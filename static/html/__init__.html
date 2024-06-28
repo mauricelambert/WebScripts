@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module __init__</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>__init__</strong></big></big> (version 1.2.1)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="__init__.py">__init__.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;package&nbsp;implements&nbsp;a&nbsp;web&nbsp;server&nbsp;to&nbsp;run&nbsp;scripts&nbsp;or&nbsp;<br>
+executables&nbsp;from&nbsp;the&nbsp;command&nbsp;line&nbsp;and&nbsp;display&nbsp;the&nbsp;result&nbsp;<br>
+in&nbsp;a&nbsp;web&nbsp;interface.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#C89B48">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#C89B48"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>(<a href="types.html#SimpleNamespace">types.SimpleNamespace</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="WebScripts.WebScripts.html#Configuration">WebScripts.WebScripts.Configuration</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="WebScripts.WebScripts.html#Server">WebScripts.WebScripts.Server</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Configuration">class <strong>Configuration</strong></a>(<a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Configuration">Configuration</a>(required:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;optional:&nbsp;List[str]&nbsp;=&nbsp;[],&nbsp;default:&nbsp;dict&nbsp;=&nbsp;{},&nbsp;types:&nbsp;dict&nbsp;=&nbsp;{})<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;build&nbsp;the&nbsp;configuration&nbsp;from&nbsp;dict(s)&nbsp;with<br>
+configuration&nbsp;files&nbsp;and&nbsp;arguments.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="WebScripts.WebScripts.html#Configuration">Configuration</a></dd>
+<dd><a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a></dd>
+<dd><a href="types.html#SimpleNamespace">types.SimpleNamespace</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Configuration-add_conf"><strong>add_conf</strong></a>(self, **kwargs)</dt><dd><tt>Add&nbsp;configurations&nbsp;from&nbsp;other&nbsp;configuration&nbsp;files&nbsp;found.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__defaults__</strong> = {'accept_unauthenticated_user': True, 'accept_unknow_user': True, 'active_auth': False, 'auth_script': None, 'documentations_path': [], 'interface': '127.0.0.1', 'js_path': [], 'modules': [], 'modules_path': [], 'port': 8000, ...}</dl>
+
+<dl><dt><strong>__optional__</strong> = ('debug', 'security', 'active_auth', 'auth_script', 'accept_unknow_user', 'accept_unauthenticated_user', 'modules', 'modules_path', 'js_path', 'statics_path', 'documentations_path', 'scripts_path', 'json_scripts_config', 'ini_scripts_configlog_level', 'log_filename', 'log_level', 'log_format', 'log_date_format', 'log_encoding', 'auth_failures_to_blacklist', ...)</dl>
+
+<dl><dt><strong>__required__</strong> = ('interface', 'port')</dl>
+
+<dl><dt><strong>__types__</strong> = {'accept_unauthenticated_user': &lt;class 'bool'&gt;, 'accept_unknow_user': &lt;class 'bool'&gt;, 'active_auth': &lt;class 'bool'&gt;, 'auth_failures_to_blacklist': &lt;class 'int'&gt;, 'blacklist_time': &lt;class 'int'&gt;, 'debug': &lt;class 'bool'&gt;, 'documentations_path': &lt;class 'list'&gt;, 'ini_scripts_config': &lt;class 'list'&gt;, 'js_path': &lt;class 'list'&gt;, 'json_scripts_config': &lt;class 'list'&gt;, ...}</dl>
+
+<hr>
+Methods inherited from <a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="Configuration-__getitem__"><strong>__getitem__</strong></a>(self, key: str)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__init__"><strong>__init__</strong></a>(self, required: List[str] = [], optional: List[str] = [], default: dict = {}, types: dict = {})</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-build_types"><strong>build_types</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;build&nbsp;type&nbsp;from&nbsp;configuration&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-check_required"><strong>check_required</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+if&nbsp;one&nbsp;of&nbsp;required&nbsp;attributes&nbsp;is&nbsp;missing&nbsp;this<br>
+function&nbsp;raise&nbsp;MissingAttributesError.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-export_as_json"><strong>export_as_json</strong></a>(self, name: str = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;export&nbsp;namespace&nbsp;values&nbsp;(useful&nbsp;for&nbsp;debugging).</tt></dd></dl>
+
+<dl><dt><a name="Configuration-get"><strong>get</strong></a>(self, key: str, default=None)</dt><dd><tt>Compatibility&nbsp;with&nbsp;dict.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-get_dict"><strong>get_dict</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;dict&nbsp;of&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-get_missings"><strong>get_missings</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;required&nbsp;attributes<br>
+and&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of&nbsp;missing&nbsp;required&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-get_unexpecteds"><strong>get_unexpecteds</strong></a>(self, log: bool = True) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;List[str]&nbsp;of<br>
+all&nbsp;attributes&nbsp;not&nbsp;in&nbsp;optional&nbsp;and<br>
+required&nbsp;attributes.<br>
+&nbsp;<br>
+If&nbsp;log&nbsp;argument&nbsp;is&nbsp;True&nbsp;a&nbsp;Warning&nbsp;log&nbsp;message&nbsp;is<br>
+write&nbsp;for&nbsp;all&nbsp;unexpected&nbsp;attributes.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-set_defaults"><strong>set_defaults</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;set&nbsp;defaults&nbsp;attribut&nbsp;with&nbsp;defaults&nbsp;values.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-update"><strong>update</strong></a>(self, **kwargs)</dt><dd><tt>This&nbsp;function&nbsp;add/update&nbsp;attributes&nbsp;with&nbsp;**kwargs&nbsp;arguments.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>:<br>
+<dl><dt><a name="Configuration-default_build"><strong>default_build</strong></a>(**kwargs) -&gt; ~DefaultNamespace<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Default&nbsp;build&nbsp;for&nbsp;<a href="WebScripts.utils.html#DefaultNamespace">DefaultNamespace</a>&nbsp;(set&nbsp;defaults,&nbsp;add&nbsp;values,&nbsp;check<br>
+requirements&nbsp;and&nbsp;unexpected&nbsp;values&nbsp;and&nbsp;build&nbsp;types).</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="WebScripts.utils.html#DefaultNamespace">WebScripts.utils.DefaultNamespace</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="Configuration-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__reduce__"><strong>__reduce__</strong></a>(...)</dt><dd><tt>Return&nbsp;state&nbsp;information&nbsp;for&nbsp;pickling</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="Configuration-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><a name="Configuration-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="types.html#SimpleNamespace">types.SimpleNamespace</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#EEC477">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Server">class <strong>Server</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#EEC477"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Server">Server</a>(configuration:&nbsp;WebScripts.WebScripts.<a href="#Configuration">Configuration</a>)<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;implement&nbsp;the&nbsp;WebScripts&nbsp;server.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Server-__init__"><strong>__init__</strong></a>(self, configuration: WebScripts.WebScripts.Configuration)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Server-add_module_or_package"><strong>add_module_or_package</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;packages&nbsp;and&nbsp;modules&nbsp;to&nbsp;build&nbsp;custom&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Server-add_paths"><strong>add_paths</strong></a>(self) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;add&nbsp;js,&nbsp;static&nbsp;and&nbsp;scripts&nbsp;paths.</tt></dd></dl>
+
+<dl><dt><a name="Server-app"><strong>app</strong></a>(self, environ: os._Environ, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;function&nbsp;page,<br>
+return&nbsp;content&nbsp;page,&nbsp;catch&nbsp;errors&nbsp;and<br>
+return&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
+
+<dl><dt><a name="Server-check_auth"><strong>check_auth</strong></a>(self, environ: os._Environ) -&gt; Tuple[WebScripts.commons.User, bool]</dt><dd><tt>This&nbsp;function&nbsp;check&nbsp;if&nbsp;user&nbsp;is&nbsp;authenticated&nbsp;and&nbsp;blacklisted.</tt></dd></dl>
+
+<dl><dt><a name="Server-check_blacklist"><strong>check_blacklist</strong></a>(self, user: WebScripts.commons.User, ip: str) -&gt; bool</dt><dd><tt>This&nbsp;function&nbsp;checks&nbsp;that&nbsp;the&nbsp;IP&nbsp;and&nbsp;the<br>
+username&nbsp;are&nbsp;not&nbsp;in&nbsp;the&nbsp;blacklist.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_URLs"><strong>get_URLs</strong></a>(self) -&gt; List[str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_attributes"><strong>get_attributes</strong></a>(self, object_: object, attributes: List[str]) -&gt; Tuple[~FunctionOrNone, str]</dt><dd><tt>This&nbsp;function&nbsp;get&nbsp;recursive&nbsp;attribute&nbsp;from&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_function_page"><strong>get_function_page</strong></a>(self, path: str) -&gt; ~FunctionOrNone</dt><dd><tt>This&nbsp;function&nbsp;find&nbsp;function&nbsp;from&nbsp;URL&nbsp;path.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_inputs"><strong>get_inputs</strong></a>(self, arguments: List[Dict[str, ~JsonValue]]) -&gt; Tuple[List[str], Dict[str, ~JsonValue]]</dt><dd><tt>This&nbsp;function&nbsp;returns&nbsp;inputs&nbsp;and&nbsp;arguments&nbsp;from&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="Server-get_session"><strong>get_session</strong></a>(self, cookies: List[str], ip: str) -&gt; WebScripts.commons.User</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;User&nbsp;from&nbsp;cookies.</tt></dd></dl>
+
+<dl><dt><a name="Server-page_401"><strong>page_401</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;401&nbsp;web&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Server-page_403"><strong>page_403</strong></a>(self, error_description: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;403&nbsp;web&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Server-page_404"><strong>page_404</strong></a>(self, url: str, respond: function)</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;404&nbsp;web&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Server-page_500"><strong>page_500</strong></a>(self, error: str, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;error&nbsp;500&nbsp;web&nbsp;page.</tt></dd></dl>
+
+<dl><dt><a name="Server-parse_body"><strong>parse_body</strong></a>(self, environ: os._Environ) -&gt; Tuple[List[Dict[str, ~JsonValue]], str]</dt><dd><tt>This&nbsp;function&nbsp;return&nbsp;arguments&nbsp;from&nbsp;body.</tt></dd></dl>
+
+<dl><dt><a name="Server-send_custom_error"><strong>send_custom_error</strong></a>(self, error: str, code: str) -&gt; Tuple[str, Dict[str, str], str]</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;custom&nbsp;errors&nbsp;pages.</tt></dd></dl>
+
+<dl><dt><a name="Server-send_error_page"><strong>send_error_page</strong></a>(self, error: str, data: bytes, respond: function) -&gt; List[bytes]</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;HTTP&nbsp;errors.</tt></dd></dl>
+
+<dl><dt><a name="Server-send_headers"><strong>send_headers</strong></a>(self, respond: function, error: str = None, headers: Dict[str, str] = None) -&gt; None</dt><dd><tt>This&nbsp;function&nbsp;send&nbsp;error&nbsp;code,&nbsp;message&nbsp;and&nbsp;headers.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>() -&gt; None</dt><dd><tt>Main&nbsp;function&nbsp;to&nbsp;launch&nbsp;server,&nbsp;get&nbsp;configuration&nbsp;and&nbsp;logs.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['Configuration', 'Server', 'main']<br>
+<strong>__author_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__copyright__</strong> = '<font color="#c040c0">\n</font>WebScripts  Copyright (C) 2021  Maurice Lambert...ome to redistribute it<font color="#c040c0">\n</font>under certain conditions.<font color="#c040c0">\n</font>'<br>
+<strong>__description__</strong> = 'This package implements a web server to run scri...d line and display the result in a web interface.'<br>
+<strong>__license__</strong> = 'GPL-3.0 License'<br>
+<strong>__maintainer__</strong> = 'Maurice Lambert'<br>
+<strong>__maintainer_email__</strong> = 'mauricelambert434@gmail.com'<br>
+<strong>__url__</strong> = 'https://github.com/mauricelambert/WebScripts'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Maurice&nbsp;Lambert</td></tr></table>
+</body></html>
